@@ -53,7 +53,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous(name="Concept: Compass Calibration", group="Concept")
-@Disabled
+// @Disabled
 public class ConceptCompassCalibration extends LinearOpMode {
 
     /* Declare OpMode members. */
