@@ -82,28 +82,28 @@ public class Gigi_HardwareRobot extends HardwarePushbot
     public final static double topHome = 0.5;
     public final static double wristHome = 0.5;
 
-    public final static double turretFront = 0.5;
-    public final static double bottomFront = 0.5;
-    public final static double topFront = 0.5;
-    public final static double wristFront = 0.5;
+    public final static double turretFront = 0.6;
+    public final static double bottomFront = 0.6;
+    public final static double topFront = 0.6;
+    public final static double wristFront = 0.6;
 
-    public final static double turretFront_plus_x = 0.5;
-    public final static double bottomFront_plus_x = 0.5;
-    public final static double topFront_plus_x = 0.5;
-    public final static double wristFront_plus_x = 0.5;
+    public final static double turretFront_plus_x = 0.7;
+    public final static double bottomFront_plus_x = 0.6;
+    public final static double topFront_plus_x = 0.6;
+    public final static double wristFront_plus_x = 0.4;
 
-    public final static double turretFront_minus_x = 0.5;
-    public final static double bottomFront_minus_x = 0.5;
-    public final static double topFront_minus_x = 0.5;
-    public final static double wristFront_minus_x = 0.5;
+    public final static double turretFront_minus_x = 0.4;
+    public final static double bottomFront_minus_x = 0.6;
+    public final static double topFront_minus_x = 0.6;
+    public final static double wristFront_minus_x = 0.4;
 
     public final static double turretFront_plus_z = 0.5;
-    public final static double bottomFront_plus_z = 0.5;
-    public final static double topFront_plus_z = 0.5;
-    public final static double wristFront_plus_z = 0.5;
+    public final static double bottomFront_plus_z = 0.7;
+    public final static double topFront_plus_z = 0.7;
+    public final static double wristFront_plus_z = 0.6;
 
-    public final static double clawOpen = 0.5;
-    public final static double clawClose = 0.5;
+    public final static double clawOpen = 0.7;
+    public final static double clawClose = 0.3;
 
     /* Local OpMode members. */
     HardwareMap hwMap  = null;
