@@ -145,30 +145,37 @@ public class Gigi_HardwareRobot extends HardwarePushbot
     }
 
     public void armHome() {
-        turret.setPosition( turretHome );
-        bottom.setPosition( bottomHome );
-        top.setPosition( topHome );
-        wrist.setPosition( wristHome );
+        moveArm( turretHome,
+                bottomHome,
+                topHome,
+                wristHome );
     }
     public void armFront() {
-        turret.setPosition( turretFront );
-        bottom.setPosition( bottomFront );
-        top.setPosition( topFront );
-        wrist.setPosition( wristFront );
+        moveArm( turretFront,
+                bottomFront,
+                topFront,
+                wristFront );
     }
 
     public void armFront_plus_x() {
-        turret.setPosition( turretFront_plus_x );
-        bottom.setPosition( bottomFront_plus_x );
-        top.setPosition( topFront_plus_x );
-        wrist.setPosition( wristFront_plus_x );
+        moveArm( turretFront_plus_x,
+                bottomFront_plus_x,
+                topFront_plus_x,
+                wristFront_plus_x );
     }
 
     public void armFront_minus_x() {
-        turret.setPosition( turretFront_minus_x );
-        bottom.setPosition( bottomFront_minus_x );
-        top.setPosition( topFront_minus_x );
-        wrist.setPosition( wristFront_minus_x );
+        moveArm( turretFront_minus_x,
+                bottomFront_minus_x,
+                topFront_minus_x,
+                wristFront_minus_x );
+    }
+
+    public void armFront_plus_z() {
+        moveArm( turretFront_plus_z,
+                bottomFront_plus_z,
+                topFront_plus_z,
+                wristFront_plus_z );
     }
 
     public void clawOpen() {
@@ -181,7 +188,63 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         claw_left.setPosition( clawClose );
     }
 
-    public void armFront_plus_z() {
-        turret.setPosition( turretFront_plus_z );
+    public void moveArm( double turretNew, double bottomNew, double topNew, double wristNew )
+    {
+        double turretCrr = turret.getPosition();
+        double bottomCrr = bottom.getPosition();
+        double topCrr = top.getPosition();
+        double wristCrr = wrist.getPosition();
+
+        double maxChange = 0.0;
+        maxChange = Math.max( Math.abs( turretNew - turretCrr ), maxChange );
+        maxChange = Math.max( Math.abs( bottomNew - bottomCrr ), maxChange );
+        maxChange = Math.max( Math.abs( topNew - topCrr ), maxChange );
+        maxChange = Math.max( Math.abs( wristNew - wristCrr ), maxChange );
+
+        int steps = (int)( maxChange * 100 );
+        if( steps > 66 ) steps = 66;
+        if( steps < 3 ) steps = 3;
+        int accel = (int)( (double)steps * 0.2 ); // accelate/decelerate first 20%
+        if( accel < 2 ) accel = 2;
+        if( accel > steps / 2  ) accel = steps / 2;
+
+        for( int i = 0; i < steps; i++ )
+        {
+            double turretStep = turretCrr + ( ( turretNew - turretCrr) * ( i + 1 ) ) / steps;
+            double bottomStep = turretCrr + ( ( bottomNew - bottomCrr) * ( i + 1 ) ) / steps;
+            double topStep = turretCrr + ( ( topNew - topCrr ) * ( i + 1 ) ) / steps;
+            double wristStep = turretCrr + ( ( wristNew - wristCrr ) * ( i + 1 ) ) / steps;
+
+            turret.setPosition( turretStep );
+            bottom.setPosition( bottomStep );
+            top.setPosition( topStep );
+            wrist.setPosition( wristStep );
+
+            try {
+                Thread.sleep( 33, 0 );
+            }
+            catch( InterruptedException ex ) {
+                Thread.currentThread().interrupt();
+            }
+
+            long extraWait = 0;
+            if( i < accel ) {
+                extraWait = ( accel - i ) * 33;
+            }
+            if( i > (steps - accel ) ){
+                extraWait = ( steps - i ) * 33;
+            }
+            if( extraWait > 0 ){
+                try {
+                    Thread.sleep( extraWait, 0 );
+                }
+                catch( InterruptedException ex ) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+
+        }
+
+
     }
 }

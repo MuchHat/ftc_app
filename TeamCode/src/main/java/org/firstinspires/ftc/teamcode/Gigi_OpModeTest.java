@@ -87,65 +87,70 @@ public class Gigi_OpModeTest extends LinearOpMode {
             drive = -gamepad1.left_stick_y;
             turn = gamepad1.right_stick_x;
 
-            // Combine drive and turn for blended motion.
-            left = drive + turn;
-            right = drive - turn;
+            if( !(  ( drive == 0.0 ) &&
+                    ( turn == 0.0 ) &&
+                    ( robot.leftDrive.getPower() == 0 ) &&
+                    ( robot.rightDrive.getPower() == 0 ) ) ){
 
-            // Normalize the values so neither exceed +/- 1.0
-            max = Math.max(Math.abs(left), Math.abs(right));
-            if (max > 1.0) {
-                left /= max;
-                right /= max;
+                // Combine drive and turn for blended motion.
+                left = drive + turn;
+                right = drive - turn;
+
+                // Normalize the values so neither exceed +/- 1.0
+                max = Math.max(Math.abs(left), Math.abs(right));
+                if (max > 1.0) {
+                    left /= max;
+                    right /= max;
+                }
+
+                // Output the safe vales to the motor drives.
+                robot.leftDrive.setPower(left);
+                robot.rightDrive.setPower(right);
             }
-
-            // Output the safe vales to the motor drives.
-            robot.leftDrive.setPower(left);
-            robot.rightDrive.setPower(right);
-
             // Use gamepad buttons to move arm up (Y) and down (A)
             if (gamepad1.a) {
-                robot.armFront();
-                telemetry.addData("Say", "Arm Front");    //
+                telemetry.addData("RobotMove", "Arm Front");    //
                 telemetry.update();
+                robot.armFront();
             }
 
             if (gamepad1.x) {
-                robot.armFront_minus_x();
-                telemetry.addData("Say", "Arm Front Mins X");    //
+                telemetry.addData("RobotMove", "Arm Front Mins X");    //
                 telemetry.update();
+                robot.armFront_minus_x();
             }
 
             if (gamepad1.b) {
-                robot.armFront_plus_x();
-                telemetry.addData("Say", "Arm Front Plus X");    //
+                telemetry.addData("RobotMove", "Arm Front Plus X");    //
                 telemetry.update();
+                robot.armFront_plus_x();
             }
 
             if (gamepad1.y) {
-                robot.armFront_plus_z();
-                telemetry.addData("Say", "Arm Front Plus Z");    //
+                telemetry.addData("RobotMove", "Arm Front Plus Z");    //
                 telemetry.update();
+                robot.armFront_plus_z();
             }
 
             if (gamepad1.right_bumper) {
-                robot.clawOpen();
-                telemetry.addData("Say", "Claw Open");    //
+                telemetry.addData("RobotMove", "Claw Open");    //
                 telemetry.update();
+                robot.clawOpen();
             }
 
             if (gamepad1.left_bumper) {
-                robot.clawClose();
-                telemetry.addData("Say", "Claw Close");    //
+                telemetry.addData("RobotMove", "Claw Close");    //
                 telemetry.update();
+                robot.clawClose();
             }
 
             if (gamepad1.back) {
                 robot.armHome();
-                telemetry.addData("Say", "Claw Close");    //
+                telemetry.addData("RobotMove", "Claw Close");    //
                 telemetry.update();
             }
         }
         // Pace this loop so jaw action is reasonable speed.
-        sleep(50);
+        sleep( 50 );
     }
 }
