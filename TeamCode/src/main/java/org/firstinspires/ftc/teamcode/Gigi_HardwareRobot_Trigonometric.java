@@ -385,8 +385,16 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
         double angleLeft = Math.asin( ( opening / 2 ) / lengthClaw );
         double angleRigh = Math.asin( ( opening / 2 ) / lengthClaw );
 
-        clawLeft.setPosition( servoPosFromAngle( angleLeft, clawLeftRef_A0_A180_Min_Max[ 0 ], clawLeftRef_A0_A180_Min_Max[ 1 ], clawLeftRef_A0_A180_Min_Max[ 2 ] ) );
-        clawRight.setPosition( servoPosFromAngle( angleRigh, clawRightRef_A0_A180_Min_Max[ 0 ], clawRightRef_A0_A180_Min_Max[ 1 ], clawRightRef_A0_A180_Min_Max[ 2 ] ) );
+        clawLeft.setPosition( servoPosFromAngle( angleLeft,
+                clawLeftRef_A0_A180_Min_Max[ 0 ],
+                clawLeftRef_A0_A180_Min_Max[ 1 ],
+                clawLeftRef_A0_A180_Min_Max[ 2 ],
+                clawLeftRef_A0_A180_Min_Max[ 3 ] )) );
+        clawRight.setPosition( servoPosFromAngle( angleRigh,
+                clawRightRef_A0_A180_Min_Max[ 0 ],
+                clawRightRef_A0_A180_Min_Max[ 1 ],
+                clawRightRef_A0_A180_Min_Max[ 2 ],
+                clawRightRef_A0_A180_Min_Max[ 3 ]) );
     }
 
     public void computeCurrentCoordinates()
