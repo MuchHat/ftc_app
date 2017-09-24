@@ -235,35 +235,41 @@ public class Gigi_HardwareRobot extends HardwarePushbot
 
         // TODO set the limits below instead of 0.85 and 55 mm
 
+        if( newY > ( lengthArmOne + lengthArmTwo ) * 0.80 ) {
+            newY = ( lengthArmOne + lengthArmTwo ) * 0.80;
+    }
+        if( newY < -( lengthArmOne + lengthArmTwo ) * 0.80 ) {
+            newY = - ( lengthArmOne + lengthArmTwo ) * 0.80;
+        }
         if( newX > ( lengthArmOne + lengthArmTwo ) * 0.80 ) {
             newX = ( lengthArmOne + lengthArmTwo ) * 0.80;
         }
         if( newX < -( lengthArmOne + lengthArmTwo ) * 0.80 ) {
             newX = - ( lengthArmOne + lengthArmTwo ) * 0.80;
         }
-        if( newY < 55 ){
-            newY = 55;
+        if( newY < 66 ){
+            newY = 66;
         }
-        if( newZ < -11 ){
-            newZ = -11;
+        if( newZ < -33 ){
+            newZ = -33;
         }
-        if( newZ > lengthArmOne ){
-            newZ = lengthArmOne;
+        if( newZ > lengthArmOne + lengthArmTwo / 2 ){
+            newZ = lengthArmOne + lengthArmTwo / 2;
         }
 
         // check such it does not bump in the robot
-        if( newX < 111 ){
-            if( newY < 0 ){
-                newY = 0;
+        if( newY < 222 ){
+            if( newZ < 66 ){
+                newZ = 66;
             }
         }
 
         double projectionBottomHorizontal = Math.sqrt( newY * newY + newZ * newZ );
-        if( projectionBottomHorizontal >  ( lengthArmOne + lengthArmTwo ) * 0.85 ){
-            projectionBottomHorizontal = ( lengthArmOne + lengthArmTwo ) * 0.85;
+        if( projectionBottomHorizontal >  ( lengthArmOne + lengthArmTwo ) * 0.80 ){
+            projectionBottomHorizontal = ( lengthArmOne + lengthArmTwo ) * 0.80;
         }
-        if( projectionBottomHorizontal < 55 ){
-            projectionBottomHorizontal = 55;
+        if( projectionBottomHorizontal < 66 ){
+            projectionBottomHorizontal = 66;
         }
 
         double l3 = Math.sqrt( newX * newX  + newZ * newZ );
@@ -338,8 +344,14 @@ public class Gigi_HardwareRobot extends HardwarePushbot
 
         // compute the projection on the horizontal plane
         double projectionBottomHorizontal = 0;
-        projectionBottomHorizontal += lengthArmOne * Math.cos( bottomAngle * Math.PI / 180 );
-        projectionBottomHorizontal += lengthArmTwo * Math.sin( ( topAngle - ( 90 - bottomAngle ) ) * Math.PI / 180 );
+        if( bottomAngle < 90 ) {
+            projectionBottomHorizontal += lengthArmOne * Math.cos(bottomAngle * Math.PI / 180);
+            projectionBottomHorizontal += lengthArmTwo * Math.sin((topAngle - (90 - bottomAngle)) * Math.PI / 180);
+        }
+        if( bottomAngle > 90 ) {
+            projectionBottomHorizontal -= lengthArmOne * Math.cos((bottomAngle-90) * Math.PI / 180);
+            projectionBottomHorizontal += lengthArmTwo * Math.sin((topAngle - (90 - bottomAngle)) * Math.PI / 180);
+        }
 
         // compute the projection on front vertical
         double projectionFrontVertical = 0;
@@ -349,8 +361,8 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         currentCoordinateZ = projectionFrontVertical;
 
         // compute the projections on bottom horizontal
-        double projectionFrontHorizontal = 0;
-        currentCoordinateX = projectionBottomHorizontal * Math.cos( ( 90 - turretAngle ) * Math.PI / 180 );
-        currentCoordinateY = projectionBottomHorizontal * Math.sin( ( 90 - turretAngle ) * Math.PI / 180 );
+        currentCoordinateX = -projectionBottomHorizontal * Math.cos( ( turretAngle ) * Math.PI / 180 );
+        if( turretAngle > 90 )currentCoordinateY = projectionBottomHorizontal * Math.sin( ( turretAngle - 90 ) * Math.PI / 180 );
+        if( turretAngle < 90 )currentCoordinateY = projectionBottomHorizontal * Math.sin( ( turretAngle ) * Math.PI / 180 );
     }
 }
