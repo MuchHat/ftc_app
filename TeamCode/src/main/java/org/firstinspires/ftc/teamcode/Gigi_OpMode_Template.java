@@ -109,8 +109,8 @@ public class Gigi_OpMode_Template extends LinearOpMode {
                 double homeLeftClaw = 0;
                 double homeRightClaw = 255;
 
-                robot.turret.setPosition( homeTurret /255 );
-                robot.bottom.setPosition( homeBottom /255 );
+                robot.turret.setPosition( homeTurret / 255 );
+                robot.bottom.setPosition( homeBottom / 255 );
                 robot.top.setPosition( homeTop /255 );
                 robot.wrist.setPosition( homeWrist /255 );
                 robot.leftClaw.setPosition( homeLeftClaw /255 );
