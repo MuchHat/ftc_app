@@ -152,7 +152,7 @@ public class Gigi_OpModeTest extends LinearOpMode {
                 telemetry.update();
             }
 
-            // move claw by position
+            // move arm by position
 
             double newGamePadRead = System.currentTimeMillis();
             double millisElapsed = newGamePadRead - lastGamePadRead;
@@ -160,14 +160,18 @@ public class Gigi_OpModeTest extends LinearOpMode {
             if( millisElapsed < 0 ){
                 millisElapsed = 0;
             }
-            if( millisElapsed > 333 ){
+            boolean newSession = false;
+
+            if( millisElapsed > 555 ){
                 // this is new session
                 newGamePadSessionStart = System.currentTimeMillis();
+                newSession = true;
             }
             double millisInSession = newGamePadRead - newGamePadSessionStart;
 
             // only reposition 3 times / sec
-            if( millisElapsed > 333 ) {
+            if( millisElapsed > 333 || newSession ) {
+
                 // the inputs are proportional with the speed of change
                 double speedX = gamepad2.right_stick_x;
                 double speedY = -gamepad2.right_stick_y;
