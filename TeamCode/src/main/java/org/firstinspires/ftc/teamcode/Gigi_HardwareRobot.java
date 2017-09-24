@@ -115,7 +115,8 @@ public class Gigi_HardwareRobot extends HardwarePushbot
     public final static double turretOffset = 0.0;
     public final static double bottomOffset = 0.0;
     public final static double topOffset = 0.0;
-    public final static double wristOffset = 0.0;
+    public final static double wristOffsetH = 0.0;
+    public final static double wristOffsetV = 0.0;
 
     /* Local OpMode members. */
     HardwareMap hwMap  = null;
@@ -160,34 +161,34 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         moveArmByServoPos( turretHome,
                 bottomHome,
                 topHome,
-                wristHome );
+                wristHome, 0 );
     }
     public void armFront() {
         moveArmByServoPos( turretFront,
                 bottomFront,
                 topFront,
-                wristFront );
+                wristFront, 0 );
     }
 
     public void armFront_plus_x() {
         moveArmByServoPos( turretFront_plus_x,
                 bottomFront_plus_x,
                 topFront_plus_x,
-                wristFront_plus_x );
+                wristFront_plus_x, 0 );
     }
 
     public void armFront_minus_x() {
         moveArmByServoPos( turretFront_minus_x,
                 bottomFront_minus_x,
                 topFront_minus_x,
-                wristFront_minus_x );
+                wristFront_minus_x, 0 );
     }
 
     public void armFront_plus_z() {
         moveArmByServoPos( turretFront_plus_z,
                 bottomFront_plus_z,
                 topFront_plus_z,
-                wristFront_plus_z );
+                wristFront_plus_z, 0 );
     }
 
     public void clawOpen() {
@@ -200,7 +201,7 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         claw_left.setPosition( clawClose );
     }
 
-    public void moveArmByServoPos( double turretNew, double bottomNew, double topNew, double wristNew )
+    public void moveArmByServoPos( double turretNew, double bottomNew, double topNew, double wristNewV, double wristNewH )
     {
         double turretCrr = turret.getPosition();
         double bottomCrr = bottom.getPosition();
@@ -211,7 +212,7 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         maxChange = Math.max( Math.abs( turretNew - turretCrr ), maxChange );
         maxChange = Math.max( Math.abs( bottomNew - bottomCrr ), maxChange );
         maxChange = Math.max( Math.abs( topNew - topCrr ), maxChange );
-        maxChange = Math.max( Math.abs( wristNew - wristCrr ), maxChange );
+        maxChange = Math.max( Math.abs( wristNewV - wristCrr ), maxChange );
 
         int steps = (int)( maxChange * 100 );
         if( steps > 66 ) steps = 66;
@@ -225,7 +226,7 @@ public class Gigi_HardwareRobot extends HardwarePushbot
             double turretStep = turretCrr + ( ( turretNew - turretCrr) * ( i + 1 ) ) / steps;
             double bottomStep = turretCrr + ( ( bottomNew - bottomCrr) * ( i + 1 ) ) / steps;
             double topStep = turretCrr + ( ( topNew - topCrr ) * ( i + 1 ) ) / steps;
-            double wristStep = turretCrr + ( ( wristNew - wristCrr ) * ( i + 1 ) ) / steps;
+            double wristStep = turretCrr + ( ( wristNewV - wristCrr ) * ( i + 1 ) ) / steps;
 
             turret.setPosition( turretStep );
             bottom.setPosition( bottomStep );
@@ -263,11 +264,36 @@ public class Gigi_HardwareRobot extends HardwarePushbot
     {
         computeCurrentCoordinates();
 
+        // TODO set the limits below instead of 0.85 and 55 mm
+
+        if( newX > ( lengthArmOne + lengthArmTwo ) * 0.85 ) {
+            newX = ( lengthArmOne + lengthArmTwo ) * 0.85;
+        }
+        if( newX < -( lengthArmOne + lengthArmTwo ) * 0.85 ) {
+            newX = - ( lengthArmOne + lengthArmTwo ) * 0.85;
+        }
+        if( newY < 55 ){
+            newY = 55;
+        }
+        if( newZ < -11 ){
+            newZ = -11;
+        }
+        if( newZ > lengthArmOne ){
+            newZ = lengthArmOne;
+        }
+
         // compute the new turret angle
-        double currentTurrentAngle = 180 - Math.atan( currentCoordinateY / currentCoordinateX ) * 180 / Math.PI;
         double newTurretAngle = 180 - Math.atan( newY / newX ) * 180 / Math.PI;
+        if( newTurretAngle < 0 ) newTurretAngle = 0;
+        if( newTurretAngle > 180 ) newTurretAngle = 180;
 
         double projectionBottomHorizontal = Math.sqrt( newX * newX + newY * newY );
+        if( projectionBottomHorizontal >  ( lengthArmOne + lengthArmTwo ) * 0.85 ){
+            projectionBottomHorizontal = ( lengthArmOne + lengthArmTwo ) * 0.85;
+        }
+        if( projectionBottomHorizontal < 55 ){
+            projectionBottomHorizontal = 55;
+        }
 
         double alphaAngle = Math.atan( newY / projectionBottomHorizontal ) * 180 / Math.PI;
         double l3 = Math.sqrt( newX * newX  + newZ * newZ );
@@ -280,16 +306,19 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         double newBottomAngle = alphaAngle + angle2;
         double newTopAngle = angle3;
 
-        double newWristAngle = 0;
+        double newWristAngleH = 0;
         double angleBeta = Math.asin( newX / newY ) * 180 / Math.PI;
-        newWristAngle = 90 + angleBeta;
+        newWristAngleH = 90 + angleBeta;
+
+        double newWristAngleV = alphaAngle;
 
         double newTurretPos = newTurretAngle / 180 + turretOffset;
         double newBottomPos = newBottomAngle / 180 + bottomOffset;
         double newTopPos = newTopAngle / 180 + topOffset;
-        double newWristPos = newWristAngle / 180 + wristOffset;
+        double newWristPosH = newWristAngleH / 180 + wristOffsetV;
+        double newWristPosV = newWristAngleV / 180 + wristOffsetH;
 
-        moveArmByServoPos( newTurretPos, newBottomPos, newTopPos, newWristPos );
+        moveArmByServoPos( newTurretPos, newBottomPos, newTopPos, newWristPosV, newWristPosH );
     }
 
     public void computeCurrentCoordinates()

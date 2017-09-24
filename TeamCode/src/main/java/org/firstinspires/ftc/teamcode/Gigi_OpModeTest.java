@@ -55,8 +55,9 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 public class Gigi_OpModeTest extends LinearOpMode {
 
     /* Declare OpMode members. */
-    Gigi_HardwareRobot robot           = new Gigi_HardwareRobot();   // Use a Pushbot's hardware
+    Gigi_HardwareRobot robot = new Gigi_HardwareRobot();   // Use a Pushbot's hardware
                                                                   // could also use HardwarePushbotMatrix class.
+    double lastGamePadRead = 0;
 
     @Override
     public void runOpMode() {
@@ -149,6 +150,55 @@ public class Gigi_OpModeTest extends LinearOpMode {
                 telemetry.addData("RobotMove", "Claw Close");    //
                 telemetry.update();
             }
+
+            // move claw by position
+
+            double newGamePadRead = System.currentTimeMillis();
+            double timeElapsed = newGamePadRead - lastGamePadRead;
+            lastGamePadRead = newGamePadRead;
+            if( timeElapsed < 0 ){
+                timeElapsed = 0;
+            }
+
+            // the inputs are proportional with the speed of change
+            double speedX = gamepad2.right_stick_x;
+            double speedY = -gamepad2.right_stick_y;
+            double speedZ = 0;
+
+            if( gamepad2.dpad_up ){
+                speedZ = 11;
+            }
+            if( gamepad2.dpad_down ){
+                speedZ = -11;
+            }
+            // conver 0 to 1 into mm per sec, max on input is 3 cm  / sec
+            speedX = speedX * 33;
+            speedY = speedY * 33;
+            speedZ = speedZ * 33;
+
+            //adjust the changes not to exceed speed
+            speedX = Math.min( speedX, 33 );
+            speedY = Math.min( speedY, 33 );
+            speedZ = Math.min( speedZ, 33 );
+
+            speedX = Math.max( speedX, -33 );
+            speedY = Math.max( speedY, -33 );
+            speedZ = Math.max( speedZ, -33 );
+
+            robot.computeCurrentCoordinates();
+
+            // time elapsed is in millis
+            // speed is in mm/sec
+            double changeX = ( timeElapsed * speedX ) / 1000;
+            double changeY = ( timeElapsed * speedY ) / 1000;
+            double changeZ = ( timeElapsed * speedZ ) / 1000;
+
+            double newX = robot.currentCoordinateX + changeX;
+            double newY = robot.currentCoordinateY + changeY;
+            double newZ = robot.currentCoordinateZ + changeZ;
+
+            robot.moveArmByCoordinates( newX, newY, newZ );
+
         }
         // Pace this loop so jaw action is reasonable speed.
         sleep( 50 );
