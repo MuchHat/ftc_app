@@ -203,8 +203,8 @@ public class Gigi_HardwareRobot extends HardwarePushbot
             if( i < accel ) {
                 extraWait = ( accel - i ) * 33;
             }
-            if( i > (steps - accel ) ){
-                extraWait = ( steps - i ) * 33;
+            if( ( steps - i ) < accel ){
+                extraWait = ( accel - ( steps - i ) ) * 33;
             }
 
             if( extraWait > 0 ){

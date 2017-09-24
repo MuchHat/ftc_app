@@ -191,19 +191,19 @@ public class Gigi_OpModeTest extends LinearOpMode {
                     speedY /= 2;
                     speedZ /= 2;
                 }
-                // conver 0 to 1 into mm per sec, max on input is 3 cm  / sec
-                speedX = speedX * 33;
-                speedY = speedY * 33;
-                speedZ = speedZ * 33;
+                // conver 0 to 1 into mm per sec, max on input is 10 cm  / sec
+                speedX = speedX * 111;
+                speedY = speedY * 111;
+                speedZ = speedZ * 111;
 
                 //adjust the changes not to exceed speed
-                speedX = Math.min( speedX, 33 );
-                speedY = Math.min( speedY, 33 );
-                speedZ = Math.min( speedZ, 33 );
+                speedX = Math.min( speedX, 111 );
+                speedY = Math.min( speedY, 111 );
+                speedZ = Math.min( speedZ, 111 );
 
-                speedX = Math.max( speedX, -33 );
-                speedY = Math.max( speedY, -33 );
-                speedZ = Math.max( speedZ, -33 );
+                speedX = Math.max( speedX, -111 );
+                speedY = Math.max( speedY, -111 );
+                speedZ = Math.max( speedZ, -111 );
 
                 robot.computeCurrentCoordinates();
 
