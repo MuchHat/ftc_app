@@ -258,12 +258,7 @@ public class Gigi_HardwareRobot extends HardwarePushbot
             }
         }
 
-        // compute the new turret angle
-        double newTurretAngle = 180 - Math.atan( newY / newX ) * 180 / Math.PI;
-        if( newTurretAngle < 0 ) newTurretAngle = 0;
-        if( newTurretAngle > 180 ) newTurretAngle = 180;
-
-        double projectionBottomHorizontal = Math.sqrt( newX * newX + newY * newY );
+        double projectionBottomHorizontal = Math.sqrt( newY * newY + newZ * newZ );
         if( projectionBottomHorizontal >  ( lengthArmOne + lengthArmTwo ) * 0.85 ){
             projectionBottomHorizontal = ( lengthArmOne + lengthArmTwo ) * 0.85;
         }
@@ -271,22 +266,31 @@ public class Gigi_HardwareRobot extends HardwarePushbot
             projectionBottomHorizontal = 55;
         }
 
-        double alphaAngle = Math.atan( newY / projectionBottomHorizontal ) * 180 / Math.PI;
         double l3 = Math.sqrt( newX * newX  + newZ * newZ );
         double l1 = lengthArmOne;
         double l2 = lengthArmTwo;
+        double alphaAngle = Math.asin( Math.abs( newZ ) / l3 ) * 180 / Math.PI;
 
         double angle2 = Math.acos( ( l1 * l1 + l3 * l3 - l2 * l2 ) / ( 2 * l1 * l3 ) ) * 180 / Math.PI;
         double angle3 = Math.acos( ( l1 * l1 + l2 * l2 - l3 * l3 ) / ( 2 * l1 * l2 ) ) * 180 / Math.PI;
+        double angle1 = 180 - angle2 - angle3;
 
         double newBottomAngle = alphaAngle + angle2;
+        if( newZ < 0 ) newBottomAngle = angle2 - alphaAngle;
         double newTopAngle = angle3;
 
         double newWristAngleH = 0;
-        double angleBeta = Math.asin( newX / newY ) * 180 / Math.PI;
-        newWristAngleH = 90 + angleBeta;
+        double betaAngle = Math.asin( Math.abs( newX / projectionBottomHorizontal ) ) * 180 / Math.PI;
+        newWristAngleH = 90 + betaAngle;
+        if( newX > 0 ) newWristAngleH -= 90;
 
-        double newWristAngleV = alphaAngle;
+        double newWristAngleV = angle1 - alphaAngle;
+        if( newZ < 0 ) newWristAngleV = angle1 + alphaAngle;
+
+        double newTurretAngle = 90 - betaAngle;
+        if( newX > 0 ) newTurretAngle += 90;
+        if( newTurretAngle < 0 ) newTurretAngle = 0;
+        if( newTurretAngle > 180 ) newTurretAngle = 180;
 
         double newTurretPos = servoPosFromAngle( newTurretAngle, turretRef[ 0 ], turretRef[ 1 ] );
         double newBottomPos = servoPosFromAngle( newBottomAngle, bottomRef[ 0 ], bottomRef[ 1 ] );
