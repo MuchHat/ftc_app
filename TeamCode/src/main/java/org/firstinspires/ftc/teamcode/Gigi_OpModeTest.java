@@ -58,6 +58,7 @@ public class Gigi_OpModeTest extends LinearOpMode {
     Gigi_HardwareRobot robot = new Gigi_HardwareRobot();   // Use a Pushbot's hardware
                                                                   // could also use HardwarePushbotMatrix class.
     double lastGamePadRead = 0;
+    double newGamePadSessionStart = 0;
 
     @Override
     public void runOpMode() {
@@ -154,51 +155,66 @@ public class Gigi_OpModeTest extends LinearOpMode {
             // move claw by position
 
             double newGamePadRead = System.currentTimeMillis();
-            double timeElapsed = newGamePadRead - lastGamePadRead;
+            double millisElapsed = newGamePadRead - lastGamePadRead;
             lastGamePadRead = newGamePadRead;
-            if( timeElapsed < 0 ){
-                timeElapsed = 0;
+            if( millisElapsed < 0 ){
+                millisElapsed = 0;
             }
-
-            // the inputs are proportional with the speed of change
-            double speedX = gamepad2.right_stick_x;
-            double speedY = -gamepad2.right_stick_y;
-            double speedZ = 0;
-
-            if( gamepad2.dpad_up ){
-                speedZ = 11;
+            if( millisElapsed > 333 ){
+                // this is new session
+                newGamePadSessionStart = System.currentTimeMillis();
             }
-            if( gamepad2.dpad_down ){
-                speedZ = -11;
+            double millisInSession = newGamePadRead - newGamePadSessionStart;
+
+            // only reposition 3 times / sec
+            if( millisElapsed > 333 ) {
+                // the inputs are proportional with the speed of change
+                double speedX = gamepad2.right_stick_x;
+                double speedY = -gamepad2.right_stick_y;
+                double speedZ = 0;
+
+                if (gamepad2.dpad_up) {
+                    speedZ = 11;
+                }
+                if (gamepad2.dpad_down) {
+                    speedZ = -11;
+                }
+
+                // reduce the spped in half the first 555 millis for short moves
+                if( millisInSession < 555 )
+                {
+                    speedX /= 2;
+                    speedY /= 2;
+                    speedZ /= 2;
+                }
+                // conver 0 to 1 into mm per sec, max on input is 3 cm  / sec
+                speedX = speedX * 33;
+                speedY = speedY * 33;
+                speedZ = speedZ * 33;
+
+                //adjust the changes not to exceed speed
+                speedX = Math.min( speedX, 33 );
+                speedY = Math.min( speedY, 33 );
+                speedZ = Math.min( speedZ, 33 );
+
+                speedX = Math.max( speedX, -33 );
+                speedY = Math.max( speedY, -33 );
+                speedZ = Math.max( speedZ, -33 );
+
+                robot.computeCurrentCoordinates();
+
+                // time elapsed is in millis
+                // speed is in mm/sec
+                double changeX = ( millisElapsed * speedX ) / 1000;
+                double changeY = ( millisElapsed * speedY ) / 1000;
+                double changeZ = ( millisElapsed * speedZ ) / 1000;
+
+                double newX = robot.currentCoordinateX + changeX;
+                double newY = robot.currentCoordinateY + changeY;
+                double newZ = robot.currentCoordinateZ + changeZ;
+
+                robot.moveArmByCoordinates( newX, newY, newZ );
             }
-            // conver 0 to 1 into mm per sec, max on input is 3 cm  / sec
-            speedX = speedX * 33;
-            speedY = speedY * 33;
-            speedZ = speedZ * 33;
-
-            //adjust the changes not to exceed speed
-            speedX = Math.min( speedX, 33 );
-            speedY = Math.min( speedY, 33 );
-            speedZ = Math.min( speedZ, 33 );
-
-            speedX = Math.max( speedX, -33 );
-            speedY = Math.max( speedY, -33 );
-            speedZ = Math.max( speedZ, -33 );
-
-            robot.computeCurrentCoordinates();
-
-            // time elapsed is in millis
-            // speed is in mm/sec
-            double changeX = ( timeElapsed * speedX ) / 1000;
-            double changeY = ( timeElapsed * speedY ) / 1000;
-            double changeZ = ( timeElapsed * speedZ ) / 1000;
-
-            double newX = robot.currentCoordinateX + changeX;
-            double newY = robot.currentCoordinateY + changeY;
-            double newZ = robot.currentCoordinateZ + changeZ;
-
-            robot.moveArmByCoordinates( newX, newY, newZ );
-
         }
         // Pace this loop so jaw action is reasonable speed.
         sleep( 50 );
