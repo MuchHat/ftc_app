@@ -46,12 +46,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Gigi: OpModeLinear", group="Gigi")
+@TeleOp(name="Gigi: OpMode_Template", group="Gigi")
 // @Disabled
-public class Gigi_OpModeLinear extends LinearOpMode {
+public class Gigi_OpMode_Template extends LinearOpMode {
 
     /* Declare OpMode members. */
-    Gigi_HardwareRobotLinear robot = new Gigi_HardwareRobotLinear();
+    Gigi_HardwareRobot_Template robot = new Gigi_HardwareRobot_Template();
 
     @Override
     public void runOpMode() {

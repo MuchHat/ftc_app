@@ -54,7 +54,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  *   As the arm servo approaches 0, the arm position moves up (away from the floor).
  *   As the claw servo approaches 0, the claw opens up (drops the game element).
  */
-public class Gigi_HardwareRobot extends HardwarePushbot
+public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
 {
     /* Public OpMode members. */
     public DcMotor  leftDrive   = null;
@@ -88,7 +88,7 @@ public class Gigi_HardwareRobot extends HardwarePushbot
     private ElapsedTime period  = new ElapsedTime();
 
     /* Constructor */
-    public Gigi_HardwareRobot() {
+    public Gigi_HardwareRobot_Trigonometric() {
     }
 
     /* Initialize standard Hardware interfaces */

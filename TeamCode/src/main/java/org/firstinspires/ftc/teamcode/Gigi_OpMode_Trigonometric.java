@@ -46,12 +46,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Gigi: OpModeTrigonometric", group="Gigi")
+@TeleOp(name="Gigi: OpMode_Trigonometric", group="Gigi")
 // @Disabled
-public class Gigi_OpModeTrigonometric extends LinearOpMode {
+public class Gigi_OpMode_Trigonometric extends LinearOpMode {
 
     /* Declare OpMode members. */
-    Gigi_HardwareRobot robot = new Gigi_HardwareRobot();   // Use a Pushbot's hardware
+    Gigi_HardwareRobot_Trigonometric robot = new Gigi_HardwareRobot_Trigonometric();   // Use a Pushbot's hardware
                                                                   // could also use HardwarePushbotMatrix class.
     double lastGamePadRead = 0;
     double newGamePadSessionStart = 0;
