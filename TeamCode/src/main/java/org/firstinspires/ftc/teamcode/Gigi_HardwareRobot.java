@@ -79,8 +79,8 @@ public class Gigi_HardwareRobot extends HardwarePushbot
     public final static double clawRightRef[ ] = { 0, 1 };
     public final static double clawLeftRef[ ] = { 0, 1 };
 
-    public final static double lengthArmOne = 222;
-    public final static double lengthArmTwo = 222;
+    public final static double lengthArmOne = 266;
+    public final static double lengthArmTwo = 266;
     public final static double lengthClaw = 22;
 
     /* Local OpMode members. */
@@ -124,36 +124,36 @@ public class Gigi_HardwareRobot extends HardwarePushbot
 
     public void armHome() {
         moveArmByCoordinatesSteps(
-                33,
                 0,
-                0 );
+                33,
+                11 );
     }
     public void armFront() {
         moveArmByCoordinatesSteps(
-                33,
                 0,
-                0 );
+                222,
+                -11 );
     }
 
     public void armFront_plus_x() {
         moveArmByCoordinatesSteps(
-                33,
-                0,
-                0 );
+                222,
+                222,
+                -11 );
     }
 
     public void armFront_minus_x() {
         moveArmByCoordinatesSteps(
-                33,
-                0,
-                0 );
+                -222,
+                222,
+                -11 );
     }
 
     public void armFront_plus_z() {
         moveArmByCoordinatesSteps(
-                33,
                 0,
-                0 );
+                22,
+                655 );
     }
 
     public void clawOpen() {
@@ -306,6 +306,8 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         double pos =  refMin + ( angle / 180 ) * refMax - refMin;
         if( pos < refMin ) pos = refMin;
         if( pos > refMax ) pos = refMax;
+        if( pos < 0 ) pos = 0;
+        if( pos > 1 ) pos = 1;
 
         return pos;
     }
