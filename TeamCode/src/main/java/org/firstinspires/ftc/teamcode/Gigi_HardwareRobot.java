@@ -161,34 +161,34 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         moveArmByServoPos( turretHome,
                 bottomHome,
                 topHome,
-                wristHome, 0 );
+                wristHome, 0, true );
     }
     public void armFront() {
         moveArmByServoPos( turretFront,
                 bottomFront,
                 topFront,
-                wristFront, 0 );
+                wristFront, 0, true );
     }
 
     public void armFront_plus_x() {
         moveArmByServoPos( turretFront_plus_x,
                 bottomFront_plus_x,
                 topFront_plus_x,
-                wristFront_plus_x, 0 );
+                wristFront_plus_x, 0, true );
     }
 
     public void armFront_minus_x() {
         moveArmByServoPos( turretFront_minus_x,
                 bottomFront_minus_x,
                 topFront_minus_x,
-                wristFront_minus_x, 0 );
+                wristFront_minus_x, 0, true );
     }
 
     public void armFront_plus_z() {
         moveArmByServoPos( turretFront_plus_z,
                 bottomFront_plus_z,
                 topFront_plus_z,
-                wristFront_plus_z, 0 );
+                wristFront_plus_z, 0, true );
     }
 
     public void clawOpen() {
@@ -201,7 +201,7 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         claw_left.setPosition( clawClose );
     }
 
-    public void moveArmByServoPos( double turretNew, double bottomNew, double topNew, double wristNewV, double wristNewH )
+    public void moveArmByServoPos( double turretNew, double bottomNew, double topNew, double wristNewV, double wristNewH, boolean useAccel )
     {
         double turretCrr = turret.getPosition();
         double bottomCrr = bottom.getPosition();
@@ -216,9 +216,9 @@ public class Gigi_HardwareRobot extends HardwarePushbot
 
         int steps = (int)( maxChange * 100 );
         if( steps > 66 ) steps = 66;
-        if( steps < 3 ) steps = 3;
+        if( steps < 2 ) steps = 2;
         int accel = (int)( (double)steps * 0.2 ); // accelate/decelerate first 20%
-        if( accel < 2 ) accel = 2;
+        if( accel < 1 ) accel = 1;
         if( accel > steps / 2  ) accel = steps / 2;
 
         for( int i = 0; i < steps; i++ )
@@ -247,6 +247,10 @@ public class Gigi_HardwareRobot extends HardwarePushbot
             if( i > (steps - accel ) ){
                 extraWait = ( steps - i ) * 33;
             }
+            if( !useAccel ){
+                extraWait = 0;
+            }
+
             if( extraWait > 0 ){
                 try {
                     Thread.sleep( extraWait, 0 );
@@ -280,6 +284,13 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         }
         if( newZ > lengthArmOne ){
             newZ = lengthArmOne;
+        }
+
+        // check such it does not bump in the robot
+        if( newX < 111 ){
+            if( newY < 0 ){
+                newY = 0;
+            }
         }
 
         // compute the new turret angle
@@ -318,7 +329,7 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         double newWristPosH = newWristAngleH / 180 + wristOffsetV;
         double newWristPosV = newWristAngleV / 180 + wristOffsetH;
 
-        moveArmByServoPos( newTurretPos, newBottomPos, newTopPos, newWristPosV, newWristPosH );
+        moveArmByServoPos( newTurretPos, newBottomPos, newTopPos, newWristPosV, newWristPosH, false );
     }
 
     public void computeCurrentCoordinates()
