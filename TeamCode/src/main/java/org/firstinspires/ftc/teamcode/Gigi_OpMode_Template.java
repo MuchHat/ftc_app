@@ -115,6 +115,37 @@ public class Gigi_OpMode_Template extends LinearOpMode {
                 telemetry.addData( "wrist at ", "%5.2f", robot.wrist.getPosition() );
                 telemetry.addData( "left claw at ", "%5.2f", robot.leftClaw.getPosition() );
                 telemetry.addData( "right claw at ", "%5.2f", robot.rightClaw.getPosition() );
+                telemetry.update();
+            }
+
+            if(gamepad1.right_stick_x != 0){
+                // move arm forward
+
+                // fill in here the limit positions
+                double minBottom = 0;
+                double maxBottom = 255;
+                double speedBottom = 0.05;  //speed when stick is at max
+
+                // servo could be backwards moving from a big number to a small one
+                double dirBottom = maxBottom > minBottom ? 1.0 : -1.0;
+
+                double crrBottom = robot.bottom.getPosition();
+                double changeBottom = speedBottom * dirBottom * gamepad1.right_stick_x;
+                double newBottom = crrBottom + changeBottom;
+
+                if( dirBottom > 0 ){
+                    if (newBottom * 255 > maxBottom) newBottom = maxBottom / 255;
+                    if (newBottom * 255 < minBottom) newBottom = minBottom / 255;
+                }
+                if( dirBottom < 0 ){
+                    if (newBottom * 255 < maxBottom) newBottom = maxBottom / 255;
+                    if (newBottom * 255 > minBottom) newBottom = minBottom / 255;
+                }
+
+                robot.bottom.setPosition( newBottom );
+
+                telemetry.addData( "bottom at ", "%5.2f", robot.bottom.getPosition() );
+                telemetry.update();
             }
 
             if (gamepad1.x) {
