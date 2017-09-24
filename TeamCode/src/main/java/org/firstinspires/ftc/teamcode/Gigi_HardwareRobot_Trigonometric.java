@@ -125,6 +125,8 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
         clawHome();
     }
 
+    // TODO update all home positions
+
     public void armHome() {
         moveArmByCoordinatesSteps(
                 0,
@@ -234,7 +236,7 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
 
     public void moveArmByCoordinates( double newX, double newY, double newZ )
     {
-        // TODO fix robot dimenstions and limits below
+        // TODO fix robot dimensions and limits below
         double maxTriangleFlatness = 0.77;
         double closestToTurretY = 66;
         double lowestZ = -66;
