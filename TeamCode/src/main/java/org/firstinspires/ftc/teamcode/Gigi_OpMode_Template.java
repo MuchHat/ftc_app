@@ -102,12 +102,19 @@ public class Gigi_OpMode_Template extends LinearOpMode {
                 telemetry.update();
 
                 // fill in here the actual home positions
-                robot.turret.setPosition( 12 /255 );
-                robot.bottom.setPosition( 12 /255 );
-                robot.top.setPosition( 12 /255 );
-                robot.wrist.setPosition( 12 /255 );
-                robot.leftClaw.setPosition( 12 /255 );
-                robot.rightClaw.setPosition( 12 /255 );
+                double homeTurret = 12;
+                double homeBottom = 12;
+                double homeTop = 12;
+                double homeWrist = 12;
+                double homeLeftClaw = 12;
+                double homeRightClaw = 12;
+
+                robot.turret.setPosition( homeTurret /255 );
+                robot.bottom.setPosition( homeBottom /255 );
+                robot.top.setPosition( homeTop /255 );
+                robot.wrist.setPosition( homeWrist /255 );
+                robot.leftClaw.setPosition( homeLeftClaw /255 );
+                robot.rightClaw.setPosition( homeRightClaw /255 );
 
                 telemetry.addData( "turret at ", "%5.2f", robot.turret.getPosition() );
                 telemetry.addData( "bottom at ", "%5.2f", robot.bottom.getPosition() );
