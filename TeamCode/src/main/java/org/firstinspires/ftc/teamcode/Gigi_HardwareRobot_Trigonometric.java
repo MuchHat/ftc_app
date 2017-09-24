@@ -389,19 +389,31 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
                 clawLeftRef_A0_A180_Min_Max[ 0 ],
                 clawLeftRef_A0_A180_Min_Max[ 1 ],
                 clawLeftRef_A0_A180_Min_Max[ 2 ],
-                clawLeftRef_A0_A180_Min_Max[ 3 ] )) );
+                clawLeftRef_A0_A180_Min_Max[ 3 ] ) );
         clawRight.setPosition( servoPosFromAngle( angleRigh,
                 clawRightRef_A0_A180_Min_Max[ 0 ],
                 clawRightRef_A0_A180_Min_Max[ 1 ],
                 clawRightRef_A0_A180_Min_Max[ 2 ],
-                clawRightRef_A0_A180_Min_Max[ 3 ]) );
+                clawRightRef_A0_A180_Min_Max[ 3 ] ) );
     }
 
     public void computeCurrentCoordinates()
     {
-        double turretAngle = servoAngleFromPos( turret.getPosition(), turretRef_A0_A180_Min_Max[ 0 ], turretRef_A0_A180_Min_Max[ 1 ], turretRef_A0_A180_Min_Max[ 2 ] );
-        double bottomAngle = servoAngleFromPos( bottom.getPosition(), bottomRef_A0_A180_Min_Max[ 0 ], bottomRef_A0_A180_Min_Max[ 1 ], bottomRef_A0_A180_Min_Max[ 2 ] );
-        double topAngle = servoAngleFromPos( top.getPosition(), topRef_A0_A180_Min_Max[ 0 ], topRef_A0_A180_Min_Max[ 1 ], topRef_A0_A180_Min_Max[ 2 ] );
+        double turretAngle = servoAngleFromPos( turret.getPosition(),
+                turretRef_A0_A180_Min_Max[ 0 ],
+                turretRef_A0_A180_Min_Max[ 1 ],
+                turretRef_A0_A180_Min_Max[ 2 ],
+                turretRef_A0_A180_Min_Max[ 3 ] );
+        double bottomAngle = servoAngleFromPos( bottom.getPosition(),
+                bottomRef_A0_A180_Min_Max[ 0 ],
+                bottomRef_A0_A180_Min_Max[ 1 ],
+                bottomRef_A0_A180_Min_Max[ 2 ],
+                bottomRef_A0_A180_Min_Max[ 3 ] );
+        double topAngle = servoAngleFromPos( top.getPosition(),
+                topRef_A0_A180_Min_Max[ 0 ],
+                topRef_A0_A180_Min_Max[ 1 ],
+                topRef_A0_A180_Min_Max[ 2 ],
+                topRef_A0_A180_Min_Max[ 3 ] );
 
         // compute the projection on the horizontal plane
         double projectionBottomHorizontal = 0;
