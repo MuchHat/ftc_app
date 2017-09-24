@@ -102,12 +102,12 @@ public class Gigi_OpMode_Template extends LinearOpMode {
                 telemetry.update();
 
                 // fill in here the actual home positions
-                double homeTurret = 12;
-                double homeBottom = 12;
-                double homeTop = 12;
-                double homeWrist = 12;
-                double homeLeftClaw = 12;
-                double homeRightClaw = 12;
+                double homeTurret = 10;
+                double homeBottom = 170;
+                double homeTop = 50;
+                double homeWrist = 70;
+                double homeLeftClaw = 0;
+                double homeRightClaw = 255;
 
                 robot.turret.setPosition( homeTurret /255 );
                 robot.bottom.setPosition( homeBottom /255 );
