@@ -105,15 +105,15 @@ public class Gigi_OpMode_Trigonometric extends LinearOpMode {
                 robot.leftDrive.setPower(left);
                 robot.rightDrive.setPower(right);
             }
-            // Use gamepad buttons to move arm up (Y) and down (A)
+
             if (gamepad1.a) {
-                telemetry.addData("RobotMove", "Arm Front");    //
+                telemetry.addData("RobotMove", "Arm Front");
                 telemetry.update();
                 robot.armFront();
             }
 
             if (gamepad1.x) {
-                telemetry.addData("RobotMove", "Arm Front Mins X");    //
+                telemetry.addData("RobotMove", "Arm Front Mins X");
                 telemetry.update();
                 robot.armFront_minus_x();
             }

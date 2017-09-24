@@ -101,6 +101,7 @@ public class Gigi_OpMode_Template extends LinearOpMode {
                 telemetry.addData( "GamePad 1", "A" );
                 telemetry.update();
 
+                // fill in here the actual home positions
                 robot.turret.setPosition( 12 /255 );
                 robot.bottom.setPosition( 12 /255 );
                 robot.top.setPosition( 12 /255 );
@@ -108,7 +109,12 @@ public class Gigi_OpMode_Template extends LinearOpMode {
                 robot.leftClaw.setPosition( 12 /255 );
                 robot.rightClaw.setPosition( 12 /255 );
 
-                // ADD CODE HERE
+                telemetry.addData( "turret at ", "%5.2f", robot.turret.getPosition() );
+                telemetry.addData( "bottom at ", "%5.2f", robot.bottom.getPosition() );
+                telemetry.addData( "top at ", "%5.2f", robot.top.getPosition() );
+                telemetry.addData( "wrist at ", "%5.2f", robot.wrist.getPosition() );
+                telemetry.addData( "left claw at ", "%5.2f", robot.leftClaw.getPosition() );
+                telemetry.addData( "right claw at ", "%5.2f", robot.rightClaw.getPosition() );
             }
 
             if (gamepad1.x) {
