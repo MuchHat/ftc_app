@@ -206,15 +206,17 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         double turretCrr = turret.getPosition();
         double bottomCrr = bottom.getPosition();
         double topCrr = top.getPosition();
-        double wristCrr = wrist.getPosition();
+        double wristCrrV = wrist.getPosition();
+        double wristCrrH = 0; //TODO when wristH available
 
         double maxChange = 0.0;
         maxChange = Math.max( Math.abs( turretNew - turretCrr ), maxChange );
         maxChange = Math.max( Math.abs( bottomNew - bottomCrr ), maxChange );
         maxChange = Math.max( Math.abs( topNew - topCrr ), maxChange );
-        maxChange = Math.max( Math.abs( wristNewV - wristCrr ), maxChange );
+        maxChange = Math.max( Math.abs( wristNewV - wristCrrV ), maxChange );
+        maxChange = Math.max( Math.abs( wristNewH - wristCrrH ), maxChange );
 
-        int steps = (int)( maxChange * 100 );
+        int steps = (int)( maxChange * 100 ); // one step for 0.01 motor -> TODO
         if( steps > 66 ) steps = 66;
         if( steps < 2 ) steps = 2;
         int accel = (int)( (double)steps * 0.2 ); // accelate/decelerate first 20%
@@ -224,14 +226,14 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         for( int i = 0; i < steps; i++ )
         {
             double turretStep = turretCrr + ( ( turretNew - turretCrr) * ( i + 1 ) ) / steps;
-            double bottomStep = turretCrr + ( ( bottomNew - bottomCrr) * ( i + 1 ) ) / steps;
-            double topStep = turretCrr + ( ( topNew - topCrr ) * ( i + 1 ) ) / steps;
-            double wristStep = turretCrr + ( ( wristNewV - wristCrr ) * ( i + 1 ) ) / steps;
+            double bottomStep = bottomCrr + ( ( bottomNew - bottomCrr) * ( i + 1 ) ) / steps;
+            double topStep = topCrr + ( ( topNew - topCrr ) * ( i + 1 ) ) / steps;
+            double wristStepV = wristCrrV + ( ( wristNewV - wristCrrV ) * ( i + 1 ) ) / steps;
 
             turret.setPosition( turretStep );
             bottom.setPosition( bottomStep );
             top.setPosition( topStep );
-            wrist.setPosition( wristStep );
+            wrist.setPosition( wristStepV );
 
             try {
                 Thread.sleep( 33, 0 );
