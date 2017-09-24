@@ -29,12 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
 
 /**
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
@@ -50,9 +46,9 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Gigi: RobotTest", group="Gigi")
+@TeleOp(name="Gigi: OpModeTrigonometric", group="Gigi")
 // @Disabled
-public class Gigi_OpModeTest extends LinearOpMode {
+public class Gigi_OpModeTrigonometric extends LinearOpMode {
 
     /* Declare OpMode members. */
     Gigi_HardwareRobot robot = new Gigi_HardwareRobot();   // Use a Pushbot's hardware
