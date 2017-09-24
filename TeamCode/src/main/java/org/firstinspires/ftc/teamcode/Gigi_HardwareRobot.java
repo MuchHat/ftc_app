@@ -64,59 +64,24 @@ public class Gigi_HardwareRobot extends HardwarePushbot
     public Servo    bottom      = null;
     public Servo    top         = null;
     public Servo    wrist       = null;
-    public Servo    claw_right  = null;
-    public Servo    claw_left   = null;
+    public Servo    clawRight   = null;
+    public Servo    clawLeft    = null;
 
     public double currentCoordinateX = 0;
     public double currentCoordinateY = 0;
     public double currentCoordinateZ = 0;
 
-    public final static double turretMin = 0.2;
-    public final static double bottomMin = 0.2;
-    public final static double topMin = 0.2;
-    public final static double wristMin = 0.2;
-
-    public final static double turretMax = 0.8;
-    public final static double bottomMax = 0.8;
-    public final static double topMax = 0.8;
-    public final static double wristMax = 0.8;
-
-    public final static double turretHome = 0.5;
-    public final static double bottomHome = 0.5;
-    public final static double topHome = 0.5;
-    public final static double wristHome = 0.5;
-
-    public final static double turretFront = 0.6;
-    public final static double bottomFront = 0.6;
-    public final static double topFront = 0.6;
-    public final static double wristFront = 0.6;
-
-    public final static double turretFront_plus_x = 0.7;
-    public final static double bottomFront_plus_x = 0.6;
-    public final static double topFront_plus_x = 0.6;
-    public final static double wristFront_plus_x = 0.4;
-
-    public final static double turretFront_minus_x = 0.4;
-    public final static double bottomFront_minus_x = 0.6;
-    public final static double topFront_minus_x = 0.6;
-    public final static double wristFront_minus_x = 0.4;
-
-    public final static double turretFront_plus_z = 0.5;
-    public final static double bottomFront_plus_z = 0.7;
-    public final static double topFront_plus_z = 0.7;
-    public final static double wristFront_plus_z = 0.6;
-
-    public final static double clawOpen = 0.7;
-    public final static double clawClose = 0.3;
+    public static double turretRef[ ] = { 0, 1 };
+    public final static double bottomRef[ ] = { 0, 1 };
+    public final static double topRef[ ] = { 0, 1 };
+    public final static double wristHRef[ ] = { 0, 1 };
+    public final static double wristVRef[ ] = { 0, 1 };
+    public final static double clawRightRef[ ] = { 0, 1 };
+    public final static double clawLeftRef[ ] = { 0, 1 };
 
     public final static double lengthArmOne = 222;
     public final static double lengthArmTwo = 222;
-
-    public final static double turretOffset = 0.0;
-    public final static double bottomOffset = 0.0;
-    public final static double topOffset = 0.0;
-    public final static double wristOffsetH = 0.0;
-    public final static double wristOffsetV = 0.0;
+    public final static double lengthClaw = 22;
 
     /* Local OpMode members. */
     HardwareMap hwMap  = null;
@@ -150,73 +115,69 @@ public class Gigi_HardwareRobot extends HardwarePushbot
         bottom      = hwMap.get( Servo.class, "bottom" );
         top         = hwMap.get( Servo.class, "top" );
         wrist       = hwMap.get( Servo.class, "wrist" );
-        claw_right  = hwMap.get( Servo.class, "claw_right" );
-        claw_left   = hwMap.get( Servo.class, "claw_left" );
+        clawRight   = hwMap.get( Servo.class, "claw_right" );
+        clawLeft    = hwMap.get( Servo.class, "claw_left" );
 
         armHome();
-        clawOpen();
+        clawHome();
     }
 
     public void armHome() {
-        moveArmByServoPos( turretHome,
-                bottomHome,
-                topHome,
-                wristHome, 0, true );
+        moveArmByCoordinatesSteps(
+                33,
+                0,
+                0 );
     }
     public void armFront() {
-        moveArmByServoPos( turretFront,
-                bottomFront,
-                topFront,
-                wristFront, 0, true );
+        moveArmByCoordinatesSteps(
+                33,
+                0,
+                0 );
     }
 
     public void armFront_plus_x() {
-        moveArmByServoPos( turretFront_plus_x,
-                bottomFront_plus_x,
-                topFront_plus_x,
-                wristFront_plus_x, 0, true );
+        moveArmByCoordinatesSteps(
+                33,
+                0,
+                0 );
     }
 
     public void armFront_minus_x() {
-        moveArmByServoPos( turretFront_minus_x,
-                bottomFront_minus_x,
-                topFront_minus_x,
-                wristFront_minus_x, 0, true );
+        moveArmByCoordinatesSteps(
+                33,
+                0,
+                0 );
     }
 
     public void armFront_plus_z() {
-        moveArmByServoPos( turretFront_plus_z,
-                bottomFront_plus_z,
-                topFront_plus_z,
-                wristFront_plus_z, 0, true );
+        moveArmByCoordinatesSteps(
+                33,
+                0,
+                0 );
     }
 
     public void clawOpen() {
-        claw_right.setPosition( clawOpen );
-        claw_left.setPosition( clawOpen );
+        moveClawByCoordinates( 66 );
     }
 
     public void clawClose() {
-        claw_right.setPosition( clawClose );
-        claw_left.setPosition( clawClose );
+        moveClawByCoordinates( 55 );
     }
 
-    public void moveArmByServoPos( double turretNew, double bottomNew, double topNew, double wristNewV, double wristNewH, boolean useAccel )
+    public void clawHome() {
+        moveClawByCoordinates( 111 );
+    }
+
+    public void moveArmByCoordinatesSteps( double newX, double newY, double newZ )
     {
-        double turretCrr = turret.getPosition();
-        double bottomCrr = bottom.getPosition();
-        double topCrr = top.getPosition();
-        double wristCrrV = wrist.getPosition();
-        double wristCrrH = 0; //TODO when wristH available
+        computeCurrentCoordinates();
 
         double maxChange = 0.0;
-        maxChange = Math.max( Math.abs( turretNew - turretCrr ), maxChange );
-        maxChange = Math.max( Math.abs( bottomNew - bottomCrr ), maxChange );
-        maxChange = Math.max( Math.abs( topNew - topCrr ), maxChange );
-        maxChange = Math.max( Math.abs( wristNewV - wristCrrV ), maxChange );
-        maxChange = Math.max( Math.abs( wristNewH - wristCrrH ), maxChange );
+        maxChange = Math.max( Math.abs( newX - currentCoordinateX ), maxChange );
+        maxChange = Math.max( Math.abs( newY - currentCoordinateY ), maxChange );
+        maxChange = Math.max( Math.abs( newZ - currentCoordinateZ ), maxChange );
 
-        int steps = (int)( maxChange * 100 ); // one step for 0.01 motor -> TODO
+        int steps = (int)( maxChange / 4 ); // 4 mm per step
         if( steps > 66 ) steps = 66;
         if( steps < 2 ) steps = 2;
         int accel = (int)( (double)steps * 0.2 ); // accelate/decelerate first 20%
@@ -225,15 +186,11 @@ public class Gigi_HardwareRobot extends HardwarePushbot
 
         for( int i = 0; i < steps; i++ )
         {
-            double turretStep = turretCrr + ( ( turretNew - turretCrr) * ( i + 1 ) ) / steps;
-            double bottomStep = bottomCrr + ( ( bottomNew - bottomCrr) * ( i + 1 ) ) / steps;
-            double topStep = topCrr + ( ( topNew - topCrr ) * ( i + 1 ) ) / steps;
-            double wristStepV = wristCrrV + ( ( wristNewV - wristCrrV ) * ( i + 1 ) ) / steps;
+            double stepX = currentCoordinateX + ( ( newX - currentCoordinateX ) * ( i + 1 ) ) / steps;
+            double stepY = currentCoordinateY + ( ( newY - currentCoordinateY ) * ( i + 1 ) ) / steps;
+            double stepZ = currentCoordinateZ + ( ( newZ - currentCoordinateZ ) * ( i + 1 ) ) / steps;
 
-            turret.setPosition( turretStep );
-            bottom.setPosition( bottomStep );
-            top.setPosition( topStep );
-            wrist.setPosition( wristStepV );
+            moveArmByCoordinates( stepX, stepY, stepZ );
 
             try {
                 Thread.sleep( 33, 0 );
@@ -249,9 +206,6 @@ public class Gigi_HardwareRobot extends HardwarePushbot
             if( i > (steps - accel ) ){
                 extraWait = ( steps - i ) * 33;
             }
-            if( !useAccel ){
-                extraWait = 0;
-            }
 
             if( extraWait > 0 ){
                 try {
@@ -263,7 +217,16 @@ public class Gigi_HardwareRobot extends HardwarePushbot
             }
 
         }
+    }
 
+
+    public void moveArmByServoPos( double turretNew, double bottomNew, double topNew, double wristNewV, double wristNewH )
+    {
+        turret.setPosition( turretNew );
+        bottom.setPosition( bottomNew );
+        top.setPosition( topNew );
+        wrist.setPosition( wristNewV );
+        // TODO add wristNewH
     }
 
     public void moveArmByCoordinates( double newX, double newY, double newZ )
@@ -272,11 +235,11 @@ public class Gigi_HardwareRobot extends HardwarePushbot
 
         // TODO set the limits below instead of 0.85 and 55 mm
 
-        if( newX > ( lengthArmOne + lengthArmTwo ) * 0.85 ) {
-            newX = ( lengthArmOne + lengthArmTwo ) * 0.85;
+        if( newX > ( lengthArmOne + lengthArmTwo ) * 0.80 ) {
+            newX = ( lengthArmOne + lengthArmTwo ) * 0.80;
         }
-        if( newX < -( lengthArmOne + lengthArmTwo ) * 0.85 ) {
-            newX = - ( lengthArmOne + lengthArmTwo ) * 0.85;
+        if( newX < -( lengthArmOne + lengthArmTwo ) * 0.80 ) {
+            newX = - ( lengthArmOne + lengthArmTwo ) * 0.80;
         }
         if( newY < 55 ){
             newY = 55;
@@ -325,20 +288,47 @@ public class Gigi_HardwareRobot extends HardwarePushbot
 
         double newWristAngleV = alphaAngle;
 
-        double newTurretPos = newTurretAngle / 180 + turretOffset;
-        double newBottomPos = newBottomAngle / 180 + bottomOffset;
-        double newTopPos = newTopAngle / 180 + topOffset;
-        double newWristPosH = newWristAngleH / 180 + wristOffsetV;
-        double newWristPosV = newWristAngleV / 180 + wristOffsetH;
+        double newTurretPos = servoPosFromAngle( newTurretAngle, turretRef[ 0 ], turretRef[ 1 ] );
+        double newBottomPos = servoPosFromAngle( newBottomAngle, bottomRef[ 0 ], bottomRef[ 1 ] );
+        double newTopPos = servoPosFromAngle( newTopAngle, topRef[ 0 ], topRef[ 1 ] );
+        double newWristPosH = servoPosFromAngle( newWristAngleH, wristHRef[ 0 ], wristHRef[ 1 ] );
+        double newWristPosV = servoPosFromAngle( newWristAngleV, wristVRef[ 0 ], wristVRef[ 1 ] );
 
-        moveArmByServoPos( newTurretPos, newBottomPos, newTopPos, newWristPosV, newWristPosH, false );
+        moveArmByServoPos( newTurretPos, newBottomPos, newTopPos, newWristPosV, newWristPosH );
+    }
+
+    public double servoPosFromAngle( double angle, double refMin, double refMax )
+    {
+        double pos =  refMin + ( angle / 180 ) * refMax - refMin;
+        if( pos < refMin ) pos = refMin;
+        if( pos > refMax ) pos = refMax;
+
+        return pos;
+    }
+
+    public double servoAngleFromPos( double pos, double refMin, double refMax )
+    {
+        double angle = ( pos - refMin )  / ( refMax - refMin ) * 180;
+        if( angle < 0 ) angle = 0;
+        if( angle > 180 ) angle = 180;
+
+        return angle;
+    }
+
+    public void moveClawByCoordinates( double opening )
+    {
+        if( opening < 2 * lengthClaw * 0.2 )opening = 2 * lengthClaw * 0.2;
+        if( opening > 2 * lengthClaw * 0.8 )opening = 2 * lengthClaw * 0.8;
+
+        clawLeft.setPosition( servoPosFromAngle( Math.asin( ( opening / 2 ) / lengthClaw ), clawLeftRef[ 0 ], clawLeftRef[ 1 ] ) );
+        clawRight.setPosition( servoPosFromAngle( Math.asin( ( opening / 2 ) / lengthClaw ), clawRightRef[ 0 ], clawRightRef[ 1 ] ) );
     }
 
     public void computeCurrentCoordinates()
     {
-        double turretAngle = turret.getPosition() * 180 - turretOffset;
-        double bottomAngle = bottom.getPosition() * 180 - bottomOffset;
-        double topAngle = top.getPosition() * 180 - topOffset;
+        double turretAngle = servoAngleFromPos( turret.getPosition(), turretRef[ 0 ], turretRef[ 1 ] );
+        double bottomAngle = servoAngleFromPos( bottom.getPosition(), bottomRef[ 0 ], bottomRef[ 1 ] );
+        double topAngle = servoAngleFromPos( top.getPosition(), topRef[ 0 ], topRef[ 1 ] );
 
         // compute the projection on the horizontal plane
         double projectionBottomHorizontal = 0;
