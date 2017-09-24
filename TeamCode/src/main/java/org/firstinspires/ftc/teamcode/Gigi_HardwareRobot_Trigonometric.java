@@ -234,45 +234,50 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
 
     public void moveArmByCoordinates( double newX, double newY, double newZ )
     {
+        // TODO fix robot dimenstions and limits below
+        double maxTriangleFlatness = 0.77;
+        double closestToTurretY = 66;
+        double lowestZ = -66;
+        double edgeOfRobotY = 199;
+        double heightOfRobotPlatformZ = 111;
+
         computeCurrentCoordinates();
 
-        // TODO set the limits below instead of 0.85 and 55 mm
-
-        if( newY > ( lengthArmOne + lengthArmTwo ) * 0.80 ) {
-            newY = ( lengthArmOne + lengthArmTwo ) * 0.80;
+        if( newY > ( lengthArmOne + lengthArmTwo ) * maxTriangleFlatness ) {
+            newY = ( lengthArmOne + lengthArmTwo ) * maxTriangleFlatness;
     }
-        if( newY < -( lengthArmOne + lengthArmTwo ) * 0.80 ) {
-            newY = - ( lengthArmOne + lengthArmTwo ) * 0.80;
+        if( newY < -( lengthArmOne + lengthArmTwo ) * maxTriangleFlatness ) {
+            newY = - ( lengthArmOne + lengthArmTwo ) * maxTriangleFlatness;
         }
-        if( newX > ( lengthArmOne + lengthArmTwo ) * 0.80 ) {
-            newX = ( lengthArmOne + lengthArmTwo ) * 0.80;
+        if( newX > ( lengthArmOne + lengthArmTwo ) * maxTriangleFlatness ) {
+            newX = ( lengthArmOne + lengthArmTwo ) * maxTriangleFlatness;
         }
-        if( newX < -( lengthArmOne + lengthArmTwo ) * 0.80 ) {
-            newX = - ( lengthArmOne + lengthArmTwo ) * 0.80;
+        if( newX < -( lengthArmOne + lengthArmTwo ) * maxTriangleFlatness ) {
+            newX = - ( lengthArmOne + lengthArmTwo ) * maxTriangleFlatness;
         }
-        if( newY < 66 ){
-            newY = 66;
+        if( newY < closestToTurretY ){
+            newY = closestToTurretY;
         }
-        if( newZ < -33 ){
-            newZ = -33;
+        if( newZ < lowestZ ){
+            newZ = lowestZ;
         }
-        if( newZ > lengthArmOne + lengthArmTwo / 2 ){
-            newZ = lengthArmOne + lengthArmTwo / 2;
+        if( newZ > ( lengthArmOne + lengthArmTwo ) * maxTriangleFlatness ){
+            newZ = ( lengthArmOne + lengthArmTwo ) * maxTriangleFlatness;
         }
 
         // check such it does not bump in the robot
-        if( newY < 222 ){
-            if( newZ < 66 ){
-                newZ = 66;
+        if(  newY < edgeOfRobotY ){
+            if( newZ < heightOfRobotPlatformZ ){
+                newZ = heightOfRobotPlatformZ;
             }
         }
 
         double projectionBottomHorizontal = Math.sqrt( newY * newY + newZ * newZ );
-        if( projectionBottomHorizontal >  ( lengthArmOne + lengthArmTwo ) * 0.80 ){
-            projectionBottomHorizontal = ( lengthArmOne + lengthArmTwo ) * 0.80;
+        if( projectionBottomHorizontal >  ( lengthArmOne + lengthArmTwo ) * maxTriangleFlatness ){
+            projectionBottomHorizontal = ( lengthArmOne + lengthArmTwo ) * maxTriangleFlatness;
         }
-        if( projectionBottomHorizontal < 66 ){
-            projectionBottomHorizontal = 66;
+        if( projectionBottomHorizontal < closestToTurretY ){
+            projectionBottomHorizontal = closestToTurretY;
         }
 
         double l3 = Math.sqrt( newX * newX  + newZ * newZ );
