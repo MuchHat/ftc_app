@@ -74,6 +74,7 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
     // alpha is number between 0 and 180 indicating the pos of min for the servo
     // min, max, home are numbers between 0 to 255
 
+    // TODO populate servo info
     public final static double turretAlphaMinMax[ ] = { 0, 0, 255 };
     public final static double bottomAlphaMinMax[ ] = { 0, 0, 255 };
     public final static double topAlphaMinMax[ ] = { 0, 0, 255 };
@@ -82,6 +83,7 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
     public final static double clawLeftAlphaMinMax[ ] = { 0, 0, 255 };
     public final static double clawRightAlphaMinMax[ ] = { 0, 0, 255 };
 
+    // TODO populate real arm dimensions
     public final static double lengthArmOne = 266;
     public final static double lengthArmTwo = 266;
     public final static double lengthClaw = 22;
@@ -126,7 +128,6 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
     }
 
     // TODO update all home positions
-
     public void armHome() {
         moveArmByCoordinatesSteps(
                 0,
