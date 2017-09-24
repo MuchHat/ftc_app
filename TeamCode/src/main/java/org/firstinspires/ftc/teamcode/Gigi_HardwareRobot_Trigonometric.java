@@ -75,13 +75,13 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
     // min, max, home are numbers between 0 to 255
 
     // TODO populate servo info
-    public final static double turretAlphaMinMax[ ] = { 0, 0, 255 };
-    public final static double bottomAlphaMinMax[ ] = { 0, 0, 255 };
-    public final static double topAlphaMinMax[ ] = { 0, 0, 255 };
-    public final static double wristUpDownAlphaMinMax[ ] = { 0, 0, 255 };
-    public final static double wristLeftRightAlphaMinMax[ ] = { 0, 0, 255 };
-    public final static double clawLeftAlphaMinMax[ ] = { 0, 0, 255 };
-    public final static double clawRightAlphaMinMax[ ] = { 0, 0, 255 };
+    public final static double turretRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
+    public final static double bottomRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
+    public final static double topRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
+    public final static double wristUpDownRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
+    public final static double wristLeftRightRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
+    public final static double clawLeftRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
+    public final static double clawRightRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
 
     // TODO populate real arm dimensions
     public final static double lengthArmOne = 266;
@@ -309,25 +309,45 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
         if( newTurretAngle < 0 ) newTurretAngle = 0;
         if( newTurretAngle > 180 ) newTurretAngle = 180;
 
-        double newTurretPos = servoPosFromAngle( newTurretAngle, turretAlphaMinMax[ 0 ], turretAlphaMinMax[ 1 ], turretAlphaMinMax[ 2 ] );
-        double newBottomPos = servoPosFromAngle( newBottomAngle, bottomAlphaMinMax[ 0 ], bottomAlphaMinMax[ 1 ], bottomAlphaMinMax[ 3 ] );
-        double newTopPos = servoPosFromAngle( newTopAngle, topAlphaMinMax[ 0 ], topAlphaMinMax[ 1 ], topAlphaMinMax[ 2 ]  );
-        double newWristUpDownPos = servoPosFromAngle( newWristAngleH, wristUpDownAlphaMinMax[ 0 ], wristUpDownAlphaMinMax[ 1 ], wristUpDownAlphaMinMax[ 2 ]  );
-        double newWristLeftRightPos = servoPosFromAngle( newWristAngleV, wristLeftRightAlphaMinMax[ 0 ], wristLeftRightAlphaMinMax[ 1 ], wristLeftRightAlphaMinMax[ 2 ] );
+        double newTurretPos = servoPosFromAngle( newTurretAngle,
+                turretRef_A0_A180_Min_Max[ 0 ],
+                turretRef_A0_A180_Min_Max[ 1 ],
+                turretRef_A0_A180_Min_Max[ 2 ],
+                turretRef_A0_A180_Min_Max[ 3 ] );
+        double newBottomPos = servoPosFromAngle( newBottomAngle,
+                bottomRef_A0_A180_Min_Max[ 0 ],
+                bottomRef_A0_A180_Min_Max[ 1 ],
+                bottomRef_A0_A180_Min_Max[ 2 ],
+                bottomRef_A0_A180_Min_Max[ 3 ] );
+        double newTopPos = servoPosFromAngle( newTopAngle,
+                topRef_A0_A180_Min_Max[ 0 ],
+                topRef_A0_A180_Min_Max[ 1 ],
+                topRef_A0_A180_Min_Max[ 2 ],
+                topRef_A0_A180_Min_Max[ 3 ]  );
+        double newWristUpDownPos = servoPosFromAngle( newWristAngleH,
+                wristUpDownRef_A0_A180_Min_Max[ 0 ],
+                wristUpDownRef_A0_A180_Min_Max[ 1 ],
+                wristUpDownRef_A0_A180_Min_Max[ 2 ],
+                wristUpDownRef_A0_A180_Min_Max[ 3 ]  );
+        double newWristLeftRightPos = servoPosFromAngle( newWristAngleV,
+                wristLeftRightRef_A0_A180_Min_Max[ 0 ],
+                wristLeftRightRef_A0_A180_Min_Max[ 1 ],
+                wristLeftRightRef_A0_A180_Min_Max[ 2 ],
+                wristLeftRightRef_A0_A180_Min_Max[ 3 ] );
 
         moveArmByServoPos( newTurretPos, newBottomPos, newTopPos, newWristUpDownPos, newWristLeftRightPos );
     }
 
-    public double servoPosFromAngle( double angle, double refAlpha, double refMin, double refMax )
+    public double servoPosFromAngle( double angle, double refA0, double refA180, double refMin, double refMax )
     {
         double pos = 0;
-        if( refMax > refMin ){
-            pos = ( angle - refAlpha ) / 180 * 255;
+        if( refA180 > refA0 ){
+            pos = ( angle - refA0 ) / 180 * ( refA180 - refA0 );
             if( pos < refMin ) pos = refMin;
             if( pos > refMax ) pos = refMax;
         }
-        if( refMin > refMax ){
-            pos = 255 - ( angle - refAlpha ) / 180 * 255;
+        if( refA0 > refA180 ){
+            pos = 255 - ( angle - refA0 ) / 180 * (  refA0 - refA180 );
             if( pos > refMin ) pos = refMin;
             if( pos < refMax ) pos = refMax;
         }
@@ -339,17 +359,17 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
         return pos;
     }
 
-    public double servoAngleFromPos( double pos, double refAlpha, double refMin, double refMax )
+    public double servoAngleFromPos( double pos, double refA0, double refA180, double refMin, double refMax )
     {
         double angle = 0;
 
-        if( refMin < refMax ) {
-            angle = ( pos / 255 ) * 180;
-            angle += refAlpha;
+        if( refA0 < refA180 ) {
+            angle = ( pos / ( refA180 - refA0 ) ) * 180;
+            angle += refA0;
         }
-        if( refMin > refMax ) {
-            angle = ( ( 255 - pos ) / 255 ) * 180;
-            angle += refAlpha;
+        if( refA0 > refA180 ) {
+            angle = ( ( refA0 - pos ) / ( refA0 - refA180 ) ) * 180;
+            angle += refA0;
         }
         if( angle < 0 ) angle = 0;
         if( angle > 180 ) angle = 180;
@@ -365,15 +385,15 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
         double angleLeft = Math.asin( ( opening / 2 ) / lengthClaw );
         double angleRigh = Math.asin( ( opening / 2 ) / lengthClaw );
 
-        clawLeft.setPosition( servoPosFromAngle( angleLeft, clawLeftAlphaMinMax[ 0 ], clawLeftAlphaMinMax[ 1 ], clawLeftAlphaMinMax[ 2 ] ) );
-        clawRight.setPosition( servoPosFromAngle( angleRigh, clawRightAlphaMinMax[ 0 ], clawRightAlphaMinMax[ 1 ], clawRightAlphaMinMax[ 2 ] ) );
+        clawLeft.setPosition( servoPosFromAngle( angleLeft, clawLeftRef_A0_A180_Min_Max[ 0 ], clawLeftRef_A0_A180_Min_Max[ 1 ], clawLeftRef_A0_A180_Min_Max[ 2 ] ) );
+        clawRight.setPosition( servoPosFromAngle( angleRigh, clawRightRef_A0_A180_Min_Max[ 0 ], clawRightRef_A0_A180_Min_Max[ 1 ], clawRightRef_A0_A180_Min_Max[ 2 ] ) );
     }
 
     public void computeCurrentCoordinates()
     {
-        double turretAngle = servoAngleFromPos( turret.getPosition(), turretAlphaMinMax[ 0 ], turretAlphaMinMax[ 1 ], turretAlphaMinMax[ 2 ] );
-        double bottomAngle = servoAngleFromPos( bottom.getPosition(), bottomAlphaMinMax[ 0 ], bottomAlphaMinMax[ 1 ], bottomAlphaMinMax[ 2 ] );
-        double topAngle = servoAngleFromPos( top.getPosition(), topAlphaMinMax[ 0 ], topAlphaMinMax[ 1 ], topAlphaMinMax[ 2 ] );
+        double turretAngle = servoAngleFromPos( turret.getPosition(), turretRef_A0_A180_Min_Max[ 0 ], turretRef_A0_A180_Min_Max[ 1 ], turretRef_A0_A180_Min_Max[ 2 ] );
+        double bottomAngle = servoAngleFromPos( bottom.getPosition(), bottomRef_A0_A180_Min_Max[ 0 ], bottomRef_A0_A180_Min_Max[ 1 ], bottomRef_A0_A180_Min_Max[ 2 ] );
+        double topAngle = servoAngleFromPos( top.getPosition(), topRef_A0_A180_Min_Max[ 0 ], topRef_A0_A180_Min_Max[ 1 ], topRef_A0_A180_Min_Max[ 2 ] );
 
         // compute the projection on the horizontal plane
         double projectionBottomHorizontal = 0;
