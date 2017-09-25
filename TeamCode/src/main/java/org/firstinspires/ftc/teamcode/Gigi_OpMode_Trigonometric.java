@@ -46,7 +46,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Gigi: OpMode_Trigonometric", group="Gigi")
+@TeleOp(name="Gigi_OpMode_Trigonometric", group="Gigi")
 // @Disabled
 public class Gigi_OpMode_Trigonometric extends LinearOpMode {
 

@@ -80,8 +80,8 @@ public class Gigi_HardwareRobot_Template extends HardwarePushbot {
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftDrive = hwMap.get(DcMotor.class, "left_drive");
-        rightDrive = hwMap.get(DcMotor.class, "right_drive");
+        leftDrive = hwMap.get(DcMotor.class, "Motor_Left");
+        rightDrive = hwMap.get(DcMotor.class, "Motor_Right");
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
 

@@ -61,8 +61,8 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
     public DcMotor  rightDrive  = null;
 
     public Servo    turret      = null;
-    public Servo    bottom      = null;
-    public Servo    top         = null;
+    public Servo    base      = null;
+    public Servo    elbow         = null;
     public Servo    wrist       = null;
     public Servo    clawRight   = null;
     public Servo    clawLeft    = null;
@@ -75,13 +75,13 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
     // min, max, home are numbers between 0 to 255
 
     // TODO populate servo info
-    public final static double turretRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
-    public final static double bottomRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
-    public final static double topRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
-    public final static double wristUpDownRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
+    public final static double turretRef_A0_A180_Min_Max[ ] = { 40, 300, 40, 255 };
+    public final static double baseRef_A0_A180_Min_Max[ ] = { -10, 235, 0, 255 };
+    public final static double elbowRef_A0_A180_Min_Max[ ] = { 30, 320, 40, 255 };
+    public final static double wristUpDownRef_A0_A180_Min_Max[ ] = { -20, 240, 0, 240 };
     public final static double wristLeftRightRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
-    public final static double clawLeftRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
-    public final static double clawRightRef_A0_A180_Min_Max[ ] = { 0, 255, 0, 255 };
+    public final static double clawLeftRef_A0_A180_Min_Max[ ] = { -10, 120, 0, 120 };
+    public final static double clawRightRef_A0_A180_Min_Max[ ] = { 140, 280, 140, 255 };
 
     // TODO populate real arm dimensions
     public final static double lengthArmOne = 266;
@@ -102,8 +102,8 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftDrive  = hwMap.get( DcMotor.class, "left_drive" );
-        rightDrive = hwMap.get( DcMotor.class, "right_drive" );
+        leftDrive  = hwMap.get( DcMotor.class, "Motor_Left" );
+        rightDrive = hwMap.get( DcMotor.class, "Motor_Righ" );
         leftDrive.setDirection( DcMotor.Direction.FORWARD );
         leftDrive.setDirection( DcMotor.Direction.FORWARD );
 
@@ -116,12 +116,12 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
         leftDrive.setMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER );
         rightDrive.setMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER );
 
-        turret      = hwMap.get( Servo.class, "turret" );
-        bottom      = hwMap.get( Servo.class, "bottom" );
-        top         = hwMap.get( Servo.class, "top" );
-        wrist       = hwMap.get( Servo.class, "wrist" );
-        clawRight   = hwMap.get( Servo.class, "claw_right" );
-        clawLeft    = hwMap.get( Servo.class, "claw_left" );
+        turret = hwMap.get(Servo.class, "turret");
+        base = hwMap.get(Servo.class, "base");
+        elbow = hwMap.get(Servo.class, "elbow");
+        wrist = hwMap.get(Servo.class, "wrist");
+        clawLeft = hwMap.get(Servo.class, "claw_left");
+        clawRight = hwMap.get(Servo.class, "claw_right");
 
         armHome();
         clawHome();
@@ -226,11 +226,11 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
     }
 
 
-    public void moveArmByServoPos( double turretNew, double bottomNew, double topNew, double wristUpDownNew, double wristLeftRightNew)
+    public void moveArmByServoPos( double turretNew, double baseNew, double elbowNew, double wristUpDownNew, double wristLeftRightNew)
     {
         turret.setPosition( turretNew );
-        bottom.setPosition( bottomNew );
-        top.setPosition( topNew );
+        base.setPosition( baseNew );
+        elbow.setPosition( elbowNew );
         wrist.setPosition( wristUpDownNew );
         // TODO add wristLeftRightNew
     }
@@ -315,15 +315,15 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
                 turretRef_A0_A180_Min_Max[ 2 ],
                 turretRef_A0_A180_Min_Max[ 3 ] );
         double newBottomPos = servoPosFromAngle( newBottomAngle,
-                bottomRef_A0_A180_Min_Max[ 0 ],
-                bottomRef_A0_A180_Min_Max[ 1 ],
-                bottomRef_A0_A180_Min_Max[ 2 ],
-                bottomRef_A0_A180_Min_Max[ 3 ] );
+                baseRef_A0_A180_Min_Max[ 0 ],
+                baseRef_A0_A180_Min_Max[ 1 ],
+                baseRef_A0_A180_Min_Max[ 2 ],
+                baseRef_A0_A180_Min_Max[ 3 ] );
         double newTopPos = servoPosFromAngle( newTopAngle,
-                topRef_A0_A180_Min_Max[ 0 ],
-                topRef_A0_A180_Min_Max[ 1 ],
-                topRef_A0_A180_Min_Max[ 2 ],
-                topRef_A0_A180_Min_Max[ 3 ]  );
+                elbowRef_A0_A180_Min_Max[ 0 ],
+                elbowRef_A0_A180_Min_Max[ 1 ],
+                elbowRef_A0_A180_Min_Max[ 2 ],
+                elbowRef_A0_A180_Min_Max[ 3 ]  );
         double newWristUpDownPos = servoPosFromAngle( newWristAngleH,
                 wristUpDownRef_A0_A180_Min_Max[ 0 ],
                 wristUpDownRef_A0_A180_Min_Max[ 1 ],
@@ -404,36 +404,36 @@ public class Gigi_HardwareRobot_Trigonometric extends HardwarePushbot
                 turretRef_A0_A180_Min_Max[ 1 ],
                 turretRef_A0_A180_Min_Max[ 2 ],
                 turretRef_A0_A180_Min_Max[ 3 ] );
-        double bottomAngle = servoAngleFromPos( bottom.getPosition(),
-                bottomRef_A0_A180_Min_Max[ 0 ],
-                bottomRef_A0_A180_Min_Max[ 1 ],
-                bottomRef_A0_A180_Min_Max[ 2 ],
-                bottomRef_A0_A180_Min_Max[ 3 ] );
-        double topAngle = servoAngleFromPos( top.getPosition(),
-                topRef_A0_A180_Min_Max[ 0 ],
-                topRef_A0_A180_Min_Max[ 1 ],
-                topRef_A0_A180_Min_Max[ 2 ],
-                topRef_A0_A180_Min_Max[ 3 ] );
+        double baseAngle = servoAngleFromPos( base.getPosition(),
+                baseRef_A0_A180_Min_Max[ 0 ],
+                baseRef_A0_A180_Min_Max[ 1 ],
+                baseRef_A0_A180_Min_Max[ 2 ],
+                baseRef_A0_A180_Min_Max[ 3 ] );
+        double elbowAngle = servoAngleFromPos( elbow.getPosition(),
+                elbowRef_A0_A180_Min_Max[ 0 ],
+                elbowRef_A0_A180_Min_Max[ 1 ],
+                elbowRef_A0_A180_Min_Max[ 2 ],
+                elbowRef_A0_A180_Min_Max[ 3 ] );
 
         // compute the projection on the horizontal plane
         double projectionBottomHorizontal = 0;
-        if( bottomAngle < 90 ) {
-            projectionBottomHorizontal += lengthArmOne * Math.cos(bottomAngle * Math.PI / 180);
-            projectionBottomHorizontal += lengthArmTwo * Math.sin((topAngle - (90 - bottomAngle)) * Math.PI / 180);
+        if( baseAngle < 90 ) {
+            projectionBottomHorizontal += lengthArmOne * Math.cos(baseAngle * Math.PI / 180);
+            projectionBottomHorizontal += lengthArmTwo * Math.sin((elbowAngle - (90 - baseAngle)) * Math.PI / 180);
         }
-        if( bottomAngle > 90 ) {
-            projectionBottomHorizontal -= lengthArmOne * Math.cos((bottomAngle-90) * Math.PI / 180);
-            projectionBottomHorizontal += lengthArmTwo * Math.sin((topAngle - (90 - bottomAngle)) * Math.PI / 180);
+        if( baseAngle > 90 ) {
+            projectionBottomHorizontal -= lengthArmOne * Math.cos((baseAngle-90) * Math.PI / 180);
+            projectionBottomHorizontal += lengthArmTwo * Math.sin((elbowAngle - (90 - baseAngle)) * Math.PI / 180);
         }
 
         // compute the projection on front vertical
         double projectionFrontVertical = 0;
-        projectionFrontVertical += lengthArmOne * Math.sin( bottomAngle * Math.PI / 180 );
-        projectionFrontVertical -= lengthArmTwo * Math.cos( ( topAngle - ( 90 - bottomAngle ) ) * Math.PI / 180 );
+        projectionFrontVertical += lengthArmOne * Math.sin( baseAngle * Math.PI / 180 );
+        projectionFrontVertical -= lengthArmTwo * Math.cos( ( elbowAngle - ( 90 - baseAngle ) ) * Math.PI / 180 );
 
         currentCoordinateZ = projectionFrontVertical;
 
-        // compute the projections on bottom horizontal
+        // compute the projections on base horizontal
         currentCoordinateX = -projectionBottomHorizontal * Math.cos( ( turretAngle ) * Math.PI / 180 );
         if( turretAngle > 90 )currentCoordinateY = projectionBottomHorizontal * Math.sin( ( turretAngle - 90 ) * Math.PI / 180 );
         if( turretAngle < 90 )currentCoordinateY = projectionBottomHorizontal * Math.sin( ( turretAngle ) * Math.PI / 180 );

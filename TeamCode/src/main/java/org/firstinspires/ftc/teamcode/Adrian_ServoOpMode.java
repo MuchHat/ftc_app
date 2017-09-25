@@ -48,7 +48,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Gigi: OpMode_Template", group="Gigi")
+@TeleOp(name="Adrian_OpMode_Template", group="Gigi")
 // @Disabled
 public class Adrian_ServoOpMode extends LinearOpMode {
 
@@ -71,6 +71,12 @@ public class Adrian_ServoOpMode extends LinearOpMode {
         double max;
         boolean firstrun = true;
 
+
+        /* Initialize the hardware variables.
+         * The init() method of the hardware class does all the work here
+         */
+        robot.init( hardwareMap );
+
         if(firstrun)
         {
             robot.turret.setPosition( homeTurret / 255 );
@@ -81,11 +87,6 @@ public class Adrian_ServoOpMode extends LinearOpMode {
             robot.rightClaw.setPosition( homeRightClaw /255 );
             firstrun = false;
         }
-
-        /* Initialize the hardware variables.
-         * The init() method of the hardware class does all the work here
-         */
-        robot.init( hardwareMap );
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData( "Say", "Hello Driver" );    //
