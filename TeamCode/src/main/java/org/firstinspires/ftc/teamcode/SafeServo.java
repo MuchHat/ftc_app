@@ -33,6 +33,8 @@ public abstract class SafeServo extends Servo {
 
         if( a0 > a180 ){
             direction = -1.0;
+        if( a180 > a0 ){
+                direction = 1.0;
         }
     }
 
@@ -41,29 +43,27 @@ public abstract class SafeServo extends Servo {
         }
 
     public double getMinLimit() {
-        return minLimit_255 / 255;
+        return ( minLimit_255 - A0_255 ) / (A180_255 - A0_255 );
     }
 
     public double getMaxLimit() {
-        return maxLimit_255 / 255;
+        return return ( maxLimit_255 - A0_255 ) / (A180_255 - A0_255 );
     }
 
     public void setPositionHome() {
-        setPosition( homePos_255 );
+
+        double pos_1 = ( homePos_255 - A0_255 ) /  (A180_255 - A0_255 );
+        setPositionSafeSmooth( pos_1 );
     }
 
     public void setPositionSafe ( double pos ) {
 
-        double pos_255 = A0_255 + ( A180_255 - A0_255 ) * pos;
+        setPosition( getAdjustedPositionSafe( pos ) );
+    }
 
-        if( pos_255 > maxLimit_255 )pos_255 = maxLimit_255;
-        if( pos_255 < minLimit_255 )pos_255 = minLimit_255;
+    public void setPositionSafeSmooth ( double pos ) {
 
-        double pos_1 = pos_255 / 255;
-
-        if( pos_1 > 1.0 )pos_1 = 1.0;
-        if( pos_1 < 0.0 )pos_1 = 0.0;
-
+        double pos_1 = getAdjustedPositionSafe( pos );
         double pos_crr = getPosition();
 
         double stepSize  = 0.1;
@@ -71,19 +71,20 @@ public abstract class SafeServo extends Servo {
         double rampRatio = 0.2; // increase/decrease time per step during ramp
 
         double stepCount = Math.abs( pos_1 - pos_crr ) / stepSize;
-
-        double rampSteps = ( Math.abs( pos_1 - pos_crr ) ) * 0.2; // 20% ramp up/down
+        double rampSteps = stepCount * 0.2; // 20% ramp up/down
         if( rampSteps < 2 )rampSteps = 2;
+        if( rampSteps > stepCount / 2 ) rampSteps = stepCount / 2;
 
         runtime.reset();
         for( int i = 0; i < stepCount; i++ ){
 
             double millisWait = i * stepWait;
-            double rampRelativeSteps = Math.max( rampSteps - i, i - ( stepCount - rampSteps )  );
-            rampRelativeSteps = Math.max( rampRelativeSteps, 0 );
-            rampRelativeSteps = Math.min( rampRelativeSteps, rampSteps );
 
-            millisWait += stepWait * rampRatio *( rampRelativeSteps ) / stepCount;
+            double rampPosition = Math.max( rampSteps - i, i - ( stepCount - rampSteps )  );
+            rampPosition = Math.max( rampPosition, 0 );
+            rampPosition = Math.min( rampPosition, rampSteps );
+
+            millisWait += stepWait * rampRatio * rampPosition;
 
             while( runtime.milliseconds() < millisWait ){
                 // wait
@@ -92,4 +93,22 @@ public abstract class SafeServo extends Servo {
         }
         setPosition( pos_1 );
     }
+
+    double getAdjustedPositionSafe ( double pos ) {
+
+        double pos_255 = A0_255 + (A180_255 - A0_255) * pos;
+
+        if (pos_255 > maxLimit_255) pos_255 = maxLimit_255;
+        if (pos_255 < minLimit_255) pos_255 = minLimit_255;
+
+        double pos_1 = pos_255 / ( 255 );
+
+        if (pos_1 > 1.0) pos_1 = 1.0;
+        if (pos_1 < 0.0) pos_1 = 0.0;
+
+        return pos_1;
+    }
+
+
+
 }
