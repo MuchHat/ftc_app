@@ -38,7 +38,7 @@ public abstract class SafeServo extends Servo {
         }
     }
 
-    public void setSafeHome double home ) {
+    public void setSafeHome ( double home ) {
         homePos_255 = home;
         }
 
@@ -76,20 +76,22 @@ public abstract class SafeServo extends Servo {
         if( rampSteps > stepCount / 2 ) rampSteps = stepCount / 2;
 
         runtime.reset();
+        double waitTarget = 0;
         for( int i = 0; i < stepCount; i++ ){
 
-            double millisWait = i * stepWait;
+            waitTarget += stepWait;
 
             double rampPosition = Math.max( rampSteps - i, i - ( stepCount - rampSteps )  );
             rampPosition = Math.max( rampPosition, 0 );
             rampPosition = Math.min( rampPosition, rampSteps );
 
-            millisWait += stepWait * rampRatio * rampPosition;
+            waitTarget += stepWait * rampRatio * rampPosition;
 
-            while( runtime.milliseconds() < millisWait ){
+            setPosition( pos_crr + stepSize * ( pos_1 - pos_crr ) );
+
+            while( runtime.milliseconds() < waitTarget ){
                 // wait
             }
-            setPosition( pos_crr + stepSize * ( pos_1 - pos_crr ) );
         }
         setPosition( pos_1 );
     }
