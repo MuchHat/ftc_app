@@ -2,9 +2,10 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 /**
- * Created by gigela on 9/25/2017.
+ * Created by MuchHat on 9/25/2017.
  */
 
 public abstract class SafeServo extends Servo {
@@ -24,35 +25,36 @@ public abstract class SafeServo extends Servo {
 
     }
 
-    public void setConfigLimits( double min, double max, double a0, double a180) {
+    public void setConfigLimits( double min_255, double max_255, double a0_255, double a180_255) {
         // Save reference to Hardware map
-        minLimit_255 = min;
-        maxLimit_255 = max;
-        A0_255 = a0;
-        A180_255 = a180;
+        minLimit_255 = Range.clip( min_255, 0, 255 );
+        maxLimit_255 =  Range.clip( max_255, 0, 255 );
+        A0_255 =  Range.clip( a0_255, 0, 255 );
+        A180_255 =  Range.clip( a180_255, 0, 255 );
 
-        if( a0 > a180 ){
+        if( a0_255 > a180_255 ) {
             direction = -1.0;
-        if( a180 > a0 ){
-                direction = 1.0;
+        }
+        if( a180_255 > a0_255 ) {
+            direction = 1.0;
         }
     }
 
-    public void setSafeHome ( double home ) {
-        homePos_255 = home;
+    public void setConfigHome ( double home ) {
+        homePos_255 = Range.clip( home, minLimit_255, maxLimit_255 );
         }
 
     public double getMinLimit() {
-        return ( minLimit_255 - A0_255 ) / (A180_255 - A0_255 );
+        return Range.clip( ( minLimit_255 - A0_255 ) / ( A180_255 - A0_255 ), 0.0, 1.0 );
     }
 
     public double getMaxLimit() {
-        return return ( maxLimit_255 - A0_255 ) / (A180_255 - A0_255 );
+        return Range.clip( ( maxLimit_255 - A0_255 ) / ( A180_255 - A0_255 ), 0.0, 1.0 );
     }
 
-    public void setPositionHome() {
+    public void setPositionSafeHome() {
 
-        double pos_1 = ( homePos_255 - A0_255 ) /  (A180_255 - A0_255 );
+        double pos_1 = ( homePos_255 - A0_255 ) /  ( A180_255 - A0_255 );
         setPositionSafeSmooth( pos_1 );
     }
 
@@ -93,22 +95,20 @@ public abstract class SafeServo extends Servo {
                 // wait
             }
         }
-        setPosition( pos_1 );
+        setPosition( Range.clip( pos_1, 0.0, 1.0 ) );
     }
 
     double getAdjustedPositionSafe ( double pos ) {
 
+        pos = Range.clip( pos, 0.0, 1.0 );
+
         double pos_255 = A0_255 + (A180_255 - A0_255) * pos;
 
-        if (pos_255 > maxLimit_255) pos_255 = maxLimit_255;
-        if (pos_255 < minLimit_255) pos_255 = minLimit_255;
+        pos_255 = Range.clip( pos_255, minLimit_255, maxLimit_255 );
 
         double pos_1 = pos_255 / ( 255 );
 
-        if (pos_1 > 1.0) pos_1 = 1.0;
-        if (pos_1 < 0.0) pos_1 = 0.0;
-
-        return pos_1;
+        return Range.clip( pos_1, 0.0, 1.0 );
     }
 
 
