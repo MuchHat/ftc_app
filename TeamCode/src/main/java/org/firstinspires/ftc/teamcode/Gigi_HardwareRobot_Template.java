@@ -60,8 +60,8 @@ public class Gigi_HardwareRobot_Template extends HardwarePushbot {
     public DcMotor rightDrive = null;
 
     public Servo turret = null;
-    public Servo bottom = null;
-    public Servo top = null;
+    public Servo base = null;
+    public Servo elbow = null;
     public Servo wrist = null;
     public Servo clawRight = null;
     public Servo clawLeft = null;
@@ -95,11 +95,11 @@ public class Gigi_HardwareRobot_Template extends HardwarePushbot {
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         turret = hwMap.get(Servo.class, "turret");
-        bottom = hwMap.get(Servo.class, "bottom");
-        top = hwMap.get(Servo.class, "top");
+        base = hwMap.get(Servo.class, "base");
+        elbow = hwMap.get(Servo.class, "elbow");
         wrist = hwMap.get(Servo.class, "wrist");
-        clawRight = hwMap.get(Servo.class, "claw_right");
         clawLeft = hwMap.get(Servo.class, "claw_left");
+        clawRight = hwMap.get(Servo.class, "claw_right");
     }
 }
 
