@@ -79,9 +79,9 @@ public abstract class SafeServo extends Servo {
         for( int i = 0; i < stepCount; i++ ){
 
             double millisWait = i * stepWait;
-            double rampRelativeSteps = Math.min( rampSteps - i, rampSteps );
-            if( i > stepCount - rampSteps ) rampRelativeSteps = Math.min( stepCount - i, rampSteps );
-            rampRelativeSteps = Math.min( rampRelativeSteps, 0 );
+            double rampRelativeSteps = Math.max( rampSteps - i, i - ( stepCount - rampSteps )  );
+            rampRelativeSteps = Math.max( rampRelativeSteps, 0 );
+            rampRelativeSteps = Math.min( rampRelativeSteps, rampSteps );
 
             millisWait += stepWait * rampRatio *( rampRelativeSteps ) / stepCount;
 
