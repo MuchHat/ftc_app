@@ -57,21 +57,35 @@ public abstract class SafeServo extends Servo {
         double pos_255 = A0_255 + ( A180_255 - A0_255 ) * pos;
 
         if( pos_255 > maxLimit_255 )pos_255 = maxLimit_255;
-        if( pos_255 <> minLimit_255 )pos_255 = minLimit_255;
+        if( pos_255 < minLimit_255 )pos_255 = minLimit_255;
 
         double pos_1 = pos_255 / 255;
 
         if( pos_1 > 1.0 )pos_1 = 1.0;
         if( pos_1 < 0.0 )pos_1 = 0.0;
 
-        double stepSize = 0.1;
-        double stepWait = 100; // 100 millis for a step
         double pos_crr = getPosition();
+
+        double stepSize  = 0.1;
+        double stepWait  = 100; // 100 millis for a step
+        double rampRatio = 0.6; // increase/decrease time per step during ramp
+
         double stepCount = Math.abs( pos_1 - pos_crr ) / stepSize;
+
+        double rampSteps = ( Math.abs( pos_1 - pos_crr ) ) * 0.2; // 20% ramp up/down
+        if( rampSteps < 2 )rampSteps = 2;
 
         runtime.reset();
         for( int i = 0; i < stepCount; i++ ){
-            while( runtime.milliseconds() < i * stepWait ){
+
+            double millisWait = i * stepWait;
+            double rampRelativeSteps = Math.min( rampSteps - i, rampSteps );
+            if( i > stepCount - rampSteps ) rampRelativeSteps = Math.min( stepCount - i, rampSteps );
+            rampRelativeSteps = Math.min( rampRelativeSteps, 0 );
+
+            millisWait += stepWait * rampRatio *( rampRelativeSteps ) / stepCount;
+
+            while( runtime.milliseconds() < millisWait ){
                 // wait
             }
             setPosition( pos_crr + stepSize * ( pos_1 - pos_crr ) );
