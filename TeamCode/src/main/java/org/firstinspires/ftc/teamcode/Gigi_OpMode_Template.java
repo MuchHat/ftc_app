@@ -55,13 +55,7 @@ public class Gigi_OpMode_Template extends LinearOpMode {
 
     /* Declare OpMode members. */
     Gigi_HardwareRobot_Template robot = new Gigi_HardwareRobot_Template();
-    double servoInt = 0.000;
-    double homeTurret = 170;
-    double homeBottom = 10;
-    double homeTop = 50;
-    double homeWrist = 70;
-    double homeLeftClaw = 20;
-    double homeRightClaw = 200;
+
 
     @Override
     public void runOpMode() {
@@ -70,18 +64,6 @@ public class Gigi_OpMode_Template extends LinearOpMode {
         double drive;
         double turn;
         double max;
-        boolean firstrun = true;
-
-        if(firstrun)
-        {
-            robot.turret.setPosition( homeTurret / 255 );
-            robot.base.setPosition( homeBottom / 255 );
-            robot.elbow.setPosition( homeTop /255 );
-            robot.wrist.setPosition( homeWrist /255 );
-            robot.leftClaw.setPosition( homeLeftClaw /255 );
-            robot.rightClaw.setPosition( homeRightClaw /255 );
-            firstrun = false;
-        }
 
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
@@ -125,6 +107,12 @@ public class Gigi_OpMode_Template extends LinearOpMode {
 
                 // fill in here the actual home positions
 
+                double homeTurret = 170;
+                double homeBottom = 10;
+                double homeTop = 50;
+                double homeWrist = 70;
+                double homeLeftClaw = 20;
+                double homeRightClaw = 200;
 
                 robot.turret.setPosition( homeTurret / 255 );
                 robot.base.setPosition( homeBottom / 255 );
@@ -174,8 +162,6 @@ public class Gigi_OpMode_Template extends LinearOpMode {
             if (gamepad1.x) {
                 telemetry.addData( "GamePad 1", "X" );
                 telemetry.update();
-
-                moveServo(50,150,255);
             }
 
             if (gamepad1.b) {
@@ -214,19 +200,5 @@ public class Gigi_OpMode_Template extends LinearOpMode {
             }
         }
         sleep( 50 );
-    }
-    public void moveServo(int initialValue, int finalValue, final int max) {
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(initialValue, finalValue);
-        valueAnimator.setDuration(750);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                servoInt = Double.valueOf(valueAnimator.getAnimatedValue().toString());
-                servoInt /= max;
-                robot.turret.setPosition(servoInt);
-            }
-        });
-        valueAnimator.start();
-
     }
 }

@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.animation.ValueAnimator;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -46,12 +48,19 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Adrian: OpMode", group="Gigi")
+@TeleOp(name="Gigi: OpMode_Template", group="Gigi")
 // @Disabled
-public class Adrian_OpMode extends LinearOpMode {
+public class Adrian_ServoOpMode extends LinearOpMode {
 
     /* Declare OpMode members. */
     Gigi_HardwareRobot_Template robot = new Gigi_HardwareRobot_Template();
+    double servoInt = 0.000;
+    double homeTurret = 170;
+    double homeBottom = 10;
+    double homeTop = 50;
+    double homeWrist = 70;
+    double homeLeftClaw = 20;
+    double homeRightClaw = 200;
 
     @Override
     public void runOpMode() {
@@ -60,6 +69,18 @@ public class Adrian_OpMode extends LinearOpMode {
         double drive;
         double turn;
         double max;
+        boolean firstrun = true;
+
+        if(firstrun)
+        {
+            robot.turret.setPosition( homeTurret / 255 );
+            robot.base.setPosition( homeBottom / 255 );
+            robot.elbow.setPosition( homeTop /255 );
+            robot.wrist.setPosition( homeWrist /255 );
+            robot.leftClaw.setPosition( homeLeftClaw /255 );
+            robot.rightClaw.setPosition( homeRightClaw /255 );
+            firstrun = false;
+        }
 
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
@@ -74,7 +95,7 @@ public class Adrian_OpMode extends LinearOpMode {
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
-        while ( opModeIsActive() ) {
+        while (opModeIsActive()) {
 
             // Run wheels in POV mode (note: The joystick goes negative when pushed forwards, so negate it)
             // In this mode the Left stick moves the robot fwd and back, the Right stick turns left and right.
@@ -102,23 +123,18 @@ public class Adrian_OpMode extends LinearOpMode {
                 telemetry.update();
 
                 // fill in here the actual home positions
-                double homeTurret = 10;
-                double homeBottom = 170;
-                double homeTop = 50;
-                double homeWrist = 70;
-                double homeLeftClaw = 0;
-                double homeRightClaw = 255;
+
 
                 robot.turret.setPosition( homeTurret / 255 );
-                robot.bottom.setPosition( homeBottom / 255 );
-                robot.top.setPosition( homeTop /255 );
+                robot.base.setPosition( homeBottom / 255 );
+                robot.elbow.setPosition( homeTop /255 );
                 robot.wrist.setPosition( homeWrist /255 );
                 robot.leftClaw.setPosition( homeLeftClaw /255 );
                 robot.rightClaw.setPosition( homeRightClaw /255 );
 
                 telemetry.addData( "turret at ", "%5.2f", robot.turret.getPosition() );
-                telemetry.addData( "bottom at ", "%5.2f", robot.bottom.getPosition() );
-                telemetry.addData( "top at ", "%5.2f", robot.top.getPosition() );
+                telemetry.addData( "bottom at ", "%5.2f", robot.base.getPosition() );
+                telemetry.addData( "top at ", "%5.2f", robot.elbow.getPosition() );
                 telemetry.addData( "wrist at ", "%5.2f", robot.wrist.getPosition() );
                 telemetry.addData( "left claw at ", "%5.2f", robot.leftClaw.getPosition() );
                 telemetry.addData( "right claw at ", "%5.2f", robot.rightClaw.getPosition() );
@@ -136,7 +152,7 @@ public class Adrian_OpMode extends LinearOpMode {
                 // servo could be backwards moving from a big number to a small one
                 double dirBottom = maxBottom > minBottom ? 1.0 : -1.0;
 
-                double crrBottom = robot.bottom.getPosition();
+                double crrBottom = robot.base.getPosition();
                 double changeBottom = speedBottom * dirBottom * gamepad1.right_stick_x;
                 double newBottom = crrBottom + changeBottom;
 
@@ -149,17 +165,16 @@ public class Adrian_OpMode extends LinearOpMode {
                     if (newBottom * 255 > minBottom) newBottom = minBottom / 255;
                 }
 
-                robot.bottom.setPosition( newBottom );
+                robot.base.setPosition( newBottom );
 
-                telemetry.addData( "bottom at ", "%5.2f", robot.bottom.getPosition() );
+                telemetry.addData( "bottom at ", "%5.2f", robot.base.getPosition() );
                 telemetry.update();
             }
-
             if (gamepad1.x) {
                 telemetry.addData( "GamePad 1", "X" );
                 telemetry.update();
 
-                // ADD CODE HERE
+                moveServo(50,150,255);
             }
 
             if (gamepad1.b) {
@@ -198,5 +213,19 @@ public class Adrian_OpMode extends LinearOpMode {
             }
         }
         sleep( 50 );
+    }
+    public void moveServo(int initialValue, int finalValue, final int max) {
+        ValueAnimator valueAnimator = ValueAnimator.ofInt(initialValue, finalValue);
+        valueAnimator.setDuration(750);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                servoInt = Double.valueOf(valueAnimator.getAnimatedValue().toString());
+                servoInt /= max;
+                robot.turret.setPosition(servoInt);
+            }
+        });
+        valueAnimator.start();
+
     }
 }
