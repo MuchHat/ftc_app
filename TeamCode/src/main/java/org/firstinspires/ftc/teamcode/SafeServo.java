@@ -68,7 +68,7 @@ public abstract class SafeServo extends Servo {
 
         double stepSize  = 0.1;
         double stepWait  = 100; // 100 millis for a step
-        double rampRatio = 0.6; // increase/decrease time per step during ramp
+        double rampRatio = 0.2; // increase/decrease time per step during ramp
 
         double stepCount = Math.abs( pos_1 - pos_crr ) / stepSize;
 
