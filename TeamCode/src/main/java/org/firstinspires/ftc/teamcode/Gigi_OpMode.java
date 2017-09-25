@@ -29,11 +29,9 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.animation.ValueAnimator;
-
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.robot.Robot;
 
 /**
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
@@ -49,12 +47,12 @@ import com.qualcomm.robotcore.robot.Robot;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Gigi_OpMode_Template", group="Gigi")
-// @Disabled
-public class Gigi_OpMode_Template extends LinearOpMode {
+@TeleOp(name="Gigi_OpMode", group="Gigi")
+@Disabled
+public class Gigi_OpMode extends LinearOpMode {
 
     /* Declare OpMode members. */
-    Gigi_HardwareRobot_Template robot = new Gigi_HardwareRobot_Template();
+    Gigi_HardwareRobot robot = new Gigi_HardwareRobot();
 
 
     @Override
@@ -114,12 +112,12 @@ public class Gigi_OpMode_Template extends LinearOpMode {
                 double homeLeftClaw = 20;
                 double homeRightClaw = 200;
 
-                robot.turret.setPosition( homeTurret / 255 );
-                robot.base.setPosition( homeBottom / 255 );
-                robot.elbow.setPosition( homeTop /255 );
-                robot.wrist.setPosition( homeWrist /255 );
-                robot.leftClaw.setPosition( homeLeftClaw /255 );
-                robot.rightClaw.setPosition( homeRightClaw /255 );
+                //robot.turret.setPosition( homeTurret / 255 );
+                //robot.base.setPosition( homeBottom / 255 );
+                //robot.elbow.setPosition( homeTop /255 );
+                //robot.wrist.setPosition( homeWrist /255 );
+                //robot.leftClaw.setPosition( homeLeftClaw /255 );
+                //robot.rightClaw.setPosition( homeRightClaw /255 );
 
                 telemetry.addData( "turret at ", "%5.2f", robot.turret.getPosition() );
                 telemetry.addData( "bottom at ", "%5.2f", robot.base.getPosition() );
@@ -135,7 +133,7 @@ public class Gigi_OpMode_Template extends LinearOpMode {
 
                 // fill in here the limit positions
                 double minBottom = 0;
-                double maxBottom = 255;
+                double maxBottom = 1.0;
                 double speedBottom = 0.05;  //speed when stick is at max
 
                 // servo could be backwards moving from a big number to a small one
@@ -145,16 +143,10 @@ public class Gigi_OpMode_Template extends LinearOpMode {
                 double changeBottom = speedBottom * dirBottom * gamepad1.right_stick_x;
                 double newBottom = crrBottom + changeBottom;
 
-                if( dirBottom > 0 ){
-                    if (newBottom * 255 > maxBottom) newBottom = maxBottom / 255;
-                    if (newBottom * 255 < minBottom) newBottom = minBottom / 255;
-                }
-                if( dirBottom < 0 ){
-                    if (newBottom * 255 < maxBottom) newBottom = maxBottom / 255;
-                    if (newBottom * 255 > minBottom) newBottom = minBottom / 255;
-                }
+                if (newBottom > maxBottom) newBottom = maxBottom;
+                if (newBottom < minBottom) newBottom = minBottom;
 
-                robot.base.setPosition( newBottom );
+                //robot.base.setPosition( newBottom );
 
                 telemetry.addData( "bottom at ", "%5.2f", robot.base.getPosition() );
                 telemetry.update();

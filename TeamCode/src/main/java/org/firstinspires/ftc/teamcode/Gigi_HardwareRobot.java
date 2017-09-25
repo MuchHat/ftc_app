@@ -54,7 +54,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
  *   As the arm servo approaches 0, the arm position moves up (away from the floor).
  *   As the claw servo approaches 0, the claw opens up (drops the game element).
  */
-public class Gigi_HardwareRobot_Template extends HardwarePushbot {
+public class Gigi_HardwareRobot extends HardwarePushbot {
     /* Public OpMode members. */
     public DcMotor leftDrive = null;
     public DcMotor rightDrive = null;
@@ -71,7 +71,7 @@ public class Gigi_HardwareRobot_Template extends HardwarePushbot {
     private ElapsedTime period = new ElapsedTime();
 
     /* Constructor */
-    public Gigi_HardwareRobot_Template() {
+    public Gigi_HardwareRobot() {
     }
 
     /* Initialize standard Hardware interfaces */
@@ -94,12 +94,12 @@ public class Gigi_HardwareRobot_Template extends HardwarePushbot {
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        turret = hwMap.get(Servo.class, "turret");
-        base = hwMap.get(Servo.class, "base");
-        elbow = hwMap.get(Servo.class, "elbow");
-        wrist = hwMap.get(Servo.class, "wrist");
-        clawLeft = hwMap.get(Servo.class, "claw_left");
-        clawRight = hwMap.get(Servo.class, "claw_right");
+        turret = hwMap.get(Servo.class, "Turret");
+        base = hwMap.get(Servo.class, "Base");
+        elbow = hwMap.get(Servo.class, "Elbow");
+        wrist = hwMap.get(Servo.class, "Wrist");
+        clawLeft = hwMap.get(Servo.class, "Claw_Left");
+        clawRight = hwMap.get(Servo.class, "Claw_Right");
     }
 }
 

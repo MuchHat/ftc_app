@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.animation.ValueAnimator;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -48,12 +49,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Adrian_OpMode_Template", group="Gigi")
-// @Disabled
+@TeleOp(name="Adrian_ServoOpMode", group="Adrian")
+@Disabled
 public class Adrian_ServoOpMode extends LinearOpMode {
 
     /* Declare OpMode members. */
-    Gigi_HardwareRobot_Template robot = new Gigi_HardwareRobot_Template();
+    Gigi_HardwareRobot robot = new Gigi_HardwareRobot();
     double servoInt = 0.000;
     double homeTurret = 170;
     double homeBottom = 10;

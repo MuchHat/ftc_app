@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -47,7 +48,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 
 @TeleOp(name="Gigi_OpMode_Trigonometric", group="Gigi")
-// @Disabled
+@Disabled
 public class Gigi_OpMode_Trigonometric extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -75,6 +76,8 @@ public class Gigi_OpMode_Trigonometric extends LinearOpMode {
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        telemetry.addData( "Say", "Started" );    //
+        telemetry.update();
 
         // run until the end of the match (driver presses STOP)
         while ( opModeIsActive() ) {
@@ -152,6 +155,7 @@ public class Gigi_OpMode_Trigonometric extends LinearOpMode {
 
             double newGamePadRead = System.currentTimeMillis();
             double millisElapsed = newGamePadRead - lastGamePadRead;
+
             lastGamePadRead = newGamePadRead;
             if( millisElapsed < 0 ){
                 millisElapsed = 0;
@@ -214,8 +218,16 @@ public class Gigi_OpMode_Trigonometric extends LinearOpMode {
                 double newZ = robot.currentCoordinateZ + changeZ;
 
                 robot.moveArmByCoordinates( newX, newY, newZ );
+
             }
+            telemetry.addData( "RUNNING  at ", "%5.2f", (double)System.currentTimeMillis() / 1000 );
+            telemetry.addData( "TURRET   at ", "%5.2f", robot.getTurret() );
+            telemetry.addData( "BASE     at ", "%5.2f", robot.getBase());
+            telemetry.addData( "ELBOW    at ", "%5.2f", robot.getElbow() );
+            telemetry.addData( "WRIST    at ", "%5.2f", robot.getWrist() );
+            telemetry.update();
         }
+
         // Pace this loop so jaw action is reasonable speed.
         sleep( 50 );
     }
