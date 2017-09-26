@@ -61,16 +61,23 @@ public class Gigi_OpMode_V2 extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // Step through each leg of the path, ensuring that the Auto mode has not been stopped along the way
         robot.leftDrive.setPower( 0 );
         robot.rightDrive.setPower( 0 );
 
-        robot.elbow.setPositionHome();
-        robot.base.setPositionHome();
-        robot.turret.setPositionHome();
-        robot.wrist.setPositionHome();
-        robot.leftClaw.setPositionHome();
-        robot.rightClaw.setPositionHome();
+        boolean useAnimation = false;
+
+        if( useAnimation ) {
+
+        }
+
+        if( !useAnimation ) {
+            robot.elbow.setPositionHome();
+            robot.base.setPositionHome();
+            robot.turret.setPositionHome();
+            robot.wrist.setPositionHome();
+            robot.leftClaw.setPositionHome();
+            robot.rightClaw.setPositionHome();
+        }
 
         while (opModeIsActive() ) {
 
