@@ -20,7 +20,7 @@ public class Triangle {
     public void Triangle(){
     }
 
-    public void init_l1a2a3( double al1, double aa2, double aa3 ){
+    public void resolve_SAA( double al1, double aa2, double aa3 ){
 
         l1 = al1;
 
@@ -34,7 +34,7 @@ public class Triangle {
         isValid = true;
     }
 
-    public void init_l1l2a3( double al1, double al2, double aa3 ) {
+    public void resolve_SSA( double al1, double al2, double aa3 ) {
 
         l1 = al1;
         l2 = al2;
@@ -55,7 +55,7 @@ public class Triangle {
         isValid = true;
     }
 
-    public void init_l1l2l3( double al1, double al2, double al3 ){
+    public void resolve_SSS( double al1, double al2, double al3 ){
 
         l1 = al1;
         l2 = al2;

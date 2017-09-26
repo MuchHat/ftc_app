@@ -57,7 +57,7 @@ public class Gigi_Hardware_V2 {
     public Servo _elbow = null;
     public Servo _wrist = null;
 
-    public double robot_arm_lenght = 222; // arm lenght
+    public double robot_arm_len = 222; // arm lenght
     public double robot_height = 66;
     public double robot_turret_to_edge = 111;
 
@@ -134,9 +134,9 @@ public class Gigi_Hardware_V2 {
         Triangle t2 = new Triangle();
         Triangle t3 = new Triangle();
 
-        t1.init_l1l2a3( robot_arm_lenght, robot_arm_lenght, e1 );
-        t2.init_l1l2a3( t1.l3, d, Math.PI - b1  );
-        t3.init_l1l2l3( robot_arm_lenght, robot_arm_lenght, t2.l3 );
+        t1.resolve_SSA( robot_arm_len, robot_arm_len, e1 );
+        t2.resolve_SSA( t1.l3, d, Math.PI - b1  );
+        t3.resolve_SSS( robot_arm_len, robot_arm_len, t2.l3 );
 
         return t2.a2 - b1;
     }
@@ -150,9 +150,9 @@ public class Gigi_Hardware_V2 {
         Triangle t2 = new Triangle();
         Triangle t3 = new Triangle();
 
-        t1.init_l1l2a3( robot_arm_lenght, robot_arm_lenght, e1 );
-        t2.init_l1l2a3( t1.l3, d, Math.PI - b1  );
-        t3.init_l1l2l3( robot_arm_lenght, robot_arm_lenght, t2.l3 );
+        t1.resolve_SSA( robot_arm_len, robot_arm_len, e1 );
+        t2.resolve_SSA( t1.l3, d, Math.PI - b1  );
+        t3.resolve_SSS( robot_arm_len, robot_arm_len, t2.l3 );
 
         return t1.a3 - e1;
     }
@@ -166,12 +166,14 @@ public class Gigi_Hardware_V2 {
         Triangle t2 = new Triangle();
         Triangle t3 = new Triangle();
 
-        t1.init_l1l2a3( robot_arm_lenght, robot_arm_lenght, e1 );
-        t2.init_l1l2a3( t1.l3, d, Math.PI - b1  );
-        t3.init_l1l2l3( robot_arm_lenght, robot_arm_lenght, t2.l3 );
+        t1.resolve_SSA( robot_arm_len, robot_arm_len, e1 );
+        t2.resolve_SSA( t1.l3, d, Math.PI - b1  );
+        t3.resolve_SSS( robot_arm_len, robot_arm_len, t2.l3 );
 
         return t1.a2 - t2.a2;
     }
+    
+    /********************* BELOW ARE NOT COMPLETE *******************/
 
     double yMoveToBase( double d )  {
 
@@ -182,9 +184,9 @@ public class Gigi_Hardware_V2 {
         Triangle t2 = new Triangle();
         Triangle t3 = new Triangle();
 
-        t1.init_l1l2a3( robot_arm_lenght, robot_arm_lenght, e1 );
-        t2.init_l1l2a3( t1.l3, d, Math.PI - b1  );
-        t3.init_l1l2l3( robot_arm_lenght, robot_arm_lenght, t2.l3 );
+        t1.resolve_SSA( robot_arm_len, robot_arm_len, e1 );
+        t2.resolve_SSA( t1.l3, d, Math.PI - b1  );
+        t3.resolve_SSS( robot_arm_len, robot_arm_len, t2.l3 );
 
         return -t2.a2;
     }
@@ -198,9 +200,9 @@ public class Gigi_Hardware_V2 {
         Triangle t2 = new Triangle();
         Triangle t3 = new Triangle();
 
-        t1.init_l1l2a3( robot_arm_lenght, robot_arm_lenght, e1 );
-        t2.init_l1l2a3( t1.l3, d, Math.PI - b1  );
-        t3.init_l1l2l3( robot_arm_lenght, robot_arm_lenght, t2.l3 );
+        t1.resolve_SSA( robot_arm_len, robot_arm_len, e1 );
+        t2.resolve_SSA( t1.l3, d, Math.PI - b1  );
+        t3.resolve_SSS( robot_arm_len, robot_arm_len, t2.l3 );
 
         return t1.a3 - e1;
     }
@@ -214,9 +216,9 @@ public class Gigi_Hardware_V2 {
         Triangle t2 = new Triangle();
         Triangle t3 = new Triangle();
 
-        t1.init_l1l2a3( robot_arm_lenght, robot_arm_lenght, e1 );
-        t2.init_l1l2a3( t1.l3, d, Math.PI - b1  );
-        t3.init_l1l2l3( robot_arm_lenght, robot_arm_lenght, t2.l3 );
+        t1.resolve_SSA( robot_arm_len, robot_arm_len, e1 );
+        t2.resolve_SSA( t1.l3, d, Math.PI - b1  );
+        t3.resolve_SSS( robot_arm_len, robot_arm_len, t2.l3 );
 
         return t1.a2 - t2.a2;
     }
