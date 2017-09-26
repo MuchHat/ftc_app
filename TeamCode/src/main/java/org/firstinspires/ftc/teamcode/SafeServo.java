@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.animation.ValueAnimator;
+
+import com.qualcomm.hardware.ams.AMSColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -82,13 +85,14 @@ public class SafeServo {
         double pos_1 = getAdjustedPositionSafe( pos );
         double pos_crr = theServo.getPosition();
 
-        double stepSize  = 0.05;
-        double stepWait  = 222; // 100 millis for a step
-        double rampRatio = 0.5; // increase/decrease time per step during ramp
+        double stepSize  = 0.005;
+        double stepWait  = 0.2; // secs in a step
+        double rampRatio = 0.3; // increase/decrease time per step during ramp
 
         double stepCount = Math.abs( pos_1 - pos_crr ) / stepSize;
-        double rampSteps = stepCount * 0.2; // 20% ramp up/down
-        if( rampSteps < 2 )rampSteps = 2;
+        if( stepCount < 3 )stepCount = 3;
+        double rampSteps = stepCount * 0.3; // 33% ramp up/down
+        if( rampSteps < 1 )rampSteps = 1;
         if( rampSteps > stepCount / 2 ) rampSteps = stepCount / 2;
 
         runtime.reset();
@@ -105,12 +109,30 @@ public class SafeServo {
 
             theServo.setPosition( pos_crr + stepSize * ( pos_1 - pos_crr ) );
 
-            while( runtime.milliseconds() < waitTarget ){
-                // wait
-            }
+           while( runtime.seconds() < waitTarget ){
+
+           }
         }
         theServo.setPosition( Range.clip( pos_1, 0.0, 1.0 ) );
     }
+/*
+        double animationTime = (long)( Math.abs( pos - theServo.getPosition() ) * 1666 );
+
+        ValueAnimator valueAnimator = ValueAnimator.ofInt((int)( theServo.getPosition() * 1000 ), (int)( getAdjustedPositionSafe( pos ) * 1000 ) );
+        valueAnimator.setDuration( 2222 );
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                double crrPos = Double.valueOf(valueAnimator.getAnimatedValue().toString()) / 1000;
+                theServo.setPosition( crrPos );
+            }
+        });
+        valueAnimator.start();
+        while( valueAnimator.isRunning() ){
+
+        }
+        theServo.setPosition( Range.clip( getAdjustedPositionSafe( pos ), 0.0, 1.0 ) );
+ */
 
     double getAdjustedPositionSafe ( double pos ) {
 
