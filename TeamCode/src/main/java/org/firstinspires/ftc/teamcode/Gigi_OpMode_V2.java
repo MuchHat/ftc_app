@@ -75,40 +75,24 @@ public class Gigi_OpMode_V2 extends LinearOpMode {
         while (opModeIsActive() ) {
 
             if( gamepad1.right_stick_x > 0 ){
-                robot.base.setPosition(
-                        robot.base.getPosition() +
-                                robot.base.getPosition() * gamepad1.right_stick_x * 0.1 );
+                robot.base.moveServoIncremental( gamepad1.right_stick_x * 0.1 );
             }
             if( gamepad1.right_stick_y > 0 ){
-                robot.wrist.setPosition(
-                        robot.wrist.getPosition() +
-                                robot.wrist.getPosition() * gamepad1.right_stick_y * 0.1 );
+                robot.wrist.moveServoIncremental( gamepad1.right_stick_y * 0.1 );
             }
             if( gamepad1.left_stick_x > 0 ){
-                robot.elbow.setPosition(
-                        robot.elbow.getPosition() +
-                                robot.elbow.getPosition() * gamepad1.left_stick_x * 0.1 );
+                robot.elbow.moveServoIncremental( gamepad1.left_stick_x * 0.1 );
             }
             if( gamepad1.left_stick_y > 0 ){
-                robot.turret.setPosition(
-                        robot.turret.getPosition() +
-                                robot.turret.getPosition() * gamepad1.left_stick_y * 0.1 );
+                robot.turret.moveServoIncremental( gamepad1.left_stick_y * 0.1 );
             }
             if( gamepad1.right_trigger > 0) {
-                robot.leftClaw.setPosition(
-                        robot.leftClaw.getPosition() +
-                                robot.leftClaw.getPosition() * gamepad1.right_trigger  * 0.1 );
-                robot.rightClaw.setPosition(
-                        robot.rightClaw.getPosition() +
-                                robot.rightClaw.getPosition() * gamepad1.right_trigger  * 0.1 );
+                robot.leftClaw.moveServoIncremental( gamepad1.right_trigger  * 0.1 );
+                robot.rightClaw.moveServoIncremental( gamepad1.right_trigger  * 0.1 );
             }
             if( gamepad1.left_trigger > 0) {
-                robot.leftClaw.setPosition(
-                        robot.leftClaw.getPosition() -
-                                robot.leftClaw.getPosition() * gamepad1.left_trigger  * 0.1 );
-                robot.rightClaw.setPosition(
-                        robot.rightClaw.getPosition() -
-                                robot.rightClaw.getPosition() * gamepad1.left_trigger  * 0.1 );
+                robot.leftClaw.moveServoIncremental( -gamepad1.left_trigger  * 0.1 );
+                robot.rightClaw.moveServoIncremental( +gamepad1.left_trigger  * 0.1 );
             }
             if( gamepad1.back ) {
                 robot.elbow.setPositionHome();

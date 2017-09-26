@@ -65,7 +65,7 @@ public class SafeServo {
     public void setPositionHome() {
 
         double pos_1 = ( homePos_255 - A0_255 ) /  ( A180_255 - A0_255 );
-        moveServo( pos_1 );
+        moveServoPosition( pos_1 );
     }
 
     public void setPosition( double pos ) {
@@ -82,57 +82,34 @@ public class SafeServo {
         return theServo.getPosition() * ( A180_255 - A0_255 ) + A0_255;
     }
 
-    public void moveServo( double pos ) {
+    public void moveServoPosition( double pos ) {
 
         double pos_1 = getAdjustedPositionSafe( pos );
-        double pos_crr = theServo.getPosition();
 
-        //double stepSize  = 0.001;
-        double stepWait  = 333; // secs in a step
-        //double rampRatio = 0.3; // increase/decrease time per step during ramp
-        double stepCount = 33;
-        //double rampSteps = 6;
-        // double stepSize = ( pos_1 - pos_crr ) / stepCount;
-
-        double stepSize = 0.008;
-        if( pos_1 < pos_crr )stepSize = -0.008;
-        stepCount = Math.abs( pos_1 - pos_crr ) / stepSize;
-        long waitStep = (long)( 666 / stepCount );
-        if( waitStep < 11 )waitStep = 11;
-
-        //double stepCount = Math.abs( pos_1 - pos_crr ) / stepSize;
-        //double rampSteps = stepCount * 0.33; // 33% ramp up/down
-        //if( rampSteps < 1 )rampSteps = 1;
-        //if( rampSteps > stepCount / 2 ) rampSteps = stepCount / 2;
-
-        runtime.reset();
-        //double waitTarget = stepWait;
-        double intermediatePos = pos_crr;
-
-        for( int i = 0; i < stepCount; i++ ){
-
-            //waitTarget += stepWait;
-
-            //double rampPosition = Math.max( rampSteps - i, i - ( stepCount - rampSteps )  );
-
-            //rampPosition = Math.max( rampPosition, 0 );
-            //rampPosition = Math.min( rampPosition, rampSteps );
-
-            //waitTarget += stepWait * rampRatio * rampPosition;
-
-            intermediatePos += stepSize;
-
-            theServo.setPosition( Range.clip( intermediatePos, 0.0, 1.0 ) );
-
-            sleep( waitStep );
-
-            //while( runtime.milliseconds() < waitTarget ){
-              //  double idle = theServo.getPosition();
-
-           //}
-        }
         theServo.setPosition( Range.clip( pos_1, 0.0, 1.0 ) );
     }
+
+    public void moveServoIncremental( double pos ) {
+
+        double pos_1 = getAdjustedPositionSafe( pos );
+
+        theServo.setPosition( Range.clip( pos_1 + theServo.getPosition(), 0.0, 1.0 ) );
+    }
+
+    double getAdjustedPositionSafe ( double pos ) {
+
+        pos = Range.clip( pos, 0.0, 1.0 );
+
+        double pos_255 = A0_255 + (A180_255 - A0_255) * pos;
+
+        pos_255 = Range.clip( pos_255, minLimit_255, maxLimit_255 );
+
+        double pos_1 = pos_255 / ( 255 );
+
+        return Range.clip( pos_1, 0.0, 1.0 );
+    }
+}
+
 /*
         double animationTime = (long)( Math.abs( pos - theServo.getPosition() ) * 1666 );
 
@@ -151,17 +128,3 @@ public class SafeServo {
         }
         theServo.setPosition( Range.clip( getAdjustedPositionSafe( pos ), 0.0, 1.0 ) );
  */
-
-    double getAdjustedPositionSafe ( double pos ) {
-
-        pos = Range.clip( pos, 0.0, 1.0 );
-
-        double pos_255 = A0_255 + (A180_255 - A0_255) * pos;
-
-        pos_255 = Range.clip( pos_255, minLimit_255, maxLimit_255 );
-
-        double pos_1 = pos_255 / ( 255 );
-
-        return Range.clip( pos_1, 0.0, 1.0 );
-    }
-}
