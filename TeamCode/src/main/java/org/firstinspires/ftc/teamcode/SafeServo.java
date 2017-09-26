@@ -102,6 +102,10 @@ public class SafeServo {
         theServo.setPosition( Range.clip( pos_1 + theServo.getPosition(), 0.0, 1.0 ) );
     }
 
+    double getAngleToHorizontal() {
+        return 0;
+    }
+
     double getAdjustedPositionSafe ( double pos ) {
 
         pos = Range.clip( pos, 0.0, 1.0 );

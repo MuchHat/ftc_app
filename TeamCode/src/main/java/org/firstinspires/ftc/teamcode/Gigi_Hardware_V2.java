@@ -38,87 +38,184 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * This is a robot hardware class NOT an opmode.
  *
  */
-public class Gigi_Hardware_V2
-{
+public class Gigi_Hardware_V2 {
     /* Public OpMode members. */
-    public DcMotor      leftDrive   = null;
-    public DcMotor      rightDrive  = null;
+    public DcMotor leftDrive = null;
+    public DcMotor rightDrive = null;
 
-    public SafeServo    leftClaw    = null;
-    public SafeServo    rightClaw   = null;
-    public SafeServo    turret      = null;
-    public SafeServo    base        = null;
-    public SafeServo    elbow       = null;
-    public SafeServo    wrist       = null;
+    public SafeServo leftClaw = null;
+    public SafeServo rightClaw = null;
+    public SafeServo turret = null;
+    public SafeServo base = null;
+    public SafeServo elbow = null;
+    public SafeServo wrist = null;
 
-    public Servo    _leftClaw    = null;
-    public Servo    _rightClaw   = null;
-    public Servo    _turret      = null;
-    public Servo    _base        = null;
-    public Servo    _elbow       = null;
-    public Servo    _wrist       = null;
+    public Servo _leftClaw = null;
+    public Servo _rightClaw = null;
+    public Servo _turret = null;
+    public Servo _base = null;
+    public Servo _elbow = null;
+    public Servo _wrist = null;
 
     /* local OpMode members. */
-    public HardwareMap hwMap    =  null;
-    public ElapsedTime runtime  =  new ElapsedTime();
+    public HardwareMap hwMap = null;
+    public ElapsedTime runtime = new ElapsedTime();
 
     /* Constructor */
-    public Gigi_Hardware_V2(){
+    public Gigi_Hardware_V2() {
 
     }
 
     /* Initialize standard Hardware interfaces */
-    public void init( HardwareMap ahwMap ) {
+    public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
 
         //****** MOTORS *********
-        leftDrive = hwMap.get( DcMotor.class, "Motor_Left" );
-        rightDrive = hwMap.get( DcMotor.class, "Motor_Right" );
+        leftDrive = hwMap.get(DcMotor.class, "Motor_Left");
+        rightDrive = hwMap.get(DcMotor.class, "Motor_Right");
 
-        leftDrive.setDirection( DcMotor.Direction.FORWARD ); // Set to REVERSE if using AndyMark motors
-        rightDrive.setDirection( DcMotor.Direction.REVERSE );// Set to FORWARD if using AndyMark motors
+        leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
+        rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
 
-        leftDrive.setPower( 0 );
-        rightDrive.setPower( 0 );
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
 
-        leftDrive.setMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER );
-        rightDrive.setMode( DcMotor.RunMode.RUN_WITHOUT_ENCODER );
+        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        _turret = hwMap.get( Servo.class, "Turret" );
-        _base = hwMap.get( Servo.class, "Base" );
-        _elbow = hwMap.get( Servo.class, "Elbow" );
-        _wrist = hwMap.get( Servo.class, "Wrist" );
-        _leftClaw = hwMap.get( Servo.class, "Claw_Left" );
-        _rightClaw = hwMap.get( Servo.class, "Claw_Right" );
+        _turret = hwMap.get(Servo.class, "Turret");
+        _base = hwMap.get(Servo.class, "Base");
+        _elbow = hwMap.get(Servo.class, "Elbow");
+        _wrist = hwMap.get(Servo.class, "Wrist");
+        _leftClaw = hwMap.get(Servo.class, "Claw_Left");
+        _rightClaw = hwMap.get(Servo.class, "Claw_Right");
 
         //****** SERVOS *********
-        turret      = new SafeServo();
-        base        = new SafeServo();
-        elbow       = new SafeServo();
-        wrist       = new SafeServo();
-        leftClaw    = new SafeServo();
-        rightClaw   = new SafeServo();
+        turret = new SafeServo();
+        base = new SafeServo();
+        elbow = new SafeServo();
+        wrist = new SafeServo();
+        leftClaw = new SafeServo();
+        rightClaw = new SafeServo();
 
-        turret.init( _turret );
-        base.init( _base );
-        elbow.init( _elbow );
-        wrist.init( _wrist );
-        leftClaw.init( _leftClaw );
-        rightClaw.init( _rightClaw );
+        turret.init(_turret);
+        base.init(_base);
+        elbow.init(_elbow);
+        wrist.init(_wrist);
+        leftClaw.init(_leftClaw);
+        rightClaw.init(_rightClaw);
 
-        turret.configLimits( 4, 255, 40, 295 );
-        base.configLimits( 0, 255, -10, 245 );
-        elbow.configLimits( 40, 255, 30, 330 );
-        wrist.configLimits( 0, 240, -20, 245 );
-        leftClaw.configLimits( 0, 120, -10, 120 );
-        rightClaw.configLimits( 140, 280, 140, 280 );
+        turret.configLimits(4, 255, 40, 295);
+        base.configLimits(0, 255, -10, 245);
+        elbow.configLimits(40, 255, 30, 330);
+        wrist.configLimits(0, 240, -20, 245);
+        leftClaw.configLimits(0, 120, -10, 120);
+        rightClaw.configLimits(140, 280, 140, 280);
 
-        turret.configHome( 166 );
-        base.configHome( 30 );
-        elbow.configHome( 80 );
-        wrist.configHome( 80 );
-        leftClaw.configHome( 0 );
-        rightClaw.configHome( 140 );
+        turret.configHome(166);
+        base.configHome(30);
+        elbow.configHome(80);
+        wrist.configHome(80);
+        leftClaw.configHome(0);
+        rightClaw.configHome(140);
     }
+
+    double getBaseIncrementVertical( double d ) {
+
+        e1 = elbow.getAngle();
+        b1 = base.getAngle();
+
+        Triangle t1 = new Triangle();
+        Triangle t2 = new Triangle();
+        Triangle t3 = new Triangle();
+
+        t1.init_l1l2a3( l, l, e1 );
+        t2.init_l1l2a3( t1.l3, d, Math.PI() - b1  );
+        t3.init_l1l2l3( l, l, t2.l3 );
+
+        return t2.a2 - b1;
+    }
+
+    double getElbowIncrementVertical( double horizontalIncrement ) {
+
+        e1 = elbow.getAngle();
+        b1 = base.getAngle();
+
+        Triangle t1 = new Triangle();
+        Triangle t2 = new Triangle();
+        Triangle t3 = new Triangle();
+
+        t1.init_l1l2a3( l, l, e1 );
+        t2.init_l1l2a3( t1.l3, d, Math.PI() - b1  );
+        t3.init_l1l2l3( l, l, t2.l3 );
+
+        return t1.a3 - e1;
+    }
+
+    double getBaseIncrementHorizontal( double horizontalIncrement )  {
+
+        e1 = elbow.getAngle();
+        b1 = base.getAngle();
+
+        Triangle t1 = new Triangle();
+        Triangle t2 = new Triangle();
+        Triangle t3 = new Triangle();
+
+        t1.init_l1l2a3( l, l, e1 );
+        t2.init_l1l2a3( t1.l3, d, Math.PI() - b1  );
+        t3.init_l1l2l3( l, l, t2.l3 );
+
+        return -t2.a2;
+    }
+
+    double getElbowIncrementVertical( double horizontalIncrement ) {
+
+        e1 = elbow.getAngle();
+        b1 = base.getAngle();
+
+        Triangle t1 = new Triangle();
+        Triangle t2 = new Triangle();
+        Triangle t3 = new Triangle();
+
+        t1.init_l1l2a3( l, l, e1 );
+        t2.init_l1l2a3( t1.l3, d, Math.PI() - b1  );
+        t3.init_l1l2l3( l, l, t2.l3 );
+
+        return t1.a3 - e1;
+    }
+
+    double getWristIncrementVertical(double horizontalIncrement) {
+
+        e1 = elbow.getAngle();
+        b1 = base.getAngle();
+
+        Triangle t1 = new Triangle();
+        Triangle t2 = new Triangle();
+        Triangle t3 = new Triangle();
+
+        t1.init_l1l2a3( l, l, e1 );
+        t2.init_l1l2a3( t1.l3, d, Math.PI() - b1  );
+        t3.init_l1l2l3( l, l, t2.l3 );
+
+        return t1.a2 - t2.a2;
+    }
+
+    double getClawIncrementHorizontal(double horizontalIncrement) {
+
+        e1 = elbow.getAngle();
+        b1 = base.getAngle();
+
+        Triangle t1 = new Triangle();
+        Triangle t2 = new Triangle();
+        Triangle t3 = new Triangle();
+
+        t1.init_l1l2a3( l, l, e1 );
+        t2.init_l1l2a3( t1.l3, d, Math.PI() - b1  );
+        t3.init_l1l2l3( l, l, t2.l3 );
+
+        return t1.a2 - t2.a2;
+    }
+}
+
  }
