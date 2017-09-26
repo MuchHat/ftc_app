@@ -118,6 +118,7 @@ public class Gigi_OpMode_V2 extends LinearOpMode {
                 robot.leftClaw.setPositionHome();
                 robot.rightClaw.setPositionHome();
             }
+            sleep( 111 );
         }
 
         robot.elbow.setPosition( 0 );

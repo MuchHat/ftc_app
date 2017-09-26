@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import static android.os.SystemClock.sleep;
+
 /**
  * Created by MuchHat on 9/25/2017.
  */
@@ -122,12 +124,7 @@ public class SafeServo {
 
             theServo.setPosition( Range.clip( intermediatePos, 0.0, 1.0 ) );
 
-            try {
-                Thread.sleep( waitStep );
-            }
-            catch ( InterruptedException e ) {
-
-            }
+            sleep( waitStep );
 
             //while( runtime.milliseconds() < waitTarget ){
               //  double idle = theServo.getPosition();
