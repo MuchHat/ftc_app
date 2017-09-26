@@ -57,6 +57,10 @@ public class Gigi_Hardware_V2 {
     public Servo _elbow = null;
     public Servo _wrist = null;
 
+    public double robot_arm_lenght = 222; // arm lenght
+    public double robot_height = 66;
+    public double robot_turret_to_edge = 111;
+
     /* local OpMode members. */
     public HardwareMap hwMap = null;
     public ElapsedTime runtime = new ElapsedTime();
@@ -121,101 +125,119 @@ public class Gigi_Hardware_V2 {
         rightClaw.configHome(140);
     }
 
-    double getBaseIncrementVertical( double d ) {
+    double zMoveToBase( double d ) {
 
-        e1 = elbow.getAngle();
-        b1 = base.getAngle();
+        double e1 = elbow.getAngle();
+        double b1 = base.getAngle();
 
         Triangle t1 = new Triangle();
         Triangle t2 = new Triangle();
         Triangle t3 = new Triangle();
 
-        t1.init_l1l2a3( l, l, e1 );
-        t2.init_l1l2a3( t1.l3, d, Math.PI() - b1  );
-        t3.init_l1l2l3( l, l, t2.l3 );
+        t1.init_l1l2a3( robot_arm_lenght, robot_arm_lenght, e1 );
+        t2.init_l1l2a3( t1.l3, d, Math.PI - b1  );
+        t3.init_l1l2l3( robot_arm_lenght, robot_arm_lenght, t2.l3 );
 
         return t2.a2 - b1;
     }
 
-    double getElbowIncrementVertical( double horizontalIncrement ) {
+    double zMoveToElbow( double d ) {
 
-        e1 = elbow.getAngle();
-        b1 = base.getAngle();
+        double e1 = elbow.getAngle();
+        double b1 = base.getAngle();
 
         Triangle t1 = new Triangle();
         Triangle t2 = new Triangle();
         Triangle t3 = new Triangle();
 
-        t1.init_l1l2a3( l, l, e1 );
-        t2.init_l1l2a3( t1.l3, d, Math.PI() - b1  );
-        t3.init_l1l2l3( l, l, t2.l3 );
+        t1.init_l1l2a3( robot_arm_lenght, robot_arm_lenght, e1 );
+        t2.init_l1l2a3( t1.l3, d, Math.PI - b1  );
+        t3.init_l1l2l3( robot_arm_lenght, robot_arm_lenght, t2.l3 );
 
         return t1.a3 - e1;
     }
 
-    double getBaseIncrementHorizontal( double horizontalIncrement )  {
+    double zMoveToWrist( double d ) {
 
-        e1 = elbow.getAngle();
-        b1 = base.getAngle();
+        double e1 = elbow.getAngle();
+        double b1 = base.getAngle();
 
         Triangle t1 = new Triangle();
         Triangle t2 = new Triangle();
         Triangle t3 = new Triangle();
 
-        t1.init_l1l2a3( l, l, e1 );
-        t2.init_l1l2a3( t1.l3, d, Math.PI() - b1  );
-        t3.init_l1l2l3( l, l, t2.l3 );
+        t1.init_l1l2a3( robot_arm_lenght, robot_arm_lenght, e1 );
+        t2.init_l1l2a3( t1.l3, d, Math.PI - b1  );
+        t3.init_l1l2l3( robot_arm_lenght, robot_arm_lenght, t2.l3 );
+
+        return t1.a2 - t2.a2;
+    }
+
+    double yMoveToBase( double d )  {
+
+        double e1 = elbow.getAngle();
+        double b1 = base.getAngle();
+
+        Triangle t1 = new Triangle();
+        Triangle t2 = new Triangle();
+        Triangle t3 = new Triangle();
+
+        t1.init_l1l2a3( robot_arm_lenght, robot_arm_lenght, e1 );
+        t2.init_l1l2a3( t1.l3, d, Math.PI - b1  );
+        t3.init_l1l2l3( robot_arm_lenght, robot_arm_lenght, t2.l3 );
 
         return -t2.a2;
     }
 
-    double getElbowIncrementVertical( double horizontalIncrement ) {
+    double yMoveToElbow( double d ) {
 
-        e1 = elbow.getAngle();
-        b1 = base.getAngle();
+        double e1 = elbow.getAngle();
+        double b1 = base.getAngle();
 
         Triangle t1 = new Triangle();
         Triangle t2 = new Triangle();
         Triangle t3 = new Triangle();
 
-        t1.init_l1l2a3( l, l, e1 );
-        t2.init_l1l2a3( t1.l3, d, Math.PI() - b1  );
-        t3.init_l1l2l3( l, l, t2.l3 );
+        t1.init_l1l2a3( robot_arm_lenght, robot_arm_lenght, e1 );
+        t2.init_l1l2a3( t1.l3, d, Math.PI - b1  );
+        t3.init_l1l2l3( robot_arm_lenght, robot_arm_lenght, t2.l3 );
 
         return t1.a3 - e1;
     }
 
-    double getWristIncrementVertical(double horizontalIncrement) {
+    double yMoveToWrist( double d ) {
 
-        e1 = elbow.getAngle();
-        b1 = base.getAngle();
+        double e1 = elbow.getAngle();
+        double b1 = base.getAngle();
 
         Triangle t1 = new Triangle();
         Triangle t2 = new Triangle();
         Triangle t3 = new Triangle();
 
-        t1.init_l1l2a3( l, l, e1 );
-        t2.init_l1l2a3( t1.l3, d, Math.PI() - b1  );
-        t3.init_l1l2l3( l, l, t2.l3 );
+        t1.init_l1l2a3( robot_arm_lenght, robot_arm_lenght, e1 );
+        t2.init_l1l2a3( t1.l3, d, Math.PI - b1  );
+        t3.init_l1l2l3( robot_arm_lenght, robot_arm_lenght, t2.l3 );
 
         return t1.a2 - t2.a2;
     }
 
-    double getClawIncrementHorizontal(double horizontalIncrement) {
+    double yMoveToTurret( double d ) {
+        return 0;
+    }
 
-        e1 = elbow.getAngle();
-        b1 = base.getAngle();
+    double xMoveToBase( double d ) {
+        return 0;
+    }
 
-        Triangle t1 = new Triangle();
-        Triangle t2 = new Triangle();
-        Triangle t3 = new Triangle();
+    double xMoveToElbow( double d ) {
+        return 0;
+    }
 
-        t1.init_l1l2a3( l, l, e1 );
-        t2.init_l1l2a3( t1.l3, d, Math.PI() - b1  );
-        t3.init_l1l2l3( l, l, t2.l3 );
+    double xMoveToWrist( double d ) {
+        return 0;
+    }
 
-        return t1.a2 - t2.a2;
+    double xMoveToTurret( double d ) {
+        return 0;
     }
 }
-
- }
