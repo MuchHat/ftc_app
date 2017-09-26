@@ -58,6 +58,12 @@ public class SafeServo {
         return Range.clip( ( minLimit_255 - A0_255 ) / ( A180_255 - A0_255 ), 0.0, 1.0 );
     }
 
+    public double getHomePosIncrement() {
+        double crrPos = theServo.getPosition();
+        double homePos = ( homePos_255 - A0_255 ) / ( A180_255 - A0_255 );
+        return Range.clip( ( homePos - crrPos ), 0.0, 1.0 );
+    }
+
     public double getMaxLimit() {
         return Range.clip( ( maxLimit_255 - A0_255 ) / ( A180_255 - A0_255 ), 0.0, 1.0 );
     }
@@ -109,22 +115,3 @@ public class SafeServo {
         return Range.clip( pos_1, 0.0, 1.0 );
     }
 }
-
-/*
-        double animationTime = (long)( Math.abs( pos - theServo.getPosition() ) * 1666 );
-
-        ValueAnimator valueAnimator = ValueAnimator.ofInt((int)( theServo.getPosition() * 1000 ), (int)( getAdjustedPositionSafe( pos ) * 1000 ) );
-        valueAnimator.setDuration( 2222 );
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                double crrPos = Double.valueOf(valueAnimator.getAnimatedValue().toString()) / 1000;
-                theServo.setPosition( crrPos );
-            }
-        });
-        valueAnimator.start();
-        while( valueAnimator.isRunning() ){
-
-        }
-        theServo.setPosition( Range.clip( getAdjustedPositionSafe( pos ), 0.0, 1.0 ) );
- */
