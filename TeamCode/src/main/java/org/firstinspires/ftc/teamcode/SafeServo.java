@@ -83,6 +83,12 @@ public class SafeServo {
 
         return theServo.getPosition();
     }
+
+    public double getAngle() {
+
+        return theServo.getPosition();
+    }
+
     public double getPosition_255() {
 
         return theServo.getPosition() * ( A180_255 - A0_255 ) + A0_255;
