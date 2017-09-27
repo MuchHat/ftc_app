@@ -135,10 +135,10 @@ public class Gigi_Hardware_V2 {
         Triangle t3 = new Triangle();
 
         t1.resolve_SSA( robot_arm_len, robot_arm_len, e1 );
-        t2.resolve_SSA( t1.l3, d, Math.PI - b1  );
-        t3.resolve_SSS( robot_arm_len, robot_arm_len, t2.l3 );
+        t2.resolve_SSA( d, t1.l1, Math.PI + b1  );
+        t3.resolve_SSS( t2.l1, robot_arm_len, robot_arm_len );
 
-        return t2.a2 - b1;
+        return -( t2.a2 / Math.PI );
     }
 
     double zMoveToElbow( double d ) {
@@ -151,81 +151,160 @@ public class Gigi_Hardware_V2 {
         Triangle t3 = new Triangle();
 
         t1.resolve_SSA( robot_arm_len, robot_arm_len, e1 );
-        t2.resolve_SSA( t1.l3, d, Math.PI - b1  );
-        t3.resolve_SSS( robot_arm_len, robot_arm_len, t2.l3 );
+        t2.resolve_SSA( d, t1.l1, Math.PI + b1  );
+        t3.resolve_SSS( t2.l1, robot_arm_len, robot_arm_len );
 
-        return t1.a3 - e1;
+        return ( t3.a1 - e1 ) /Math.PI;
     }
 
     double zMoveToWrist( double d ) {
 
         double e1 = elbow.getAngle();
         double b1 = base.getAngle();
+        double w1 = wrist.getAngle();
 
         Triangle t1 = new Triangle();
         Triangle t2 = new Triangle();
         Triangle t3 = new Triangle();
 
         t1.resolve_SSA( robot_arm_len, robot_arm_len, e1 );
-        t2.resolve_SSA( t1.l3, d, Math.PI - b1  );
-        t3.resolve_SSS( robot_arm_len, robot_arm_len, t2.l3 );
+        t2.resolve_SSA( d, t1.l1, Math.PI + b1  );
+        t3.resolve_SSS( t2.l1, robot_arm_len, robot_arm_len );
 
-        return t1.a2 - t2.a2;
+        return ( ( Math.PI * 2 - Math.PI * 0.5 - t3.a2 -t2.a2 ) - w1 ) / Math.PI;
     }
     
-    /********************* BELOW ARE NOT COMPLETE *******************/
-
     double yMoveToBase( double d )  {
 
         double e1 = elbow.getAngle();
         double b1 = base.getAngle();
+        double tr1 = turret.getAngle();
 
-        Triangle t1 = new Triangle();
-        Triangle t2 = new Triangle();
-        Triangle t3 = new Triangle();
+        double p1 = 0;
+        double p2 = 0;
+        double c = 0;
+        {
+            Triangle t1 = new Triangle;
+            Triangle t2 = new Triangle;
 
-        t1.resolve_SSA( robot_arm_len, robot_arm_len, e1 );
-        t2.resolve_SSA( t1.l3, d, Math.PI - b1  );
-        t3.resolve_SSS( robot_arm_len, robot_arm_len, t2.l3 );
+            t1.resolve_SSS( robot_arm_len, robot_arm_len, e1 );
 
-        return -t2.a2;
+            p1 = t1.l3 * Math.sin( b1 );
+
+            t2.resolve_SSA( d, p1, Math.PI /2 + tr1 );
+
+            p2 = t2.l3;
+        }
+        {
+            Triangle t1 = new Triangle();
+            Triangle t2 = new Triangle();
+            Triangle t3 = new Triangle();
+
+            t1.resolve_SSA(robot_arm_len, robot_arm_len, e1);
+            t2.resolve_SSA( p2 - t1.l1 Math.cos( b1 ), t1.l1, Math.PI - b1 );
+            t3.resolve_SSS( t2.l1, robot_arm_len, robot_arm_len );
+
+            c = -t2.a2;
+        }
+
+        return c / Math.PI;
     }
 
     double yMoveToElbow( double d ) {
 
         double e1 = elbow.getAngle();
         double b1 = base.getAngle();
+        double tr1 = turret.getAngle();
 
-        Triangle t1 = new Triangle();
-        Triangle t2 = new Triangle();
-        Triangle t3 = new Triangle();
+        double p1 = 0;
+        double p2 = 0;
+        double c = 0;
+        {
+            Triangle t1 = new Triangle;
+            Triangle t2 = new Triangle;
 
-        t1.resolve_SSA( robot_arm_len, robot_arm_len, e1 );
-        t2.resolve_SSA( t1.l3, d, Math.PI - b1  );
-        t3.resolve_SSS( robot_arm_len, robot_arm_len, t2.l3 );
+            t1.resolve_SSS( robot_arm_len, robot_arm_len, e1 );
 
-        return t1.a3 - e1;
+            p1 = t1.l3 * Math.sin( b1 );
+
+            t2.resolve_SSA( d, p1, Math.PI /2 + tr1 );
+
+            p2 = t2.l3;
+        }
+        {
+            Triangle t1 = new Triangle();
+            Triangle t2 = new Triangle();
+            Triangle t3 = new Triangle();
+
+            t1.resolve_SSA(robot_arm_len, robot_arm_len, e1);
+            t2.resolve_SSA( p2 - t1.l1 Math.cos( b1 ), t1.l1, Math.PI - b1 );
+            t3.resolve_SSS( t2.l1, robot_arm_len, robot_arm_len );
+
+            c = t3.a1 - e1;
+        }
+
+        return c / Math.PI;
     }
 
     double yMoveToWrist( double d ) {
 
         double e1 = elbow.getAngle();
         double b1 = base.getAngle();
+        double w1 = wrist.getAngle();
 
-        Triangle t1 = new Triangle();
-        Triangle t2 = new Triangle();
-        Triangle t3 = new Triangle();
+        double p1 = 0;
+        double p2 = 0;
+        double c = 0;
+        {
+            Triangle t1 = new Triangle;
+            Triangle t2 = new Triangle;
 
-        t1.resolve_SSA( robot_arm_len, robot_arm_len, e1 );
-        t2.resolve_SSA( t1.l3, d, Math.PI - b1  );
-        t3.resolve_SSS( robot_arm_len, robot_arm_len, t2.l3 );
+            t1.resolve_SSS( robot_arm_len, robot_arm_len, e1 );
 
-        return t1.a2 - t2.a2;
+            p1 = t1.l3 * Math.sin( b1 );
+
+            t2.resolve_SSA( d, p1, Math.PI /2 + tr1 );
+
+            p2 = t2.l3;
+        }
+        {
+            Triangle t1 = new Triangle();
+            Triangle t2 = new Triangle();
+            Triangle t3 = new Triangle();
+
+            t1.resolve_SSA(robot_arm_len, robot_arm_len, e1);
+            t2.resolve_SSA( p2 - t1.l1 Math.cos( b1 ), t1.l1, Math.PI - b1 );
+            t3.resolve_SSS( t2.l1, robot_arm_len, robot_arm_len );
+
+            c = Math.PI * 2 - Math.PI * 0.5 - t3.a2 -t2.a2 - w1 ;
+        }
+
+        return c / Math.PI;
     }
 
     double yMoveToTurret( double d ) {
-        return 0;
+        double e1 = elbow.getAngle();
+        double b1 = base.getAngle();
+        double tr1 = turret.getAngle();
+
+        double p1 = 0;
+        double p2 = 0;
+        double c = 0;
+
+        Triangle t1 = new Triangle();
+        Triangle t2 = new Triangle();
+
+        t1.resolve_SSS( robot_arm_len, robot_arm_len, e1 );
+
+        p1 = t1.l3 * Math.sin( b1 );
+
+        t2.resolve_SSA( d, p1, Math.PI /2 + tr1 );
+
+        return ( t2.a1 ) / Math.PI
     }
+
+    /********************* BELOW IS NOT COMPLETE *******************/
+
 
     double xMoveToBase( double d ) {
         return 0;
