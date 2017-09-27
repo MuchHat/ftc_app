@@ -10,75 +10,74 @@ public class Arm {
     public double y;
     public double z;
 
-    public double turretAngle = 0;
-    public double baseAngle = 0;
-    public double elbowAngle = 0;
-    public double wristAngle = 0;
+    public Angle turretAngle = new Angle();
+    public Angle baseAngle =  new Angle();
+    public Angle elbowAngle =  new Angle();
+    public Angle wristAngle =  new Angle();
 
     // TODO on the claw
-    public double clawLeftAngle = 0;
-    public double clawRightAngle = 0;
+    public Angle clawAngle =  new Angle(); // those are mirror and controlled by one channel
 
-    Point base = null;
-    Point elbow = null;
-    Point wrist = null;
-    Point claw = null;
+    Point basePoint = null;
+    Point elbowPoint = null;
+    Point wristPoint = null;
+    Point clawPoint = null;
 
     double lBase = 222;
     double lElbow = 222;
     double lClaw = 11;
 
-    boolean isValid = false;
+    boolean isInitialized = false;
 
     /* Constructor */
     public void Arm(){
 
-        base = new Point();
-        elbow = new Point();
-        wrist = new Point();
-        claw = new Point();
+        basePoint = new Point();
+        elbowPoint = new Point();
+        wristPoint = new Point();
+        clawPoint = new Point();
 
-        base.solve_XYZ( 0, 0, 0 );
+        basePoint.solve_XYZ( 0, 0, 0 );
     }
 
-    public void solve_anglesTBE( double turretAngle, double baseAngle, double elbowAngle ){
+    public void solve_Servos( double ts, double bs, double es ){
 
-        elbow.solve_R_AZ_AX( lBase, baseAngle, turretAngle );
-        wrist.solve_R_AZ_AX( lElbow, elbowAngle - Math.PI / 2, elbow.ax );
+        turretAngle.solve_AngleServo( ts );
+        baseAngle.solve_AngleServo( bs );
+        elbowAngle.solve_AngleServo( es );
 
-        x = wrist.x;
-        y = wrist.y;
-        z = wrist.z;
+        elbowPoint.solve_R_AZ_AX( lBase, baseAngle.anglePI, turretAngle.anglePI );
+        wristPoint.solve_R_AZ_AX( lElbow, elbowAngle.anglePI - Math.PI / 2, elbowPoint.ax );
 
-        claw.solve_XYZ( x, y + lClaw, z );
+        x = wristPoint.x;
+        y = wristPoint.y;
+        z = wristPoint.z;
 
-        turretAngle = elbow.ax;
-        elbowAngle = Math.PI / 2 + elbow.az;
-        wristAngle = Math.PI - elbow.az;
+        clawPoint.solve_XYZ( x, y + lClaw, z );
 
-        isValid = true;
+        isInitialized = true;
     }
 
     public void solve_XYZ( double x, double y, double z ){
 
-        wrist.solve_XYZ( x, y, z );
+        wristPoint.solve_XYZ( x, y, z );
 
         Triangle elbowTriangle = new Triangle();
 
-        elbowTriangle.solve_SSS( lBase, lElbow, wrist.r );
+        elbowTriangle.solve_SSS( lBase, lElbow, wristPoint.r );
 
-        elbow.solve_R_AZ_AX( lBase, wrist.az + elbowTriangle.a2, wrist.ax );
+        elbowPoint.solve_R_AZ_AX( lBase, wristPoint.az + elbowTriangle.a2, wristPoint.ax );
 
-        x = wrist.x;
-        y = wrist.y;
-        z = wrist.z;
+        x = wristPoint.x;
+        y = wristPoint.y;
+        z = wristPoint.z;
 
-        claw.solve_XYZ( x, y + lClaw, z );
+        clawPoint.solve_XYZ( x, y + lClaw, z );
 
-        turretAngle = elbow.ax;
-        elbowAngle = Math.PI / 2 + elbow.az;
-        wristAngle = Math.PI - elbow.az;
+        turretAngle.solve_AnglePI( elbowPoint.ax );
+        elbowAngle.solve_AnglePI( Math.PI / 2 + elbowPoint.az );
+        wristAngle.solve_AnglePI( Math.PI - elbowPoint.az );
 
-        isValid = true;
+        isInitialized = true;
     }
 }

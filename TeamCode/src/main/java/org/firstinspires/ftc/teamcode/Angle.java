@@ -9,7 +9,7 @@ public class Angle {
     double angleServo = 0;
     double anglePI = 0;
 
-    double offsetServo = 0;  // e.g. add servo 0 starts at 0.2
+    double offsetServo = 0;  // servo 0.2 conicides with 0 PI
     double slopeServo = 1.0; // 1 PI is 0.8 of the servo
     double minServo = 0.05;
     double maxServo = 0.95;
@@ -17,7 +17,7 @@ public class Angle {
     public void solve_AngleServo( double as ) {
 
         angleServo = as;
-        anglePI = ( ( angleServo + offsetServo ) / slopeServo ) * Math.PI - Math.PI / 2;
+        anglePI = ( ( angleServo - offsetServo ) / slopeServo ) * Math.PI - Math.PI / 2;
 
         check();
     }
@@ -25,7 +25,7 @@ public class Angle {
     public void solve_AnglePI ( double ap ) {
 
         anglePI = ap;
-        angleServo = ( ( anglePI  + Math.PI / 2 ) / Math.PI ) * slopeServo - offsetServo;
+        angleServo = ( ( anglePI  + Math.PI / 2 ) / Math.PI ) * slopeServo + offsetServo;
 
         check();
     }
