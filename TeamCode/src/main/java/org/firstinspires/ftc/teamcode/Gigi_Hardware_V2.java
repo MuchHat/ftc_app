@@ -184,8 +184,8 @@ public class Gigi_Hardware_V2 {
         double p2 = 0;
         double c = 0;
         {
-            Triangle t1 = new Triangle;
-            Triangle t2 = new Triangle;
+            Triangle t1 = new Triangle();
+            Triangle t2 = new Triangle();
 
             t1.resolve_SSS( robot_arm_len, robot_arm_len, e1 );
 
@@ -201,7 +201,7 @@ public class Gigi_Hardware_V2 {
             Triangle t3 = new Triangle();
 
             t1.resolve_SSA(robot_arm_len, robot_arm_len, e1);
-            t2.resolve_SSA( p2 - t1.l1 Math.cos( b1 ), t1.l1, Math.PI - b1 );
+            t2.resolve_SSA( p2 - t1.l1 * Math.cos( b1 ), t1.l1, Math.PI - b1 );
             t3.resolve_SSS( t2.l1, robot_arm_len, robot_arm_len );
 
             c = -t2.a2;
@@ -220,8 +220,8 @@ public class Gigi_Hardware_V2 {
         double p2 = 0;
         double c = 0;
         {
-            Triangle t1 = new Triangle;
-            Triangle t2 = new Triangle;
+            Triangle t1 = new Triangle();
+            Triangle t2 = new Triangle();
 
             t1.resolve_SSS( robot_arm_len, robot_arm_len, e1 );
 
@@ -237,7 +237,7 @@ public class Gigi_Hardware_V2 {
             Triangle t3 = new Triangle();
 
             t1.resolve_SSA(robot_arm_len, robot_arm_len, e1);
-            t2.resolve_SSA( p2 - t1.l1 Math.cos( b1 ), t1.l1, Math.PI - b1 );
+            t2.resolve_SSA( p2 - t1.l1 * Math.cos( b1 ), t1.l1, Math.PI - b1 );
             t3.resolve_SSS( t2.l1, robot_arm_len, robot_arm_len );
 
             c = t3.a1 - e1;
@@ -251,13 +251,14 @@ public class Gigi_Hardware_V2 {
         double e1 = elbow.getAngle();
         double b1 = base.getAngle();
         double w1 = wrist.getAngle();
+        double tr1 = turret.getAngle();
 
         double p1 = 0;
         double p2 = 0;
         double c = 0;
         {
-            Triangle t1 = new Triangle;
-            Triangle t2 = new Triangle;
+            Triangle t1 = new Triangle();
+            Triangle t2 = new Triangle();
 
             t1.resolve_SSS( robot_arm_len, robot_arm_len, e1 );
 
@@ -273,7 +274,7 @@ public class Gigi_Hardware_V2 {
             Triangle t3 = new Triangle();
 
             t1.resolve_SSA(robot_arm_len, robot_arm_len, e1);
-            t2.resolve_SSA( p2 - t1.l1 Math.cos( b1 ), t1.l1, Math.PI - b1 );
+            t2.resolve_SSA( p2 - t1.l1 * Math.cos( b1 ), t1.l1, Math.PI - b1 );
             t3.resolve_SSS( t2.l1, robot_arm_len, robot_arm_len );
 
             c = Math.PI * 2 - Math.PI * 0.5 - t3.a2 -t2.a2 - w1 ;
@@ -300,7 +301,7 @@ public class Gigi_Hardware_V2 {
 
         t2.resolve_SSA( d, p1, Math.PI /2 + tr1 );
 
-        return ( t2.a1 ) / Math.PI
+        return ( t2.a1 ) / Math.PI;
     }
 
     /********************* BELOW IS NOT COMPLETE *******************/
