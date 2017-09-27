@@ -63,34 +63,4 @@ public class Arm {
 
         isValid = true;
     }
-
-    public void moveIncremental( double ix, double iy, double iz ){
-
-        // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
-    }
-
-    public void moveToPosition( double ax, double ay, double az ){
-
-        // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
-    }
-
-    public void moveToPositionZero(){
-
-        // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
-    }
-
-    public void moveToPositionHome(){
-
-        // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
-    }
-
-    public void moveToPositionFront(){
-
-        // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
-    }
-
-    public void staySafe(){
-
-        // adjust for not bumping in the chasis
-    }
 }
