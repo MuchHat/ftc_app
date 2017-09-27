@@ -7,7 +7,6 @@ package org.firstinspires.ftc.teamcode;
 public class Point {
 
     public double ax = 0;
-    public double ay = 0;
     public double az = 0;
 
     public double x = 0;
@@ -17,7 +16,6 @@ public class Point {
     public double r = 0;
 
     public Triangle xProjection = null;
-    public Triangle yProjection = null;
     public Triangle zProjection = null;
 
     public boolean isValid = false;
@@ -34,12 +32,6 @@ public class Point {
 
         zProjection.solve_SSA( t.l3, z, Math.PI / 2 );
         az = zProjection.a2;
-
-        // for y
-        t.solve_SSA( x, z, Math.PI / 2 );
-
-        yProjection.solve_SSA( t.l3, y, Math.PI / 2 );
-        ay = yProjection.a2;
 
         // for x
         t.solve_SSA( y, z, Math.PI / 2 );
@@ -64,12 +56,10 @@ public class Point {
         // for x
         t.solve_SAA( r, ax, Math.PI / 2 - ax );
         xProjection.solve_SSA( t.l3, t.l2, t.a2 );
+
         x = xProjection.l2;
 
-        // for y
-        t.solve_SSA( x, z, Math.PI / 2 );
-        yProjection.solve_SSS( y, t.l3, sr );
-        y = yProjection.l2;
+        y = xProjection.l3;
 
         isValid = true;
     }
