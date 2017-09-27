@@ -10,20 +10,17 @@ public class Arm {
     public double y;
     public double z;
 
+    public double turretAngle = 0;
+    public double baseAngle = 0;
+    public double elbowAngle = 0;
+    public double wristAngle = 0;
+    public double clawLeftAngle = 0;
+    public double clawRightAngle = 0;
+
     Point base = null;
     Point elbow = null;
     Point wrist = null;
     Point claw = null;
-
-    Point wristOrigin = null;
-    Point wristDestination = null;
-
-    Point clawOrigin = null;
-    Point clawDestination = null;
-
-    double currentSpeed_mms = 0;
-    double maxSpeed_mms = 0;
-    double rampAccel_mmsmm = 0;
 
     double lBase = 222;
     double lElbow = 222;
@@ -42,7 +39,7 @@ public class Arm {
         base.solve_XYZ( 0, 0, 0 );
     }
 
-    public void solve_TBE( double turretAngle, double baseAngle, double elbowAngle ){
+    public void solve_anglesTBE( double turretAngle, double baseAngle, double elbowAngle ){
 
         elbow.solve_R_AZ_AX( lBase, baseAngle, turretAngle );
         wrist.solve_R_AZ_AX( lElbow, elbowAngle - Math.PI / 2, elbow.ax );
@@ -52,6 +49,10 @@ public class Arm {
         z = wrist.z;
 
         claw.solve_XYZ( x, y + lClaw, z );
+
+        turretAngle = elbow.ax;
+        elbowAngle = Math.PI / 2 + elbow.az;
+        wristAngle = Math.PI - elbow.az;
 
         isValid = true;
     }
