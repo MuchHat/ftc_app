@@ -26,6 +26,10 @@ public class SafeServo {
     private double maxLimit_255 = 255;
     private double homePos_255 = 128;
     private double direction = 1.0;
+    private double position = 99;
+
+    private double lastMovePos = 0;
+    private double lastMoveTime = 0;
 
     /* Constructor */
     public void SafeServo(){
@@ -33,6 +37,7 @@ public class SafeServo {
 
     public void init( Servo aServo ){
         theServo = aServo;
+        runtime.reset();
     }
 
     public void configLimits( double min_255, double max_255, double a0_255, double a180_255) {
@@ -76,6 +81,7 @@ public class SafeServo {
 
     public void setPosition( double pos ) {
 
+        position = pos;
         theServo.setPosition( getAdjustedPositionSafe( pos ) );
     }
 
@@ -101,11 +107,46 @@ public class SafeServo {
         theServo.setPosition( Range.clip( pos_1, 0.0, 1.0 ) );
     }
 
-    public void moveServoIncremental( double pos ) {
+    public void moveServoIncremental( double posSpeed ) { // e.g. 1
 
-        double pos_1 = getAdjustedPositionSafe( pos );
+        // 1 on the keypad means 1 increment every 33 millis
 
-        theServo.setPosition( Range.clip( pos_1 + theServo.getPosition(), 0.0, 1.0 ) );
+        double unitSize = 33;
+        double increment = 0.05;
+
+        // it needs to move at least posSpeed in an unit
+
+        if( position > 1.0 || position < 0.0 ) {
+            // first run
+            position = theServo.getPosition();
+            lastMovePos = position;
+            runtime.reset();
+            lastMoveTime = runtime.milliseconds() - unitSize;
+        }
+
+        double distanceTraveled = Math.abs( position - lastMovePos ); // e.g. 0
+        double unitsPassed = ( runtime.milliseconds() - lastMoveTime ) / unitSize; // e.g 3
+        double behind = unitsPassed * posSpeed - distanceTraveled; // e.g. 3
+
+        if( Math.abs( behind ) > 0 ) {
+            double moveNeeded = behind * 1.1; // 0.15
+
+            if( moveNeeded > 11 || moveNeeded < -11 ){
+                moveNeeded = 1;
+                position = theServo.getPosition() + moveNeeded * increment;
+                runtime.reset();
+                lastMoveTime = runtime.milliseconds();
+                lastMovePos = position;
+            }
+            else if( moveNeeded < 12 && moveNeeded > -12 ) {
+                position = theServo.getPosition() + moveNeeded * increment;
+                runtime.reset();
+                lastMoveTime = runtime.milliseconds();
+                lastMovePos = position;
+            }
+            double pos_1 = getAdjustedPositionSafe( position );
+            theServo.setPosition(Range.clip(pos_1, 0.00, 1.00));
+        }
     }
 
     double getAngleToHorizontal() {

@@ -31,196 +31,93 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * This file illustrates the concept of driving a path based on time.
  */
 
-@Autonomous(name="OpMode V2", group="Gigi")
+@TeleOp(name="OpMode V2", group="Gigi")
 // @Disabled
-public class Gigi_OpMode_V2 extends LinearOpMode {
+public class Gigi_OpMode_V2 extends OpMode{
 
     /* Declare OpMode members. */
-    Gigi_Hardware_V2        robot   = new Gigi_Hardware_V2();   // Use a Pushbot's hardware
+    Gigi_Hardware_V2        robot   = new Gigi_Hardware_V2();
     private ElapsedTime     runtime = new ElapsedTime();
 
-    @Override
-    public void runOpMode() {
+    double leftX = 99;
 
-        /*
+    @Override
+    public void init() {
+         /*
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
         robot.init( hardwareMap );
 
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-
         robot.leftDrive.setPower( 0 );
         robot.rightDrive.setPower( 0 );
+    }
+    /*
+     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+     */
+    @Override
+    public void init_loop() {
+    }
 
-        // Send telemetry message
-        telemetry.addData( "turret at ", "%f1.3", robot.turret.getPosition() );
-        telemetry.addData( "base at ", "%f1.3", robot.turret.getPosition() );
-        telemetry.addData( "elbow at", "%f1.3", robot.turret.getPosition() );
-        telemetry.addData( "wrist at", "%f1.3", robot.turret.getPosition() );
-        telemetry.addData( "left claw at", "%f1.3", robot.turret.getPosition() );
-        telemetry.addData( "right claw at", "%f1.3", robot.turret.getPosition() );
+    /*
+     * Code to run ONCE when the driver hits PLAY
+     */
+    @Override
+    public void start() {
+        runtime.reset();
+    }
 
-        // move the arm to home position
-        boolean useAnimationLinear = true;
-        boolean useAnimationLibrary = false;
-        boolean useNoAnimation = false;
+    /*
+     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
+     */
+    @Override
+    public void loop() {
 
-        if( useAnimationLinear ) {
-            double stepCount = 12;
-            double stepWait = 33;
-            double rampCount = 4;
 
-            double stepIncrementTurret = robot.turret.getHomePosIncrement() / stepCount;
-            double stepIncrementBase = robot.base.getHomePosIncrement() / stepCount;
-            double stepIncrementElbow = robot.elbow.getHomePosIncrement() / stepCount;
-            double stepIncrementWrist = robot.wrist.getHomePosIncrement() / stepCount;
-            double stepIncrementLeftClaw = robot.leftClaw.getHomePosIncrement() / stepCount;
-            double stepIncrementRightClaw = robot.rightClaw.getHomePosIncrement() / stepCount;
-
-            for( int step = 0; step < stepCount; step++ ){
-                robot.elbow.moveServoIncremental( stepIncrementElbow );
-                robot.base.moveServoIncremental( stepIncrementBase );
-                robot.turret.moveServoIncremental( stepIncrementTurret );
-                robot.wrist.moveServoIncremental( stepIncrementWrist );
-                robot.leftClaw.moveServoIncremental( stepIncrementLeftClaw );
-                robot.rightClaw.moveServoIncremental( stepIncrementRightClaw );
-
-                double crrWait = stepWait;
-                if( step < rampCount ){
-                    crrWait += stepWait * ( rampCount - step );
-                }
-                if( step > stepCount - rampCount ){
-                    crrWait += stepWait *( step - ( stepCount - rampCount ) );
-                }
-                sleep( (long)crrWait );
-            }
-        }
-        else if( useAnimationLibrary )
-        {
-/*
-        double animationTime = (long)( Math.abs( pos - theServo.getPosition() ) * 1666 );
-
-        ValueAnimator valueAnimator = ValueAnimator.ofInt((int)( theServo.getPosition() * 1000 ), (int)( getAdjustedPositionSafe( pos ) * 1000 ) );
-        valueAnimator.setDuration( 666 );
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                double crrPos = Double.valueOf(valueAnimator.getAnimatedValue().toString()) / 1000;
-                theServo.setPosition( crrPos );
-            }
-        });
-        valueAnimator.start();
-        while( valueAnimator.isRunning() ){
-
-        }
-        theServo.setPosition( Range.clip( getAdjustedPositionSafe( pos ), 0.0, 1.0 ) );
- */
-        }
-        else if( useNoAnimation ){
+        if ( leftX >= 1.0 || leftX <= 0.0 ) {
             robot.elbow.setPositionHome();
             robot.base.setPositionHome();
             robot.turret.setPositionHome();
             robot.wrist.setPositionHome();
             robot.leftClaw.setPositionHome();
             robot.rightClaw.setPositionHome();
+            leftX = leftX = robot.elbow.getPosition();
+            leftX = robot.elbow.getPosition();
+            runtime.reset();
+        }
+        else if( leftX <= 1.0 && leftX >= 0.0  ) {
+            leftX += gamepad1.right_stick_x * 0.0003 * runtime.milliseconds();
+            if( leftX > 0.95 ) leftX = 0.95;
+            if( leftX < 0.15 ) leftX = 0.15;
+            runtime.reset();
+            robot.elbow.setPosition( leftX );
         }
 
-        while ( opModeIsActive() ) {
-
-            if( gamepad1.right_stick_y != 0 ){
-                robot.base.moveServoIncremental( gamepad1.right_stick_y * 0.1 );
-                robot.elbow.moveServoIncremental( gamepad1.right_stick_y * 0.1 * 0.3 );
-            }
-            if( gamepad1.right_stick_x != 0 ){
-                robot.wrist.moveServoIncremental( gamepad1.right_stick_x * 0.1 );
-            }
-            if( gamepad1.left_stick_y > 0 ){
-                robot.turret.moveServoIncremental( gamepad1.left_stick_y * 0.1 );
-                robot.leftClaw.moveServoIncremental( gamepad1.left_stick_y * 0.1 );
-                robot.rightClaw.moveServoIncremental( -gamepad1.left_stick_y * 0.1 );
-            }
-            if( gamepad1.left_stick_x > 0 ){
-                robot.elbow.moveServoIncremental( gamepad1.left_stick_x * 0.1 );
-                robot.base.moveServoIncremental( -gamepad1.left_stick_x * 0.1 * 0.3 );
-            }
-            if( gamepad1.right_trigger > 0) {
-                robot.leftClaw.moveServoIncremental( gamepad1.right_trigger  * 0.1 );
-                robot.rightClaw.moveServoIncremental( gamepad1.right_trigger  * 0.1 );
-            }
-            if( gamepad1.left_trigger > 0) {
-                robot.leftClaw.moveServoIncremental( -gamepad1.left_trigger  * 0.1 );
-                robot.rightClaw.moveServoIncremental( +gamepad1.left_trigger  * 0.1 );
-            }
-            if( gamepad1.back ) {
-                robot.elbow.setPositionHome();
-                robot.base.setPositionHome();
-                robot.turret.setPositionHome();
-                robot.wrist.setPositionHome();
-                robot.leftClaw.setPositionHome();
-                robot.rightClaw.setPositionHome();
-            }
-            if( gamepad1.a ) {
-                robot.elbow.setPositionHome();
-                robot.base.setPositionHome();
-                robot.turret.setPositionHome();
-                robot.wrist.setPositionHome();
-                robot.leftClaw.setPositionHome();
-                robot.rightClaw.setPositionHome();
-            }
-            if( gamepad1.b ) {
-                robot.elbow.setPositionHome();
-                robot.base.setPositionHome();
-                robot.turret.setPositionHome();
-                robot.wrist.setPositionHome();
-                robot.leftClaw.setPositionHome();
-                robot.rightClaw.setPositionHome();
-            }
-            if( gamepad1.x ) {
-                robot.elbow.setPositionHome();
-                robot.base.setPositionHome();
-                robot.turret.setPositionHome();
-                robot.wrist.setPositionHome();
-                robot.leftClaw.setPositionHome();
-                robot.rightClaw.setPositionHome();
-            }
-            if( gamepad1.y ) {
-                robot.elbow.setPositionHome();
-                robot.base.setPositionHome();
-                robot.turret.setPositionHome();
-                robot.wrist.setPositionHome();
-                robot.leftClaw.setPositionHome();
-                robot.rightClaw.setPositionHome();
-            }
-            telemetry.addData( "turret at ", "%f1.3", robot.turret.getPosition() );
-            telemetry.addData( "base at ", "%f1.3", robot.turret.getPosition() );
-            telemetry.addData( "elbow at", "%f1.3", robot.turret.getPosition() );
-            telemetry.addData( "wrist at", "%f1.3", robot.turret.getPosition() );
-            telemetry.addData( "left claw at", "%f1.3", robot.turret.getPosition() );
-            telemetry.addData( "right claw at", "%f1.3", robot.turret.getPosition() );
-            telemetry.update();
-
-            sleep( 111 );
+        if( gamepad1.a ) {
+            robot.elbow.setPositionHome();
+            robot.base.setPositionHome();
+            robot.turret.setPositionHome();
+            robot.wrist.setPositionHome();
+            robot.leftClaw.setPositionHome();
+            robot.rightClaw.setPositionHome();
+            leftX = leftX = robot.elbow.getPosition();
         }
-
-        sleep( 999 );
-
-        // move the arm to rest position
-        robot.elbow.setPosition( 0.1 );
-        robot.base.setPosition( 0.1 );
-        robot.turret.setPosition( 0.1 );
-        robot.wrist.setPosition( 0.1 );
-        robot.leftClaw.setPosition( 0.1 );
-        robot.rightClaw.setPosition( 0.1 );
-
-        // wait 30 mins
-        sleep( 1999000 );
+        telemetry.addData( "x controller ", "%.2f", gamepad1.right_stick_x );
+        telemetry.addData( "x variable ", "%.2f", leftX );
+        telemetry.addData( "pos elbow ", "%.2f", robot.elbow.getPosition() );
+    }
+    /*
+    * Code to run ONCE after the driver hits STOP
+    */
+    @Override
+    public void stop() {
     }
 }
