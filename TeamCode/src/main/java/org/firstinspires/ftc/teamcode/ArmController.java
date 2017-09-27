@@ -22,6 +22,8 @@ public class ArmController {
     double baseToEdgeX = 66;
     double baseToEdgeY = 88;
 
+    boolean isInitialized = false;
+
     public void moveIncremental( double ix, double iy, double iz ){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
@@ -30,21 +32,29 @@ public class ArmController {
     public void moveToPosition( double ax, double ay, double az ){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
+
+        isInitialized = true;
     }
 
     public void moveToPositionZero(){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
+
+        isInitialized = true;
     }
 
     public void moveToPositionHome(){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
+
+        isInitialized = true;
     }
 
     public void moveToPositionFront(){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
+
+        isInitialized = true;
     }
     public void check(){
 

@@ -14,6 +14,8 @@ public class Arm {
     public double baseAngle = 0;
     public double elbowAngle = 0;
     public double wristAngle = 0;
+
+    // TODO on the claw
     public double clawLeftAngle = 0;
     public double clawRightAngle = 0;
 
