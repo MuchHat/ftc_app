@@ -57,9 +57,25 @@ public class Arm {
         isValid = true;
     }
 
-    /*************** BELOW ARE NOT COMPLETE ***************/
-
     public void solve_XYZ( double x, double y, double z ){
+
+        wrist.solve_XYZ( x, y, z );
+
+        Triangle elbowTriangle = new Triangle();
+
+        elbowTriangle.solve_SSS( lBase, lElbow, wrist.r );
+
+        elbow.solve_R_AZ_AX( lBase, wrist.az + elbowTriangle.a2, wrist.ax );
+
+        x = wrist.x;
+        y = wrist.y;
+        z = wrist.z;
+
+        claw.solve_XYZ( x, y + lClaw, z );
+
+        turretAngle = elbow.ax;
+        elbowAngle = Math.PI / 2 + elbow.az;
+        wristAngle = Math.PI - elbow.az;
 
         isValid = true;
     }

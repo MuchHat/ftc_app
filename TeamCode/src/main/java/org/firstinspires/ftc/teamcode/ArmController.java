@@ -19,8 +19,8 @@ public class ArmController {
     double rampAccel_mmsmm = 0;
 
     double platformHeight = 222;
-    double baseToXEdge = 66;
-    double baseToYEdge = 88;
+    double baseToEdgeX = 66;
+    double baseToEdgeY = 88;
 
     public void moveIncremental( double ix, double iy, double iz ){
 
