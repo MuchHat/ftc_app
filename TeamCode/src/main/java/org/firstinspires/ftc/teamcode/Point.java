@@ -16,14 +16,70 @@ public class Point {
 
     public double r = 0;
 
+    public Triangle xProjection = null;
+    public Triangle yProjection = null;
+    public Triangle zProjection = null;
+
     public boolean isValid = false;
 
-    /* Constructor */
     public void Point(){
     }
 
-    public void resolve_SAA( double al1, double aa2, double aa3 ) {
+    public void solve_XYZ( double x, double y, double z ) {
 
-        l1 = al1;
+        Triangle t = new Triangle();
+
+        // for z
+        t.solve_SSA( x, y, Math.PI / 2 );
+
+        zProjection.solve_SSA( t.l3, z, Math.PI / 2 );
+        az = zProjection.a2;
+
+        // for y
+        t.solve_SSA( x, z, Math.PI / 2 );
+
+        yProjection.solve_SSA( t.l3, y, Math.PI / 2 );
+        ay = yProjection.a2;
+
+        // for x
+        t.solve_SSA( y, z, Math.PI / 2 );
+
+        xProjection.solve_SSA( t.l3, x, Math.PI / 2 );
+        r = xProjection.l3;
+        ax = xProjection.a2;
+
+        isValid = true;
+    }
+    public void solve_R_AZ_AX( double sr, double az, double ax ) {
+
+        Triangle t = new Triangle();
+
+        r = sr;
+
+        // for z
+        t.solve_SAA( r, az, Math.PI / 2 - az );
+        zProjection.solve_SSA( t.l3, t.l2, t.a2 );
+        z = zProjection.l2;
+
+        // for x
+        t.solve_SAA( r, ax, Math.PI / 2 - ax );
+        xProjection.solve_SSA( t.l3, t.l2, t.a2 );
+        x = xProjection.l2;
+
+        // for y
+        t.solve_SSA( x, z, Math.PI / 2 );
+        yProjection.solve_SSS( y, t.l3, sr );
+        y = yProjection.l2;
+
+        isValid = true;
+    }
+
+    public double distsanceTo( Point to ){
+
+        Point p = new Point();
+
+        p.solve_XYZ( to.x - x, to.y - y, to.z - z );
+
+        return p.r;
     }
 }

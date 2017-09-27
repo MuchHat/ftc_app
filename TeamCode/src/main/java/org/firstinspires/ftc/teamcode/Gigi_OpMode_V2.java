@@ -45,6 +45,8 @@ public class Gigi_OpMode_V2 extends OpMode{
 
     /* Declare OpMode members. */
     Gigi_Hardware_V2        robot   = new Gigi_Hardware_V2();
+    Arm                     arm     = new Arm();
+
     private ElapsedTime     runtime = new ElapsedTime();
 
     double leftX = 99;
