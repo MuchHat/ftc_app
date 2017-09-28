@@ -28,7 +28,7 @@ public class Triangle {
 
         a3 = aa3;
         a3 = Range.clip( a3, -Math.PI / 2, Math.PI / 2 );
-        a2 = aa3;
+        a2 = aa2;
         a2 = Range.clip( a2, -Math.PI / 2, Math.PI / 2 );
 
         double a3_0_pi = a3;
