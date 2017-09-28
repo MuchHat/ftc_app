@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.util.Range;
+
 /**
  * Created by gigela on 9/26/2017.
  */
@@ -24,8 +26,14 @@ public class Triangle {
 
         l1 = Math.abs( al1 );
 
-        a2 = aa2;
-        a3 = aa3;
+        double aa2_sign = aa2 > 0 ? 1.0 : -1.0;
+        if( aa2_sign < 0 ) aa2 += Math.PI / 2;
+
+        double aa3_sign = aa3 > 0 ? 1.0 : -1.0;
+        if( aa3_sign < 0 ) aa3 += Math.PI / 2;
+
+        a2 = Range.clip (Math.abs( aa2 ), 0, Math.PI );
+        a3 = Range.clip( Math.abs( aa3 ), 0, Math.PI );
         a1 = Math.PI - a2 - a3;
 
         l2 = l1 * Math.sin( a2 ) / Math.sin( a1 );
@@ -39,7 +47,10 @@ public class Triangle {
         l1 = Math.abs( al1 );
         l2 = Math.abs( al2 );
 
-        a3 = aa3;
+        double aa3_sign = aa3 > 0 ? 1.0 : -1.0;
+        if( aa3_sign < 0 ) aa3 += Math.PI / 2;
+
+        a3 = Range.clip( Math.abs( aa3 ), 0, Math.PI );
 
         l3 = Math.sqrt( l2 * l2 + l1 * l1 - 2 * l2 * l1 * Math.cos( a3 ) );
 

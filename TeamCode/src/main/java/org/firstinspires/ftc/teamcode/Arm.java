@@ -92,7 +92,11 @@ public class Arm {
 
         Triangle clawTriangle = new Triangle();
 
-        clawTriangle.solve_SSS( ( mm - lClawGap ) / 2, lClawArm, Math.sqrt( ( ( mm - lClawGap ) / 2 ) * ( ( mm - lClawGap ) / 2 ) + lClawArm * lClawArm ) );
+        mm = Math.abs( mm );
+
+        clawTriangle.solve_SSS( ( mm - lClawGap ) / 2, lClawArm,
+                Math.sqrt( ( ( mm - lClawGap ) / 2 ) * ( ( mm - lClawGap ) / 2 ) +
+                        lClawArm * lClawArm ) );
         clawOpeningAngle.solve_AnglePI( clawTriangle.a1 );
 
         clawOpeningMM = mm;
@@ -104,14 +108,20 @@ public class Arm {
         baseAngle.solve_AngleServo( bs );
         elbowAngle.solve_AngleServo( es );
 
-        elbowPoint.solve_R_AZ_AX( lBase, baseAngle.anglePI, turretAngle.anglePI );
-        endPoint.solve_R_AZ_AX( lElbow, elbowAngle.anglePI - Math.PI / 2, elbowPoint.ax );
+        elbowPoint.solve_RAA( lBase, baseAngle.anglePI, turretAngle.anglePI );
+
+        Triangle elbowTriangle = new Triangle();
+        elbowTriangle.solve_SSA( lBase, lElbow, elbowAngle.anglePI );
+
+        endPoint.solve_RAA( elbowTriangle.l3,
+                elbowPoint.altitude - elbowTriangle.l2,
+                elbowPoint.azimuth );
 
         x = endPoint.x;
         y = endPoint.y;
         z = endPoint.z;
 
-        clawVerticalAngle.solve_AnglePI( Math.PI / 2 + elbowPoint.az );
+        clawVerticalAngle.solve_AnglePI( Math.PI / 2 + elbowPoint.altitude );
         clawHorizontalAngle.solve_AnglePI( - turretAngle. anglePI );
 
         isInitialized = true;
@@ -125,16 +135,16 @@ public class Arm {
 
         elbowTriangle.solve_SSS( lBase, lElbow, endPoint.r );
 
-        elbowPoint.solve_R_AZ_AX( lBase, endPoint.az + elbowTriangle.a2, endPoint.ax );
+        elbowPoint.solve_RAA( lBase, endPoint.altitude + elbowTriangle.a2, endPoint.azimuth );
 
         x = endPoint.x;
         y = endPoint.y;
         z = endPoint.z;
 
-        turretAngle.solve_AnglePI( elbowPoint.ax );
+        turretAngle.solve_AnglePI( elbowPoint.azimuth );
         elbowAngle.solve_AnglePI( elbowTriangle.a3 );
 
-        clawVerticalAngle.solve_AnglePI( Math.PI / 2 + elbowPoint.az );
+        clawVerticalAngle.solve_AnglePI( Math.PI / 2 + elbowPoint.altitude );
         clawHorizontalAngle.solve_AnglePI( - turretAngle. anglePI );
 
         isInitialized = true;
