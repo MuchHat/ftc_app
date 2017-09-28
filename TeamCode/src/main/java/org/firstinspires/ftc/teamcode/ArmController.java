@@ -93,8 +93,7 @@ public class ArmController {
         if( next.endPoint.y < closestY ) {
             next.solve_XYZ(next.endPoint.x, closestY, next.endPoint.z);
         }
-
-                // see if would hit the body of the robot and adjust
+        // see if would hit the body of the robot and adjust
         if( next.endPoint.x < baseToEdgeX &&
                 next.endPoint.y < baseToEdgeY &&
                 next.endPoint.z < platformHeight ) {
