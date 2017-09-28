@@ -67,15 +67,15 @@ public class Triangle {
         double a1_0_pi = a2;
         if( a1_0_pi < 0 ) a1_0_pi = Math.PI / 2 - a1_0_pi;
 
-        l3 = Math.sqrt( l2 * l2 + l1 * l1 - 2 * l2 * l1 * Math.cos( a_3 ) );
+        l3 = Math.sqrt( l2 * l2 + l1 * l1 - 2 * l2 * l1 * Math.cos( a3_0_pi ) );
 
         if ( l1 > l2 ) {
-            a_2 = Math.asin( l2 * Math.sin( a_3 ) / l3 );
-            a_1 = Math.PI - a_2 - a_3;
+            a2_0_pi = Math.asin( l2 * Math.sin( a3_0_pi ) / l3 );
+            a1_0_pi = Math.PI - a2_0_pi - a3_0_pi;
         }
         if ( l2 > l1 ) {
-            a_1 = Math.asin( l1 * Math.sin( a_3 ) / l3 );
-            a_2 = Math.PI - a_1 - a_3;
+            a1_0_pi = Math.asin( l1 * Math.sin( a3_0_pi ) / l3 );
+            a2_0_pi = Math.PI - a1_0_pi - a3_0_pi;
         }
 
         a1 = a1_0_pi;

@@ -143,6 +143,7 @@ public class Arm {
 
         turretAngle.solve_AnglePI( elbowPoint.azimuth );
         elbowAngle.solve_AnglePI( elbowTriangle.a3 );
+        baseAngle.solve_AnglePI( endPoint.altitude + elbowTriangle.a2 );
 
         clawVerticalAngle.solve_AnglePI( Math.PI / 2 + elbowPoint.altitude );
         clawHorizontalAngle.solve_AnglePI( - turretAngle. anglePI );
