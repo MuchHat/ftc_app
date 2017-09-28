@@ -10,48 +10,78 @@ public class Arm {
     public double y;
     public double z;
 
-    public Angle turretAngle = new Angle();
-    public Angle baseAngle =  new Angle();
-    public Angle elbowAngle =  new Angle();
-    public Angle clawVerticalAngle =  new Angle();
-    public Angle clawHorizontalAngle =  new Angle();
-    public Angle clawOpeningAngle =  new Angle();
-    public double clawOpeningMM = 0;
+    public Angle  turretAngle          =  new Angle();
+    public Angle  baseAngle            =  new Angle();
+    public Angle  elbowAngle           =  new Angle();
+    public Angle  clawVerticalAngle    =  new Angle();
+    public Angle  clawHorizontalAngle  =  new Angle();
+    public Angle  clawOpeningAngle     =  new Angle();
+    public double clawOpeningMM       = 0;
 
-    Point basePoint = null;
-    Point elbowPoint = null;
-    Point endPoint = null;
+    Point basePoint  = new Point();
+    Point elbowPoint = new Point();
+    Point endPoint   = new Point();
 
-    double xZero = 0;
-    double yZero = 0;
-    double zZero = 0;
+    // TODO correct the home positons
+    double xZero = 0; // mm
+    double yZero = 0; // mm
+    double zZero = 0; // mm
 
-    double xHome = 0;
-    double yHome = 0;
-    double zHome = 0;
+    double xHome = 0; // mm
+    double yHome = 0; // mm
+    double zHome = 0; // mm
 
-    double xFront = 0;
-    double yFront = 0;
-    double zFront = 0;
+    double xFront = 0; // mm
+    double yFront = 0; // mm
+    double zFront = 0; // mm
 
-    double mmClawOpen = 160;
-    double mmClawClose = 55;
+    double mmClawOpen  = 222;  // mm
+    double mmClawClose = 188; // mm
 
-    double lBase = 222;
-    double lElbow = 222;
-    double lClawArm = 11;
-    double lClawGap = 11;
+    double lBase     = 260; // mm
+    double lElbow    = 260; // mm
+    double lClawArm =  150; // mm
+    double lClawGap =  37;  // mm
+    // TODO END
 
     boolean isInitialized = false;
 
     /* Constructor */
     public void Arm(){
 
-        basePoint = new Point();
-        elbowPoint = new Point();
-        endPoint = new Point();
-
         basePoint.solve_XYZ( 0, 0, 0 );
+
+        // TODO fix the servos tunning
+        turretAngle.offsetServo = 0.00; // SERVO 0.2 is 0 PI
+        turretAngle.slopeServo  = 1.00; // 1 PI is 0.8 SERVO
+        turretAngle.minServo    = 0.05;
+        turretAngle.maxServo    = 0.95;
+
+        baseAngle.offsetServo = 0.00; // SERVO 0.2 is 0 PI
+        baseAngle.slopeServo  = 1.00; // 1 PI is 0.8 SERVO
+        baseAngle.minServo    = 0.05;
+        baseAngle.maxServo    = 0.95;
+
+        elbowAngle.offsetServo = 0.00; // SERVO 0.2 is 0 PI
+        elbowAngle.slopeServo  = 1.00; // 1 PI is 0.8 SERVO
+        elbowAngle.minServo    = 0.05;
+        elbowAngle.maxServo    = 0.95;
+
+        clawVerticalAngle.offsetServo = 0.00; // SERVO 0.2 is 0 PI
+        clawVerticalAngle.slopeServo  = 1.00; // 1 PI is 0.8 SERVO
+        clawVerticalAngle.minServo    = 0.05;
+        clawVerticalAngle.maxServo    = 0.95;
+
+        clawHorizontalAngle.offsetServo = 0.00; // SERVO 0.2 is 0 PI
+        clawHorizontalAngle.slopeServo  = 1.00; // 1 PI is 0.8 SERVO
+        clawHorizontalAngle.minServo    = 0.05;
+        clawHorizontalAngle.maxServo    = 0.95;
+
+        clawOpeningAngle.offsetServo = 0.00; // SERVO 0.2 is 0 PI
+        clawOpeningAngle.slopeServo  = 1.00; // 1 PI is 0.8 SERVO
+        clawOpeningAngle.minServo    = 0.05;
+        clawOpeningAngle.maxServo    = 0.95;
+        //TODO END
     }
 
     public void copyFrom( Arm anotherArm ){

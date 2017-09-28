@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *
  */
 public class Gigi_Hardware_V2 {
+
     /* Public OpMode members. */
     public DcMotor leftDrive = null;
     public DcMotor rightDrive = null;
@@ -61,6 +62,7 @@ public class Gigi_Hardware_V2 {
 
     /* Initialize standard Hardware interfaces */
     public void init( HardwareMap ahwMap ) {
+
         // Save reference to Hardware map
         hwMap = ahwMap;
 

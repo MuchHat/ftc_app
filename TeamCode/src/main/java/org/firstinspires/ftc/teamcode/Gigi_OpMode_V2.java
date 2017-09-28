@@ -49,12 +49,12 @@ public class Gigi_OpMode_V2 extends OpMode{
     public  ElapsedTime        runtime       = new ElapsedTime();
 
     public  double             turretControl = -1;
-    public  double             baseControl = -1;
-    public  double             elbowControl = -1;
-    public  double             wristControl = -1;
-    public  double             clawControlL = -1;
-    public  double             clawControlR = -1;
-    public  boolean            initialized = false;
+    public  double             baseControl   = -1;
+    public  double             elbowControl  = -1;
+    public  double             wristControl  = -1;
+    public  double             clawControlL  = -1;
+    public  double             clawControlR  = -1;
+    public  boolean            initialized   = false;
 
     @Override
     public void init() {

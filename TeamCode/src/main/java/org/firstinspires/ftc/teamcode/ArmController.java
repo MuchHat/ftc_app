@@ -6,19 +6,21 @@ package org.firstinspires.ftc.teamcode;
 
 public class ArmController {
 
-    Arm origin = null;
-    Arm current = null;
-    Arm next = null;
+    Arm origin      = null;
+    Arm current     = null;
+    Arm next        = null;
     Arm destination = null;
 
-    double maxSpeed_mms = 33;
-    double maxAccel_mmss = 66;
-    double prevSpeed_mms = 0;
+    // TODO fix constants
+    double maxSpeed_mms  = 33; // mm
+    double maxAccel_mmss = 66; // mm
+    double prevSpeed_mms = 0;  // mm
 
-    double platformHeight = 155;
-    double baseToEdgeX = 166;
-    double baseToEdgeY = 122;
-    double atDestinationTolerance = 3;
+    double platformHeight = 155; // mm
+    double baseToEdgeX    = 166; // mm
+    double baseToEdgeY    = 122; // mm
+    double atDestinationTolerance = 3; // mm
+    // TODO end
 
     boolean isInitialized = false;
 
