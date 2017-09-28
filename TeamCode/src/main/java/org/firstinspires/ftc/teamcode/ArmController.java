@@ -14,9 +14,9 @@ public class ArmController {
     Claw clawOrigin = null;
     Claw clawDestination = null;
 
-    double currentSpeed_mms = 0;
-    double maxSpeed_mms = 0;
-    double rampAccel_mmsmm = 0;
+    double maxSpeed_mms = 33;
+    double maxAccel_mmss = 66;
+    double prevSpeed_mms = 0;
 
     double platformHeight = 155;
     double baseToEdgeX = 166;
@@ -48,12 +48,23 @@ public class ArmController {
         double distanceToDestination = current.wristPoint.distsanceTo( destination.wristPoint );
 
         // determine the max possible speed
-        double curentAllowedMaxSpeed_mms = 11;
-        double currentAllowedMaxDistance = curentAllowedMaxSpeed_mms * stepMillis;
+        double newSpeed_mms = maxSpeed_mms;
+
+        // ensure does not exceed acceleration
+        if( newSpeed_mms > prevSpeed_mms + maxAccel_mmss * stepMillis ){
+            newSpeed_mms = prevSpeed_mms + maxAccel_mmss * stepMillis;
+        }
+        // decelerate at the end
+        double maxCurrentSpeedToDecelerateToDestination = Math.sqrt( 2 * maxAccel_mmss * distanceToDestination );
+        if( newSpeed_mms > maxCurrentSpeedToDecelerateToDestination ){
+            newSpeed_mms = maxCurrentSpeedToDecelerateToDestination;
+        }
+        double currentAllowedMaxDistance = newSpeed_mms * stepMillis;
 
         // see if the destination can be achieved with this speed if not adjust next
         if( distanceToDestination < atDestinationTolerance ) {
             next.copyFrom( current );
+            prevSpeed_mms = 0;
         }
         else if( distanceToDestination < currentAllowedMaxDistance ){
             next.copyFrom( destination );
@@ -68,7 +79,7 @@ public class ArmController {
         // see if would hit the body of the robot and adjust
         if( next.wristPoint.x < baseToEdgeX &&
                 next.wristPoint.y < baseToEdgeY &&
-                next.wristPoint.z < platformHeight && ){
+                next.wristPoint.z < platformHeight ) {
             // means it would hit the robot
 
             // keep constant the one closer to the arm
@@ -86,18 +97,20 @@ public class ArmController {
                 next.solve_XYZ( next.wristPoint.x, next.wristPoint.y, platformHeight );
             }
         }
-
-
+        prevSpeed_mms = newSpeed_mms;
     }
 
     public void moveIncremental( double ix, double iy, double iz ){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
+
+        destination.solve_XYZ( current.x + ix, current.y + iy, current.z + iz );
     }
 
     public void moveToPosition( double ax, double ay, double az ){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
+        destination.solve_XYZ( ax, ay, az );
 
         isInitialized = true;
     }
@@ -105,6 +118,7 @@ public class ArmController {
     public void moveToPositionZero(){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
+        destination.solve_XYZ( destination.xZero, destination.yZero, destination.zZero );
 
         isInitialized = true;
     }
@@ -112,6 +126,7 @@ public class ArmController {
     public void moveToPositionHome(){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
+        destination.solve_XYZ( destination.xHome, destination.yHome, destination.zHome );
 
         isInitialized = true;
     }
@@ -119,11 +134,8 @@ public class ArmController {
     public void moveToPositionFront(){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
+        destination.solve_XYZ( destination.xFront, destination.yFront, destination.zFront );
 
         isInitialized = true;
-    }
-    public void check(){
-
-        // adjust for not bumping in the chasis
     }
 }
