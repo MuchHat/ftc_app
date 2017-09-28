@@ -179,6 +179,42 @@ public class Gigi_OpMode_V2 extends OpMode{
                 robot._rightClaw.setPosition( 140 / 255 );
             }
         }
+        // control: LEFT RIGH MM
+        {
+            if ( gamepad1.dpad_up ) {
+                armController.moveIncremental( 0, 5, 0 );
+            }
+        }
+        // control: LEFT RIGH MM
+        {
+            if ( gamepad1.dpad_down ) {
+                armController.moveIncremental( 0, -5, 0 );
+            }
+        }
+        // control: LEFT RIGH MM
+        {
+            if ( gamepad1.dpad_right ) {
+                armController.moveIncremental( 5, 0, 0 );
+            }
+        }
+        // control: LEFT RIGH MM
+        {
+            if ( gamepad1.dpad_left ) {
+                armController.moveIncremental( -5, 0, 0 );
+            }
+        }
+        // control: LEFT RIGH MM
+        {
+            if ( gamepad1.right_bumper ) {
+                armController.moveIncremental( 0, 0, 5 );
+            }
+        }
+        // control: LEFT RIGH MM
+        {
+            if ( gamepad1.left_bumper ) {
+                armController.moveIncremental( 0, 0, -5 );
+            }
+        }
         // control: FRONT
         {
             if ( gamepad1.a ) {
