@@ -11,9 +11,6 @@ public class ArmController {
     Arm next = null;
     Arm destination = null;
 
-    Claw clawOrigin = null;
-    Claw clawDestination = null;
-
     double maxSpeed_mms = 33;
     double maxAccel_mmss = 66;
     double prevSpeed_mms = 0;
@@ -25,7 +22,7 @@ public class ArmController {
 
     boolean isInitialized = false;
 
-    public void startLoop( double servoT, double servoB, double servoE, double servoW, double servoC ){
+    public void startLoop( double servoTurret, double servoBase, double servoElbow ){
         // determines the current position
 
         if( !isInitialized ){
@@ -37,7 +34,7 @@ public class ArmController {
             isInitialized = true;
         }
         else if( isInitialized ){
-            current.solve_Servos( servoT, servoB, servoE );
+            current.solve_Servos( servoTurret, servoBase, servoElbow );
         }
     }
 
@@ -66,14 +63,23 @@ public class ArmController {
             next.copyFrom( current );
             prevSpeed_mms = 0;
         }
-        else if( distanceToDestination < currentAllowedMaxDistance ){
+        else if( Math.abs( distanceToDestination ) < currentAllowedMaxDistance ){
             next.copyFrom( destination );
         }
         else if( distanceToDestination > currentAllowedMaxDistance ) {
-            double ratio = currentAllowedMaxDistance / distanceToDestination;
-            next.solve_XYZ( destination.wristPoint.x * ratio,
-                    destination.wristPoint.y * ratio,
-                    destination.wristPoint.z * ratio );
+            double ratio = Math.abs( currentAllowedMaxDistance / distanceToDestination );
+            next.solve_XYZ(
+                    current.wristPoint.x + ( destination.wristPoint.x - current.wristPoint.x ) * ratio,
+                    current.wristPoint.y + ( destination.wristPoint.y - current.wristPoint.y ) * ratio,
+                    current.wristPoint.z + ( destination.wristPoint.z - current.wristPoint.z ) * ratio );
+        }
+
+        // check the speed of the claw too
+        double clawDistance = destination.clawOpeningMM - current.clawOpeningMM;
+        double currentAllowedDistance =  newSpeed_mms * stepMillis;
+        if( Math.abs( clawDistance ) > maxSpeed_mms ){
+            double ratio = Math.abs( currentAllowedMaxDistance / clawDistance );
+            next.clawOpeningMM = current.clawOpeningMM + ( destination.clawOpeningMM - current.clawOpeningMM ) * ratio;
         }
 
         // see if would hit the body of the robot and adjust
@@ -102,8 +108,6 @@ public class ArmController {
 
     public void moveIncremental( double ix, double iy, double iz ){
 
-        // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
-
         destination.solve_XYZ( current.x + ix, current.y + iy, current.z + iz );
     }
 
@@ -113,6 +117,14 @@ public class ArmController {
         destination.solve_XYZ( ax, ay, az );
 
         isInitialized = true;
+    }
+
+    public void clawIncremental( double ix ){
+        destination.solve_Claw( current.clawOpeningMM + ix );
+    }
+
+    public void clawToPosition( double x ){
+        destination.solve_Claw( x );
     }
 
     public void moveToPositionZero(){
