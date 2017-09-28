@@ -90,7 +90,6 @@ public class Gigi_OpMode_V2 extends OpMode{
         double crrLoopTime = runtime.milliseconds();
         runtime.reset();
 
-/*
         if( armController.isInitialized ){
              double t = robot._turret.getPosition();
              double b = robot._base.getPosition();
@@ -101,7 +100,7 @@ public class Gigi_OpMode_V2 extends OpMode{
          else if( !armController.isInitialized ){
             armController.startLoop( 0, 0, 0 );
         }
-*/
+
         if ( !initialized ) {
             robot._turret.setPosition( 166 / 255 );
             robot._base.setPosition( 30 / 255 );
@@ -180,6 +179,24 @@ public class Gigi_OpMode_V2 extends OpMode{
                 robot._rightClaw.setPosition( 140 / 255 );
             }
         }
+        // control: FRONT
+        {
+            if ( gamepad1.a ) {
+                armController.moveToPositionFront();
+            }
+        }
+        // control: ZERO
+        {
+            if ( gamepad1.x ) {
+                armController.moveToPositionZero();
+            }
+        }
+        // control: HOME
+        {
+            if ( gamepad1.y ) {
+                armController.moveToPositionHome();
+            }
+        }
 
        // set the servos per the ARM controller
        // armController.endLoop( crrLoopTime );
@@ -193,7 +210,7 @@ public class Gigi_OpMode_V2 extends OpMode{
         robot._leftClaw.setPosition( armController.next.clawOpeningAngle.angleServo );
         robot._rightClaw.setPosition( 140 - armController.next.clawOpeningAngle.angleServo );
         TODO END */
-/*
+
         telemetry.addData("turret  ", "%.2f  X  %3.0f mm", robot._turret.getPosition(), armController.next.x );
         telemetry.addData("  base  ", "%.2f  Y  %3.0f mm", robot._base.getPosition(), armController.next.y );
         telemetry.addData(" elbow  ", "%.2f  Z  %3.0f mm", robot._elbow.getPosition(), armController.next.z );
@@ -201,8 +218,8 @@ public class Gigi_OpMode_V2 extends OpMode{
         telemetry.addData("claw_l  ", "%.2f", robot._leftClaw.getPosition() );
         telemetry.addData("claw_r  ", "%.2f", robot._rightClaw.getPosition() );
         telemetry.update();
-*/
 
+/*
         telemetry.addData("turret\t  ", "%.2f  ctrl  %.3f ", robot._turret.getPosition(), turretControl);
         telemetry.addData("  base\t  ", "%.2f  ctrl  %.3f ", robot._base.getPosition(), baseControl);
         telemetry.addData(" elbow\t  ", "%.2f  ctrl  %.3f ", robot._elbow.getPosition(), elbowControl);
@@ -210,7 +227,7 @@ public class Gigi_OpMode_V2 extends OpMode{
         telemetry.addData("claw_l\t  ", "%.2f  ctrl  %.3f ", robot._leftClaw.getPosition(), clawControlL);
         telemetry.addData("claw_r\t  ", "%.2f  ctrl  %.3f ", robot._rightClaw.getPosition(), clawControlR);
         telemetry.update();
-
+*/
     }
     /*
     * Code to run ONCE after the driver hits STOP

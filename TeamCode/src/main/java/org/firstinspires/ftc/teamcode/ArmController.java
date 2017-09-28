@@ -31,8 +31,10 @@ public class ArmController {
 
         if( !isInitialized ){
             //destination.solve_XYZ( destination.xZero, destination.yZero, destination.zZero );
+            moveToPositionZero();
             current.copyFrom( destination );
             next.copyFrom( destination );
+            prevSpeed_mms = 0;
 
             isInitialized = true;
         }
@@ -62,11 +64,11 @@ public class ArmController {
         double currentAllowedMaxDistance = newSpeed_mms * stepMillis;
 
         // see if the destination can be achieved with this speed if not adjust next
-        if( Math.abs( distanceToDestination ) < atDestinationTolerance ) {
+        if( Math.abs( distanceToDestination ) <= atDestinationTolerance ) {
             next.copyFrom( current );
             prevSpeed_mms = 0;
         }
-        else if( Math.abs( distanceToDestination ) < currentAllowedMaxDistance ){
+        else if( Math.abs( distanceToDestination ) <= currentAllowedMaxDistance ){
             next.copyFrom( destination );
         }
         else if( distanceToDestination > currentAllowedMaxDistance ) {
