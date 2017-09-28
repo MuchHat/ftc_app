@@ -20,7 +20,7 @@ public class Arm {
 
     Point basePoint = null;
     Point elbowPoint = null;
-    Point wristPoint = null;
+    Point endPoint = null;
 
     double xZero = 0;
     double yZero = 0;
@@ -49,7 +49,7 @@ public class Arm {
 
         basePoint = new Point();
         elbowPoint = new Point();
-        wristPoint = new Point();
+        endPoint = new Point();
 
         basePoint.solve_XYZ( 0, 0, 0 );
     }
@@ -75,11 +75,11 @@ public class Arm {
         elbowAngle.solve_AngleServo( es );
 
         elbowPoint.solve_R_AZ_AX( lBase, baseAngle.anglePI, turretAngle.anglePI );
-        wristPoint.solve_R_AZ_AX( lElbow, elbowAngle.anglePI - Math.PI / 2, elbowPoint.ax );
+        endPoint.solve_R_AZ_AX( lElbow, elbowAngle.anglePI - Math.PI / 2, elbowPoint.ax );
 
-        x = wristPoint.x;
-        y = wristPoint.y;
-        z = wristPoint.z;
+        x = endPoint.x;
+        y = endPoint.y;
+        z = endPoint.z;
 
         clawVerticalAngle.solve_AnglePI( Math.PI / 2 + elbowPoint.az );
         clawHorizontalAngle.solve_AnglePI( - turretAngle. anglePI );
@@ -89,17 +89,17 @@ public class Arm {
 
     public void solve_XYZ( double x, double y, double z ){
 
-        wristPoint.solve_XYZ( x, y, z );
+        endPoint.solve_XYZ( x, y, z );
 
         Triangle elbowTriangle = new Triangle();
 
-        elbowTriangle.solve_SSS( lBase, lElbow, wristPoint.r );
+        elbowTriangle.solve_SSS( lBase, lElbow, endPoint.r );
 
-        elbowPoint.solve_R_AZ_AX( lBase, wristPoint.az + elbowTriangle.a2, wristPoint.ax );
+        elbowPoint.solve_R_AZ_AX( lBase, endPoint.az + elbowTriangle.a2, endPoint.ax );
 
-        x = wristPoint.x;
-        y = wristPoint.y;
-        z = wristPoint.z;
+        x = endPoint.x;
+        y = endPoint.y;
+        z = endPoint.z;
 
         turretAngle.solve_AnglePI( elbowPoint.ax );
         elbowAngle.solve_AnglePI( elbowTriangle.a3 );

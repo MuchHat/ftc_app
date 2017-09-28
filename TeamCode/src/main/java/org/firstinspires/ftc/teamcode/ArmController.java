@@ -42,7 +42,7 @@ public class ArmController {
         // determined the next point based on the millis : considered end of step
 
         // compute the distance to the next point
-        double distanceToDestination = current.wristPoint.distsanceTo( destination.wristPoint );
+        double distanceToDestination = current.endPoint.distsanceTo( destination.endPoint );
 
         // determine the max possible speed
         double newSpeed_mms = maxSpeed_mms;
@@ -69,9 +69,9 @@ public class ArmController {
         else if( distanceToDestination > currentAllowedMaxDistance ) {
             double ratio = Math.abs( currentAllowedMaxDistance / distanceToDestination );
             next.solve_XYZ(
-                    current.wristPoint.x + ( destination.wristPoint.x - current.wristPoint.x ) * ratio,
-                    current.wristPoint.y + ( destination.wristPoint.y - current.wristPoint.y ) * ratio,
-                    current.wristPoint.z + ( destination.wristPoint.z - current.wristPoint.z ) * ratio );
+                    current.endPoint.x + ( destination.endPoint.x - current.endPoint.x ) * ratio,
+                    current.endPoint.y + ( destination.endPoint.y - current.endPoint.y ) * ratio,
+                    current.endPoint.z + ( destination.endPoint.z - current.endPoint.z ) * ratio );
         }
 
         // check the speed of the claw too
@@ -83,24 +83,24 @@ public class ArmController {
         }
 
         // see if would hit the body of the robot and adjust
-        if( next.wristPoint.x < baseToEdgeX &&
-                next.wristPoint.y < baseToEdgeY &&
-                next.wristPoint.z < platformHeight ) {
+        if( next.endPoint.x < baseToEdgeX &&
+                next.endPoint.y < baseToEdgeY &&
+                next.endPoint.z < platformHeight ) {
             // means it would hit the robot
 
             // keep constant the one closer to the arm
-            double dx = baseToEdgeX - next.wristPoint.x;
-            double dy = baseToEdgeY - next.wristPoint.y;
-            double dz = platformHeight - next.wristPoint.z;
+            double dx = baseToEdgeX - next.endPoint.x;
+            double dy = baseToEdgeY - next.endPoint.y;
+            double dz = platformHeight - next.endPoint.z;
 
             if( dx < dy && dx < dz ){
-                next.solve_XYZ( baseToEdgeX, next.wristPoint.y, next.wristPoint.z );
+                next.solve_XYZ( baseToEdgeX, next.endPoint.y, next.endPoint.z );
             }
             if( dy < dx && dy < dz ){
-                next.solve_XYZ( next.wristPoint.x, baseToEdgeY, next.wristPoint.z );
+                next.solve_XYZ( next.endPoint.x, baseToEdgeY, next.endPoint.z );
             }
             if( dz < dx && dz < dy ){
-                next.solve_XYZ( next.wristPoint.x, next.wristPoint.y, platformHeight );
+                next.solve_XYZ( next.endPoint.x, next.endPoint.y, platformHeight );
             }
         }
         prevSpeed_mms = newSpeed_mms;
