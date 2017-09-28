@@ -15,8 +15,8 @@ public class Point {
 
     public double r = 0;
 
-    public Triangle xProjection = null;
-    public Triangle zProjection = null;
+    public Triangle xProjection = new Triangle();
+    public Triangle zProjection = new Triangle();
 
     public boolean isValid = false;
 
@@ -64,7 +64,7 @@ public class Point {
         isValid = true;
     }
 
-    public double distsanceTo( Point to ){
+    public double distanceTo( Point to ){
 
         Point p = new Point();
 

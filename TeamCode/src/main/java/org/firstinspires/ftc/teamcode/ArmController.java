@@ -6,10 +6,10 @@ package org.firstinspires.ftc.teamcode;
 
 public class ArmController {
 
-    Arm origin      = null;
-    Arm current     = null;
-    Arm next        = null;
-    Arm destination = null;
+    Arm origin      = new Arm();
+    Arm current     = new Arm();
+    Arm next        = new Arm();
+    Arm destination = new Arm();
 
     // TODO fix constants
     double maxSpeed_mms  = 33; // mm
@@ -44,7 +44,7 @@ public class ArmController {
         // determined the next point based on the millis : considered end of step
 
         // compute the distance to the next point
-        double distanceToDestination = current.endPoint.distsanceTo( destination.endPoint );
+        double distanceToDestination = current.endPoint.distanceTo( destination.endPoint );
 
         // determine the max possible speed
         double newSpeed_mms = maxSpeed_mms;
