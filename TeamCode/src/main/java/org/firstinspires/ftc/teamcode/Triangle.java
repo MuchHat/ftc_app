@@ -22,7 +22,7 @@ public class Triangle {
 
     public void solve_SAA( double al1, double aa2, double aa3 ){
 
-        l1 = al1;
+        l1 = Math.abs( al1 );
 
         a2 = aa2;
         a3 = aa3;
@@ -36,8 +36,8 @@ public class Triangle {
 
     public void solve_SSA( double al1, double al2, double aa3 ) {
 
-        l1 = al1;
-        l2 = al2;
+        l1 = Math.abs( al1 );
+        l2 = Math.abs( al2 );
 
         a3 = aa3;
 
@@ -57,9 +57,19 @@ public class Triangle {
 
     public void solve_SSS( double al1, double al2, double al3 ){
 
-        l1 = al1;
-        l2 = al2;
-        l3 = al3;
+        l1 = Math.abs( al1 );
+        l2 = Math.abs( al2 );
+        l3 = Math.abs( al3 );
+
+        if( ( l1 + l2 < l3 ) ||
+                ( l1 + l3 < l2 ) ||
+                ( l3 + l2 < l1 ) ) {
+            a1 = 0;
+            a2 = 0;
+            a3 = 0;
+            isValid = false;
+            return;
+        }
 
         a1 = Math.acos( ( l2 * l2 + l3 * l3 - l1 * l1 ) / ( 2 * l2 * l3 ) );
         a2 = Math.acos( ( l1 * l1 + l3 * l3 - l2 * l2 ) / ( 2 * l2 * l3 ) );
