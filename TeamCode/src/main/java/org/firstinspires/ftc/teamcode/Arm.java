@@ -23,6 +23,19 @@ public class Arm {
     Point wristPoint = null;
     Point clawPoint = null;
 
+    double xZero = 0;
+    double yZero = 0;
+    double zZero = 0;
+
+    double xHome = 0;
+    double yHome = 0;
+    double zHome = 0;
+
+    double xFront = 0;
+    double yFront = 0;
+    double zFront = 0;
+
+
     double lBase = 222;
     double lElbow = 222;
     double lClaw = 11;
@@ -38,6 +51,10 @@ public class Arm {
         clawPoint = new Point();
 
         basePoint.solve_XYZ( 0, 0, 0 );
+    }
+
+    public void copyFrom( Arm anotherArm ){
+        solve_XYZ( anotherArm.x, anotherArm.y, anotherArm.z  );
     }
 
     public void solve_Servos( double ts, double bs, double es ){
