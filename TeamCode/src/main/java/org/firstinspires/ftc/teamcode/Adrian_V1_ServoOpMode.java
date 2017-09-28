@@ -62,6 +62,8 @@ public class Adrian_V1_ServoOpMode extends LinearOpMode {
     double homeWrist = 70;
     double homeLeftClaw = 20;
     double homeRightClaw = 200;
+    boolean firstrun = true;
+
 
     @Override
     public void runOpMode() {
@@ -70,7 +72,6 @@ public class Adrian_V1_ServoOpMode extends LinearOpMode {
         double drive;
         double turn;
         double max;
-        boolean firstrun = true;
 
 
         /* Initialize the hardware variables.
@@ -176,7 +177,8 @@ public class Adrian_V1_ServoOpMode extends LinearOpMode {
                 telemetry.addData( "GamePad 1", "X" );
                 telemetry.update();
 
-                moveServo(50,150,255);
+                //turret, base, elbow, wrist, claw_left, claw_right
+                moveServo(50,150,255, "turret");
             }
 
             if (gamepad1.b) {
@@ -216,8 +218,26 @@ public class Adrian_V1_ServoOpMode extends LinearOpMode {
         }
         sleep( 50 );
     }
-    public void moveServo(int initialValue, int finalValue, final int max) {
-        ValueAnimator valueAnimator = ValueAnimator.ofInt(initialValue, finalValue);
+    public void moveServo(int initialValue, int finalValue, final int max, String servoName)
+    {
+        servoName = servoName.toLowerCase();
+        switch (servoName)
+        {
+            case "turret":
+                break;
+            case "elbow":
+                break;
+            case "wrist":
+                break;
+            case "base":
+                break;
+            case "claw_left":
+                break;
+            case "claw_right":
+                break;
+        }
+
+        /*ValueAnimator valueAnimator = ValueAnimator.ofInt(initialValue, finalValue);
         valueAnimator.setDuration(750);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -227,7 +247,7 @@ public class Adrian_V1_ServoOpMode extends LinearOpMode {
                 robot.turret.setPosition(servoInt);
             }
         });
-        valueAnimator.start();
+        valueAnimator.start();*/
 
     }
 }
