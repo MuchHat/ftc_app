@@ -18,6 +18,9 @@ public class ArmController {
     double platformHeight = 155; // mm
     double baseToEdgeX    = 166; // mm
     double baseToEdgeY    = 122; // mm
+    double closestX       = 66; // mm
+    double closestY       = 22; // mm
+
     double atDestinationTolerance = 3; // mm
     // TODO end
 
@@ -82,7 +85,16 @@ public class ArmController {
             next.clawOpeningMM = current.clawOpeningMM + ( destination.clawOpeningMM - current.clawOpeningMM ) * ratio;
         }
 
+        // check if too close to base
         // see if would hit the body of the robot and adjust
+        if( next.endPoint.x < closestX ) {
+            next.solve_XYZ(closestX, next.endPoint.y, next.endPoint.z);
+        }
+        if( next.endPoint.y < closestY ) {
+            next.solve_XYZ(next.endPoint.x, closestY, next.endPoint.z);
+        }
+
+                // see if would hit the body of the robot and adjust
         if( next.endPoint.x < baseToEdgeX &&
                 next.endPoint.y < baseToEdgeY &&
                 next.endPoint.z < platformHeight ) {
