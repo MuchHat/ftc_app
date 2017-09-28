@@ -62,7 +62,7 @@ public class ArmController {
         double currentAllowedMaxDistance = newSpeed_mms * stepMillis;
 
         // see if the destination can be achieved with this speed if not adjust next
-        if( distanceToDestination < atDestinationTolerance ) {
+        if( Math.abs( distanceToDestination ) < atDestinationTolerance ) {
             next.copyFrom( current );
             prevSpeed_mms = 0;
         }
@@ -78,7 +78,7 @@ public class ArmController {
         }
 
         // check the speed of the claw too
-        double clawDistance = destination.clawOpeningMM - current.clawOpeningMM;
+        double clawDistance = Math.abs( destination.clawOpeningMM - current.clawOpeningMM );
         double currentAllowedDistance =  newSpeed_mms * stepMillis;
         if( Math.abs( clawDistance ) > maxSpeed_mms ){
             double ratio = Math.abs( currentAllowedMaxDistance / clawDistance );
