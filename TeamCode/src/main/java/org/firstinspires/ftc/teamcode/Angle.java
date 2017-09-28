@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.util.Range;
 
 public class Angle {
 
-    double angleServo = 0;
-    double anglePI = 0;
+    double angleServo = 0; // between 0 and 1.0
+    double anglePI = 0;  // between -pi/2 to pi/2
 
     double offsetServo = 0;  // servo 0.2 conicides with 0 PI
     double slopeServo = 1.0; // 1 PI is 0.8 of the servo

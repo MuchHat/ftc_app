@@ -36,6 +36,12 @@ public class Point {
         altitude = Math.asin( z / r * sign_z ) * sign_z;
         azimuth = Math.atan( y / x * sign_x * sign_y ) * sign_x * sign_y;
 
+        altitude  = Range.clip( Math.abs( altitude ), 0, Math.PI );
+        azimuth = Range.clip( Math.abs( azimuth ), 0, Math.PI );
+
+        if( altitude > Math.PI /2 ) altitude = -( altitude - Math.PI / 2);
+        if( azimuth > Math.PI /2 ) azimuth = -( azimuth - Math.PI / 2);
+
         isValid = true;
     }
     public void solve_RAA( double sr, double aazimuth, double aaltitude ) {
@@ -45,11 +51,13 @@ public class Point {
         altitude = Range.clip( aaltitude, -Math.PI / 2, Math.PI / 2 );
         azimuth = Range.clip( aazimuth, -Math.PI / 2, Math.PI / 2 );
 
-        double sign_altitude = altitude > 0 ? 1.0 : -1.0;
-        double sign_azimuth = azimuth > 0 ? 1.0 : -1.0;
+        double altitude_0_pi = altitude;
+        if( altitude_0_pi < 0 ) altitude_0_pi = Math.PI - altitude_0_pi;
+        double azimut_0_pi = azimuth;
+        if( azimut_0_pi < 0 ) azimut_0_pi = Math.PI - azimut_0_pi;
 
-        x = Math.cos( altitude * sign_altitude ) * Math.cos( azimuth * sign_azimuth ) * sign_altitude * sign_azimuth;
-        y = Math.cos( altitude * sign_altitude ) * Math.sin( azimuth* sign_altitude ) * sign_altitude * sign_azimuth;
+        x = Math.cos( altitude_0_pi ) * Math.cos( azimut_0_pi );
+        y = Math.cos( altitude_0_pi ) * Math.sin( azimut_0_pi );
 
         isValid = true;
     }

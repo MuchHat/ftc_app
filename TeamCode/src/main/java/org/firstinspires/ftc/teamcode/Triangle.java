@@ -26,18 +26,28 @@ public class Triangle {
 
         l1 = Math.abs( al1 );
 
-        double aa2_sign = aa2 > 0 ? 1.0 : -1.0;
-        if( aa2_sign < 0 ) aa2 += Math.PI / 2;
+        a3 = aa3;
+        a3 = Range.clip( a3, -Math.PI / 2, Math.PI / 2 );
+        a2 = aa3;
+        a2 = Range.clip( a2, -Math.PI / 2, Math.PI / 2 );
 
-        double aa3_sign = aa3 > 0 ? 1.0 : -1.0;
-        if( aa3_sign < 0 ) aa3 += Math.PI / 2;
+        double a3_0_pi = a3;
+        if( a3_0_pi < 0 ) a3_0_pi = Math.PI / 2 - a3_0_pi;
+        double a2_0_pi = a2;
+        if( a2_0_pi < 0 ) a2_0_pi = Math.PI / 2 - a2_0_pi;
+        double a1_0_pi = Math.PI - a2_0_pi - a3_0_pi;
+        a1_0_pi = a1;
+        if( a1_0_pi < 0 ) a1_0_pi = Math.PI / 2 - a1_0_pi;
 
-        a2 = Range.clip (Math.abs( aa2 ), 0, Math.PI );
-        a3 = Range.clip( Math.abs( aa3 ), 0, Math.PI );
-        a1 = Math.PI - a2 - a3;
+        l2 = l1 * Math.sin( a2_0_pi ) / Math.sin( a1_0_pi );
+        l3 = l1 * Math.sin( a3_0_pi ) / Math.sin( a1_0_pi );
 
-        l2 = l1 * Math.sin( a2 ) / Math.sin( a1 );
-        l3 = l1 * Math.sin( a3 ) / Math.sin( a1 );
+        a1 = a1_0_pi;
+        if( a1 > Math.PI / 2 ) a1 = -( a1 - Math.PI / 2 );
+        a2 = a2_0_pi;
+        if( a2 > Math.PI / 2 ) a2 = -( a2 - Math.PI / 2 );
+        a3 = a3_0_pi;
+        if( a3 > Math.PI / 2 ) a3 = -( a3 - Math.PI / 2 );
 
         isValid = true;
     }
@@ -47,21 +57,33 @@ public class Triangle {
         l1 = Math.abs( al1 );
         l2 = Math.abs( al2 );
 
-        double aa3_sign = aa3 > 0 ? 1.0 : -1.0;
-        if( aa3_sign < 0 ) aa3 += Math.PI / 2;
+        a3 = aa3;
+        a3 = Range.clip( a3, -Math.PI / 2, Math.PI / 2 );
 
-        a3 = Range.clip( Math.abs( aa3 ), 0, Math.PI );
+        double a3_0_pi = a3;
+        if( a3_0_pi < 0 ) a3_0_pi = Math.PI / 2 - a3_0_pi;
+        double a2_0_pi = a2;
+        if( a2_0_pi < 0 ) a2_0_pi = Math.PI / 2 - a2_0_pi;
+        double a1_0_pi = a2;
+        if( a1_0_pi < 0 ) a1_0_pi = Math.PI / 2 - a1_0_pi;
 
-        l3 = Math.sqrt( l2 * l2 + l1 * l1 - 2 * l2 * l1 * Math.cos( a3 ) );
+        l3 = Math.sqrt( l2 * l2 + l1 * l1 - 2 * l2 * l1 * Math.cos( a_3 ) );
 
         if ( l1 > l2 ) {
-            a2 = Math.asin( l2 * Math.sin( a3 ) / l3 );
-            a1 = Math.PI - a2 - a3;
+            a_2 = Math.asin( l2 * Math.sin( a_3 ) / l3 );
+            a_1 = Math.PI - a_2 - a_3;
         }
         if ( l2 > l1 ) {
-            a1 = Math.asin( l1 * Math.sin( a3 ) / l3 );
-            a2 = Math.PI - a1 - a3;
+            a_1 = Math.asin( l1 * Math.sin( a_3 ) / l3 );
+            a_2 = Math.PI - a_1 - a_3;
         }
+
+        a1 = a1_0_pi;
+        if( a1 > Math.PI / 2 ) a1 = -( a1 - Math.PI / 2 );
+        a2 = a2_0_pi;
+        if( a2 > Math.PI / 2 ) a2 = -( a2 - Math.PI / 2 );
+        a3 = a3_0_pi;
+        if( a3 > Math.PI / 2 ) a3 = -( a3 - Math.PI / 2 );
 
         isValid = true;
     }
@@ -85,6 +107,10 @@ public class Triangle {
         a1 = Math.acos( ( l2 * l2 + l3 * l3 - l1 * l1 ) / ( 2 * l2 * l3 ) );
         a2 = Math.acos( ( l1 * l1 + l3 * l3 - l2 * l2 ) / ( 2 * l2 * l3 ) );
         a3 = Math.PI - a1 - a2;
+
+        if( a1 > Math.PI /2 ) a1 = -( a1 - Math.PI / 2 );
+        if( a2 > Math.PI /2 ) a2 = -( a2 - Math.PI / 2 );
+        if( a3 > Math.PI /2 ) a3 = -( a3 - Math.PI / 2 );
 
         isValid = true;
     }
