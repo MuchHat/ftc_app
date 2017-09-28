@@ -247,11 +247,17 @@ public class Gigi_OpMode_V2 extends OpMode{
         robot._rightClaw.setPosition( 140 - armController.next.clawOpeningAngle.angleServo );
         TODO END */
 
+        String atDestinationStr = new String( "false" );
+
+        if( armController.atDestination ){
+            atDestinationStr = "true";
+        }
+
         telemetry.addData("turret  ", "%.2f  X  %3.0f mm", robot._turret.getPosition(), armController.next.x );
         telemetry.addData("  base  ", "%.2f  Y  %3.0f mm", robot._base.getPosition(), armController.next.y );
         telemetry.addData(" elbow  ", "%.2f  Z  %3.0f mm", robot._elbow.getPosition(), armController.next.z );
         telemetry.addData(" wrist  ", "%.2f  C  %3.0f mm", robot._wrist.getPosition(), armController.next.clawOpeningMM );
-        telemetry.addData("claw_l  ", "%.2f", robot._leftClaw.getPosition() );
+        telemetry.addData("claw_l  ", "%.2f  D  %s",robot._leftClaw.getPosition(), atDestinationStr );
         telemetry.addData("claw_r  ", "%.2f", robot._rightClaw.getPosition() );
         telemetry.update();
 

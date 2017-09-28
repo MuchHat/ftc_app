@@ -21,6 +21,8 @@ public class ArmController {
     double closestX       = 66; // mm
     double closestY       = 22; // mm
 
+    boolean atDestination = true;
+
     double atDestinationTolerance = 3; // mm
     // TODO end
 
@@ -35,6 +37,7 @@ public class ArmController {
             current.copyFrom( destination );
             next.copyFrom( destination );
             prevSpeed_mms = 0;
+            atDestination = true;
 
             isInitialized = true;
         }
@@ -64,9 +67,11 @@ public class ArmController {
         double currentAllowedMaxDistance = newSpeed_mms * stepMillis;
 
         // see if the destination can be achieved with this speed if not adjust next
+        atDestination = false;
         if( Math.abs( distanceToDestination ) <= atDestinationTolerance ) {
             next.copyFrom( current );
             prevSpeed_mms = 0;
+            atDestination = true;
         }
         else if( Math.abs( distanceToDestination ) <= currentAllowedMaxDistance ){
             next.copyFrom( destination );
