@@ -58,7 +58,6 @@ public class Point {
         xProjection.solve_SSA( t.l3, t.l2, t.a2 );
 
         x = xProjection.l2;
-
         y = xProjection.l3;
 
         isValid = true;

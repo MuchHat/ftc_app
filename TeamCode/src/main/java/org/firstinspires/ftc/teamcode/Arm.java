@@ -16,7 +16,7 @@ public class Arm {
     public Angle  clawVerticalAngle    =  new Angle();
     public Angle  clawHorizontalAngle  =  new Angle();
     public Angle  clawOpeningAngle     =  new Angle();
-    public double clawOpeningMM       = 0;
+    public double clawOpeningMM        = 0;
 
     Point basePoint  = new Point();
     Point elbowPoint = new Point();

@@ -6,7 +6,6 @@ package org.firstinspires.ftc.teamcode;
 
 public class ArmController {
 
-    Arm origin      = new Arm();
     Arm current     = new Arm();
     Arm next        = new Arm();
     Arm destination = new Arm();
@@ -28,8 +27,7 @@ public class ArmController {
         // determines the current position
 
         if( !isInitialized ){
-            destination.solve_XYZ( destination.xZero, destination.yZero, destination.zZero );
-            origin.copyFrom( destination );
+            //destination.solve_XYZ( destination.xZero, destination.yZero, destination.zZero );
             current.copyFrom( destination );
             next.copyFrom( destination );
 

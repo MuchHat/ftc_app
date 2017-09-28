@@ -7,7 +7,7 @@ package org.firstinspires.ftc.teamcode;
 public class Angle {
 
     double angleServo = 0;
-    double anglePI = 0;
+    double anglePI    = 0;
 
     double offsetServo = 0;  // servo 0.2 conicides with 0 PI
     double slopeServo = 1.0; // 1 PI is 0.8 of the servo
