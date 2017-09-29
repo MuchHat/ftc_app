@@ -10,18 +10,18 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 
 public class Arm {
 
-    public double x = 0;
-    public double y = 0;
-    public double z = 0;
+    private double x = 0;
+    private double y = 0;
+    private double z = 0;
 
     public double t_pi = 0;
     public double b_pi = 0;
     public double e_pi = 0;
 
-    public double teta = 0;
-    public double phi = 0;
+    private double teta = 0;
+    private double phi = 0;
 
-    public double r = 0;
+    private double r = 0;
 
     public Angle  turretAngle          =  new Angle();
     public Angle  baseAngle            =  new Angle();
@@ -101,6 +101,28 @@ public class Arm {
         //TODO END
 
         solve_Claw( lClawGap );
+    }
+
+    public double getX(){
+
+    }
+    public double getY(){
+
+    }
+    public double getZ(){
+
+    }
+    public double getBaseServo(){
+
+    }
+    public double getElbowServo(){
+
+    }
+    public double getWristHorizontalServo(){
+
+    }
+    public double getWristVerticalServo(){
+
     }
 
     public void copyFrom( Arm anotherArm ){

@@ -138,6 +138,25 @@ public class ArmController {
         prevSpeed_mms = newSpeed_mms;
     }
 
+    public double getNextServoBase(){
+
+    }
+    public double getNextServoElbow(){
+
+    }
+    public double getNextServoWristHorizontal(){
+
+    }
+    public double getNextServoTurret(){
+
+    }
+    public double getNextServoWristVertical){
+
+    }
+    public double getNextServoCkaw(){
+
+    }
+
     public void moveIncremental( double ix, double iy, double iz ){
 
         destination.solve_XYZ( current.x + ix, current.y + iy, current.z + iz );
