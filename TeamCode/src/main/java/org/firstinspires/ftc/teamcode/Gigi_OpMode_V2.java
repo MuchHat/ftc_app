@@ -56,6 +56,27 @@ public class Gigi_OpMode_V2 extends OpMode{
     public  double             clawControlR  = 0;
     public  boolean            initialized   = false;
 
+    public double t_pi = 0;
+    public double b_pi = 0;
+    public double e_pi = 0;
+
+    public double r = 0;
+    public double teta = 0;
+    public double phi = 0;
+
+    public double x = 0;
+    public double y = 0;
+    public double z = 0;
+
+    public double rr = 0;
+    public double tteta = 0;
+    public double tphi = 0;
+
+    public double tt = 0;
+    public double bb = 0;
+    public double ee = 0;
+
+
     @Override
     public void init() {
          /*
@@ -84,22 +105,50 @@ public class Gigi_OpMode_V2 extends OpMode{
     /*
      * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
      */
+
+    public void testServos( double ts, double bs, double es ) {
+
+        // use polar coordinates
+        // all angles are 0 to PI
+        // https://en.wikipedia.org/wiki/Spherical_coordinate_system
+
+        t_pi = ts * Math.PI;
+        b_pi = bs * Math.PI;
+        e_pi = es * Math.PI;
+
+        teta = Math.PI - t_pi;
+        phi = b_pi - Math.PI / 2;
+
+        Triangle elbowTriangle = new Triangle();
+        elbowTriangle.solve_SSA(240, 240, e_pi);
+
+        r = elbowTriangle.l3;
+
+        x = r * Math.sin(phi) * Math.cos(teta);
+        y = r * Math.sin(phi) * Math.sin(teta);
+        z = r * Math.cos(phi);
+    }
+
+    public void testXYZ( double xx, double yy, double zz ) {
+
+        rr = Math.sqrt( x * x + y * y + z * z );
+
+        tphi = Math.acos( z / r );
+        tteta = Math.atan( y / x );
+
+        Triangle elbowTriangle = new Triangle();
+        elbowTriangle.solve_SSS( 240, 240, rr );
+
+        tt = Math.PI - tteta;
+        bb =  Math.PI / 2 + tphi;
+        ee =  elbowTriangle.a3;
+    }
+
     @Override
     public void loop() {
 
         double crrLoopTime = runtime.milliseconds();
         runtime.reset();
-
-        if( armController.isInitialized ){
-             double t = robot._turret.getPosition();
-             double b = robot._base.getPosition();
-             double e = robot._elbow.getPosition();
-
-             armController.startLoop( t, b, e );
-         }
-         else if( !armController.isInitialized ){
-            armController.startLoop( 0, 0, 0 );
-        }
 
         if ( !initialized ) {
             robot._turret.setPosition( 166 / 255 );
@@ -125,6 +174,29 @@ public class Gigi_OpMode_V2 extends OpMode{
             clawControlL  = robot._leftClaw.getPosition();
             clawControlR  = robot._rightClaw.getPosition();
         }
+
+        // armController.startLoop( t, b, e );
+        testServos( turretControl, baseControl, elbowControl );
+        testXYZ( x, y, z );
+
+        //String atDestinationStr = new String( "moving->" );
+        //if( armController.atDestination ){
+        //    atDestinationStr = "stopped";
+        //}
+
+        telemetry.addData("t_pi","%.2fpi", t_pi );
+        telemetry.addData("b_pi","%.2fpi", b_pi );
+        telemetry.addData("e_pi", "%.2fpi", e_pi );
+        telemetry.addData("r", "%.2fmm", r );
+        telemetry.addData("teta","%.2fpi",teta );
+        telemetry.addData("phi","%.2fpi", phi );
+        telemetry.addData("X axis","%.2fmm", x );
+        telemetry.addData("Y axis","%.2fmm", y );
+        telemetry.addData("Z axis","%.2fmm", z );
+        telemetry.addData("tt","%.2fpi", rr );
+        telemetry.addData("bb","%.2fpi", bb );
+        telemetry.addData("ee","%.2fpi", ee );
+        telemetry.update();
 
         // control: TURRET
         {
@@ -246,21 +318,6 @@ public class Gigi_OpMode_V2 extends OpMode{
         robot._leftClaw.setPosition( armController.next.clawOpeningAngle.angleServo );
         robot._rightClaw.setPosition( 140 - armController.next.clawOpeningAngle.angleServo );
         TODO END */
-
-        String atDestinationStr = new String( "moving.." );
-
-        if( armController.atDestination ){
-            atDestinationStr = "stopped";
-        }
-
-        telemetry.addData("turret  ", "%.2f  X axis  %3.0f mm", robot._turret.getPosition(), armController.next.x );
-        telemetry.addData("  base  ", "%.2f  Y axis  %3.0f mm", robot._base.getPosition(), armController.next.y );
-        telemetry.addData(" elbow  ", "%.2f  Z axis  %3.0f mm", robot._elbow.getPosition(), armController.next.z );
-        telemetry.addData(" wrist  ", "%.2f  claw    %3.0f mm", robot._wrist.getPosition(), armController.next.clawOpeningMM );
-        telemetry.addData("claw_l  ", "%.2f  is  %s",robot._leftClaw.getPosition(), atDestinationStr );
-        telemetry.addData("claw_r  ", "%.2f", robot._rightClaw.getPosition() );
-        telemetry.update();
-
 /*
         telemetry.addData("turret\t  ", "%.2f  ctrl  %.3f ", robot._turret.getPosition(), turretControl);
         telemetry.addData("  base\t  ", "%.2f  ctrl  %.3f ", robot._base.getPosition(), baseControl);

@@ -22,35 +22,35 @@ public class ArmController {
     double closestY       = 22; // mm
 
     boolean atDestination = true;
+    boolean isInitialized = false;
 
     double atDestinationTolerance = 3; // mm
     // TODO end
 
-    boolean isInitialized = false;
+    String log = new String();
+
+    public void ArmController(){
+
+    }
 
     public void startLoop( double servoTurret, double servoBase, double servoElbow ){
         // determines the current position
 
-        if( !isInitialized ){
-            //destination.solve_XYZ( destination.xZero, destination.yZero, destination.zZero );
-            moveToPositionZero();
-            current.copyFrom( destination );
-            next.copyFrom( destination );
-            prevSpeed_mms = 0;
-            atDestination = true;
+        current.solve_Servos( servoTurret, servoBase, servoElbow );
 
+        if( !isInitialized ){
+            destination.copyFrom( current );
+            next.copyFrom( current );
             isInitialized = true;
         }
-        else if( isInitialized ){
-            current.solve_Servos( servoTurret, servoBase, servoElbow );
-        }
+        // log = current.log;
     }
 
     public void endLoop( double stepMillis ) {
         // determined the next point based on the millis : considered end of step
 
         // compute the distance to the next point
-        double distanceToDestination = current.endPoint.distanceTo( destination.endPoint );
+        double distanceToDestination = current.distanceTo( destination );
 
         // determine the max possible speed
         double newSpeed_mms = maxSpeed_mms;
@@ -66,8 +66,11 @@ public class ArmController {
         }
         double currentAllowedMaxDistance = newSpeed_mms * stepMillis;
 
+        // by default stay in place
+        atDestination = true;
+        next.copyFrom( current );
+
         // see if the destination can be achieved with this speed if not adjust next
-        atDestination = false;
         if( Math.abs( distanceToDestination ) <= atDestinationTolerance ) {
             next.copyFrom( current );
             prevSpeed_mms = 0;
@@ -75,13 +78,17 @@ public class ArmController {
         }
         else if( Math.abs( distanceToDestination ) <= currentAllowedMaxDistance ){
             next.copyFrom( destination );
+            prevSpeed_mms = newSpeed_mms;
+            atDestination = false;
         }
         else if( distanceToDestination > currentAllowedMaxDistance ) {
             double ratio = Math.abs( currentAllowedMaxDistance / distanceToDestination );
             next.solve_XYZ(
-                    current.endPoint.x + ( destination.endPoint.x - current.endPoint.x ) * ratio,
-                    current.endPoint.y + ( destination.endPoint.y - current.endPoint.y ) * ratio,
-                    current.endPoint.z + ( destination.endPoint.z - current.endPoint.z ) * ratio );
+                    current.x + ( destination.x - current.x ) * ratio,
+                    current.y + ( destination.y - current.y ) * ratio,
+                    current.z + ( destination.z - current.z ) * ratio );
+            prevSpeed_mms = newSpeed_mms;
+            atDestination = false;
         }
 
         // check the speed of the claw too
@@ -94,31 +101,38 @@ public class ArmController {
 
         // check if too close to base
         // see if would hit the body of the robot and adjust
-        if( next.endPoint.x < closestX ) {
-            next.solve_XYZ(closestX, next.endPoint.y, next.endPoint.z);
+        if( next.x < closestX ) {
+            next.solve_XYZ(closestX, next.y, next.z);
         }
-        if( next.endPoint.y < closestY ) {
-            next.solve_XYZ(next.endPoint.x, closestY, next.endPoint.z);
+        if( next.y < closestY ) {
+            next.solve_XYZ(next.x, closestY, next.z);
         }
         // see if would hit the body of the robot and adjust
-        if( next.endPoint.x < baseToEdgeX &&
-                next.endPoint.y < baseToEdgeY &&
-                next.endPoint.z < platformHeight ) {
+        if( next.x < baseToEdgeX &&
+                Math.abs( next.y ) < baseToEdgeY &&
+                next.z < platformHeight ) {
             // means it would hit the robot
 
-            // keep constant the one closer to the arm
-            double dx = baseToEdgeX - next.endPoint.x;
-            double dy = baseToEdgeY - next.endPoint.y;
-            double dz = platformHeight - next.endPoint.z;
+            double x_sign = next.x > 0 ? 1.0 : -1.0;
+
+            // keep constant the one closer to the destination
+            next.solve_XYZ( baseToEdgeX * x_sign, next.y, next.z );
+            double dx = next.distanceTo( destination );
+
+            next.solve_XYZ( next.x, baseToEdgeY, next.z );
+            double dy = next.distanceTo( destination );
+
+            next.solve_XYZ( next.x, next.y, platformHeight );
+            double dz = next.distanceTo( destination );
 
             if( dx < dy && dx < dz ){
-                next.solve_XYZ( baseToEdgeX, next.endPoint.y, next.endPoint.z );
+                next.solve_XYZ( baseToEdgeX * x_sign, next.y, next.z );
             }
             if( dy < dx && dy < dz ){
-                next.solve_XYZ( next.endPoint.x, baseToEdgeY, next.endPoint.z );
+                next.solve_XYZ( next.x, baseToEdgeY, next.z );
             }
             if( dz < dx && dz < dy ){
-                next.solve_XYZ( next.endPoint.x, next.endPoint.y, platformHeight );
+                next.solve_XYZ( next.x, next.y, platformHeight );
             }
         }
         prevSpeed_mms = newSpeed_mms;

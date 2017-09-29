@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.util.Range;
+
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 
 /**
@@ -8,9 +10,18 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 
 public class Arm {
 
-    public double x;
-    public double y;
-    public double z;
+    public double x = 0;
+    public double y = 0;
+    public double z = 0;
+
+    public double t_pi = 0;
+    public double b_pi = 0;
+    public double e_pi = 0;
+
+    public double teta = 0;
+    public double phi = 0;
+
+    public double r = 0;
 
     public Angle  turretAngle          =  new Angle();
     public Angle  baseAngle            =  new Angle();
@@ -19,10 +30,6 @@ public class Arm {
     public Angle  clawHorizontalAngle  =  new Angle();
     public Angle  clawOpeningAngle     =  new Angle();
     public double clawOpeningMM        = 0;
-
-    Point basePoint  = new Point();
-    Point elbowPoint = new Point();
-    Point endPoint   = new Point();
 
     // TODO correct the home positons
     double xZero = 0; // mm
@@ -44,14 +51,22 @@ public class Arm {
     double lElbow    = 260; // mm
     double lClawArm =  150; // mm
     double lClawGap =  37;  // mm
+
+    double xMax = 450; // mm
+    double xMin = 45; // mm
+    double yMax = 450; // mm
+    double yMin = 0; // mm
+    double zMax = 450; // mm
+    double zMin = -150; // mm
+    double rMax = 450; // mm
+
     // TODO END
 
     boolean isInitialized = false;
+    String log = new String();
 
     /* Constructor */
     public void Arm(){
-
-        basePoint.solve_XYZ( 0, 0, 0 );
 
         // TODO fix the servos tunning
         turretAngle.offsetServo = 0.00; // SERVO 0.2 is 0 PI
@@ -84,10 +99,13 @@ public class Arm {
         clawOpeningAngle.minServo    = 0.05;
         clawOpeningAngle.maxServo    = 0.95;
         //TODO END
+
+        solve_Claw( lClawGap );
     }
 
     public void copyFrom( Arm anotherArm ){
         solve_XYZ( anotherArm.x, anotherArm.y, anotherArm.z  );
+        solve_Claw( anotherArm.clawOpeningMM );
     }
 
     public void solve_Claw( double mm ){
@@ -99,56 +117,78 @@ public class Arm {
         clawTriangle.solve_SSS( ( mm - lClawGap ) / 2, lClawArm,
                 Math.sqrt( ( ( mm - lClawGap ) / 2 ) * ( ( mm - lClawGap ) / 2 ) +
                         lClawArm * lClawArm ) );
-        clawOpeningAngle.solve_AnglePI( clawTriangle.a1 );
+        clawOpeningAngle.solve_anglePI( clawTriangle.a1 );
 
         clawOpeningMM = mm;
     }
 
-    public void solve_Servos( double ts, double bs, double es ){
+    public double distanceTo( Arm anotherArm ){
 
-        turretAngle.solve_AngleServo( ts );
-        baseAngle.solve_AngleServo( bs );
-        elbowAngle.solve_AngleServo( es );
+        return Math.sqrt( ( x - anotherArm.x ) * ( x - anotherArm.x ) +
+                ( y - anotherArm.y ) * ( y - anotherArm.y ) +
+                ( z - anotherArm.z ) * ( z - anotherArm.z ) );
 
-        elbowPoint.solve_RAA( lBase, baseAngle.anglePI, turretAngle.anglePI );
+    }
+
+    public void solve_Servos( double ts, double bs, double es ) {
+
+        // use polar coordinates
+        // all angles are 0 to PI
+        // https://en.wikipedia.org/wiki/Spherical_coordinate_system
+
+        turretAngle.solve_angleServo(ts);
+        baseAngle.solve_angleServo(bs);
+        elbowAngle.solve_angleServo(es);
+
+        t_pi = turretAngle.anglePI;
+        b_pi = baseAngle.anglePI;
+        e_pi = elbowAngle.anglePI;
+
+        teta = Math.PI - t_pi;
+        phi = b_pi - Math.PI / 2;
 
         Triangle elbowTriangle = new Triangle();
-        elbowTriangle.solve_SSA( lBase, lElbow, elbowAngle.anglePI );
+        elbowTriangle.solve_SSA(lBase, lElbow, e_pi);
 
-        endPoint.solve_RAA( elbowTriangle.l3,
-                elbowPoint.altitude - elbowTriangle.l2,
-                elbowPoint.azimuth );
+        r = elbowTriangle.l3;
+        if (r > rMax) r = rMax;
 
-        x = endPoint.x;
-        y = endPoint.y;
-        z = endPoint.z;
-
-        clawVerticalAngle.solve_AnglePI( Math.PI / 2 + elbowPoint.altitude );
-        clawHorizontalAngle.solve_AnglePI( - turretAngle. anglePI );
+        x = r * Math.sin(teta) * Math.cos(phi);
+        y = r * Math.sin(teta) * Math.sin(phi);
+        z = r * Math.cos(teta);
 
         isInitialized = true;
+
+        /* log = "servos(t " +
+                new Double((double)(long)(t_pi*100)/100).toString() + " b " +
+                new Double((double)(long)(b_pi*100)/100).toString() + " e " +
+                new Double((double)(long)(e_pi*100)/100) +")";
+        log += " mm(x " +
+                new Double((double)(long)(x*100)/100).toString() + " y " +
+                new Double((double)(long)(y*100)/100).toString() + " z " +
+                new Double((double)(long)(z*100)/100) +")"; */
+
     }
+
 
     public void solve_XYZ( double x, double y, double z ){
 
-        endPoint.solve_XYZ( x, y, z );
+        x = Range.clip( x, xMin, xMax );
+        y = Range.clip( y, xMin, yMax );
+        z = Range.clip( z, zMin, zMax );
+
+        r = Math.sqrt( x * x + y * y + z * z );
+        if( r > rMax ) r = rMax;
+
+        teta = Math.acos( z / r );
+        phi = Math.atan( y / x );
 
         Triangle elbowTriangle = new Triangle();
+        elbowTriangle.solve_SSS( lBase, lElbow, r );
 
-        elbowTriangle.solve_SSS( lBase, lElbow, endPoint.r );
-
-        elbowPoint.solve_RAA( lBase, endPoint.altitude + elbowTriangle.a2, endPoint.azimuth );
-
-        x = endPoint.x;
-        y = endPoint.y;
-        z = endPoint.z;
-
-        turretAngle.solve_AnglePI( elbowPoint.azimuth );
-        elbowAngle.solve_AnglePI( elbowTriangle.a3 );
-        baseAngle.solve_AnglePI( endPoint.altitude + elbowTriangle.a2 );
-
-        clawVerticalAngle.solve_AnglePI( Math.PI / 2 + elbowPoint.altitude );
-        clawHorizontalAngle.solve_AnglePI( - turretAngle. anglePI );
+        turretAngle.solve_anglePI( Math.PI - teta );
+        baseAngle.solve_anglePI( Math.PI / 2 + phi );
+        elbowAngle.solve_anglePI( elbowTriangle.a3 );
 
         isInitialized = true;
     }
