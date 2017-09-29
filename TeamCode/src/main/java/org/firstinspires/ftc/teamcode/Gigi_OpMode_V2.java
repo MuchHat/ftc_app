@@ -133,13 +133,21 @@ public class Gigi_OpMode_V2 extends OpMode{
 
         rr = Math.sqrt( x * x + y * y + z * z );
 
-        tphi = Math.acos( z / r );
-        tteta = Math.atan( y / x );
+        double sign_x = x > 0 ? 1.0 : -1.0;
+        double sign_y = y > 0 ? 1.0 : -1.0;
+        double sign_z = z > 0 ? 1.0 : -1.0;
+
+        tphi = Math.acos( z * sign_z / r );
+        tteta = Math.atan( y * sign_y / x * sign_x );
 
         Triangle elbowTriangle = new Triangle();
         elbowTriangle.solve_SSS( 240, 240, rr );
 
         tt = Math.PI - tteta;
+
+        if( yy  < 0 )tphi *= -1;
+        if( z < 0 )tphi += Math.PI / 2;
+
         bb =  Math.PI / 2 + tphi;
         ee =  elbowTriangle.a3;
     }
@@ -193,7 +201,7 @@ public class Gigi_OpMode_V2 extends OpMode{
         telemetry.addData("X axis","%.2fmm", x );
         telemetry.addData("Y axis","%.2fmm", y );
         telemetry.addData("Z axis","%.2fmm", z );
-        telemetry.addData("tt","%.2fpi", rr );
+        telemetry.addData("tt","%.2fpi", tt );
         telemetry.addData("bb","%.2fpi", bb );
         telemetry.addData("ee","%.2fpi", ee );
         telemetry.update();
