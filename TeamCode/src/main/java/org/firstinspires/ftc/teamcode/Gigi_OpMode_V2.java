@@ -117,10 +117,10 @@ public class Gigi_OpMode_V2 extends OpMode{
         e_pi = es * Math.PI;
 
         teta = Math.PI - t_pi;
-        phi = b_pi - Math.PI / 2;
 
         Triangle elbowTriangle = new Triangle();
         elbowTriangle.solve_SSA(240, 240, e_pi);
+        phi = b_pi - elbowTriangle.a2 - Math.PI / 2;
 
         r = elbowTriangle.l3;
 
@@ -143,6 +143,7 @@ public class Gigi_OpMode_V2 extends OpMode{
         Triangle elbowTriangle = new Triangle();
         elbowTriangle.solve_SSS( 240, 240, rr );
 
+        if( x < 0 ) tteta = Math.PI - tt;
         tt = Math.PI - tteta;
 
         if( yy  < 0 )tphi *= -1;
