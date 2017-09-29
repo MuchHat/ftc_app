@@ -165,17 +165,24 @@ public class Arm {
         baseAngle.setPI( bs );
         elbowAngle.setPI( es );
 
-        teta = Math.PI - turretAngle.getPI();
+        double sign_x = 1.0;
+        double sign_y = 1.0;
+        double sign_z = 1.0;
+
+        teta = turretAngle.getPI() - Math.PI/2;
 
         Triangle elbowTriangle = new Triangle();
         elbowTriangle.solve_SSA( lBase, lElbow, elbowAngle.getPI() );
-        phi = baseAngle.getPI() - elbowTriangle.a2 - Math.PI / 2;
+        phi = Math.PI / 2 - ( baseAngle.getPI() - elbowTriangle.a2 );
 
         r = elbowTriangle.l3;
 
+        double t = teta;
+        double p = phi;
+
+        z = r * Math.cos(phi); // works > pi/2 and < 0
         x = r * Math.sin(phi) * Math.cos(teta);
         y = r * Math.sin(phi) * Math.sin(teta);
-        z = r * Math.cos(phi);
     }
 
     public void setXYZ( double x, double y, double z ){
@@ -194,14 +201,14 @@ public class Arm {
         teta = Math.atan( y * sign_y / x * sign_x );
 
         Triangle elbowTriangle = new Triangle();
-        elbowTriangle.solve_SSS( 240, 240, r );
+        elbowTriangle.solve_SSS( lBase, lElbow, r );
 
-        double turret = teta;
-        if( x < 0 ) turret = Math.PI - teta;
-        turretAngle.setPI( Math.PI - turret );
+        double t = Math.PI /2 + teta;
+        if( x < 0 && teta < Math.PI / 2 ) t = Math.PI / 2 - teta;
+        turretAngle.setPI( t );
 
-        if( y  < 0 )phi *= -1;
-        if( z < 0 )phi += Math.PI / 2;
+        if( y < 0 )phi *= -1;
+        if( z < 0 && phi < Math.PI / 2  )phi += Math.PI / 2;
 
         baseAngle.setPI( Math.PI / 2 + phi );
         elbowAngle.setPI( elbowTriangle.a3 );
@@ -213,26 +220,26 @@ public class Arm {
         double yTest = Range.clip( y, xMin, yMax );
         double zTest = Range.clip( z, zMin, zMax );
 
-        double rTest = Math.sqrt( x * x + y * y + z * z );
+        double rTest = Math.sqrt( xTest * xTest + yTest * yTest + zTest * zTest );
 
-        double sign_x = x > 0 ? 1.0 : -1.0;
-        double sign_y = y > 0 ? 1.0 : -1.0;
-        double sign_z = z > 0 ? 1.0 : -1.0;
+        double sign_x = xTest > 0 ? 1.0 : -1.0;
+        double sign_y = yTest > 0 ? 1.0 : -1.0;
+        double sign_z = zTest > 0 ? 1.0 : -1.0;
 
-        double phiTest = Math.acos( z * sign_z / r );
-        double tetaTest = Math.atan( y * sign_y / x * sign_x );
+        double phiTest = Math.acos( zTest * sign_z / rTest );
+        double tetaTest = Math.atan( yTest * sign_y / xTest * sign_x );
 
         Triangle elbowTriangle = new Triangle();
-        elbowTriangle.solve_SSS( 240, 240, rTest );
+        elbowTriangle.solve_SSS( lBase, lElbow, rTest );
 
-        double turretTest = tetaTest;
-        if( xTest < 0 ) turretTest = Math.PI - tetaTest;
-        turretAngleTest.setPI( Math.PI - turretTest );
+        double tTest = Math.PI /2 + tetaTest;
+        if( xTest < 0 && tetaTest < Math.PI / 2 ) tTest = Math.PI / 2 - tetaTest;
+        turretAngleTest.setPI( tTest );
 
-        if( yTest  < 0 )phiTest *= -1;
-        if( zTest < 0 )phiTest += Math.PI / 2;
+        if( yTest < 0 )phiTest *= -1;
+        if( zTest < 0 && phiTest < Math.PI / 2  )phiTest += Math.PI / 2;
 
-        baseAngleTest.setPI( Math.PI / 2 + phi );
+        baseAngleTest.setPI( Math.PI / 2 + phiTest );
         elbowAngleTest.setPI( elbowTriangle.a3 );
     }
 }

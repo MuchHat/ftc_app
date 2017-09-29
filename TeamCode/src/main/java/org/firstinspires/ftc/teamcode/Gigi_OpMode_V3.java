@@ -33,7 +33,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
 import org.firstinspires.ftc.robotcontroller.external.samples.BasicOpMode_Iterative;
 import org.firstinspires.ftc.robotcontroller.external.samples.BasicOpMode_Linear;
 
@@ -55,32 +54,27 @@ public class Gigi_OpMode_V3 extends LinearOpMode{
     public  double             wristControl  = 0;
     public  double             clawControlL  = 0;
     public  double             clawControlR  = 0;
-    public  boolean            initialized   = false;
 
     @Override
     public void runOpMode() {
 
-         robot.init( hardwareMap );
-         robot.leftDrive.setPower( 0 );
-         robot.rightDrive.setPower( 0 );
+        robot.init( hardwareMap );
+
+        robot.leftDrive.setPower( 0 );
+        robot.rightDrive.setPower( 0 );
+        robot._turret.setPosition( 166 / 255 );
+        robot._base.setPosition( 30 / 255 );
+        robot._elbow.setPosition( 80 / 255 );
+        robot._wrist.setPosition( 80 / 255 );
+        robot._leftClaw.setPosition( 0 / 255 );
+        robot._rightClaw.setPosition( 140 / 255 );
 
         waitForStart();
-
 
         while( opModeIsActive() ) {
 
             double crrLoopTime = runtime.milliseconds();
             runtime.reset();
-
-            if (!initialized) {
-                robot._turret.setPosition(166 / 255);
-                robot._base.setPosition(30 / 255);
-                robot._elbow.setPosition(80 / 255);
-                robot._wrist.setPosition(80 / 255);
-                robot._leftClaw.setPosition(0 / 255);
-                robot._rightClaw.setPosition(140 / 255);
-
-            }
 
             turretControl = robot._turret.getPosition();
             baseControl = robot._base.getPosition();
@@ -88,7 +82,6 @@ public class Gigi_OpMode_V3 extends LinearOpMode{
             wristControl = robot._wrist.getPosition();
             clawControlL = robot._leftClaw.getPosition();
             clawControlR = robot._rightClaw.getPosition();
-            initialized = true;
 
             armController.startLoop(turretControl, baseControl, elbowControl);
 
