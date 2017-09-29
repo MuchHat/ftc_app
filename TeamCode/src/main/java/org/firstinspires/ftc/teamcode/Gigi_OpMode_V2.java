@@ -43,7 +43,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.BasicOpMode_Linear
  * This file illustrates the concept of driving a path based on time.
  */
 
-@TeleOp(name="OpMode V2", group="Gigi")
+@TeleOp(name="OpMode V2", group="Gigi Iterative")
 // @Disabled
 public class Gigi_OpMode_V2 extends BasicOpMode_Iterative{
 
@@ -108,26 +108,30 @@ public class Gigi_OpMode_V2 extends BasicOpMode_Iterative{
          clawControlR  = robot._rightClaw.getPosition();
          initialized   = true;
 
-        armController.startLoop( turretControl, baseControl, elbowControl );
+        //armController.startLoop( turretControl, baseControl, elbowControl );
 
         //String atDestinationStr = new String( "moving->" );
         //if( armController.atDestination ){
         //    atDestinationStr = "stopped";
         //}
 
-        telemetry.addData("turret","%.2fpi", armController.getCurrentTurretServo() );
-        telemetry.addData("base","%.2fpi", armController.getCurrentBaseServo() );
-        telemetry.addData("elbow", "%.2fpi", armController.getCurrentElbowServo() );
-        telemetry.addData("r", "%.2fmm", armController.getCurrentR() );
-        telemetry.addData("teta","%.2fpi",armController.getCurrentTeta() );
-        telemetry.addData("phi","%.2fpi", armController.getCurrentPhi() );
-        telemetry.addData("x axis","%.2fmm", armController.getCurrentX() );
-        telemetry.addData("x axis","%.2fmm", armController.getCurrentY() );
-        telemetry.addData("x axis","%.2fmm", armController.getCurrentX() );
-        telemetry.addData("turret test","%.2fpi", armController.getCurrentTestTurretServo(); );
-        telemetry.addData("base test","%.2fpi", armController.getCurrentBaseServo(); );
-        telemetry.addData("elbow test","%.2fpi", armController.getCurrentElbowServo(); );
-        telemetry.update();
+        //telemetry.addData("current -> turret","%.2fpi", armController.getCurrentTurretServo() );
+        //telemetry.addData("current -> base","%.2fpi", armController.getCurrentBaseServo() );
+        //telemetry.addData("current -> elbow", "%.2fpi", armController.getCurrentElbowServo() );
+        //telemetry.addData("current -> r", "%.2fmm", armController.getCurrentR() );
+        //telemetry.addData("current -> teta","%.2fpi",armController.getCurrentTeta() );
+        //telemetry.addData("current -> phi","%.2fpi", armController.getCurrentPhi() );
+        //telemetry.addData("current -> x axis","%.2fmm", armController.getCurrentX() );
+        //telemetry.addData("current -> x axis","%.2fmm", armController.getCurrentY() );
+        //telemetry.addData("current -> x axis","%.2fmm", armController.getCurrentX() );
+        //telemetry.addData("test->turret","%.2fpi", armController.getCurrentTestTurretServo() );
+        //telemetry.addData("test->base","%.2fpi", armController.getCurrentBaseServo() );
+        //telemetry.addData("test->elbow","%.2fpi", armController.getCurrentElbowServo() );
+
+         telemetry.addData("servo -> turret","%.2fpi", armController.getCurrentTurretServo() );
+         telemetry.addData("servo -> base","%.2fpi", armController.getCurrentBaseServo() );
+         telemetry.addData("servo -> elbow","%.2fpi", armController.getCurrentElbowServo() );
+         telemetry.update();
 
         // control: TURRET
         {
@@ -185,55 +189,46 @@ public class Gigi_OpMode_V2 extends BasicOpMode_Iterative{
         // control: LEFT RIGH MM
         {
             if ( gamepad1.dpad_up ) {
-                armController.moveIncremental( 0, 5, 0 );
             }
         }
         // control: LEFT RIGH MM
         {
             if ( gamepad1.dpad_down ) {
-                armController.moveIncremental( 0, -5, 0 );
             }
         }
         // control: LEFT RIGH MM
         {
             if ( gamepad1.dpad_right ) {
-                armController.moveIncremental( 5, 0, 0 );
             }
         }
         // control: LEFT RIGH MM
         {
             if ( gamepad1.dpad_left ) {
-                armController.moveIncremental( -5, 0, 0 );
             }
         }
         // control: LEFT RIGH MM
         {
             if ( gamepad1.right_bumper ) {
-                armController.moveIncremental( 0, 0, 5 );
             }
         }
         // control: LEFT RIGH MM
         {
             if ( gamepad1.left_bumper ) {
-                armController.moveIncremental( 0, 0, -5 );
             }
         }
         // control: FRONT
         {
             if ( gamepad1.a ) {
-                armController.moveToPositionFront();
             }
         }
         // control: ZERO
         {
             if ( gamepad1.x ) {
-                armController.moveToPositionZero();
             }
         }
         // control: HOME
         {
             if ( gamepad1.y ) {
-                armController.moveToPositionHome();
             }
         }
 

@@ -140,7 +140,7 @@ public class ArmController {
     public double getNextWristHorizontalServo(){ return next.getWristHorizontalServo(); }
     public double getNextTurretServo(){ return next.getTurretServo(); }
     public double getNextWristVerticalServo(){ return next.getWristVerticalServo(); }
-    public double getNextClawServo( return next.getClawServo(); )
+    public double getNextClawServo(){ return next.getClawServo(); }
 
     public double getCurrentTurretServo(){ return current.getTurretServo(); }
     public double getCurrentBaseServo(){ return current.getBaseServo();}
