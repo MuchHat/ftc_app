@@ -20,11 +20,14 @@ public class Angle {
 
     }
 
-    // all PI angles are 0 to PI
-
-    public double getServo(){
-        return angleServo;
+    public void Init( double aOffset, double aSlope, double aMin, double aMax ) {
+        offsetServo = aOffset;
+        slopeServo = aSlope;
+        minServo = aMin;
+        maxServo = aMax;
     }
+
+    public double getServo(){ return angleServo; }
 
     public double getPI(){
         return anglePI;

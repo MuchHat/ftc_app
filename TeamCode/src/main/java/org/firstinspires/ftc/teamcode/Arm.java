@@ -14,22 +14,23 @@ public class Arm {
     private double y = 0;
     private double z = 0;
 
-    public double t_pi = 0;
-    public double b_pi = 0;
-    public double e_pi = 0;
-
     private double teta = 0;
     private double phi = 0;
 
     private double r = 0;
 
-    public Angle  turretAngle          =  new Angle();
-    public Angle  baseAngle            =  new Angle();
-    public Angle  elbowAngle           =  new Angle();
-    public Angle  clawVerticalAngle    =  new Angle();
-    public Angle  clawHorizontalAngle  =  new Angle();
-    public Angle  clawOpeningAngle     =  new Angle();
+    public Angle  turretAngle          =  null;
+    public Angle  baseAngle            =  null;
+    public Angle  elbowAngle           =  null;
+
+    public Angle  wristVerticalAngle    =  null;
+    public Angle  wristHorizontalAngle  =  null;
+    public Angle  clawOpeningAngle     =  null;
     public double clawOpeningMM        = 0;
+
+    public Angle  turretAngleTest          =  null;
+    public Angle  baseAngleTest            =  null;
+    public Angle  elbowAngleTest           =  null;
 
     // TODO correct the home positons
     double xZero = 0; // mm
@@ -67,70 +68,72 @@ public class Arm {
 
     /* Constructor */
     public void Arm(){
-
-        // TODO fix the servos tunning
-        turretAngle.offsetServo = 0.00; // SERVO 0.2 is 0 PI
-        turretAngle.slopeServo  = 1.00; // 1 PI is 0.8 SERVO
-        turretAngle.minServo    = 0.05;
-        turretAngle.maxServo    = 0.95;
-
-        baseAngle.offsetServo = 0.00; // SERVO 0.2 is 0 PI
-        baseAngle.slopeServo  = 1.00; // 1 PI is 0.8 SERVO
-        baseAngle.minServo    = 0.05;
-        baseAngle.maxServo    = 0.95;
-
-        elbowAngle.offsetServo = 0.00; // SERVO 0.2 is 0 PI
-        elbowAngle.slopeServo  = 1.00; // 1 PI is 0.8 SERVO
-        elbowAngle.minServo    = 0.05;
-        elbowAngle.maxServo    = 0.95;
-
-        clawVerticalAngle.offsetServo = 0.00; // SERVO 0.2 is 0 PI
-        clawVerticalAngle.slopeServo  = 1.00; // 1 PI is 0.8 SERVO
-        clawVerticalAngle.minServo    = 0.05;
-        clawVerticalAngle.maxServo    = 0.95;
-
-        clawHorizontalAngle.offsetServo = 0.00; // SERVO 0.2 is 0 PI
-        clawHorizontalAngle.slopeServo  = 1.00; // 1 PI is 0.8 SERVO
-        clawHorizontalAngle.minServo    = 0.05;
-        clawHorizontalAngle.maxServo    = 0.95;
-
-        clawOpeningAngle.offsetServo = 0.00; // SERVO 0.2 is 0 PI
-        clawOpeningAngle.slopeServo  = 1.00; // 1 PI is 0.8 SERVO
-        clawOpeningAngle.minServo    = 0.05;
-        clawOpeningAngle.maxServo    = 0.95;
-        //TODO END
-
-        solve_Claw( lClawGap );
     }
 
-    public double getX(){
+    public void Init(){
 
-    }
-    public double getY(){
+        turretAngle          =  new Angle();
+        baseAngle            =  new Angle();
+        elbowAngle           =  new Angle();
 
-    }
-    public double getZ(){
+        wristVerticalAngle    =  new Angle();
+        wristHorizontalAngle  =  new Angle();
+        clawOpeningAngle     =  new Angle();
 
-    }
-    public double getBaseServo(){
+        turretAngleTest          =  new Angle();
+        baseAngleTest            =  new Angle();
+        elbowAngleTest           =  new Angle();
 
-    }
-    public double getElbowServo(){
+        turretAngle.Init( 0.0, 1.0, 0.05, 0.95 );
+        baseAngle.Init( 0.0, 1.0, 0.05, 0.95 );
+        elbowAngle.Init( 0.0, 1.0, 0.05, 0.95 );
 
-    }
-    public double getWristHorizontalServo(){
+        wristVerticalAngle.Init( 0.0, 1.0, 0.05, 0.95 );
+        wristHorizontalAngle.Init( 0.0, 1.0, 0.05, 0.95 );
+        clawOpeningAngle.Init( 0.0, 1.0, 0.05, 0.95 );
 
-    }
-    public double getWristVerticalServo(){
+        clawOpeningMM = 0;
 
+        turretAngleTest.Init( 0.0, 1.0, 0.05, 0.95 );
+        baseAngleTest.Init( 0.0, 1.0, 0.05, 0.95 );
+        elbowAngleTest.Init( 0.0, 1.0, 0.05, 0.95 );
+
+        setClaw( lClawGap );
     }
+
+    public double getX(){ return x; }
+    public double getY(){ return y; }
+    public double getZ(){ return z; }
+
+    public double getZeroX(){ return xZero; }
+    public double getZeroY(){ return yZero; }
+    public double getZeroZ(){ return zZero; }
+
+    public double getHomeX(){ return xHome; }
+    public double getHomeY(){ return yHome; }
+    public double getHomeZ(){ return zHome; }
+
+    public double getFrontX(){ return xFront; }
+    public double getFrontY(){ return yFront; }
+    public double getFrontZ(){ return zFront; }
+
+    public double getR(){ return r; }
+    public double getTeta(){ return teta; }
+    public double getPhi(){ return phi; }
+
+    public double getBaseServo(){ return baseAngle.getServo(); }
+    public double getTurretServo(){ return turretAngle.getServo(); }
+    public double getElbowServo(){ return elbowAngle.getServo(); }
+    public double getWristHorizontalServo(){ return wristHorizontalAngle.getServo(); }
+    public double getWristVerticalServo(){ return wristVerticalAngle.getServo(); }
+    public double getClawServo(){ return clawOpeningAngle.getServo(); }
 
     public void copyFrom( Arm anotherArm ){
-        solve_XYZ( anotherArm.x, anotherArm.y, anotherArm.z  );
-        solve_Claw( anotherArm.clawOpeningMM );
+        setXYZ( anotherArm.x, anotherArm.y, anotherArm.z  );
+        setClaw( anotherArm.clawOpeningMM );
     }
 
-    public void solve_Claw( double mm ){
+    public void setClaw( double mm ){
 
         Triangle clawTriangle = new Triangle();
 
@@ -139,79 +142,93 @@ public class Arm {
         clawTriangle.solve_SSS( ( mm - lClawGap ) / 2, lClawArm,
                 Math.sqrt( ( ( mm - lClawGap ) / 2 ) * ( ( mm - lClawGap ) / 2 ) +
                         lClawArm * lClawArm ) );
-        clawOpeningAngle.solve_anglePI( clawTriangle.a1 );
+        clawOpeningAngle.setPI( clawTriangle.a1 );
 
         clawOpeningMM = mm;
     }
 
     public double distanceTo( Arm anotherArm ){
 
-        return Math.sqrt( ( x - anotherArm.x ) * ( x - anotherArm.x ) +
-                ( y - anotherArm.y ) * ( y - anotherArm.y ) +
-                ( z - anotherArm.z ) * ( z - anotherArm.z ) );
+        return Math.sqrt( ( x - anotherArm.getX() ) * ( x - anotherArm.getX() ) +
+                ( y - anotherArm.getY() ) * ( y - anotherArm.getY() ) +
+                ( z - anotherArm.getZ() ) * ( z - anotherArm.getZ() ) );
 
     }
 
-    public void solve_Servos( double ts, double bs, double es ) {
+    public void setServos( double ts, double bs, double es ) {
 
-        // use polar coordinates
-        // all angles are 0 to PI
-        // https://en.wikipedia.org/wiki/Spherical_coordinate_system
+        turretAngle.setPI( ts );
+        baseAngle.setPI( bs );
+        elbowAngle.setPI( es );
 
-        turretAngle.solve_angleServo(ts);
-        baseAngle.solve_angleServo(bs);
-        elbowAngle.solve_angleServo(es);
-
-        t_pi = turretAngle.anglePI;
-        b_pi = baseAngle.anglePI;
-        e_pi = elbowAngle.anglePI;
-
-        teta = Math.PI - t_pi;
-        phi = b_pi - Math.PI / 2;
+        teta = Math.PI - turretAngle.getPI();
 
         Triangle elbowTriangle = new Triangle();
-        elbowTriangle.solve_SSA(lBase, lElbow, e_pi);
+        elbowTriangle.solve_SSA( lBase, lElbow, elbowAngle.getPI() );
+        phi = baseAngle.getPI() - elbowTriangle.a2 - Math.PI / 2;
 
         r = elbowTriangle.l3;
-        if (r > rMax) r = rMax;
 
-        x = r * Math.sin(teta) * Math.cos(phi);
-        y = r * Math.sin(teta) * Math.sin(phi);
-        z = r * Math.cos(teta);
-
-        isInitialized = true;
-
-        /* log = "servos(t " +
-                new Double((double)(long)(t_pi*100)/100).toString() + " b " +
-                new Double((double)(long)(b_pi*100)/100).toString() + " e " +
-                new Double((double)(long)(e_pi*100)/100) +")";
-        log += " mm(x " +
-                new Double((double)(long)(x*100)/100).toString() + " y " +
-                new Double((double)(long)(y*100)/100).toString() + " z " +
-                new Double((double)(long)(z*100)/100) +")"; */
-
+        x = r * Math.sin(phi) * Math.cos(teta);
+        y = r * Math.sin(phi) * Math.sin(teta);
+        z = r * Math.cos(phi);
     }
 
-
-    public void solve_XYZ( double x, double y, double z ){
+    public void setXYZ( double x, double y, double z ){
 
         x = Range.clip( x, xMin, xMax );
         y = Range.clip( y, xMin, yMax );
         z = Range.clip( z, zMin, zMax );
 
         r = Math.sqrt( x * x + y * y + z * z );
-        if( r > rMax ) r = rMax;
 
-        teta = Math.acos( z / r );
-        phi = Math.atan( y / x );
+        double sign_x = x > 0 ? 1.0 : -1.0;
+        double sign_y = y > 0 ? 1.0 : -1.0;
+        double sign_z = z > 0 ? 1.0 : -1.0;
+
+        phi = Math.acos( z * sign_z / r );
+        teta = Math.atan( y * sign_y / x * sign_x );
 
         Triangle elbowTriangle = new Triangle();
-        elbowTriangle.solve_SSS( lBase, lElbow, r );
+        elbowTriangle.solve_SSS( 240, 240, r );
 
-        turretAngle.solve_anglePI( Math.PI - teta );
-        baseAngle.solve_anglePI( Math.PI / 2 + phi );
-        elbowAngle.solve_anglePI( elbowTriangle.a3 );
+        double turret = teta;
+        if( x < 0 ) turret = Math.PI - teta;
+        turretAngle.setPI( Math.PI - turret );
 
-        isInitialized = true;
+        if( y  < 0 )phi *= -1;
+        if( z < 0 )phi += Math.PI / 2;
+
+        baseAngle.setPI( Math.PI / 2 + phi );
+        elbowAngle.setPI( elbowTriangle.a3 );
+    }
+
+    public void testXYZ( double x, double y, double z ){
+
+        double xTest = Range.clip( x, xMin, xMax );
+        double yTest = Range.clip( y, xMin, yMax );
+        double zTest = Range.clip( z, zMin, zMax );
+
+        double rTest = Math.sqrt( x * x + y * y + z * z );
+
+        double sign_x = x > 0 ? 1.0 : -1.0;
+        double sign_y = y > 0 ? 1.0 : -1.0;
+        double sign_z = z > 0 ? 1.0 : -1.0;
+
+        double phiTest = Math.acos( z * sign_z / r );
+        double tetaTest = Math.atan( y * sign_y / x * sign_x );
+
+        Triangle elbowTriangle = new Triangle();
+        elbowTriangle.solve_SSS( 240, 240, rTest );
+
+        double turretTest = tetaTest;
+        if( xTest < 0 ) turretTest = Math.PI - tetaTest;
+        turretAngleTest.setPI( Math.PI - turretTest );
+
+        if( yTest  < 0 )phiTest *= -1;
+        if( zTest < 0 )phiTest += Math.PI / 2;
+
+        baseAngleTest.setPI( Math.PI / 2 + phi );
+        elbowAngleTest.setPI( elbowTriangle.a3 );
     }
 }

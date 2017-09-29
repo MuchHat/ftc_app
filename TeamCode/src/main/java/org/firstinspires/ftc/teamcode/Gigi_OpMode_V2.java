@@ -36,13 +36,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.BasicOpMode_Iterative;
+import org.firstinspires.ftc.robotcontroller.external.samples.BasicOpMode_Linear;
+
 /**
  * This file illustrates the concept of driving a path based on time.
  */
 
 @TeleOp(name="OpMode V2", group="Gigi")
 // @Disabled
-public class Gigi_OpMode_V2 extends OpMode{
+public class Gigi_OpMode_V2 extends BasicOpMode_Iterative{
 
     public  Gigi_Hardware_V2   robot         = new Gigi_Hardware_V2();
     public  ArmController      armController = new ArmController();
@@ -55,27 +58,6 @@ public class Gigi_OpMode_V2 extends OpMode{
     public  double             clawControlL  = 0;
     public  double             clawControlR  = 0;
     public  boolean            initialized   = false;
-
-    public double t_pi = 0;
-    public double b_pi = 0;
-    public double e_pi = 0;
-
-    public double r = 0;
-    public double teta = 0;
-    public double phi = 0;
-
-    public double x = 0;
-    public double y = 0;
-    public double z = 0;
-
-    public double rr = 0;
-    public double tteta = 0;
-    public double tphi = 0;
-
-    public double tt = 0;
-    public double bb = 0;
-    public double ee = 0;
-
 
     @Override
     public void init() {
@@ -102,58 +84,7 @@ public class Gigi_OpMode_V2 extends OpMode{
         runtime.reset();
     }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
-
-    public void testServos( double ts, double bs, double es ) {
-
-        // use polar coordinates
-        // all angles are 0 to PI
-        // https://en.wikipedia.org/wiki/Spherical_coordinate_system
-
-        t_pi = ts * Math.PI;
-        b_pi = bs * Math.PI;
-        e_pi = es * Math.PI;
-
-        teta = Math.PI - t_pi;
-
-        Triangle elbowTriangle = new Triangle();
-        elbowTriangle.solve_SSA(240, 240, e_pi);
-        phi = b_pi - elbowTriangle.a2 - Math.PI / 2;
-
-        r = elbowTriangle.l3;
-
-        x = r * Math.sin(phi) * Math.cos(teta);
-        y = r * Math.sin(phi) * Math.sin(teta);
-        z = r * Math.cos(phi);
-    }
-
-    public void testXYZ( double xx, double yy, double zz ) {
-
-        rr = Math.sqrt( x * x + y * y + z * z );
-
-        double sign_x = x > 0 ? 1.0 : -1.0;
-        double sign_y = y > 0 ? 1.0 : -1.0;
-        double sign_z = z > 0 ? 1.0 : -1.0;
-
-        tphi = Math.acos( z * sign_z / r );
-        tteta = Math.atan( y * sign_y / x * sign_x );
-
-        Triangle elbowTriangle = new Triangle();
-        elbowTriangle.solve_SSS( 240, 240, rr );
-
-        if( x < 0 ) tteta = Math.PI - tt;
-        tt = Math.PI - tteta;
-
-        if( yy  < 0 )tphi *= -1;
-        if( z < 0 )tphi += Math.PI / 2;
-
-        bb =  Math.PI / 2 + tphi;
-        ee =  elbowTriangle.a3;
-    }
-
-    @Override
+     @Override
     public void loop() {
 
         double crrLoopTime = runtime.milliseconds();
@@ -184,9 +115,7 @@ public class Gigi_OpMode_V2 extends OpMode{
             clawControlR  = robot._rightClaw.getPosition();
         }
 
-        // armController.startLoop( t, b, e );
-        testServos( turretControl, baseControl, elbowControl );
-        testXYZ( x, y, z );
+        armController.startLoop( turretControl, baseControl, elbowControl );
 
         //String atDestinationStr = new String( "moving->" );
         //if( armController.atDestination ){

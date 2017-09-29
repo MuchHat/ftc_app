@@ -27,23 +27,19 @@ public class ArmController {
     double atDestinationTolerance = 3; // mm
     // TODO end
 
-    String log = new String();
-
     public void ArmController(){
-
     }
 
     public void startLoop( double servoTurret, double servoBase, double servoElbow ){
         // determines the current position
 
-        current.solve_Servos( servoTurret, servoBase, servoElbow );
+        current.setServos( servoTurret, servoBase, servoElbow );
 
         if( !isInitialized ){
             destination.copyFrom( current );
             next.copyFrom( current );
             isInitialized = true;
         }
-        // log = current.log;
     }
 
     public void endLoop( double stepMillis ) {
@@ -83,10 +79,10 @@ public class ArmController {
         }
         else if( distanceToDestination > currentAllowedMaxDistance ) {
             double ratio = Math.abs( currentAllowedMaxDistance / distanceToDestination );
-            next.solve_XYZ(
-                    current.x + ( destination.x - current.x ) * ratio,
-                    current.y + ( destination.y - current.y ) * ratio,
-                    current.z + ( destination.z - current.z ) * ratio );
+            next.setXYZ(
+                    current.getX() + ( destination.getX() - current.getX() ) * ratio,
+                    current.getY() + ( destination.getY() - current.getY() ) * ratio,
+                    current.getZ() + ( destination.getZ() - current.getZ() ) * ratio );
             prevSpeed_mms = newSpeed_mms;
             atDestination = false;
         }
@@ -101,87 +97,75 @@ public class ArmController {
 
         // check if too close to base
         // see if would hit the body of the robot and adjust
-        if( next.x < closestX ) {
-            next.solve_XYZ(closestX, next.y, next.z);
+        if( next.getX() < closestX ) {
+            next.setXYZ(closestX, next.getY(), next.getZ());
         }
-        if( next.y < closestY ) {
-            next.solve_XYZ(next.x, closestY, next.z);
+        if( next.getY() < closestY ) {
+            next.setXYZ(next.getX(), closestY, next.getZ());
         }
         // see if would hit the body of the robot and adjust
-        if( next.x < baseToEdgeX &&
-                Math.abs( next.y ) < baseToEdgeY &&
-                next.z < platformHeight ) {
+        if( next.getX() < baseToEdgeX &&
+                Math.abs( next.getY() ) < baseToEdgeY &&
+                next.getZ() < platformHeight ) {
             // means it would hit the robot
 
-            double x_sign = next.x > 0 ? 1.0 : -1.0;
+            double x_sign = next.getX() > 0 ? 1.0 : -1.0;
 
             // keep constant the one closer to the destination
-            next.solve_XYZ( baseToEdgeX * x_sign, next.y, next.z );
+            next.setXYZ( baseToEdgeX * x_sign, next.getY(), next.getZ() );
             double dx = next.distanceTo( destination );
 
-            next.solve_XYZ( next.x, baseToEdgeY, next.z );
+            next.setXYZ( next.getX(), baseToEdgeY, next.getZ() );
             double dy = next.distanceTo( destination );
 
-            next.solve_XYZ( next.x, next.y, platformHeight );
+            next.setXYZ( next.getX(), next.getY(), platformHeight );
             double dz = next.distanceTo( destination );
 
             if( dx < dy && dx < dz ){
-                next.solve_XYZ( baseToEdgeX * x_sign, next.y, next.z );
+                next.setXYZ( baseToEdgeX * x_sign, next.getY(), next.getZ() );
             }
             if( dy < dx && dy < dz ){
-                next.solve_XYZ( next.x, baseToEdgeY, next.z );
+                next.setXYZ( next.getX(), baseToEdgeY, next.getZ() );
             }
             if( dz < dx && dz < dy ){
-                next.solve_XYZ( next.x, next.y, platformHeight );
+                next.setXYZ( next.getX(), next.getY(), platformHeight );
             }
         }
         prevSpeed_mms = newSpeed_mms;
     }
 
-    public double getNextServoBase(){
-
-    }
-    public double getNextServoElbow(){
-
-    }
-    public double getNextServoWristHorizontal(){
-
-    }
-    public double getNextServoTurret(){
-
-    }
-    public double getNextServoWristVertical){
-
-    }
-    public double getNextServoCkaw(){
-
-    }
+    public double getNextBaseServo(){ return next.getBaseServo(); }
+    public double getNextElbowServo(){ return next.getElbowServo(); }
+    public double getNextWristHorizontalServo(){ return next.getWristHorizontalServo(); }
+    public double getNextTurretServo(){ return next.getTurretServo(); }
+    public double getNextWristVerticalServo(){ return next.getWristVerticalServo(); }
+    public double getNextClawServo(){ return next.getClawServo(); }
 
     public void moveIncremental( double ix, double iy, double iz ){
 
-        destination.solve_XYZ( current.x + ix, current.y + iy, current.z + iz );
+        destination.setXYZ( current.getX() + ix, current.getY() + iy, current.getZ() + iz );
     }
 
     public void moveToPosition( double ax, double ay, double az ){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
-        destination.solve_XYZ( ax, ay, az );
+        destination.setXYZ( ax, ay, az );
 
         isInitialized = true;
     }
 
     public void clawIncremental( double ix ){
-        destination.solve_Claw( current.clawOpeningMM + ix );
+        destination.setClaw( current.clawOpeningMM + ix );
     }
 
     public void clawToPosition( double x ){
-        destination.solve_Claw( x );
+        destination.setClaw( x );
     }
 
     public void moveToPositionZero(){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
-        destination.solve_XYZ( destination.xZero, destination.yZero, destination.zZero );
+        destination.setXYZ( destination.getZeroX(), destination.getZeroY(), destination.getZeroZ() );
 
         isInitialized = true;
     }
@@ -189,7 +173,7 @@ public class ArmController {
     public void moveToPositionHome(){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
-        destination.solve_XYZ( destination.xHome, destination.yHome, destination.zHome );
+        destination.setXYZ( destination.getHomeX(), destination.getHomeY(), destination.getHomeZ() );
 
         isInitialized = true;
     }
@@ -197,7 +181,7 @@ public class ArmController {
     public void moveToPositionFront(){
 
         // use this to set the new elbow, wrist, claw to the pos that will be read to set the servos in a loop
-        destination.solve_XYZ( destination.xFront, destination.yFront, destination.zFront );
+        destination.setXYZ( destination.getFrontX(), destination.getFrontY(), destination.getFrontZ() );
 
         isInitialized = true;
     }
