@@ -98,22 +98,15 @@ public class Gigi_OpMode_V2 extends BasicOpMode_Iterative{
             robot._leftClaw.setPosition( 0 / 255 );
             robot._rightClaw.setPosition( 140 / 255 );
 
-            turretControl = robot._turret.getPosition();
-            baseControl   = robot._base.getPosition();
-            elbowControl  = robot._elbow.getPosition();
-            wristControl  = robot._wrist.getPosition();
-            clawControlL  = robot._leftClaw.getPosition();
-            clawControlR  = robot._rightClaw.getPosition();
-            initialized   = true;
         }
-        else if( initialized ){
-            turretControl = robot._turret.getPosition();
-            baseControl   = robot._base.getPosition();
-            elbowControl  = robot._elbow.getPosition();
-            wristControl  = robot._wrist.getPosition();
-            clawControlL  = robot._leftClaw.getPosition();
-            clawControlR  = robot._rightClaw.getPosition();
-        }
+
+         turretControl = robot._turret.getPosition();
+         baseControl   = robot._base.getPosition();
+         elbowControl  = robot._elbow.getPosition();
+         wristControl  = robot._wrist.getPosition();
+         clawControlL  = robot._leftClaw.getPosition();
+         clawControlR  = robot._rightClaw.getPosition();
+         initialized   = true;
 
         armController.startLoop( turretControl, baseControl, elbowControl );
 
@@ -122,18 +115,18 @@ public class Gigi_OpMode_V2 extends BasicOpMode_Iterative{
         //    atDestinationStr = "stopped";
         //}
 
-        telemetry.addData("t_pi","%.2fpi", t_pi );
-        telemetry.addData("b_pi","%.2fpi", b_pi );
-        telemetry.addData("e_pi", "%.2fpi", e_pi );
-        telemetry.addData("r", "%.2fmm", r );
-        telemetry.addData("teta","%.2fpi",teta );
-        telemetry.addData("phi","%.2fpi", phi );
-        telemetry.addData("X axis","%.2fmm", x );
-        telemetry.addData("Y axis","%.2fmm", y );
-        telemetry.addData("Z axis","%.2fmm", z );
-        telemetry.addData("tt","%.2fpi", tt );
-        telemetry.addData("bb","%.2fpi", bb );
-        telemetry.addData("ee","%.2fpi", ee );
+        telemetry.addData("turret","%.2fpi", armController.getCurrentTurretServo() );
+        telemetry.addData("base","%.2fpi", armController.getCurrentBaseServo() );
+        telemetry.addData("elbow", "%.2fpi", armController.getCurrentElbowServo() );
+        telemetry.addData("r", "%.2fmm", armController.getCurrentR() );
+        telemetry.addData("teta","%.2fpi",armController.getCurrentTeta() );
+        telemetry.addData("phi","%.2fpi", armController.getCurrentPhi() );
+        telemetry.addData("x axis","%.2fmm", armController.getCurrentX() );
+        telemetry.addData("x axis","%.2fmm", armController.getCurrentY() );
+        telemetry.addData("x axis","%.2fmm", armController.getCurrentX() );
+        telemetry.addData("turret test","%.2fpi", armController.getCurrentTestTurretServo(); );
+        telemetry.addData("base test","%.2fpi", armController.getCurrentBaseServo(); );
+        telemetry.addData("elbow test","%.2fpi", armController.getCurrentElbowServo(); );
         telemetry.update();
 
         // control: TURRET

@@ -34,6 +34,7 @@ public class ArmController {
         // determines the current position
 
         current.setServos( servoTurret, servoBase, servoElbow );
+        current.testXYZ( current.getX(), current.getY(), current.getZ() );
 
         if( !isInitialized ){
             destination.copyFrom( current );
@@ -139,7 +140,23 @@ public class ArmController {
     public double getNextWristHorizontalServo(){ return next.getWristHorizontalServo(); }
     public double getNextTurretServo(){ return next.getTurretServo(); }
     public double getNextWristVerticalServo(){ return next.getWristVerticalServo(); }
-    public double getNextClawServo(){ return next.getClawServo(); }
+    public double getNextClawServo( return next.getClawServo(); )
+
+    public double getCurrentTurretServo(){ return current.getTurretServo(); }
+    public double getCurrentBaseServo(){ return current.getBaseServo();}
+    public double getCurrentElbowServo(){ return current.getElbowServo();}
+
+    public double getCurrentR(){ return current.getR(); }
+    public double getCurrentTeta(){ return current.getTeta(); }
+    public double getCurrentPhi(){ return current.getPhi(); }
+
+    public double getCurrentX(){ return current.getX(); }
+    public double getCurrentY(){ return current.getY(); }
+    public double getCurrentZ(){ return current.getZ(); }
+
+    public double getCurrentTestTurretServo(){ return current.getTestTurretServo(); }
+    public double getCurrentTestBaseServo(){ return current.getTestBaseServo(); }
+    public double getCurrentTestELbowServo(){ return current.getTestElbowServo(); }
 
     public void moveIncremental( double ix, double iy, double iz ){
 

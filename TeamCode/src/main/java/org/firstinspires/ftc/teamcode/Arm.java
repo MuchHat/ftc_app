@@ -105,6 +105,10 @@ public class Arm {
     public double getY(){ return y; }
     public double getZ(){ return z; }
 
+    public double getTestTurretServo(){ return turretAngleTest.getServo(); }
+    public double getTestBaseServo(){ return baseAngleTest.getServo(); }
+    public double getTestElbowServo(){ return elbowAngleTest.getServo(); }
+
     public double getZeroX(){ return xZero; }
     public double getZeroY(){ return yZero; }
     public double getZeroZ(){ return zZero; }
