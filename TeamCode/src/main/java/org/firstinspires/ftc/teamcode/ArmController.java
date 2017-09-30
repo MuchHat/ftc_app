@@ -30,6 +30,12 @@ public class ArmController {
     public void ArmController(){
     }
 
+    public void init(){
+        current.init();
+        next.init();
+        destination.init();
+    }
+
     public void startLoop( double servoTurret, double servoBase, double servoElbow ){
         // determines the current position
 
@@ -40,6 +46,7 @@ public class ArmController {
             destination.copyFrom( current );
             next.copyFrom( current );
             isInitialized = true;
+
         }
     }
 

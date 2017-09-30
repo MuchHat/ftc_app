@@ -25,8 +25,8 @@ public class Arm {
 
     public Angle  wristVerticalAngle    =  null;
     public Angle  wristHorizontalAngle  =  null;
-    public Angle  clawOpeningAngle     =  null;
-    public double clawOpeningMM        = 0;
+    public Angle  clawOpeningAngle      =  null;
+    public double clawOpeningMM         = 0;
 
     public Angle  turretAngleTest          =  null;
     public Angle  baseAngleTest            =  null;
@@ -70,7 +70,7 @@ public class Arm {
     public void Arm(){
     }
 
-    public void Init(){
+    public void init(){
 
         turretAngle          =  new Angle();
         baseAngle            =  new Angle();
@@ -78,25 +78,25 @@ public class Arm {
 
         wristVerticalAngle    =  new Angle();
         wristHorizontalAngle  =  new Angle();
-        clawOpeningAngle     =  new Angle();
+        clawOpeningAngle      =  new Angle();
 
         turretAngleTest          =  new Angle();
         baseAngleTest            =  new Angle();
         elbowAngleTest           =  new Angle();
 
-        turretAngle.Init( 0.0, 1.0, 0.05, 0.95 );
-        baseAngle.Init( 0.0, 1.0, 0.05, 0.95 );
-        elbowAngle.Init( 0.0, 1.0, 0.05, 0.95 );
+        turretAngle.Init( 0.0, 0.3, 0.05, 0.95 );
+        baseAngle.Init( 0.0, 0.3, 0.05, 0.95 );
+        elbowAngle.Init( 0.0, 0.3, 0.05, 0.95 );
 
-        wristVerticalAngle.Init( 0.0, 1.0, 0.05, 0.95 );
-        wristHorizontalAngle.Init( 0.0, 1.0, 0.05, 0.95 );
-        clawOpeningAngle.Init( 0.0, 1.0, 0.05, 0.95 );
+        wristVerticalAngle.Init( 0.0, 0.3, 0.05, 0.95 );
+        wristHorizontalAngle.Init( 0.0, 0.3, 0.05, 0.95 );
+        clawOpeningAngle.Init( 0.0, 0.3, 0.05, 0.95 );
 
         clawOpeningMM = 0;
 
-        turretAngleTest.Init( 0.0, 1.0, 0.05, 0.95 );
-        baseAngleTest.Init( 0.0, 1.0, 0.05, 0.95 );
-        elbowAngleTest.Init( 0.0, 1.0, 0.05, 0.95 );
+        turretAngleTest.Init( 0.0, 0.3, 0.05, 0.95 );
+        baseAngleTest.Init( 0.0, 0.3, 0.05, 0.95 );
+        elbowAngleTest.Init( 0.0, 0.3, 0.05, 0.95 );
 
         setClaw( lClawGap );
     }
@@ -207,7 +207,7 @@ public class Arm {
         if( x < 0 && teta < Math.PI / 2 ) t = Math.PI / 2 - teta;
         turretAngle.setPI( t );
 
-        if( y < 0 )phi *= -1;
+        if( y < 0 && phi < 0 )phi *= -1;
         if( z < 0 && phi < Math.PI / 2  )phi += Math.PI / 2;
 
         baseAngle.setPI( Math.PI / 2 + phi );
@@ -236,7 +236,7 @@ public class Arm {
         if( xTest < 0 && tetaTest < Math.PI / 2 ) tTest = Math.PI / 2 - tetaTest;
         turretAngleTest.setPI( tTest );
 
-        if( yTest < 0 )phiTest *= -1;
+        if( yTest < 0 && phiTest < 0 )phiTest *= -1;
         if( zTest < 0 && phiTest < Math.PI / 2  )phiTest += Math.PI / 2;
 
         baseAngleTest.setPI( Math.PI / 2 + phiTest );

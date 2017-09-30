@@ -59,6 +59,7 @@ public class Gigi_OpMode_V3 extends LinearOpMode{
     public void runOpMode() {
 
         robot.init( hardwareMap );
+        armController.init();
 
         robot.leftDrive.setPower( 0 );
         robot.rightDrive.setPower( 0 );
@@ -90,15 +91,15 @@ public class Gigi_OpMode_V3 extends LinearOpMode{
             //    atDestinationStr = "stopped";
             //}
 
-            telemetry.addData("current -> turret", "%.2fpi", armController.getCurrentTurretServo());
-            telemetry.addData("current -> base", "%.2fpi", armController.getCurrentBaseServo());
-            telemetry.addData("current -> elbow", "%.2fpi", armController.getCurrentElbowServo());
+            telemetry.addData("current -> turret", "%.2f", armController.getCurrentTurretServo());
+            telemetry.addData("current -> base", "%.2f", armController.getCurrentBaseServo());
+            telemetry.addData("current -> elbow", "%.2f", armController.getCurrentElbowServo());
             telemetry.addData("current -> r", "%.2fmm", armController.getCurrentR());
             telemetry.addData("current -> teta", "%.2fpi", armController.getCurrentTeta());
             telemetry.addData("current -> phi", "%.2fpi", armController.getCurrentPhi());
             telemetry.addData("current -> x axis", "%.2fmm", armController.getCurrentX());
-            telemetry.addData("current -> x axis", "%.2fmm", armController.getCurrentY());
-            telemetry.addData("current -> x axis", "%.2fmm", armController.getCurrentX());
+            telemetry.addData("current -> y axis", "%.2fmm", armController.getCurrentY());
+            telemetry.addData("current -> z axis", "%.2fmm", armController.getCurrentX());
             telemetry.addData("test->turret", "%.2fpi", armController.getCurrentTestTurretServo());
             telemetry.addData("test->base", "%.2fpi", armController.getCurrentTestBaseServo());
             telemetry.addData("test->elbow", "%.2fpi", armController.getCurrentTestELbowServo());
@@ -160,37 +161,37 @@ public class Gigi_OpMode_V3 extends LinearOpMode{
             // control: LEFT RIGH MM
             {
                 if (gamepad1.dpad_up) {
-                    armController.moveIncremental(0, 5, 0);
+                    armController.moveIncremental(0, 15, 0);
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.dpad_down) {
-                    armController.moveIncremental(0, -5, 0);
+                    armController.moveIncremental(0, -15, 0);
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.dpad_right) {
-                    armController.moveIncremental(5, 0, 0);
+                    armController.moveIncremental(15, 0, 0);
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.dpad_left) {
-                    armController.moveIncremental(-5, 0, 0);
+                    armController.moveIncremental(-15, 0, 0);
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.right_bumper) {
-                    armController.moveIncremental(0, 0, 5);
+                    armController.moveIncremental(0, 0, 15);
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.left_bumper) {
-                    armController.moveIncremental(0, 0, -5);
+                    armController.moveIncremental(0, 0, -15);
                 }
             }
             // control: FRONT

@@ -12,7 +12,7 @@ public class Angle {
     private double anglePI = 0;  // between -pi/2 to pi/2
 
     private double offsetServo = 0;  // servo 0.2 coincides with 0 PI
-    private double slopeServo = 1.0; // 1 PI is 0.8 of the servo
+    private double slopeServo = 0.3; // 1 PI is 0.8 of the servo
     private double minServo = 0.05;
     private double maxServo = 0.95;
 
@@ -29,9 +29,7 @@ public class Angle {
 
     public double getServo(){ return angleServo; }
 
-    public double getPI(){
-        return anglePI;
-    }
+    public double getPI(){ return anglePI; }
 
     public void setServo( double as ) {
 
