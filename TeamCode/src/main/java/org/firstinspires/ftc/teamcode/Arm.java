@@ -32,16 +32,16 @@ public class Arm {
 
     // TODO correct the home positons
     double xZero = 0; // mm
-    double yZero = 0; // mm
-    double zZero = 0; // mm
+    double yZero = 22; // mm
+    double zZero = 222; // mm
 
     double xHome = 0; // mm
-    double yHome = 0; // mm
-    double zHome = 0; // mm
+    double yHome = 22; // mm
+    double zHome = 222; // mm
 
     double xFront = 0; // mm
-    double yFront = 0; // mm
-    double zFront = 0; // mm
+    double yFront = 111; // mm
+    double zFront = 222; // mm
 
     double mmClawOpen  = 222;  // mm
     double mmClawClose = 188; // mm
@@ -167,9 +167,9 @@ public class Arm {
 
         r = elbowTriangle.l3;
 
-        z = r * Math.cos(phi); // works > pi/2 and < 0
-        x = r * Math.sin(phi) * Math.cos(teta);
-        y = r * Math.sin(phi) * Math.sin(teta);
+        z = Range.clip( r * Math.cos(phi), zMin, zMax ) ; // works > pi/2 and < 0
+        x = Range.clip( r * Math.sin(phi) * Math.cos(teta), yMin, yMax );
+        y = Range.clip( r * Math.sin(phi) * Math.sin(teta), xMin, xMax );
 
         //Log.d( "MuchHat", String.format( "Arm_setServos xyz: %.3f, %.3f, %3.f ", x, y, z ) );
     }

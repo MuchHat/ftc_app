@@ -61,14 +61,7 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
         robot.init(hardwareMap);
         armController.init();
 
-        robot.leftDrive.setPower(0);
-        robot.rightDrive.setPower(0);
-        robot._turret.setPosition(166 / 255);
-        robot._base.setPosition(30 / 255);
-        robot._elbow.setPosition(80 / 255);
-        robot._wrist.setPosition(80 / 255);
-        robot._leftClaw.setPosition(0 / 255);
-        robot._rightClaw.setPosition(140 / 255);
+        armController.moveToPositionZero();
 
         waitForStart();
 
