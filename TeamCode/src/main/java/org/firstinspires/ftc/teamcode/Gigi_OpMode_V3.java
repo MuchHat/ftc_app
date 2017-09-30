@@ -224,15 +224,27 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
             // set the servos per the ARM controller
             armController.endLoop(crrLoopTime);
 
-        /* TODO enable below later
-        robot._turret.setPosition( armController.next.turretAngle.angleServo );
-        robot._base.setPosition( armController.next.baseAngle.angleServo );
-        robot._elbow.setPosition( armController.next.elbowAngle.angleServo );
-        robot._wrist.setPosition( armController.next.clawVerticalAngle.angleServo );
+            /* TODO enable below later
+            robot._turret.setPosition( armController.next.turretAngle.angleServo );
+            robot._base.setPosition( armController.next.baseAngle.angleServo );
+            robot._elbow.setPosition( armController.next.elbowAngle.angleServo );
+            robot._wrist.setPosition( armController.next.clawVerticalAngle.angleServo );
 
-        robot._leftClaw.setPosition( armController.next.clawOpeningAngle.angleServo );
-        robot._rightClaw.setPosition( 140 - armController.next.clawOpeningAngle.angleServo );
-        TODO END */
+            robot._leftClaw.setPosition( armController.next.clawOpeningAngle.angleServo );
+            robot._rightClaw.setPosition( 140 - armController.next.clawOpeningAngle.angleServo );
+            TODO END */
+
+            telemetry.addData("next-> XYZ", "{%.0fmm  %.0fmm  %.0fmm}",
+                    armController.next.getX(),
+                    armController.next.getY(),
+                    armController.next.getZ());
+            telemetry.addData("destination-> XYZ", "{%.0fmm  %.0fmm  %.0fmm}",
+                    armController.destination.getX(),
+                    armController.destination.getY(),
+                    armController.destination.getZ());
+            telemetry.addData("destination-> distance", "{%.0fmm",
+                    armController.distanceToDestination );
+            telemetry.update();
         }
     }
 }

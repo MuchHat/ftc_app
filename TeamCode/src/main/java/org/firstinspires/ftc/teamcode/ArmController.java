@@ -8,14 +8,14 @@ import android.util.Log;
 
 public class ArmController {
 
-    Arm current     = new Arm();
-    Arm next        = new Arm();
-    Arm destination = new Arm();
-    Arm test        = new Arm();
+    public Arm current     = new Arm();
+    public Arm next        = new Arm();
+    public Arm destination = new Arm();
+    public Arm test        = new Arm();
 
     // TODO fix constants
-    double maxSpeed_mms  = 111; // mm
-    double maxAccel_mmss = 111; // mm
+    double maxSpeed_mms  = 222; // mm
+    double maxAccel_mmss = 222; // mm
     double prevSpeed_mms = 0;  // mm
 
     double platformHeight = 155; // mm
@@ -27,7 +27,9 @@ public class ArmController {
     boolean atDestination = true;
     boolean isInitialized = false;
 
-    double atDestinationTolerance = 3; // mm
+    public double distanceToDestination = 0;
+
+    double atDestinationTolerance = 5; // mm
     // TODO end
 
     public void ArmController(){
@@ -44,7 +46,6 @@ public class ArmController {
         // determines the current position
 
         current.setServos( aServoTurret, aServoBase, aServoElbow );
-
         test.setXYZ( current.getX(), current.getY(), current.getZ() );
 
         //Log.d( "MuchHat", String.format( "startLoop_setServos: %.3f, %.3f, %3.f ", aServoTurret, aServoBase, aServoElbow ) );
@@ -62,7 +63,7 @@ public class ArmController {
         // determined the next point based on the millis : considered end of step
 
         // compute the distance to the next point
-        double distanceToDestination = current.distanceTo( destination );
+        distanceToDestination = current.distanceTo( destination );
 
         //Log.d( "MuchHat", String.format( "endLoop_distanceToDestination: %.3f ", distanceToDestination ) );
         //Log.d( "MuchHat", String.format( "endLoop_current: %.3f, %.3f, %3.f ", current.getX(), current.getY(), current.getZ() ) );
