@@ -61,6 +61,8 @@ public class Arm {
     double zMin = -150; // mm
     double rMax = 450; // mm
 
+    boolean initTable = false;
+
     // TODO END
 
     boolean isInitialized = false;
@@ -84,19 +86,19 @@ public class Arm {
         baseAngleTest            =  new Angle();
         elbowAngleTest           =  new Angle();
 
-        turretAngle.Init( 0.0, 0.3, 0.05, 0.95 );
-        baseAngle.Init( 0.0, 0.3, 0.05, 0.95 );
-        elbowAngle.Init( 0.0, 0.3, 0.05, 0.95 );
+        turretAngle.Init( 0.0, 0.33, 0.05, 0.95 );
+        baseAngle.Init( 0.0, 0.33, 0.05, 0.95 );
+        elbowAngle.Init( 0.0, 0.33, 0.05, 0.95 );
 
-        wristVerticalAngle.Init( 0.0, 0.3, 0.05, 0.95 );
-        wristHorizontalAngle.Init( 0.0, 0.3, 0.05, 0.95 );
-        clawOpeningAngle.Init( 0.0, 0.3, 0.05, 0.95 );
+        wristVerticalAngle.Init( 0.0, 0.33, 0.05, 0.95 );
+        wristHorizontalAngle.Init( 0.0, 0.33, 0.05, 0.95 );
+        clawOpeningAngle.Init( 0.0, 0.33, 0.05, 0.95 );
 
         clawOpeningMM = 0;
 
-        turretAngleTest.Init( 0.0, 0.3, 0.05, 0.95 );
-        baseAngleTest.Init( 0.0, 0.3, 0.05, 0.95 );
-        elbowAngleTest.Init( 0.0, 0.3, 0.05, 0.95 );
+        turretAngleTest.Init( 0.0, 0.33, 0.05, 0.95 );
+        baseAngleTest.Init( 0.0, 0.33, 0.05, 0.95 );
+        elbowAngleTest.Init( 0.0, 0.33, 0.05, 0.95 );
 
         setClaw( lClawGap );
     }
@@ -188,7 +190,7 @@ public class Arm {
     public void setXYZ( double x, double y, double z ){
 
         x = Range.clip( x, xMin, xMax );
-        y = Range.clip( y, xMin, yMax );
+        y = Range.clip( y, yMin, yMax );
         z = Range.clip( z, zMin, zMax );
 
         r = Math.sqrt( x * x + y * y + z * z );
@@ -217,7 +219,7 @@ public class Arm {
     public void testXYZ( double x, double y, double z ){
 
         double xTest = Range.clip( x, xMin, xMax );
-        double yTest = Range.clip( y, xMin, yMax );
+        double yTest = Range.clip( y, yMin, yMax );
         double zTest = Range.clip( z, zMin, zMax );
 
         double rTest = Math.sqrt( xTest * xTest + yTest * yTest + zTest * zTest );

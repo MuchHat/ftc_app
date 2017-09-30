@@ -12,7 +12,7 @@ public class Angle {
     private double anglePI = 0;  // between -pi/2 to pi/2
 
     private double offsetServo = 0;  // servo 0.2 coincides with 0 PI
-    private double slopeServo = 0.3; // 1 PI is 0.8 of the servo
+    private double slopeServo = 0.33; // 1 PI is 0.8 of the servo
     private double minServo = 0.05;
     private double maxServo = 0.95;
 
@@ -35,7 +35,7 @@ public class Angle {
 
         angleServo = Range.clip( angleServo, minServo, maxServo );
 
-        anglePI = ( ( angleServo - offsetServo) / slopeServo ) * Math.PI;
+        anglePI = ( ( angleServo - offsetServo ) / slopeServo ) * Math.PI;
 
         anglePI = Range.clip( anglePI, 0, Math.PI );
     }

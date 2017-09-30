@@ -11,8 +11,8 @@ public class ArmController {
     Arm destination = new Arm();
 
     // TODO fix constants
-    double maxSpeed_mms  = 33; // mm
-    double maxAccel_mmss = 66; // mm
+    double maxSpeed_mms  = 111; // mm
+    double maxAccel_mmss = 111; // mm
     double prevSpeed_mms = 0;  // mm
 
     double platformHeight = 155; // mm
@@ -46,7 +46,6 @@ public class ArmController {
             destination.copyFrom( current );
             next.copyFrom( current );
             isInitialized = true;
-
         }
     }
 
