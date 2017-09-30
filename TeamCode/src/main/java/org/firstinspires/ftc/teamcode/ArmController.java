@@ -11,6 +11,7 @@ public class ArmController {
     Arm current     = new Arm();
     Arm next        = new Arm();
     Arm destination = new Arm();
+    Arm test        = new Arm();
 
     // TODO fix constants
     double maxSpeed_mms  = 111; // mm
@@ -36,13 +37,15 @@ public class ArmController {
         current.init();
         next.init();
         destination.init();
+        test.init();
     }
 
     public void startLoop( double aServoTurret, double aServoBase, double aServoElbow ){
         // determines the current position
 
         current.setServos( aServoTurret, aServoBase, aServoElbow );
-        // current.testXYZ( current.getX(), current.getY(), current.getZ() );
+
+        test.setXYZ( current.getX(), current.getY(), current.getZ() );
 
         //Log.d( "MuchHat", String.format( "startLoop_setServos: %.3f, %.3f, %3.f ", aServoTurret, aServoBase, aServoElbow ) );
         //Log.d( "MuchHat", String.format( "startLoop_currentServos: %.3f, %.3f, %3.f ", current.getTurretServo(), current.getBaseServo(), current.getElbowServo() ) );
@@ -169,14 +172,24 @@ public class ArmController {
     public double getCurrentR(){ return current.getR(); }
     public double getCurrentTeta(){ return current.getTeta(); }
     public double getCurrentPhi(){ return current.getPhi(); }
+    public double getCurrentA2(){ return current.getA2(); }
 
     public double getCurrentX(){ return current.getX(); }
     public double getCurrentY(){ return current.getY(); }
     public double getCurrentZ(){ return current.getZ(); }
 
-    public double getCurrentTestTurretServo(){ return current.getTestTurretServo(); }
-    public double getCurrentTestBaseServo(){ return current.getTestBaseServo(); }
-    public double getCurrentTestELbowServo(){ return current.getTestElbowServo(); }
+    public double getCurrentTestX(){ return test.getX(); }
+    public double getCurrentTestY(){ return test.getY() ; }
+    public double getCurrentTestZ(){ return test.getZ(); }
+
+    public double getCurrentTestR(){ return test.getR(); }
+    public double getCurrentTestPhi(){ return test.getPhi(); }
+    public double getCurrentTestTeta(){ return test.getTeta(); }
+    public double getCurrentTestA2(){ return test.getA2(); }
+
+    public double getCurrentTestTurretServo(){ return test.getTurretServo(); }
+    public double getCurrentTestBaseServo(){ return test.getBaseServo(); }
+    public double getCurrentTestELbowServo(){ return test.getElbowServo(); }
 
     public void moveIncremental( double ix, double iy, double iz ){
 

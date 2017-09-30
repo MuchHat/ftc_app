@@ -69,11 +69,11 @@ public class Triangle {
 
         l3 = Math.sqrt( l2 * l2 + l1 * l1 - 2 * l2 * l1 * Math.cos( a3 ) );
 
-        if ( l1 > l2 ) {
+        if ( l2 <= l1 ) {
             a2 = Math.asin( l2 * Math.sin( a3 ) / l3 );
             a1 = Math.PI - a2 - a3;
         }
-        if ( l2 > l1 ) {
+        if ( l1 < l2 ) {
             a1 = Math.asin( l1 * Math.sin( a3 ) / l3 );
             a2 = Math.PI - a1 - a3;
         }

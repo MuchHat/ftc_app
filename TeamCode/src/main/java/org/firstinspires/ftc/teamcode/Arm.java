@@ -18,8 +18,8 @@ public class Arm {
 
     private double teta = 0;
     private double phi = 0;
-
     private double r = 0;
+    private double a2 = 0;
 
     public Angle  turretAngle          =  null;
     public Angle  baseAngle            =  null;
@@ -29,10 +29,6 @@ public class Arm {
     public Angle  wristHorizontalAngle  =  null;
     public Angle  clawOpeningAngle      =  null;
     public double clawOpeningMM         = 0;
-
-    public Angle  turretAngleTest          =  null;
-    public Angle  baseAngleTest            =  null;
-    public Angle  elbowAngleTest           =  null;
 
     // TODO correct the home positons
     double xZero = 0; // mm
@@ -50,13 +46,13 @@ public class Arm {
     double mmClawOpen  = 222;  // mm
     double mmClawClose = 188; // mm
 
-    double lBase     = 260; // mm
-    double lElbow    = 260; // mm
+    double lBase     = 188; // mm
+    double lElbow    = 233; // mm
     double lClawArm =  150; // mm
     double lClawGap =  37;  // mm
 
     double xMax = 450; // mm
-    double xMin = 45; // mm
+    double xMin = -450; // mm
     double yMax = 450; // mm
     double yMin = 0; // mm
     double zMax = 450; // mm
@@ -84,13 +80,9 @@ public class Arm {
         wristHorizontalAngle  =  new Angle();
         clawOpeningAngle      =  new Angle();
 
-        turretAngleTest          =  new Angle();
-        baseAngleTest            =  new Angle();
-        elbowAngleTest           =  new Angle();
-
-        turretAngle.Init( 0.0, 1.0, 0.05, 0.95 );
-        baseAngle.Init( 0.0, 1.0, 0.05, 0.95 );
-        elbowAngle.Init( 0.0, 1.0, 0.05, 0.95 );
+        turretAngle.Init( 0.0, 0.8, 0.05, 0.95 );
+        baseAngle.Init( 0.0, 0.8, 0.33, 0.66 );
+        elbowAngle.Init( 0.0, 0.8, 0.33, 0.66 );
 
         wristVerticalAngle.Init( 0.0, 1.0, 0.05, 0.95 );
         wristHorizontalAngle.Init( 0.0, 1.0, 0.05, 0.95 );
@@ -98,20 +90,12 @@ public class Arm {
 
         clawOpeningMM = 0;
 
-        turretAngleTest.Init( 0.0, 1.0, 0.05, 0.95 );
-        baseAngleTest.Init( 0.0, 1.0, 0.05, 0.95 );
-        elbowAngleTest.Init( 0.0, 1.0, 0.05, 0.95 );
-
         setClaw( lClawGap );
     }
 
     public double getX(){ return x; }
     public double getY(){ return y; }
     public double getZ(){ return z; }
-
-    public double getTestTurretServo(){ return turretAngleTest.getServo(); }
-    public double getTestBaseServo(){ return baseAngleTest.getServo(); }
-    public double getTestElbowServo(){ return elbowAngleTest.getServo(); }
 
     public double getZeroX(){ return xZero; }
     public double getZeroY(){ return yZero; }
@@ -128,6 +112,7 @@ public class Arm {
     public double getR(){ return r; }
     public double getTeta(){ return teta; }
     public double getPhi(){ return phi; }
+    public double getA2(){ return a2; }
 
     public double getBaseServo(){ return baseAngle.getServo(); }
     public double getTurretServo(){ return turretAngle.getServo(); }
@@ -175,12 +160,12 @@ public class Arm {
 
         Triangle elbowTriangle = new Triangle();
         elbowTriangle.solve_SSA( lBase, lElbow, elbowAngle.getPI() );
-        phi = Math.PI / 2 - ( baseAngle.getPI() - elbowTriangle.a2 );
+
+        a2 = elbowTriangle.a2;
+
+        phi = baseAngle.getPI() - Math.PI / 2 - elbowTriangle.a2  ;
 
         r = elbowTriangle.l3;
-
-        double t = teta;
-        double p = phi;
 
         z = r * Math.cos(phi); // works > pi/2 and < 0
         x = r * Math.sin(phi) * Math.cos(teta);
@@ -195,57 +180,37 @@ public class Arm {
         y = Range.clip( ay, yMin, yMax );
         z = Range.clip( az, zMin, zMax );
 
-        //Log.d( "MuchHat", String.format( "Arm_setXYZ xyz: %.3f, %.3f, %3.f ", ax, ay, az ) );
+        Log.d( "MuchHat", String.format( "setXYZ x: %.2f", x ) );
+        Log.d( "MuchHat", String.format( "setXYZ y: %.2f", y ) );
+        Log.d( "MuchHat", String.format( "setXYZ z: %.2f", z ) );
 
         r = Math.sqrt( x * x + y * y + z * z );
+        if( r == 0 ) r = 0.001;
 
-        double sign_x = x > 0 ? 1.0 : -1.0;
-        double sign_y = y > 0 ? 1.0 : -1.0;
-        double sign_z = z > 0 ? 1.0 : -1.0;
+        Log.d( "MuchHat", String.format( "setXYZ r: %.2f", r ) );
 
-        phi = Math.acos( z * sign_z / r );
-        teta = Math.atan( y * sign_y / x * sign_x );
+        phi = Math.acos( z / r );
+
+        Log.d( "MuchHat", String.format( "setXYZ phi: %.2f", phi ) );
+
+        if( Math.abs( x ) <= 0.001 ){
+            teta = Math.PI;
+        }
+        else if(Math.abs( x ) > 0.001 ){
+            teta = Math.atan( Math.abs( y / x ) );
+            if( x < 0 )teta += Math.PI / 2;
+        }
+
+        Log.d( "MuchHat", String.format( "setXYZ teta: %.2f", teta ) );
 
         Triangle elbowTriangle = new Triangle();
         elbowTriangle.solve_SSS( lBase, lElbow, r );
 
-        double t = Math.PI /2 + teta;
-        if( x < 0 && teta < Math.PI / 2 ) t = Math.PI / 2 - teta;
-        turretAngle.setPI( t );
+        a2 = elbowTriangle.a2;
 
-        if( y < 0 && phi < 0 )phi *= -1;
-        if( z < 0 && phi < Math.PI / 2  )phi += Math.PI / 2;
-
-        baseAngle.setPI( Math.PI / 2 + phi );
+        turretAngle.setPI( Math.PI - teta );
+        baseAngle.setPI( Math.PI - phi + elbowTriangle.a2 );
         elbowAngle.setPI( elbowTriangle.a3 );
     }
 
-    public void testXYZ( double x, double y, double z ){
-
-        double xTest = Range.clip( x, xMin, xMax );
-        double yTest = Range.clip( y, yMin, yMax );
-        double zTest = Range.clip( z, zMin, zMax );
-
-        double rTest = Math.sqrt( xTest * xTest + yTest * yTest + zTest * zTest );
-
-        double sign_x = xTest > 0 ? 1.0 : -1.0;
-        double sign_y = yTest > 0 ? 1.0 : -1.0;
-        double sign_z = zTest > 0 ? 1.0 : -1.0;
-
-        double phiTest = Math.acos( zTest * sign_z / rTest );
-        double tetaTest = Math.atan( yTest * sign_y / xTest * sign_x );
-
-        Triangle elbowTriangle = new Triangle();
-        elbowTriangle.solve_SSS( lBase, lElbow, rTest );
-
-        double tTest = Math.PI /2 + tetaTest;
-        if( xTest < 0 && tetaTest < Math.PI / 2 ) tTest = Math.PI / 2 - tetaTest;
-        turretAngleTest.setPI( tTest );
-
-        if( yTest < 0 && phiTest < 0 )phiTest *= -1;
-        if( zTest < 0 && phiTest < Math.PI / 2  )phiTest += Math.PI / 2;
-
-        baseAngleTest.setPI( Math.PI / 2 + phiTest );
-        elbowAngleTest.setPI( elbowTriangle.a3 );
-    }
 }
