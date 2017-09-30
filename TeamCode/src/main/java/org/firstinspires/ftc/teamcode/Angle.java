@@ -33,7 +33,7 @@ public class Angle {
 
     public void setServo( double as ) {
 
-        angleServo = Range.clip( angleServo, minServo, maxServo );
+        angleServo = Range.clip( as, minServo, maxServo );
 
         anglePI = ( ( angleServo - offsetServo ) / slopeServo ) * Math.PI;
 
