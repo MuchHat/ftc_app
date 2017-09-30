@@ -14,8 +14,8 @@ public class ArmController {
     public Arm test        = new Arm();
 
     // TODO fix constants
-    double maxSpeed_mms  = 222; // mm
-    double maxAccel_mmss = 222; // mm
+    double maxSpeed_mms  = 444; // mm
+    double maxAccel_mmss = 888; // mm
     double prevSpeed_mms = 0;  // mm
 
     double platformHeight = 155; // mm

@@ -61,12 +61,12 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
         robot.init(hardwareMap);
         armController.init();
 
-        robot._turret.setPosition(166 / 255);
-        robot._base.setPosition(30 / 255);
-        robot._elbow.setPosition(80 / 255);
-        robot._wrist.setPosition(80 / 255);
-        robot._leftClaw.setPosition(0 / 255);
-        robot._rightClaw.setPosition(140 / 255);
+        robot._turret.setPosition( 0.50 );
+        robot._base.setPosition( 0.50 );
+        robot._elbow.setPosition( 0.50 );
+        robot._wrist.setPosition( 0.50 );
+        robot._leftClaw.setPosition( 0.50 );
+        robot._rightClaw.setPosition( 0.50 );
 
         turretControl = robot._turret.getPosition();
         baseControl   = robot._base.getPosition();
@@ -88,6 +88,8 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
             wristControl = robot._wrist.getPosition();
             clawControlL = robot._leftClaw.getPosition();
             clawControlR = robot._rightClaw.getPosition();
+
+            armController.startLoop( turretControl,baseControl, elbowControl );
 
             String atDestinationStr = new String("moving->");
             if (armController.atDestination) {
@@ -120,7 +122,6 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                     armController.getCurrentTestX(),
                     armController.getCurrentTestY(),
                     armController.getCurrentTestZ());
-            telemetry.addData("robot is", "%s", atDestinationStr);
             telemetry.addData("next-> XYZ", "{%.0fmm  %.0fmm  %.0fmm}",
                     armController.next.getX(),
                     armController.next.getY(),
@@ -129,6 +130,7 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                     armController.destination.getX(),
                     armController.destination.getY(),
                     armController.destination.getZ());
+            telemetry.addData("robot is", "%s", atDestinationStr);
             telemetry.addData("destination-> distance", "{%.0fmm",
                     armController.distanceToDestination );
             telemetry.update();
@@ -178,36 +180,43 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
             // control: HOME
             {
                 if (gamepad1.a) {
-                    robot._turret.setPosition(166 / 255);
-                    robot._base.setPosition(30 / 255);
-                    robot._elbow.setPosition(80 / 255);
-                    robot._wrist.setPosition(80 / 255);
-                    robot._leftClaw.setPosition(0 / 255);
-                    robot._rightClaw.setPosition(140 / 255);
+                    armController.moveToPositionHome();
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.dpad_up) {
-                    armController.moveIncremental(0, 15, 0);
+                    armController.moveToPosition(
+                                armController.getCurrentX(),
+                                armController.getCurrentY() + 15,
+                                armController.getCurrentZ() );
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.dpad_down) {
-                    armController.moveIncremental(0, -15, 0);
+                    armController.moveToPosition(
+                            armController.getCurrentX(),
+                            armController.getCurrentY() - 15,
+                            armController.getCurrentZ() );
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.dpad_right) {
-                    armController.moveIncremental(15, 0, 0);
+                    armController.moveToPosition(
+                            armController.getCurrentX() + 15,
+                            armController.getCurrentY(),
+                            armController.getCurrentZ() );
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.dpad_left) {
-                    armController.moveIncremental(-15, 0, 0);
+                    armController.moveToPosition(
+                            armController.getCurrentX() - 15,
+                            armController.getCurrentY(),
+                            armController.getCurrentZ() );
                 }
             }
             // control: LEFT RIGH MM

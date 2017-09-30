@@ -168,8 +168,8 @@ public class Arm {
         r = elbowTriangle.l3;
 
         z = Range.clip( r * Math.cos(phi), zMin, zMax ) ; // works > pi/2 and < 0
-        x = Range.clip( r * Math.sin(phi) * Math.cos(teta), yMin, yMax );
-        y = Range.clip( r * Math.sin(phi) * Math.sin(teta), xMin, xMax );
+        x = Range.clip( r * Math.sin(phi) * Math.cos(teta), xMin, xMax );
+        y = Range.clip( r * Math.sin(phi) * Math.sin(teta), yMin, yMax );
 
         //Log.d( "MuchHat", String.format( "Arm_setServos xyz: %.3f, %.3f, %3.f ", x, y, z ) );
     }
