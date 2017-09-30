@@ -156,7 +156,7 @@ public class Arm {
 
         //Log.d( "MuchHat", String.format( "Arm_setServos servos: %.3f, %.3f, %3.f ", ts, bs, es ) );
 
-        teta = turretAngle.getPI() - Math.PI/2;
+        teta = Math.PI - turretAngle.getPI();
 
         Triangle elbowTriangle = new Triangle();
         elbowTriangle.solve_SSA( lBase, lElbow, elbowAngle.getPI() );
