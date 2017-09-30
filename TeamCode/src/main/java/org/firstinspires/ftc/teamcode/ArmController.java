@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 /**
  * Created by gigela on 9/27/2017.
  */
@@ -42,6 +44,10 @@ public class ArmController {
         current.setServos( servoTurret, servoBase, servoElbow );
         //current.testXYZ( current.getX(), current.getY(), current.getZ() );
 
+        Log.d( "MuchHat", String.format( "startLoop_setServos: %.3f, %.3f, %3.f ", servoTurret, servoBase, servoElbow ) );
+        Log.d( "MuchHat", String.format( "startLoop_currentServos: %.3f, %.3f, %3.f ", current.getTurretServo(), current.getBaseServo(), current.getElbowServo() ) );
+
+
         if( !isInitialized ){
             destination.copyFrom( current );
             next.copyFrom( current );
@@ -54,6 +60,10 @@ public class ArmController {
 
         // compute the distance to the next point
         double distanceToDestination = current.distanceTo( destination );
+
+        Log.d( "MuchHat", String.format( "endLoop_distanceToDestination: %.3f ", distanceToDestination ) );
+        Log.d( "MuchHat", String.format( "endLoop_current: %.3f, %.3f, %3.f ", current.getX(), current.getY(), current.getZ() ) );
+        Log.d( "MuchHat", String.format( "endLoop_destination: %.3f, %.3f, %3.f ", destination.getX(), destination.getY(), destination.getZ() ) );
 
         // determine the max possible speed
         double newSpeed_mms = maxSpeed_mms;
@@ -86,6 +96,7 @@ public class ArmController {
         }
         else if( distanceToDestination > currentAllowedMaxDistance ) {
             double ratio = Math.abs( currentAllowedMaxDistance / distanceToDestination );
+            Log.d( "MuchHat", String.format( "ratio: %.3f ", ratio ) );
             next.setXYZ(
                     current.getX() + ( destination.getX() - current.getX() ) * ratio,
                     current.getY() + ( destination.getY() - current.getY() ) * ratio,
@@ -101,6 +112,8 @@ public class ArmController {
             double ratio = Math.abs( currentAllowedMaxDistance / clawDistance );
             next.clawOpeningMM = current.clawOpeningMM + ( destination.clawOpeningMM - current.clawOpeningMM ) * ratio;
         }
+
+        Log.d( "MuchHat", String.format( "endLoop_destination: %.3f, %.3f, %3.f ", next.getX(), next.getY(), next.getZ() ) );
 
         // check if too close to base
         // see if would hit the body of the robot and adjust
@@ -139,6 +152,7 @@ public class ArmController {
             }
         }
         prevSpeed_mms = newSpeed_mms;
+        Log.d( "MuchHat", String.format( "endLoop_newSpeed_mms: %.3f ", newSpeed_mms ) );
     }
 
     public double getNextBaseServo(){ return next.getBaseServo(); }

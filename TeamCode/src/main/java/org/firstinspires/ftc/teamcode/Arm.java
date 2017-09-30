@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -135,7 +137,7 @@ public class Arm {
     public double getClawServo(){ return clawOpeningAngle.getServo(); }
 
     public void copyFrom( Arm anotherArm ){
-        setXYZ( anotherArm.x, anotherArm.y, anotherArm.z  );
+        setServos( anotherArm.getTurretServo(), anotherArm.getBaseServo(), anotherArm.getElbowServo()  );
         setClaw( anotherArm.clawOpeningMM );
     }
 
@@ -167,9 +169,7 @@ public class Arm {
         baseAngle.setPI( bs );
         elbowAngle.setPI( es );
 
-        double sign_x = 1.0;
-        double sign_y = 1.0;
-        double sign_z = 1.0;
+        Log.d( "MuchHat", String.format( "Arm_setServos servos: %.3f, %.3f, %3.f ", ts, bs, es ) );
 
         teta = turretAngle.getPI() - Math.PI/2;
 
@@ -185,13 +185,17 @@ public class Arm {
         z = r * Math.cos(phi); // works > pi/2 and < 0
         x = r * Math.sin(phi) * Math.cos(teta);
         y = r * Math.sin(phi) * Math.sin(teta);
+
+        Log.d( "MuchHat", String.format( "Arm_setServos xyz: %.3f, %.3f, %3.f ", x, y, z ) );
     }
 
-    public void setXYZ( double x, double y, double z ){
+    public void setXYZ( double ax, double ay, double az ){
 
-        x = Range.clip( x, xMin, xMax );
-        y = Range.clip( y, yMin, yMax );
-        z = Range.clip( z, zMin, zMax );
+        x = Range.clip( ax, xMin, xMax );
+        y = Range.clip( ay, yMin, yMax );
+        z = Range.clip( az, zMin, zMax );
+
+        Log.d( "MuchHat", String.format( "Arm_setXYZ xyz: %.3f, %.3f, %3.f ", ax, ay, az ) );
 
         r = Math.sqrt( x * x + y * y + z * z );
 
