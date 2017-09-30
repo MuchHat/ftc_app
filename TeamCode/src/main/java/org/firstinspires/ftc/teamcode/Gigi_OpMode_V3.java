@@ -61,7 +61,19 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
         robot.init(hardwareMap);
         armController.init();
 
-        armController.moveToPositionZero();
+        robot._turret.setPosition(166 / 255);
+        robot._base.setPosition(30 / 255);
+        robot._elbow.setPosition(80 / 255);
+        robot._wrist.setPosition(80 / 255);
+        robot._leftClaw.setPosition(0 / 255);
+        robot._rightClaw.setPosition(140 / 255);
+
+        turretControl = robot._turret.getPosition();
+        baseControl   = robot._base.getPosition();
+        elbowControl  = robot._elbow.getPosition();
+        wristControl  = robot._wrist.getPosition();
+        clawControlL  = robot._leftClaw.getPosition();
+        clawControlR  = robot._rightClaw.getPosition();
 
         waitForStart();
 
@@ -76,8 +88,6 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
             wristControl = robot._wrist.getPosition();
             clawControlL = robot._leftClaw.getPosition();
             clawControlR = robot._rightClaw.getPosition();
-
-            armController.startLoop(turretControl, baseControl, elbowControl);
 
             String atDestinationStr = new String("moving->");
             if (armController.atDestination) {
@@ -111,6 +121,16 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                     armController.getCurrentTestY(),
                     armController.getCurrentTestZ());
             telemetry.addData("robot is", "%s", atDestinationStr);
+            telemetry.addData("next-> XYZ", "{%.0fmm  %.0fmm  %.0fmm}",
+                    armController.next.getX(),
+                    armController.next.getY(),
+                    armController.next.getZ());
+            telemetry.addData("destination-> XYZ", "{%.0fmm  %.0fmm  %.0fmm}",
+                    armController.destination.getX(),
+                    armController.destination.getY(),
+                    armController.destination.getZ());
+            telemetry.addData("destination-> distance", "{%.0fmm",
+                    armController.distanceToDestination );
             telemetry.update();
 
             // control: TURRET
@@ -234,17 +254,6 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
             robot._rightClaw.setPosition( 140 - armController.next.clawOpeningAngle.angleServo );
             TODO END */
 
-            telemetry.addData("next-> XYZ", "{%.0fmm  %.0fmm  %.0fmm}",
-                    armController.next.getX(),
-                    armController.next.getY(),
-                    armController.next.getZ());
-            telemetry.addData("destination-> XYZ", "{%.0fmm  %.0fmm  %.0fmm}",
-                    armController.destination.getX(),
-                    armController.destination.getY(),
-                    armController.destination.getZ());
-            telemetry.addData("destination-> distance", "{%.0fmm",
-                    armController.distanceToDestination );
-            telemetry.update();
         }
     }
 }
