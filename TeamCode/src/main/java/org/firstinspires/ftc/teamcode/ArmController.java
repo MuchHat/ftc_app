@@ -38,14 +38,14 @@ public class ArmController {
         destination.init();
     }
 
-    public void startLoop( double servoTurret, double servoBase, double servoElbow ){
+    public void startLoop( double aServoTurret, double aServoBase, double aServoElbow ){
         // determines the current position
 
-        current.setServos( servoTurret, servoBase, servoElbow );
-        //current.testXYZ( current.getX(), current.getY(), current.getZ() );
+        current.setServos( aServoTurret, aServoBase, aServoElbow );
+        // current.testXYZ( current.getX(), current.getY(), current.getZ() );
 
-        Log.d( "MuchHat", String.format( "startLoop_setServos: %.3f, %.3f, %3.f ", servoTurret, servoBase, servoElbow ) );
-        Log.d( "MuchHat", String.format( "startLoop_currentServos: %.3f, %.3f, %3.f ", current.getTurretServo(), current.getBaseServo(), current.getElbowServo() ) );
+        //Log.d( "MuchHat", String.format( "startLoop_setServos: %.3f, %.3f, %3.f ", aServoTurret, aServoBase, aServoElbow ) );
+        //Log.d( "MuchHat", String.format( "startLoop_currentServos: %.3f, %.3f, %3.f ", current.getTurretServo(), current.getBaseServo(), current.getElbowServo() ) );
 
 
         if( !isInitialized ){
@@ -61,9 +61,9 @@ public class ArmController {
         // compute the distance to the next point
         double distanceToDestination = current.distanceTo( destination );
 
-        Log.d( "MuchHat", String.format( "endLoop_distanceToDestination: %.3f ", distanceToDestination ) );
-        Log.d( "MuchHat", String.format( "endLoop_current: %.3f, %.3f, %3.f ", current.getX(), current.getY(), current.getZ() ) );
-        Log.d( "MuchHat", String.format( "endLoop_destination: %.3f, %.3f, %3.f ", destination.getX(), destination.getY(), destination.getZ() ) );
+        //Log.d( "MuchHat", String.format( "endLoop_distanceToDestination: %.3f ", distanceToDestination ) );
+        //Log.d( "MuchHat", String.format( "endLoop_current: %.3f, %.3f, %3.f ", current.getX(), current.getY(), current.getZ() ) );
+        //Log.d( "MuchHat", String.format( "endLoop_destination: %.3f, %.3f, %3.f ", destination.getX(), destination.getY(), destination.getZ() ) );
 
         // determine the max possible speed
         double newSpeed_mms = maxSpeed_mms;
@@ -96,7 +96,7 @@ public class ArmController {
         }
         else if( distanceToDestination > currentAllowedMaxDistance ) {
             double ratio = Math.abs( currentAllowedMaxDistance / distanceToDestination );
-            Log.d( "MuchHat", String.format( "ratio: %.3f ", ratio ) );
+            //Log.d( "MuchHat", String.format( "ratio: %.3f ", ratio ) );
             next.setXYZ(
                     current.getX() + ( destination.getX() - current.getX() ) * ratio,
                     current.getY() + ( destination.getY() - current.getY() ) * ratio,
@@ -113,7 +113,7 @@ public class ArmController {
             next.clawOpeningMM = current.clawOpeningMM + ( destination.clawOpeningMM - current.clawOpeningMM ) * ratio;
         }
 
-        Log.d( "MuchHat", String.format( "endLoop_destination: %.3f, %.3f, %3.f ", next.getX(), next.getY(), next.getZ() ) );
+        //Log.d( "MuchHat", String.format( "endLoop_destination: %.3f, %.3f, %3.f ", next.getX(), next.getY(), next.getZ() ) );
 
         // check if too close to base
         // see if would hit the body of the robot and adjust
@@ -152,7 +152,7 @@ public class ArmController {
             }
         }
         prevSpeed_mms = newSpeed_mms;
-        Log.d( "MuchHat", String.format( "endLoop_newSpeed_mms: %.3f ", newSpeed_mms ) );
+        //Log.d( "MuchHat", String.format( "endLoop_newSpeed_mms: %.3f ", newSpeed_mms ) );
     }
 
     public double getNextBaseServo(){ return next.getBaseServo(); }

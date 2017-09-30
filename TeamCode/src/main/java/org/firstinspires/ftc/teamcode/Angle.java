@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.util.Range;
 
 /**
@@ -38,6 +40,8 @@ public class Angle {
         anglePI = ( ( angleServo - offsetServo ) / slopeServo ) * Math.PI;
 
         anglePI = Range.clip( anglePI, 0, Math.PI );
+
+        //Log.d( "MuchHat", String.format( "Angle_setServo: %.3f, %.3f pi", angleServo, anglePI ) );
     }
 
     public void setPI( double ap ) {
@@ -47,6 +51,9 @@ public class Angle {
         angleServo = ( anglePI / Math.PI ) * slopeServo + offsetServo;
 
         angleServo = Range.clip( angleServo, minServo, maxServo );
+
+        //Log.d( "MuchHat", String.format( "Angle_setPI: %.3f, %.3fpi", angleServo, anglePI ) );
+
     }
 }
 

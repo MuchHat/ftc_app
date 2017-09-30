@@ -40,39 +40,39 @@ import org.firstinspires.ftc.robotcontroller.external.samples.BasicOpMode_Linear
  * This file illustrates the concept of driving a path based on time.
  */
 
-@TeleOp(name="OpMode V3", group="Gigi Linear")
+@TeleOp(name="OpMode V3", group="Gigi")
 // @Disabled
-public class Gigi_OpMode_V3 extends LinearOpMode{
+public class Gigi_OpMode_V3 extends LinearOpMode {
 
-    public  Gigi_Hardware_V2   robot         = new Gigi_Hardware_V2();
-    public  ArmController      armController = new ArmController();
-    public  ElapsedTime        runtime       = new ElapsedTime();
+    public Gigi_Hardware_V2 robot = new Gigi_Hardware_V2();
+    public ArmController armController = new ArmController();
+    public ElapsedTime runtime = new ElapsedTime();
 
-    public  double             turretControl = 0;
-    public  double             baseControl   = 0;
-    public  double             elbowControl  = 0;
-    public  double             wristControl  = 0;
-    public  double             clawControlL  = 0;
-    public  double             clawControlR  = 0;
+    public double turretControl = 0;
+    public double baseControl = 0;
+    public double elbowControl = 0;
+    public double wristControl = 0;
+    public double clawControlL = 0;
+    public double clawControlR = 0;
 
     @Override
     public void runOpMode() {
 
-        robot.init( hardwareMap );
+        robot.init(hardwareMap);
         armController.init();
 
-        robot.leftDrive.setPower( 0 );
-        robot.rightDrive.setPower( 0 );
-        robot._turret.setPosition( 166 / 255 );
-        robot._base.setPosition( 30 / 255 );
-        robot._elbow.setPosition( 80 / 255 );
-        robot._wrist.setPosition( 80 / 255 );
-        robot._leftClaw.setPosition( 0 / 255 );
-        robot._rightClaw.setPosition( 140 / 255 );
+        robot.leftDrive.setPower(0);
+        robot.rightDrive.setPower(0);
+        robot._turret.setPosition(166 / 255);
+        robot._base.setPosition(30 / 255);
+        robot._elbow.setPosition(80 / 255);
+        robot._wrist.setPosition(80 / 255);
+        robot._leftClaw.setPosition(0 / 255);
+        robot._rightClaw.setPosition(140 / 255);
 
         waitForStart();
 
-        while( opModeIsActive() ) {
+        while (opModeIsActive()) {
 
             double crrLoopTime = runtime.milliseconds();
             runtime.reset();
@@ -86,27 +86,30 @@ public class Gigi_OpMode_V3 extends LinearOpMode{
 
             armController.startLoop(turretControl, baseControl, elbowControl);
 
-            //String atDestinationStr = new String( "moving->" );
-            //if( armController.atDestination ){
-            //    atDestinationStr = "stopped";
-            //}
+            String atDestinationStr = new String("moving->");
+            if (armController.atDestination) {
+                atDestinationStr = "stopped";
+                }
 
-            telemetry.addData("turret", "%.4f", turretControl );
-            telemetry.addData("base", "%.4f", baseControl );
-            telemetry.addData("elbow", "%.4f", elbowControl );
+            telemetry.addData("turret", "%.4f", turretControl);
+            telemetry.addData("base", "%.4f", baseControl);
+            telemetry.addData("elbow", "%.4f", elbowControl);
             telemetry.addData("current -> turret", "%.4f", armController.getCurrentTurretServo());
             telemetry.addData("current -> base", "%.4f", armController.getCurrentBaseServo());
             telemetry.addData("current -> elbow", "%.4f", armController.getCurrentElbowServo());
-            //telemetry.addData("test -> turret", "%.4f", armController.getCurrentTestTurretServo());
-            //telemetry.addData("test -> base", "%.4f", armController.getCurrentTestBaseServo());
-            //telemetry.addData("test -> elbow", "%.4f", armController.getCurrentTestELbowServo());
-            //telemetry.addData("current -> r", "%.2fmm", armController.getCurrentR());
-            //telemetry.addData("current -> teta", "%.4fpi", armController.getCurrentTeta());
-            //telemetry.addData("current -> phi", "%.4fpi", armController.getCurrentPhi());
+            telemetry.addData("test -> turret", "%.4f", armController.getCurrentTestTurretServo());
+            telemetry.addData("test -> base", "%.4f", armController.getCurrentTestBaseServo());
+            telemetry.addData("test -> elbow", "%.4f", armController.getCurrentTestELbowServo());
+            telemetry.addData("current -> r", "%.2fmm", armController.getCurrentR());
+            telemetry.addData("current -> teta", "%.4fpi", armController.getCurrentTeta());
+            telemetry.addData("current -> phi", "%.4fpi", armController.getCurrentPhi());
             telemetry.addData("current -> x axis", "%.2fmm", armController.getCurrentX());
             telemetry.addData("current -> y axis", "%.2fmm", armController.getCurrentY());
             telemetry.addData("current -> z axis", "%.2fmm", armController.getCurrentX());
-
+            telemetry.addData("robot is", "%s", atDestinationStr);
+            telemetry.addData("next -> turret", "%.2f", armController.getNextTurretServo());
+            telemetry.addData("next -> base", "%.2f", armController.getNextBaseServo());
+            telemetry.addData("next -> elbow", "%.2f", armController.getNextElbowServo());
             telemetry.update();
 
             // control: TURRET
@@ -220,15 +223,16 @@ public class Gigi_OpMode_V3 extends LinearOpMode{
             // set the servos per the ARM controller
             armController.endLoop(crrLoopTime);
 
-            /* TODO enable below later
-            robot._turret.setPosition( armController.next.turretAngle.angleServo );
-            robot._base.setPosition( armController.next.baseAngle.angleServo );
-            robot._elbow.setPosition( armController.next.elbowAngle.angleServo );
-            robot._wrist.setPosition( armController.next.clawVerticalAngle.angleServo );
+        /* TODO enable below later
+        robot._turret.setPosition( armController.next.turretAngle.angleServo );
+        robot._base.setPosition( armController.next.baseAngle.angleServo );
+        robot._elbow.setPosition( armController.next.elbowAngle.angleServo );
+        robot._wrist.setPosition( armController.next.clawVerticalAngle.angleServo );
 
-            robot._leftClaw.setPosition( armController.next.clawOpeningAngle.angleServo );
-            robot._rightClaw.setPosition( 140 - armController.next.clawOpeningAngle.angleServo );
-            TODO END */
+        robot._leftClaw.setPosition( armController.next.clawOpeningAngle.angleServo );
+        robot._rightClaw.setPosition( 140 - armController.next.clawOpeningAngle.angleServo );
+        TODO END */
         }
-     }
+    }
 }
+

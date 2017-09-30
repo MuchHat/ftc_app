@@ -165,11 +165,11 @@ public class Arm {
 
     public void setServos( double ts, double bs, double es ) {
 
-        turretAngle.setPI( ts );
-        baseAngle.setPI( bs );
-        elbowAngle.setPI( es );
+        turretAngle.setServo( ts );
+        baseAngle.setServo( bs );
+        elbowAngle.setServo( es );
 
-        Log.d( "MuchHat", String.format( "Arm_setServos servos: %.3f, %.3f, %3.f ", ts, bs, es ) );
+        //Log.d( "MuchHat", String.format( "Arm_setServos servos: %.3f, %.3f, %3.f ", ts, bs, es ) );
 
         teta = turretAngle.getPI() - Math.PI/2;
 
@@ -186,7 +186,7 @@ public class Arm {
         x = r * Math.sin(phi) * Math.cos(teta);
         y = r * Math.sin(phi) * Math.sin(teta);
 
-        Log.d( "MuchHat", String.format( "Arm_setServos xyz: %.3f, %.3f, %3.f ", x, y, z ) );
+        //Log.d( "MuchHat", String.format( "Arm_setServos xyz: %.3f, %.3f, %3.f ", x, y, z ) );
     }
 
     public void setXYZ( double ax, double ay, double az ){
@@ -195,7 +195,7 @@ public class Arm {
         y = Range.clip( ay, yMin, yMax );
         z = Range.clip( az, zMin, zMax );
 
-        Log.d( "MuchHat", String.format( "Arm_setXYZ xyz: %.3f, %.3f, %3.f ", ax, ay, az ) );
+        //Log.d( "MuchHat", String.format( "Arm_setXYZ xyz: %.3f, %.3f, %3.f ", ax, ay, az ) );
 
         r = Math.sqrt( x * x + y * y + z * z );
 
