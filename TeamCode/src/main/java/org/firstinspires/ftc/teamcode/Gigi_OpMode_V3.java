@@ -91,50 +91,54 @@ public class Gigi_OpMode_V3 extends LinearOpMode{
             //    atDestinationStr = "stopped";
             //}
 
+            telemetry.addData("turret", "%.4f", turretControl );
+            telemetry.addData("base", "%.4f", baseControl );
+            telemetry.addData("elbow", "%.4f", elbowControl );
             telemetry.addData("current -> turret", "%.4f", armController.getCurrentTurretServo());
             telemetry.addData("current -> base", "%.4f", armController.getCurrentBaseServo());
             telemetry.addData("current -> elbow", "%.4f", armController.getCurrentElbowServo());
-            telemetry.addData("current -> r", "%.2fmm", armController.getCurrentR());
-            telemetry.addData("current -> teta", "%.4fpi", armController.getCurrentTeta());
-            telemetry.addData("current -> phi", "%.4fpi", armController.getCurrentPhi());
+            //telemetry.addData("test -> turret", "%.4f", armController.getCurrentTestTurretServo());
+            //telemetry.addData("test -> base", "%.4f", armController.getCurrentTestBaseServo());
+            //telemetry.addData("test -> elbow", "%.4f", armController.getCurrentTestELbowServo());
+            //telemetry.addData("current -> r", "%.2fmm", armController.getCurrentR());
+            //telemetry.addData("current -> teta", "%.4fpi", armController.getCurrentTeta());
+            //telemetry.addData("current -> phi", "%.4fpi", armController.getCurrentPhi());
             telemetry.addData("current -> x axis", "%.2fmm", armController.getCurrentX());
             telemetry.addData("current -> y axis", "%.2fmm", armController.getCurrentY());
             telemetry.addData("current -> z axis", "%.2fmm", armController.getCurrentX());
-            telemetry.addData("test->turret", "%.4f", armController.getCurrentTestTurretServo());
-            telemetry.addData("test->base", "%.4f", armController.getCurrentTestBaseServo());
-            telemetry.addData("test->elbow", "%.4f", armController.getCurrentTestELbowServo());
+
             telemetry.update();
 
             // control: TURRET
             {
                 turretControl += gamepad1.left_stick_x * 0.0003 * crrLoopTime;
-                turretControl = Range.clip(turretControl, 0.15, 0.95);
+                turretControl = Range.clip(turretControl, 0.05, 0.95);
                 robot._turret.setPosition(turretControl);
             }
             // control: BASE
             {
                 baseControl += gamepad1.right_stick_y * 0.0003 * crrLoopTime;
-                baseControl = Range.clip(baseControl, 0.15, 0.95);
+                baseControl = Range.clip(baseControl, 0.05, 0.95);
                 robot._base.setPosition(baseControl);
             }
             // control: ELBOW
             {
                 elbowControl += gamepad1.left_stick_y * 0.0003 * crrLoopTime;
-                elbowControl = Range.clip(elbowControl, 0.15, 0.95);
+                elbowControl = Range.clip(elbowControl, 0.05, 0.95);
                 robot._elbow.setPosition(elbowControl);
             }
             // control: WRIST
             {
                 wristControl += gamepad1.right_stick_x * 0.0003 * crrLoopTime;
-                wristControl = Range.clip(wristControl, 0.15, 0.95);
+                wristControl = Range.clip(wristControl, 0.05, 0.95);
                 robot._wrist.setPosition(wristControl);
             }
             // control: CLAW OPEN
             {
                 clawControlR += gamepad1.right_trigger * 0.0003 * crrLoopTime;
                 clawControlL -= gamepad1.right_trigger * 0.0003 * crrLoopTime;
-                clawControlR = Range.clip(clawControlR, 0.15, 0.95);
-                clawControlL = Range.clip(clawControlL, 0.15, 0.95);
+                clawControlR = Range.clip(clawControlR, 0.05, 0.95);
+                clawControlL = Range.clip(clawControlL, 0.05, 0.95);
                 robot._rightClaw.setPosition(clawControlR);
                 robot._leftClaw.setPosition(clawControlL);
             }
@@ -142,8 +146,8 @@ public class Gigi_OpMode_V3 extends LinearOpMode{
             {
                 clawControlR -= gamepad1.right_trigger * 0.0003 * crrLoopTime;
                 clawControlL += gamepad1.right_trigger * 0.0003 * crrLoopTime;
-                clawControlR = Range.clip(clawControlR, 0.15, 0.95);
-                clawControlL = Range.clip(clawControlL, 0.15, 0.95);
+                clawControlR = Range.clip(clawControlR, 0.05, 0.95);
+                clawControlL = Range.clip(clawControlL, 0.05, 0.95);
                 robot._rightClaw.setPosition(clawControlR);
                 robot._leftClaw.setPosition(clawControlL);
             }

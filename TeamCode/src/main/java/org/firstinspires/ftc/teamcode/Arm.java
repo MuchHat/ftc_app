@@ -86,19 +86,19 @@ public class Arm {
         baseAngleTest            =  new Angle();
         elbowAngleTest           =  new Angle();
 
-        turretAngle.Init( 0.0, 0.33, 0.05, 0.95 );
-        baseAngle.Init( 0.0, 0.33, 0.05, 0.95 );
-        elbowAngle.Init( 0.0, 0.33, 0.05, 0.95 );
+        turretAngle.Init( 0.0, 1.0, 0.05, 0.95 );
+        baseAngle.Init( 0.0, 1.0, 0.05, 0.95 );
+        elbowAngle.Init( 0.0, 1.0, 0.05, 0.95 );
 
-        wristVerticalAngle.Init( 0.0, 0.33, 0.05, 0.95 );
-        wristHorizontalAngle.Init( 0.0, 0.33, 0.05, 0.95 );
-        clawOpeningAngle.Init( 0.0, 0.33, 0.05, 0.95 );
+        wristVerticalAngle.Init( 0.0, 1.0, 0.05, 0.95 );
+        wristHorizontalAngle.Init( 0.0, 1.0, 0.05, 0.95 );
+        clawOpeningAngle.Init( 0.0, 1.0, 0.05, 0.95 );
 
         clawOpeningMM = 0;
 
-        turretAngleTest.Init( 0.0, 0.33, 0.05, 0.95 );
-        baseAngleTest.Init( 0.0, 0.33, 0.05, 0.95 );
-        elbowAngleTest.Init( 0.0, 0.33, 0.05, 0.95 );
+        turretAngleTest.Init( 0.0, 1.0, 0.05, 0.95 );
+        baseAngleTest.Init( 0.0, 1.0, 0.05, 0.95 );
+        elbowAngleTest.Init( 0.0, 1.0, 0.05, 0.95 );
 
         setClaw( lClawGap );
     }

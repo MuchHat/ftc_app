@@ -40,7 +40,7 @@ public class ArmController {
         // determines the current position
 
         current.setServos( servoTurret, servoBase, servoElbow );
-        current.testXYZ( current.getX(), current.getY(), current.getZ() );
+        //current.testXYZ( current.getX(), current.getY(), current.getZ() );
 
         if( !isInitialized ){
             destination.copyFrom( current );
