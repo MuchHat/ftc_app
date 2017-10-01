@@ -33,7 +33,7 @@ public class ArmController {
     public double distanceToDestination = 0;
     public double distanceToNext = 0;
 
-    double atDestinationTolerance = 10; // mm
+    double atDestinationTolerance = 5; // mm
     // TODO end
 
     public void ArmController(){
@@ -72,6 +72,12 @@ public class ArmController {
     public void endLoop( double stepMillis ) {
         // determined the next point based on the millis : considered end of step
 
+        // double newSpeed_mms = maxSpeed_mms;
+
+        next.copyFrom( destination );
+        distanceToDestination = current.distanceTo( destination );
+        distanceToNext = next.distanceTo( destination );
+/*
         // compute the distance to the next point
         distanceToDestination = current.distanceTo( destination );
 
@@ -80,7 +86,7 @@ public class ArmController {
         //Log.d( "MuchHat", String.format( "endLoop_destination: %.3f, %.3f, %3.f ", destination.getX(), destination.getY(), destination.getZ() ) );
 
         // determine the max possible speed
-        double newSpeed_mms = maxSpeed_mms;
+
 
         // ensure does not exceed acceleration
         if( newSpeed_mms > prevSpeed_mms + maxAccel_mmss * stepMillis ){
@@ -96,20 +102,11 @@ public class ArmController {
         if( currentAllowedMaxDistance <  atDestinationTolerance ) currentAllowedMaxDistance = atDestinationTolerance * 2;
 
         // by default stay in place
-        atDestination = true;
-        next.copyFrom( current );
+        atDestination = false;
+        next.copyFrom( destination );
 
         // see if the destination can be achieved with this speed if not adjust next
-        if( ( Math.abs( distanceToDestination ) <= atDestinationTolerance ) ||
-                ( ( Math.abs( current.getTurretServo() - destination.getTurretServo() ) <= 0.05 ) &&
-                        ( ( Math.abs( current.getBaseServo() - destination.getBaseServo() ) ) <= 0.05 ) &&
-                                ( ( Math.abs( current.getElbowServo() - destination.getElbowServo() ) ) <= 0.05 ) ) ){
-            next.copyFrom( current );
-            destination.copyFrom( current );
-            prevSpeed_mms = 0;
-            atDestination = true;
-        }
-        else if( Math.abs( distanceToDestination ) <= currentAllowedMaxDistance ){
+        if( Math.abs( distanceToDestination ) <= currentAllowedMaxDistance ){
             next.copyFrom( destination );
             prevSpeed_mms = newSpeed_mms;
             atDestination = false;
@@ -117,14 +114,23 @@ public class ArmController {
         else if( distanceToDestination > currentAllowedMaxDistance ) {
             double ratio = Math.abs( currentAllowedMaxDistance / distanceToDestination );
             //Log.d( "MuchHat", String.format( "ratio: %.3f ", ratio ) );
-            next.setXYZ(
-                    current.getX() + ( destination.getX() - current.getX() ) * ratio,
-                    current.getY() + ( destination.getY() - current.getY() ) * ratio,
-                    current.getZ() + ( destination.getZ() - current.getZ() ) * ratio );
+            next.setServos(
+                    current.getTurretServo() + ( destination.getTurretServo() - current.getTurretServo() ) * ratio,
+                    current.getBaseServo() + ( destination.getBaseServo() - current.getBaseServo() ) * ratio,
+                    current.getElbowServo() + ( destination.getElbowServo() - current.getElbowServo() ) * ratio );
             prevSpeed_mms = newSpeed_mms;
             atDestination = false;
         }
-        distanceToNext = current.distanceTo( next );
+        if(
+             //( Math.abs( distanceToDestination ) <= atDestinationTolerance ) ||
+                     ( ( Math.abs( current.getTurretServo() - destination.getTurretServo() ) <= 0.008 ) &&
+                        ( ( Math.abs( current.getBaseServo() - destination.getBaseServo() ) ) <= 0.008 ) &&
+                        ( ( Math.abs( current.getElbowServo() - destination.getElbowServo() ) ) <= 0.008 ) ) ) {
+            next.copyFrom( current );
+            destination.copyFrom( current );
+            prevSpeed_mms = 0;
+            atDestination = true;
+        }
 
         // check the speed of the claw too
         double clawDistance = Math.abs( destination.clawOpeningMM - current.clawOpeningMM );
@@ -172,42 +178,12 @@ public class ArmController {
                 next.setXYZ( next.getX(), next.getY(), platformHeight );
             }
         }
-        prevSpeed_mms = newSpeed_mms;
+*/
+        // prevSpeed_mms = newSpeed_mms;
+        distanceToNext = current.distanceTo( next );
+
         //Log.d( "MuchHat", String.format( "endLoop_newSpeed_mms: %.3f ", newSpeed_mms ) );
     }
-
-    public double getNextBaseServo(){ return next.getBaseServo(); }
-    public double getNextElbowServo(){ return next.getElbowServo(); }
-    public double getNextWristHorizontalServo(){ return next.getWristHorizontalServo(); }
-    public double getNextTurretServo(){ return next.getTurretServo(); }
-    public double getNextWristVerticalServo(){ return next.getWristVerticalServo(); }
-    public double getNextClawServo(){ return next.getClawServo(); }
-
-    public double getCurrentTurretServo(){ return current.getTurretServo(); }
-    public double getCurrentBaseServo(){ return current.getBaseServo();}
-    public double getCurrentElbowServo(){ return current.getElbowServo();}
-
-    public double getCurrentR(){ return current.getR(); }
-    public double getCurrentTeta(){ return current.getTeta(); }
-    public double getCurrentPhi(){ return current.getPhi(); }
-    public double getCurrentA2(){ return current.getA2(); }
-
-    public double getCurrentX(){ return current.getX(); }
-    public double getCurrentY(){ return current.getY(); }
-    public double getCurrentZ(){ return current.getZ(); }
-
-    public double getCurrentTestX(){ return test.getX(); }
-    public double getCurrentTestY(){ return test.getY() ; }
-    public double getCurrentTestZ(){ return test.getZ(); }
-
-    public double getCurrentTestR(){ return test.getR(); }
-    public double getCurrentTestPhi(){ return test.getPhi(); }
-    public double getCurrentTestTeta(){ return test.getTeta(); }
-    public double getCurrentTestA2(){ return test.getA2(); }
-
-    public double getCurrentTestTurretServo(){ return test.getTurretServo(); }
-    public double getCurrentTestBaseServo(){ return test.getBaseServo(); }
-    public double getCurrentTestELbowServo(){ return test.getElbowServo(); }
 
     public void moveIncremental( double ix, double iy, double iz ){
 

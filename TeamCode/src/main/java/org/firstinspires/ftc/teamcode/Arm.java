@@ -122,7 +122,7 @@ public class Arm {
     public double getClawServo(){ return clawOpeningAngle.getServo(); }
 
     public void copyFrom( Arm anotherArm ){
-        setServos( anotherArm.getTurretServo(), anotherArm.getBaseServo(), anotherArm.getElbowServo()  );
+        setXYZ( anotherArm.getX(), anotherArm.getY(), anotherArm.getZ()  );
         setClaw( anotherArm.clawOpeningMM );
     }
 

@@ -128,11 +128,6 @@ public class Gigi_OpMode_V2 extends BasicOpMode_Iterative{
         //telemetry.addData("test->base","%.2fpi", armController.getCurrentBaseServo() );
         //telemetry.addData("test->elbow","%.2fpi", armController.getCurrentElbowServo() );
 
-         telemetry.addData("servo -> turret","%.2fpi", armController.getCurrentTurretServo() );
-         telemetry.addData("servo -> base","%.2fpi", armController.getCurrentBaseServo() );
-         telemetry.addData("servo -> elbow","%.2fpi", armController.getCurrentElbowServo() );
-         telemetry.update();
-
         // control: TURRET
         {
             turretControl += gamepad1.left_stick_x * 0.0003 * crrLoopTime;

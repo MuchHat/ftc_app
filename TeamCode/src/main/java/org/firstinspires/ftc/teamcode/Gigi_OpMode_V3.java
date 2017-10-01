@@ -111,58 +111,49 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                     armController.prevSpeed_mms );
 
             telemetry.addData("current-> XYZ", "{%.0fmm  %.0fmm  %.0fmm}",
-                    armController.getCurrentX(),
-                    armController.getCurrentY(),
-                    armController.getCurrentZ());
+                    armController.current.getX(),
+                    armController.current.getY(),
+                    armController.current.getZ());
             telemetry.addData("test-> XYZ", "{%.0fmm  %.0fmm  %.0fmm}",
-                    armController.getCurrentTestX(),
-                    armController.getCurrentTestY(),
-                    armController.getCurrentTestZ());
+                    armController.test.getX(),
+                    armController.test.getY(),
+                    armController.test.getZ());
             telemetry.addData("next-> XYZ", "{%.0fmm  %.0fmm  %.0fmm}",
                     armController.next.getX(),
                     armController.next.getY(),
                     armController.next.getZ());
-            telemetry.addData("destination-> XYZ", "{%.0fmm  %.0fmm  %.0fmm}/n",
+            telemetry.addData("destination-> XYZ", "{%.0fmm  %.0fmm  %.0fmm}",
                     armController.destination.getX(),
                     armController.destination.getY(),
                     armController.destination.getZ());
 
-            telemetry.addData("current-> SRV", "{%.3f  %.3f  %.3f}",
+            telemetry.addData("servos->", "{%.3f  %.3f  %.3f}",
                     turretControl,
                     baseControl,
                     elbowControl);
-            telemetry.addData("test-> SRV", "{%.3f  %.3f  %.3f}",
-                    armController.getCurrentTestTurretServo(),
-                    armController.getCurrentTestBaseServo(),
-                    armController.getCurrentTestELbowServo());
+            telemetry.addData("current-> SRV", "{%.3f  %.3f  %.3f}",
+                    armController.current.getTurretServo(),
+                    armController.current.getBaseServo(),
+                    armController.current.getElbowServo() );
             telemetry.addData("next-> SRV", "{%.3f  %.3f  %.3f}",
                     armController.next.getTurretServo(),
                     armController.next.getBaseServo(),
                     armController.next.getElbowServo() );
-            telemetry.addData("test-> SRV", "{%.3f  %.3f  %.3f}/n",
+            telemetry.addData("destination-> SRV", "{%.3f  %.3f  %.3f}",
                     armController.destination.getTurretServo(),
                     armController.destination.getBaseServo(),
                     armController.destination.getElbowServo() );
 
             telemetry.addData("current-> RTP", "{%.0fmm  %.0fg  %.0fg  %.0fg}",
-                    armController.getCurrentR(),
-                    armController.getCurrentTeta() * 180 / Math.PI,
-                    armController.getCurrentPhi() * 180 / Math.PI,
-                    armController.getCurrentA2() * 180 / Math.PI);
-            telemetry.addData("test-> RTP", "{%.0fmm  %.0fg  %.0fg  %.0fg}/n",
-                    armController.getCurrentTestR(),
-                    armController.getCurrentTestTeta() * 180 / Math.PI,
-                    armController.getCurrentTestPhi() * 180 / Math.PI,
-                    armController.getCurrentTestA2() * 180 / Math.PI);
-
-            telemetry.addData("next-> TBE", "{%.2f  %.2f  %.2f}",
-                    armController.next.getTurretServo(),
-                    armController.next.getBaseServo(),
-                    armController.next.getElbowServo());
-            telemetry.addData("destination-> TBE", "{%.2f  %.2f  %.2f}/n",
-                    armController.destination.getTurretServo(),
-                    armController.destination.getBaseServo(),
-                    armController.destination.getElbowServo());
+                    armController.current.getR(),
+                    armController.current.getTeta() * 180 / Math.PI,
+                    armController.current.getPhi() * 180 / Math.PI,
+                    armController.current.getA2() * 180 / Math.PI);
+            telemetry.addData("test-> RTP", "{%.0fmm  %.0fg  %.0fg  %.0fg}",
+                    armController.test.getR(),
+                    armController.test.getTeta() * 180 / Math.PI,
+                    armController.test.getPhi() * 180 / Math.PI,
+                    armController.test.getA2() * 180 / Math.PI);
 
             telemetry.addData("robot is", "%s", atDestinationStr);
             telemetry.update();
@@ -173,10 +164,7 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                 turretControl += gamepad1.left_stick_x * 0.0003 * crrLoopTime;
                 turretControl = Range.clip(turretControl, 0.05, 0.95);
                 robot._turret.setPosition(turretControl);
-                armController.setDestinationToCurrent(
-                        turretControl,
-                        baseControl,
-                        elbowControl );
+
             }
             // control: BASE
             if( gamepad1.right_stick_y != 0 )
@@ -184,10 +172,7 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                 baseControl += gamepad1.right_stick_y * 0.0003 * crrLoopTime;
                 baseControl = Range.clip(baseControl, 0.05, 0.95);
                 robot._base.setPosition(baseControl);
-                armController.setDestinationToCurrent(
-                        turretControl,
-                        baseControl,
-                        elbowControl );
+
             }
             // control: ELBOW
             if( gamepad1.left_stick_y != 0 )
@@ -195,10 +180,7 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                 elbowControl += gamepad1.left_stick_y * 0.0003 * crrLoopTime;
                 elbowControl = Range.clip(elbowControl, 0.05, 0.95);
                 robot._elbow.setPosition(elbowControl);
-                armController.setDestinationToCurrent(
-                        turretControl,
-                        baseControl,
-                        elbowControl );
+
             }
             // control: WRIST
             if( gamepad1.right_stick_x != 0 )
@@ -206,10 +188,7 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                 wristControl += gamepad1.right_stick_x * 0.0003 * crrLoopTime;
                 wristControl = Range.clip(wristControl, 0.05, 0.95);
                 robot._wrist.setPosition(wristControl);
-                armController.setDestinationToCurrent(
-                        turretControl,
-                        baseControl,
-                        elbowControl );
+
             }
             // control: CLAW OPEN
             if( gamepad1.right_trigger != 0 )
@@ -220,10 +199,7 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                 clawControlL = Range.clip(clawControlL, 0.05, 0.95);
                 robot._rightClaw.setPosition(clawControlR);
                 robot._leftClaw.setPosition(clawControlL);
-                armController.setDestinationToCurrent(
-                       turretControl,
-                       baseControl,
-                       elbowControl );
+
             }
             // control: CLAW CLOSE
             if( gamepad1.right_trigger != 0 )
@@ -234,69 +210,54 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                 clawControlL = Range.clip(clawControlL, 0.05, 0.95);
                 robot._rightClaw.setPosition(clawControlR);
                 robot._leftClaw.setPosition(clawControlL);
-                armController.setDestinationToCurrent(
-                        turretControl,
-                        baseControl,
-                        elbowControl );
+
             }
             // control: HOME
             {
-                if (gamepad1.a) {
+                if (gamepad1.back) {
                     armController.moveToPositionHome();
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.dpad_up) {
-                    armController.moveToPosition(
-                                armController.getCurrentX(),
-                                armController.getCurrentY() + 15,
-                                armController.getCurrentZ() );
+                    armController.moveIncremental( 0, 15, 0 );
+                    setServosPerArmController( crrLoopTime );
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.dpad_down) {
-                    armController.moveToPosition(
-                            armController.getCurrentX(),
-                            armController.getCurrentY() - 15,
-                            armController.getCurrentZ() );
+                    armController.moveIncremental( 0, -15, 0 );
+                    setServosPerArmController( crrLoopTime );
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.dpad_right) {
-                    armController.moveToPosition(
-                            armController.getCurrentX() + 15,
-                            armController.getCurrentY(),
-                            armController.getCurrentZ() );
+                    armController.moveIncremental( 15, 0, 0 );
+                    setServosPerArmController( crrLoopTime );
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.dpad_left) {
-                    armController.moveToPosition(
-                            armController.getCurrentX() - 15,
-                            armController.getCurrentY(),
-                            armController.getCurrentZ() );
+                    armController.moveIncremental( -15, 0, 0 );
+                    setServosPerArmController( crrLoopTime );
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.right_bumper) {
-                    armController.moveToPosition(
-                            armController.getCurrentX(),
-                            armController.getCurrentY(),
-                            armController.getCurrentZ() + 15 );
+                     armController.moveIncremental( 0, 0, 15 );
+                    setServosPerArmController( crrLoopTime );
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.left_bumper) {
-                    armController.moveToPosition(
-                            armController.getCurrentX(),
-                            armController.getCurrentY(),
-                            armController.getCurrentZ() - 15 );
+                    armController.moveIncremental( 0, 0, -15 );
+                    setServosPerArmController( crrLoopTime );
                 }
             }
             // control: FRONT
@@ -318,18 +279,22 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                 }
             }
 
-            // set the servos per the ARM controller
-            armController.endLoop(crrLoopTime);
 
-            robot._turret.setPosition( armController.next.getTurretServo() );
-            robot._base.setPosition( armController.next.getBaseServo() );
-            robot._elbow.setPosition( armController.next.getElbowServo() );
-            robot._wrist.setPosition( armController.next.getWristVerticalServo() );
-
-            robot._leftClaw.setPosition( armController.next.getClawServo() );
-            robot._rightClaw.setPosition( 1 - armController.next.getClawServo() );
 
         }
+    }
+
+    public void setServosPerArmController( double loopTime ){
+        // set the servos per the ARM controller
+      //  armController.endLoop( loopTime );
+
+        //robot._turret.setPosition( armController.destination.getTurretServo() );
+        //robot._base.setPosition( armController.destination.getBaseServo() );
+       // robot._elbow.setPosition( armController.destination.getElbowServo() );
+        //robot._wrist.setPosition( armController.destination.getWristVerticalServo() );
+
+        //robot._leftClaw.setPosition( armController.next.getClawServo() );
+        //robot._rightClaw.setPosition( 1 - armController.next.getClawServo() );
     }
 }
 
