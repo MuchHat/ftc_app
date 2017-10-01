@@ -96,6 +96,14 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                 atDestinationStr = "stopped";
                 }
 
+            telemetry.addData("loopTime", "{%.0fms}",
+                    crrLoopTime );
+            telemetry.addData("destination-> distance", "{%.0fmm}",
+                    armController.distanceToDestination );
+            telemetry.addData("next-> distance", "{%.0fmm}",
+                    armController.distanceToNext );
+            telemetry.addData("speed", "{%.0fmm}",
+                    armController.prevSpeed_mms );
             telemetry.addData("current-> SRV", "{%.2f  %.2f  %.2f}",
                     turretControl,
                     baseControl,
@@ -131,8 +139,6 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                     armController.destination.getY(),
                     armController.destination.getZ());
             telemetry.addData("robot is", "%s", atDestinationStr);
-            telemetry.addData("destination-> distance", "{%.0fmm",
-                    armController.distanceToDestination );
             telemetry.update();
 
             // control: TURRET

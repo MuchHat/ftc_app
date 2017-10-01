@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Log;
 
+import com.qualcomm.robotcore.util.Range;
+
 /**
  * Created by gigela on 9/27/2017.
  */
@@ -15,6 +17,7 @@ public class ArmController {
 
     // TODO fix constants
     double maxSpeed_mms  = 1111; // mm
+    double minSpeed_mms  = 444; // mm
     double maxAccel_mmss = 1111; // mm
     double prevSpeed_mms = 0;  // mm
 
@@ -28,6 +31,7 @@ public class ArmController {
     boolean isInitialized = false;
 
     public double distanceToDestination = 0;
+    public double distanceToNext = 0;
 
     double atDestinationTolerance = 5; // mm
     // TODO end
@@ -87,6 +91,7 @@ public class ArmController {
         if( newSpeed_mms > maxCurrentSpeedToDecelerateToDestination ){
             newSpeed_mms = maxCurrentSpeedToDecelerateToDestination;
         }
+        newSpeed_mms = Range.clip( newSpeed_mms, minSpeed_mms, maxSpeed_mms );
         double currentAllowedMaxDistance = newSpeed_mms * stepMillis;
 
         // by default stay in place
@@ -114,6 +119,7 @@ public class ArmController {
             prevSpeed_mms = newSpeed_mms;
             atDestination = false;
         }
+        distanceToNext = current.distanceTo( next );
 
         // check the speed of the claw too
         double clawDistance = Math.abs( destination.clawOpeningMM - current.clawOpeningMM );
