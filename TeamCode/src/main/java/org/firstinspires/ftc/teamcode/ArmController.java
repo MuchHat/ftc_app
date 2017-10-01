@@ -195,11 +195,11 @@ public class ArmController {
     }
 
     public void clawIncremental( double ix ){
-        destination.setClaw( current.clawOpeningMM + ix );
+        destination.setClawMM( current.getClawMM() + ix );
     }
 
     public void clawToPosition( double x ){
-        destination.setClaw( x );
+        destination.setClawMM( x );
     }
 
     public void moveToPositionZero(){

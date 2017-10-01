@@ -176,7 +176,7 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
             // control: TURRET
             if( gamepad1.left_stick_y != 0 )
             {
-                zControl += -gamepad1.left_stick_y * servoDefaultSpeed * crrLoopTime * 100;// * axisDefaultSpeed * crrLoopTime;
+                zControl += gamepad1.left_stick_y * servoDefaultSpeed * crrLoopTime * 100;// * axisDefaultSpeed * crrLoopTime;
                 armController.moveToPosition( xControl, yControl, zControl );
                 setServosFromArmController();
                 //baseControl += gamepad1.right_stick_y * servoDefaultSpeed * crrLoopTime;
@@ -312,19 +312,19 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
    //             armController.destination.getX(),
     //            armController.destination.getY(),
     //            armController.destination.getZ() );
-      robot._turret.setPosition( armController.destination.getTurretServo() );
-      robot._base.setPosition( armController.destination.getBaseServo() );
-      robot._elbow.setPosition( armController.destination.getElbowServo() );
+    robot._turret.setPosition( armController.destination.getTurretServo() );
+    robot._base.setPosition( armController.destination.getBaseServo() );
+    robot._elbow.setPosition( armController.destination.getElbowServo() );
 
-        armController.test.setServos(
-                robot._turret.getPosition(),
-                robot._base.getPosition(),
-                robot._elbow.getPosition() );
+    armController.test.setServos(
+            robot._turret.getPosition(),
+            robot._base.getPosition(),
+            robot._elbow.getPosition() );
 
-        armController.current.setXYZ(
-                armController.destination.getX(),
-                armController.destination.getY(),
-                armController.destination.getZ() );
+    armController.current.setXYZ(
+            armController.destination.getX(),
+            armController.destination.getY(),
+            armController.destination.getZ() );
 
       //robot._wrist.setPosition( armController.destination.getWristVerticalServo() );
 

@@ -22,7 +22,7 @@ public class Angle {
 
     }
 
-    public void Init( double s45, double s135, double aMin, double aMax ) {
+    public void Init_45_135( double s45, double s135, double aMin, double aMax ) {
 
         slopeServo = 0.5 / ( s135 - s45 );
         offsetServo = 0.25 - ( s45 * slopeServo );

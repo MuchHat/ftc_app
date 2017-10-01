@@ -21,14 +21,16 @@ public class Arm {
     private double r = 0;
     private double e_a2 = 0;
 
+    private double clawMM = 0;
+
     public Angle  turretAngle          =  null;
     public Angle  baseAngle            =  null;
     public Angle  elbowAngle           =  null;
 
     public Angle  wristVerticalAngle    =  null;
     public Angle  wristHorizontalAngle  =  null;
-    public Angle  clawOpeningAngle      =  null;
-    public double clawOpeningMM         = 0;
+    public Angle  clawRightAngle        =  null;
+    public Angle  clawLeftAngle        =  null;
 
     // TODO correct the home positons
     double xZero = 0; // mm
@@ -79,19 +81,21 @@ public class Arm {
 
         wristVerticalAngle    =  new Angle();
         wristHorizontalAngle  =  new Angle();
-        clawOpeningAngle      =  new Angle();
+        clawRightAngle        =  new Angle();
+        clawLeftAngle         =  new Angle();
 
-        turretAngle.Init( 0.25, 0.75, 0.05, 0.95 );
-        baseAngle.Init( 0.25, 0.75, 0.33, 0.66 );
-        elbowAngle.Init( 0.25, 0.75, 0.33, 0.66 );
+        turretAngle.Init_45_135( 0.140, 0.644, 0.05, 0.897 ); // turret setup
 
-        wristVerticalAngle.Init( 0.25, 0.75, 0.05, 0.95 );
-        wristHorizontalAngle.Init( 0.25, 0.75, 0.05, 0.95 );
-        clawOpeningAngle.Init( 0.25, 0.75, 0.05, 0.95 );
+        baseAngle.Init_45_135( 0.25, 0.75, 0.05, 0.95 ); // TODO
+        elbowAngle.Init_45_135( 0.404, 0.950, 0.20, 0.95 ); //elbow setup
 
-        clawOpeningMM = 0;
+        wristVerticalAngle.Init_45_135( 1.1775, 0.6105, 0.32, 0.89 );
+        clawRightAngle.Init_45_135( 0.221, -0.437, 0.221, 0.55 ); // right claw setup
+        clawLeftAngle.Init_45_135( 0.818, 1.582, 0.436, 0.818 ); // left claw setup
 
-        setClaw( lClawGap );
+        wristVerticalAngle.Init_45_135( 0.25, 0.75, 0, 1 ); // not a real servo, a virtual servo
+
+        setClawMM( lClawGap );
     }
 
     public double getX(){ return x; }
@@ -120,25 +124,36 @@ public class Arm {
     public double getElbowServo(){ return elbowAngle.getServo(); }
     public double getWristHorizontalServo(){ return wristHorizontalAngle.getServo(); }
     public double getWristVerticalServo(){ return wristVerticalAngle.getServo(); }
-    public double getClawServo(){ return clawOpeningAngle.getServo(); }
+    public double getClawRightServo(){ return clawRightAngle.getServo(); }
+    public double getClawLeftServo(){ return clawLeftAngle.getServo(); }
 
     public void copyFrom( Arm anotherArm ){
         setXYZ( anotherArm.getX(), anotherArm.getY(), anotherArm.getZ()  );
-        setClaw( anotherArm.clawOpeningMM );
+        setClawMM( anotherArm.getClawMM() );
     }
 
-    public void setClaw( double mm ){
+    public double getClawMM(){
+        return clawMM;
+    }
+
+    public void setClawMM( double amm ){
 
         Triangle clawTriangle = new Triangle();
 
-        mm = Math.abs( mm );
+        amm = Math.abs( amm );
 
-        clawTriangle.solve_SSS( ( mm - lClawGap ) / 2, lClawArm,
-                Math.sqrt( ( ( mm - lClawGap ) / 2 ) * ( ( mm - lClawGap ) / 2 ) +
-                        lClawArm * lClawArm ) );
-        clawOpeningAngle.setPI( clawTriangle.a1 );
+        double l1 = ( amm - lClawGap ) / 2;
+        double l3 = lClawArm;
 
-        clawOpeningMM = mm;
+        if( l3 < l1 * 0.7 ) l3 = l1 * 0.7;
+
+        double l2 = Math.sqrt( l3 * l3 - l1 * l1  );
+
+        clawTriangle.solve_SSS( l1, l2, l3 );
+        clawRightAngle.setPI( clawTriangle.a1 );
+        clawLeftAngle.setPI( clawTriangle.a1 );
+
+        clawMM = amm;
     }
 
     public double distanceTo( Arm anotherArm ){
