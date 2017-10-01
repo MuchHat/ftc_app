@@ -145,7 +145,7 @@ public class Arm {
         double l1 = ( amm - lClawGap ) / 2;
         double l3 = lClawArm;
 
-        if( l3 < l1 * 0.7 ) l3 = l1 * 0.7;
+        if( l3 < l1 * 0.85 ) l3 = l1 * 0.88; // such it does not open too much
 
         double l2 = Math.sqrt( l3 * l3 - l1 * l1  );
 
