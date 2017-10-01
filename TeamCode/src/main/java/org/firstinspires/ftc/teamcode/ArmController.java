@@ -33,7 +33,7 @@ public class ArmController {
     public double distanceToDestination = 0;
     public double distanceToNext = 0;
 
-    double atDestinationTolerance = 5; // mm
+    double atDestinationTolerance = 10; // mm
     // TODO end
 
     public void ArmController(){
@@ -93,14 +93,19 @@ public class ArmController {
         }
         newSpeed_mms = Range.clip( newSpeed_mms, minSpeed_mms, maxSpeed_mms );
         double currentAllowedMaxDistance = newSpeed_mms * stepMillis;
+        if( currentAllowedMaxDistance <  atDestinationTolerance ) currentAllowedMaxDistance = atDestinationTolerance * 2;
 
         // by default stay in place
         atDestination = true;
         next.copyFrom( current );
 
         // see if the destination can be achieved with this speed if not adjust next
-        if( Math.abs( distanceToDestination ) <= atDestinationTolerance ) {
+        if( ( Math.abs( distanceToDestination ) <= atDestinationTolerance ) ||
+                ( ( Math.abs( current.getTurretServo() - destination.getTurretServo() ) <= 0.05 ) &&
+                        ( ( Math.abs( current.getBaseServo() - destination.getBaseServo() ) ) <= 0.05 ) &&
+                                ( ( Math.abs( current.getElbowServo() - destination.getElbowServo() ) ) <= 0.05 ) ) ){
             next.copyFrom( current );
+            destination.copyFrom( current );
             prevSpeed_mms = 0;
             atDestination = true;
         }

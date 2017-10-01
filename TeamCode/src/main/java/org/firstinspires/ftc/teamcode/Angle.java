@@ -22,9 +22,10 @@ public class Angle {
 
     }
 
-    public void Init( double aOffset, double aSlope, double aMin, double aMax ) {
-        offsetServo = aOffset;
-        slopeServo = aSlope;
+    public void Init( double s45, double s135, double aMin, double aMax ) {
+
+        slopeServo = 0.5 / ( s135 - s45 );
+        offsetServo = 0.25 - ( s45 * slopeServo );
         minServo = aMin;
         maxServo = aMax;
     }
@@ -37,7 +38,7 @@ public class Angle {
 
         angleServo = Range.clip( as, minServo, maxServo );
 
-        anglePI = ( ( angleServo - offsetServo ) / slopeServo ) * Math.PI;
+        anglePI = ( angleServo * slopeServo + offsetServo ) * Math.PI;
 
         anglePI = Range.clip( anglePI, 0, Math.PI );
 
@@ -48,7 +49,7 @@ public class Angle {
 
         anglePI = Range.clip( ap, 0, Math.PI );
 
-        angleServo = ( anglePI / Math.PI ) * slopeServo + offsetServo;
+        angleServo = ( anglePI / Math.PI  - offsetServo ) / slopeServo;
 
         angleServo = Range.clip( angleServo, minServo, maxServo );
 
