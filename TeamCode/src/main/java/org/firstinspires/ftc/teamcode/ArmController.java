@@ -14,8 +14,8 @@ public class ArmController {
     public Arm test        = new Arm();
 
     // TODO fix constants
-    double maxSpeed_mms  = 444; // mm
-    double maxAccel_mmss = 888; // mm
+    double maxSpeed_mms  = 1111; // mm
+    double maxAccel_mmss = 1111; // mm
     double prevSpeed_mms = 0;  // mm
 
     double platformHeight = 155; // mm
@@ -40,6 +40,12 @@ public class ArmController {
         next.init();
         destination.init();
         test.init();
+    }
+
+    public void setDestinationToCurrent( double aServoTurret, double aServoBase, double aServoElbow ){
+        current.setServos( aServoTurret, aServoBase, aServoElbow );
+        destination.copyFrom( current );
+        next.copyFrom( current );
     }
 
     public void startLoop( double aServoTurret, double aServoBase, double aServoElbow ){

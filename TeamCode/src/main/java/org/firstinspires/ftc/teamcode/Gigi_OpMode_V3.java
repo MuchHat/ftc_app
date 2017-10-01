@@ -136,30 +136,51 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
             telemetry.update();
 
             // control: TURRET
+            if( gamepad1.left_stick_x != 0 )
             {
                 turretControl += gamepad1.left_stick_x * 0.0003 * crrLoopTime;
                 turretControl = Range.clip(turretControl, 0.05, 0.95);
                 robot._turret.setPosition(turretControl);
+                armController.setDestinationToCurrent(
+                        turretControl,
+                        baseControl,
+                        elbowControl );
             }
             // control: BASE
+            if( gamepad1.right_stick_y != 0 )
             {
                 baseControl += gamepad1.right_stick_y * 0.0003 * crrLoopTime;
                 baseControl = Range.clip(baseControl, 0.05, 0.95);
                 robot._base.setPosition(baseControl);
+                armController.setDestinationToCurrent(
+                        turretControl,
+                        baseControl,
+                        elbowControl );
             }
             // control: ELBOW
+            if( gamepad1.left_stick_y != 0 )
             {
                 elbowControl += gamepad1.left_stick_y * 0.0003 * crrLoopTime;
                 elbowControl = Range.clip(elbowControl, 0.05, 0.95);
                 robot._elbow.setPosition(elbowControl);
+                armController.setDestinationToCurrent(
+                        turretControl,
+                        baseControl,
+                        elbowControl );
             }
             // control: WRIST
+            if( gamepad1.right_stick_x != 0 )
             {
                 wristControl += gamepad1.right_stick_x * 0.0003 * crrLoopTime;
                 wristControl = Range.clip(wristControl, 0.05, 0.95);
                 robot._wrist.setPosition(wristControl);
+                armController.setDestinationToCurrent(
+                        turretControl,
+                        baseControl,
+                        elbowControl );
             }
             // control: CLAW OPEN
+            if( gamepad1.right_trigger != 0 )
             {
                 clawControlR += gamepad1.right_trigger * 0.0003 * crrLoopTime;
                 clawControlL -= gamepad1.right_trigger * 0.0003 * crrLoopTime;
@@ -167,8 +188,13 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                 clawControlL = Range.clip(clawControlL, 0.05, 0.95);
                 robot._rightClaw.setPosition(clawControlR);
                 robot._leftClaw.setPosition(clawControlL);
+                armController.setDestinationToCurrent(
+                        turretControl,
+                        baseControl,
+                        elbowControl );
             }
             // control: CLAW CLOSE
+            if( gamepad1.right_trigger != 0 )
             {
                 clawControlR -= gamepad1.right_trigger * 0.0003 * crrLoopTime;
                 clawControlL += gamepad1.right_trigger * 0.0003 * crrLoopTime;
@@ -176,6 +202,10 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
                 clawControlL = Range.clip(clawControlL, 0.05, 0.95);
                 robot._rightClaw.setPosition(clawControlR);
                 robot._leftClaw.setPosition(clawControlL);
+                armController.setDestinationToCurrent(
+                        turretControl,
+                        baseControl,
+                        elbowControl );
             }
             // control: HOME
             {
@@ -222,13 +252,19 @@ public class Gigi_OpMode_V3 extends LinearOpMode {
             // control: LEFT RIGH MM
             {
                 if (gamepad1.right_bumper) {
-                    armController.moveIncremental(0, 0, 15);
+                    armController.moveToPosition(
+                            armController.getCurrentX(),
+                            armController.getCurrentY(),
+                            armController.getCurrentZ() + 15 );
                 }
             }
             // control: LEFT RIGH MM
             {
                 if (gamepad1.left_bumper) {
-                    armController.moveIncremental(0, 0, -15);
+                    armController.moveToPosition(
+                            armController.getCurrentX(),
+                            armController.getCurrentY(),
+                            armController.getCurrentZ() - 15 );
                 }
             }
             // control: FRONT
