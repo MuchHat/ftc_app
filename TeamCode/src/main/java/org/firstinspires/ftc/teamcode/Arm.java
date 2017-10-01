@@ -51,13 +51,14 @@ public class Arm {
     double lClawArm =  150; // mm
     double lClawGap =  37;  // mm
 
-    double xMax = 450; // mm
-    double xMin = -450; // mm
-    double yMax = 450; // mm
+    double xMax = 333; // mm
+    double xMin = -333; // mm
+    double yMax = 333; // mm
     double yMin = 0; // mm
-    double zMax = 450; // mm
-    double zMin = -150; // mm
-    double rMax = 450; // mm
+    double zMax = 333; // mm
+    double zMin = -111; // mm
+    double rMax = ( lBase + lElbow ) * 0.95; // mm
+    double rMin = 11;
 
     boolean initTable = false;
 
@@ -184,8 +185,7 @@ public class Arm {
         //Log.d( "MuchHat", String.format( "setXYZ y: %.2f", y ) );
         //Log.d( "MuchHat", String.format( "setXYZ z: %.2f", z ) );
 
-        r = Math.sqrt( x * x + y * y + z * z );
-        if( r == 0 ) r = 0.001;
+        r = Range.clip( Math.sqrt( x * x + y * y + z * z ), rMin, rMax );
 
         //Log.d( "MuchHat", String.format( "setXYZ r: %.2f", r ) );
 
