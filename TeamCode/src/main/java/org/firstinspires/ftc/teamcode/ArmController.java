@@ -27,6 +27,8 @@ public class ArmController {
     double closestX       = 66; // mm
     double closestY       = 22; // mm
 
+    double loopRuntime = 0;
+
     boolean atDestination = true;
     boolean isInitialized = false;
 
@@ -46,17 +48,13 @@ public class ArmController {
         test.init();
     }
 
-    public void setDestinationToCurrent( double aServoTurret, double aServoBase, double aServoElbow ){
-        current.setServos( aServoTurret, aServoBase, aServoElbow );
-        destination.copyFrom( current );
-        next.copyFrom( current );
-    }
-
-    public void startLoop( double aServoTurret, double aServoBase, double aServoElbow ){
+    public void startLoop( double aServoTurret, double aServoBase, double aServoElbow, double aLoopRuntime ){
         // determines the current position
 
         current.setServos( aServoTurret, aServoBase, aServoElbow );
         test.setXYZ( current.getX(), current.getY(), current.getZ() );
+
+        loopRuntime = aLoopRuntime;
 
         //Log.d( "MuchHat", String.format( "startLoop_setServos: %.3f, %.3f, %3.f ", aServoTurret, aServoBase, aServoElbow ) );
         //Log.d( "MuchHat", String.format( "startLoop_currentServos: %.3f, %.3f, %3.f ", current.getTurretServo(), current.getBaseServo(), current.getElbowServo() ) );
@@ -69,14 +67,14 @@ public class ArmController {
         }
     }
 
-    public void endLoop( double stepMillis ) {
+    public void endLoop() {
         // determined the next point based on the millis : considered end of step
 
         // double newSpeed_mms = maxSpeed_mms;
 
         next.copyFrom( destination );
         distanceToDestination = current.distanceTo( destination );
-        distanceToNext = next.distanceTo( destination );
+        distanceToNext = current.distanceTo( next );
 /*
         // compute the distance to the next point
         distanceToDestination = current.distanceTo( destination );
@@ -180,8 +178,6 @@ public class ArmController {
         }
 */
         // prevSpeed_mms = newSpeed_mms;
-        distanceToNext = current.distanceTo( next );
-
         //Log.d( "MuchHat", String.format( "endLoop_newSpeed_mms: %.3f ", newSpeed_mms ) );
     }
 
