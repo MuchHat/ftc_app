@@ -27,23 +27,10 @@ public class Arm {
     public Angle  baseAngle            =  null;
     public Angle  elbowAngle           =  null;
 
-    public Angle  wristVerticalAngle    =  null;
+    public Angle  wristAngle            =  null;
     public Angle  wristHorizontalAngle  =  null;
-    public Angle  clawRightAngle        =  null;
-    public Angle  clawLeftAngle        =  null;
-
-    // TODO correct the home positons
-    double xZero = 0; // mm
-    double yZero = 22; // mm
-    double zZero = 222; // mm
-
-    double xHome = 0; // mm
-    double yHome = 22; // mm
-    double zHome = 222; // mm
-
-    double xFront = 0; // mm
-    double yFront = 111; // mm
-    double zFront = 222; // mm
+    public Angle  rightClawAngle        =  null;
+    public Angle  leftClawAngle         =  null;
 
     double mmClawOpen  = 222;  // mm
     double mmClawClose = 188; // mm
@@ -53,6 +40,7 @@ public class Arm {
     double lClawArm =  150; // mm
     double lClawGap =  37;  // mm
 
+    //TODO
     double xMax = 333; // mm
     double xMin = -333; // mm
     double yMax = 333; // mm
@@ -62,8 +50,13 @@ public class Arm {
     double rMax = ( lBase + lElbow ) * 0.95; // mm
     double rMin = 11;
 
-    boolean initTable = false;
+    double armBaseLocationX = 444;
+    double armBaseLocationY = 222;
+    double armBaseLocationZ = 111;
 
+    double robotHeight = 111;
+    double robotWidth = 111;
+    double robotLenght = 333;
     // TODO END
 
     boolean isInitialized = false;
@@ -79,21 +72,17 @@ public class Arm {
         baseAngle            =  new Angle();
         elbowAngle           =  new Angle();
 
-        wristVerticalAngle    =  new Angle();
+        wristAngle            =  new Angle();
         wristHorizontalAngle  =  new Angle();
-        clawRightAngle        =  new Angle();
-        clawLeftAngle         =  new Angle();
+        rightClawAngle        =  new Angle();
+        leftClawAngle         =  new Angle();
 
         turretAngle.Init_45_135( 0.140, 0.644, 0.05, 0.897 ); // turret setup
-
         baseAngle.Init_45_135( 0.25, 0.75, 0.05, 0.95 ); // TODO
         elbowAngle.Init_45_135( 0.404, 0.950, 0.20, 0.95 ); //elbow setup
-
-        wristVerticalAngle.Init_45_135( 1.1775, 0.6105, 0.32, 0.89 );
-        clawRightAngle.Init_45_135( 0.221, -0.437, 0.221, 0.55 ); // right claw setup
-        clawLeftAngle.Init_45_135( 0.818, 1.582, 0.436, 0.818 ); // left claw setup
-
-        wristVerticalAngle.Init_45_135( 0.25, 0.75, 0, 1 ); // not a real servo, a virtual servo
+        wristAngle.Init_45_135( 1.1775, 0.6105, 0.32, 0.89 );
+        rightClawAngle.Init_45_135( 0.221, -0.437, 0.221, 0.55 ); // right claw setup
+        leftClawAngle.Init_45_135( 0.818, 1.582, 0.436, 0.818 ); // left claw setup
 
         setClawMM( lClawGap );
     }
@@ -102,17 +91,9 @@ public class Arm {
     public double getY(){ return y; }
     public double getZ(){ return z; }
 
-    public double getZeroX(){ return xZero; }
-    public double getZeroY(){ return yZero; }
-    public double getZeroZ(){ return zZero; }
-
-    public double getHomeX(){ return xHome; }
-    public double getHomeY(){ return yHome; }
-    public double getHomeZ(){ return zHome; }
-
-    public double getFrontX(){ return xFront; }
-    public double getFrontY(){ return yFront; }
-    public double getFrontZ(){ return zFront; }
+    public void setHomeXYZ(){ setXYZ( 0, armBaseLocationY, robotHeight ); }
+    public void setFrontXYZ(){ setXYZ( 0, armBaseLocationY + 33, zMin ); }
+    public void setZeroXYZ(){ setXYZ( 0, yMin, robotHeight ); }
 
     public double getR(){ return r; }
     public double getTeta(){ return teta; }
@@ -122,10 +103,9 @@ public class Arm {
     public double getBaseServo(){ return baseAngle.getServo(); }
     public double getTurretServo(){ return turretAngle.getServo(); }
     public double getElbowServo(){ return elbowAngle.getServo(); }
-    public double getWristHorizontalServo(){ return wristHorizontalAngle.getServo(); }
-    public double getWristVerticalServo(){ return wristVerticalAngle.getServo(); }
-    public double getClawRightServo(){ return clawRightAngle.getServo(); }
-    public double getClawLeftServo(){ return clawLeftAngle.getServo(); }
+    public double getWristServo(){ return wristAngle.getServo(); }
+    public double getRightClawServo(){ return rightClawAngle.getServo(); }
+    public double getLeftClawServo(){ return leftClawAngle.getServo(); }
 
     public void copyFrom( Arm anotherArm ){
         setXYZ( anotherArm.getX(), anotherArm.getY(), anotherArm.getZ()  );
@@ -150,8 +130,8 @@ public class Arm {
         double l2 = Math.sqrt( l3 * l3 - l1 * l1  );
 
         clawTriangle.setSSS( l1, l2, l3 );
-        clawRightAngle.setPI( clawTriangle.a1 );
-        clawLeftAngle.setPI( clawTriangle.a1 );
+        rightClawAngle.setPI( clawTriangle.a1 );
+        leftClawAngle.setPI( clawTriangle.a1 );
 
         clawMM = amm;
     }

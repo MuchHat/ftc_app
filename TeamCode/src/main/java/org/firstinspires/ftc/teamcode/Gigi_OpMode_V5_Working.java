@@ -59,6 +59,8 @@ public class Gigi_OpMode_V5_Working extends LinearOpMode {
 
     boolean useAxisControl = false;
 
+    double servoDefaultSpeed = 0.33 / 1000000; // 0.3 per sec
+
     @Override
     public void runOpMode() {
 
@@ -73,18 +75,18 @@ public class Gigi_OpMode_V5_Working extends LinearOpMode {
         robot._leftClaw.setPosition( 0.50 );
         robot._rightClaw.setPosition( 0.50 );
 
-        xControl = theArm.getZeroX();
-        yControl = theArm.getZeroY();
-        zControl = theArm.getZeroZ();
-
-        double servoDefaultSpeed = 0.33 / 1000000; // 0.3 per sec
-
         turretControl = robot._turret.getPosition();
         baseControl   = robot._base.getPosition();
         elbowControl  = robot._elbow.getPosition();
         wristControl  = robot._wrist.getPosition();
         clawControlL  = robot._leftClaw.getPosition();
         clawControlR  = robot._rightClaw.getPosition();
+
+        theArm.setServos( turretControl, baseControl, elbowControl );
+
+        xControl = theArm.getX();
+        yControl = theArm.getY();
+        zControl = theArm.getZ();
 
         waitForStart();
 
@@ -133,7 +135,7 @@ public class Gigi_OpMode_V5_Working extends LinearOpMode {
                     theArm.getTurretServo(),
                     theArm.getBaseServo(),
                     theArm.getElbowServo(),
-                    theArm.getWristVerticalServo() );
+                    theArm.getWristServo() );
 
             telemetry.update();
 
@@ -255,8 +257,8 @@ public class Gigi_OpMode_V5_Working extends LinearOpMode {
 
     public void angleSetServos(){
 
-        clawControlL = Range.clip( clawControlL, theArm.clawLeftAngle.minServo, theArm.clawLeftAngle.maxServo );
-        clawControlR = Range.clip( clawControlR, theArm.clawLeftAngle.minServo, theArm.clawLeftAngle.maxServo );
+        clawControlL = Range.clip( clawControlL, theArm.leftClawAngle.minServo, theArm.leftClawAngle.maxServo );
+        clawControlR = Range.clip( clawControlR, theArm.rightClawAngle.minServo, theArm.rightClawAngle.maxServo );
 
         robot._leftClaw.setPosition( clawControlL );
         robot._rightClaw.setPosition( clawControlR );
@@ -267,7 +269,7 @@ public class Gigi_OpMode_V5_Working extends LinearOpMode {
         elbowControl = Range.clip( elbowControl, theArm.elbowAngle.minServo, theArm.elbowAngle.maxServo );
         robot._elbow.setPosition( elbowControl );
 
-        wristControl = Range.clip( wristControl, theArm.wristVerticalAngle.minServo, theArm.wristVerticalAngle.maxServo );
+        wristControl = Range.clip( wristControl, theArm.wristAngle.minServo, theArm.wristAngle.maxServo );
         robot._wrist.setPosition( wristControl );
 
         baseControl = Range.clip( baseControl, theArm.baseAngle.minServo, theArm.baseAngle.maxServo );
@@ -281,7 +283,7 @@ public class Gigi_OpMode_V5_Working extends LinearOpMode {
         double newTurret = theArm.getTurretServo();
         double newBase = theArm.getBaseServo();
         double newElbow = theArm.getElbowServo();
-        double newWrist = theArm.getWristVerticalServo();
+        double newWrist = theArm.getWristServo();
 
         //robot._turret.setPosition( turretAngle.getServo( ewTurret ) );
         //robot._base.setPosition( baseAngle.getServo( newBase ) );
