@@ -62,10 +62,15 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
     public double lControl = 0;
     public double rControl = 0;
 
+    public double xControlLast = 0;
+    public double yControlLast = 0;
+    public double zControlLast = 0;
+
+    public double lControlLast = 0;
+    public double rControlLast = 0;
+
     boolean useAxisControl = false;
     boolean useDriveControl = false;
-    double lControlLast = 0;
-    double rControlLast = 0;
 
     double servoDefaultSpeed = 0.33 / 1000; // 0.3 servo angle per sec
     double axisDefaultSpeed = 33 / 1000; // 33 mm per sec
@@ -104,6 +109,13 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
 
         lControl = 0;
         rControl = 0;
+
+        xControlLast = xControl;
+        yControlLast = yControl;
+        zControlLast = zControl;
+
+        lControlLast = lControl;
+        rControlLast = rControl;
 
         waitForStart();
 
@@ -397,21 +409,58 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
         robot._base.setPosition(baseControl);
         robot._wrist.setPosition(wristControl);
         robot._turret.setPosition(turretControl);
+
+        xControlLast = xControl;
+        yControlLast = yControl;
+        zControlLast = zControl;
+
+        lControlLast = lControl;
+        rControlLast = rControl;
     }
 
     public void xyzSetServos() {
 
         theArm.setXYZ(xControl, yControl, zControl);
 
-        double newTurretServoPos = theArm.getTurretServo();
-        double newBaseServoPos = theArm.getBaseServo();
-        double newElbowServoPos = theArm.getElbowServo();
-        double newWrisServoPos = theArm.getWristServo();
+        //slow down the move here if needed
+        double maxStep = 6; // 6mm per axis and step
+        double stepCount = 0;
+        stepCount = Math.max(stepCount, Math.abs(xControl - xControlLast) / maxStep);
+        stepCount = Math.max(stepCount, Math.abs(yControl - yControlLast) / maxStep);
+        stepCount = Math.max(stepCount, Math.abs(zControl - zControlLast) / maxStep);
 
-        //robot._turret.setPosition( turretAngle.getServo( ewTurret ) );
-        //robot._base.setPosition( baseAngle.getServo( newBase ) );
-        //robot._elbow.setPosition( elbowAngle.getServo( newElbow ) );
-        //robot._wrist.setPosition( wristAngle.getServo( newWrist ) );
+        if (stepCount > 0) {
+            Arm stepArm = new Arm();
+
+            for (int i = 0; i < stepCount; i++) {
+                stepArm.setXYZ(xControlLast + ((xControl - xControlLast) / stepCount) * i,
+                        yControlLast + ((yControl - yControlLast) / stepCount) * i,
+                        zControlLast + ((zControl - zControlLast) / stepCount) * i);
+
+                // use the order for minimum colision
+                robot._elbow.setPosition( stepArm.getTurretServo() );
+                robot._base.setPosition( stepArm.getBaseServo() );
+                robot._turret.setPosition( stepArm.getTurretServo() );
+                robot._wrist.setPosition( stepArm.getWristServo() );
+                robot._leftClaw.setPosition( stepArm.getLeftClawServo() );
+                robot._rightClaw.setPosition( stepArm.getRightClawServo());
+                //TODO : add delay
+            }
+        }
+
+        robot._elbow.setPosition( theArm.getTurretServo() );
+        robot._base.setPosition(  theArm.getBaseServo() );
+        robot._turret.setPosition( theArm.getTurretServo() );
+        robot._wrist.setPosition( theArm.getWristServo() );
+        robot._leftClaw.setPosition( theArm.getLeftClawServo() );
+        robot._rightClaw.setPosition( theArm.getRightClawServo());
+
+        xControlLast = xControl;
+        yControlLast = yControl;
+        zControlLast = zControl;
+
+        lControlLast = lControl;
+        rControlLast = rControl
     }
 
     public void driveSetPower() {
@@ -421,6 +470,10 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
 
         robot.leftDrive.setPower(lErr * kDrive);
         robot.rightDrive.setPower(lErr * kDrive);
+
+        xControlLast = xControl;
+        yControlLast = yControl;
+        zControlLast = zControl;
 
         lControlLast = lControl;
         rControlLast = rControl;
