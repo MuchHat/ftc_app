@@ -490,11 +490,18 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
 
     public void driveSetPower() {
 
+        double kCrr = kDrive;
+
         double lErr = Range.clip(lControl - lControlLast, 0, 1);
         double rErr = Range.clip(rControl - rControlLast, 0, 1);
 
-        robot.leftDrive.setPower(lErr * kDrive);
-        robot.rightDrive.setPower(lErr * kDrive);
+        //TODO - adjust below
+        if( lErr < 0.15 && rErr < 0.15 ){
+            kCrr = 1;
+        }
+
+        robot.leftDrive.setPower(lErr * kCrr);
+        robot.rightDrive.setPower(lErr * kCrr);
 
         lControlLast = lControl;
         rControlLast = rControl;
