@@ -4,7 +4,7 @@ package org.firstinspires.ftc.teamcode;
  * Created by gigela on 10/1/2017.
  */
 
-public class ServoCalculator_2 {
+public class ServoCalculator {
 
     Angle turretAngle          =  new Angle();
     Angle baseAngle            =  new Angle();

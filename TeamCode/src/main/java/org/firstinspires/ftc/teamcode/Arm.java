@@ -138,7 +138,7 @@ public class Arm {
 
     public void setClawMM( double amm ){
 
-        Triangle clawTriangle = new Triangle();
+        TriangleCalculator clawTriangle = new TriangleCalculator();
 
         amm = Math.abs( amm );
 
@@ -149,7 +149,7 @@ public class Arm {
 
         double l2 = Math.sqrt( l3 * l3 - l1 * l1  );
 
-        clawTriangle.solve_SSS( l1, l2, l3 );
+        clawTriangle.setSSS( l1, l2, l3 );
         clawRightAngle.setPI( clawTriangle.a1 );
         clawLeftAngle.setPI( clawTriangle.a1 );
 
@@ -174,8 +174,8 @@ public class Arm {
 
         teta = Math.PI - turretAngle.getPI();
 
-        Triangle elbowTriangle = new Triangle();
-        elbowTriangle.solve_SSA( lBase, lElbow, elbowAngle.getPI() );
+        TriangleCalculator elbowTriangle = new TriangleCalculator();
+        elbowTriangle.setSSA( lBase, lElbow, elbowAngle.getPI() );
 
         e_a2 = elbowTriangle.a2;
 
@@ -218,8 +218,8 @@ public class Arm {
 
         //Log.d( "MuchHat", String.format( "setXYZ teta: %.2f", teta ) );
 
-        Triangle elbowTriangle = new Triangle();
-        elbowTriangle.solve_SSS( lBase, lElbow, r );
+        TriangleCalculator elbowTriangle = new TriangleCalculator();
+        elbowTriangle.setSSS( lBase, lElbow, r );
 
         e_a2 = elbowTriangle.a2;
 

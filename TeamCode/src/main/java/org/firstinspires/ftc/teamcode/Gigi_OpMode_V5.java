@@ -43,8 +43,8 @@ import com.qualcomm.robotcore.util.Range;
 public class Gigi_OpMode_V5 extends LinearOpMode {
 
     public Gigi_Hardware_V2 robot = new Gigi_Hardware_V2();
-    public ArmCalculator_2 theArmCalculator = new ArmCalculator_2();
-    public ServoCalculator_2 theServoCalculator = new ServoCalculator_2();
+    public ArmCalculator theArmCalculator = null;
+    public ServoCalculator theServoCalculator = new ServoCalculator();
     public ElapsedTime runtime = new ElapsedTime();
 
     public double turretControl = 0;
@@ -72,23 +72,25 @@ public class Gigi_OpMode_V5 extends LinearOpMode {
 
         robot.init(hardwareMap);
 
-        AngleCalculator turretAngle = new AngleCalculator();
+        turretAngle = new AngleCalculator();
         turretAngle.init( 0.140, 0.644, 0.05, 0.897 );
 
-        AngleCalculator baseAngle = new AngleCalculator();
+        baseAngle = new AngleCalculator();
         baseAngle.init( 0.25, 0.75, 0.05, 0.95 );
 
-        AngleCalculator elbowAngle = new AngleCalculator();
+        elbowAngle = new AngleCalculator();
         elbowAngle.init(0.404, 0.950, 0.20, 0.95); //elbow setup
 
-        AngleCalculator wristAngle = new AngleCalculator();
+        wristAngle = new AngleCalculator();
         wristAngle.init(1.1775, 0.6105, 0.32, 0.89);
 
-        AngleCalculator clawRightAngle = new AngleCalculator();
+        clawRightAngle = new AngleCalculator();
         clawRightAngle.init(0.221, -0.437, 0.221, 0.55); // right claw setup
 
-        AngleCalculator clawLeftAngle = new AngleCalculator();
-        clawLeftAngle.init((0.818, 1.582, 0.436, 0.818); // left claw setup
+        clawLeftAngle = new AngleCalculator();
+       // clawLeftAngle.init((0.818, 1.582, 0.436, 0.818); // left claw setup
+
+        theArmCalculator = new ArmCalculator();
 
         robot._turret.setPosition( 0.50 );
         robot._base.setPosition( 0.66 );

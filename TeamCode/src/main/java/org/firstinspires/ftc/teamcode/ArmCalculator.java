@@ -52,8 +52,8 @@ public class ArmCalculator {
             if( _x < 0 )_teta += Math.PI / 2;
         }
 
-        Triangle elbowTriangle = new Triangle();
-        elbowTriangle.solve_SSS( _lBase, _lElbow, _r );
+        TriangleCalculator elbowTriangle = new TriangleCalculator();
+        elbowTriangle.setSSS( _lBase, _lElbow, _r );
 
         _a2 = elbowTriangle.a2;
 

@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.Range;
  * Created by gigela on 9/26/2017.
  */
 
-public class TriangleCalculator_2 {
+public class TriangleCalculator {
 
     public double a1 = 0;
     public double a2 = 0;

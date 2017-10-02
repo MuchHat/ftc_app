@@ -44,7 +44,6 @@ import org.firstinspires.ftc.robotcontroller.external.samples.BasicOpMode_Iterat
 public class Sammy_OpMode_V2 extends BasicOpMode_Iterative{
 
     public  Gigi_Hardware_V2   robot         = new Gigi_Hardware_V2();
-    public  ArmController      armController = new ArmController();
     public  ElapsedTime        runtime       = new ElapsedTime();
 
     public  double             turretControl = 0;
