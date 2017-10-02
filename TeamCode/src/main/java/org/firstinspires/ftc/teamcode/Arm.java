@@ -206,7 +206,7 @@ public class Arm {
         y = Range.clip(ay, yMin, yMax);
         z = Range.clip(az, zMin, zMax);
 
-        colisionCheck(true);
+        collisionCheck(true);
 
         r = Range.clip(Math.sqrt(x * x + y * y + z * z), rMin, rMax);
 
@@ -229,7 +229,7 @@ public class Arm {
         elbowAngle.setPI(elbowTriangle.a3);
     }
 
-    public boolean colisionCheck(boolean adjust) {
+    public boolean collisionCheck(boolean adjust) {
 
         boolean collisionDetected = false;
 

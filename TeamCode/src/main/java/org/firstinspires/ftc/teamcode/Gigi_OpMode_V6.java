@@ -380,7 +380,7 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
 
         //do a collision check
         testArm.setServos(turretControl, baseControl, elbowControl);
-        if (testArm.colisionCheck(true)) {
+        if (testArm.collisionCheck(true)) {
             turretControl = testArm.getTurretServo();
             elbowControl = testArm.getElbowServo();
             wristControl = testArm.getWristServo();
