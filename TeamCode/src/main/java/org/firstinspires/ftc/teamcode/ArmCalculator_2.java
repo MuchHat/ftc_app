@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.Range;
 
 /**
  * Created by gigela on 10/1/2017.
  */
 
-public class armCalculator {
+public class ArmCalculator_2 {
 
     private double _lBase = 288;
     private double _lElbow = 188;
@@ -35,7 +34,7 @@ public class armCalculator {
     private double _elbow = 0;
     private double _wrist = 0;
 
-    private void _computeArm( double ax, double ay, double az )
+    private void setXYZ( double ax, double ay, double az )
     {
         _x = Range.clip( ax, _xMin, _xMax );
         _y = Range.clip( ay, _yMin, _yMax );
@@ -66,25 +65,25 @@ public class armCalculator {
 
     public double getBase(double x, double y, double z) {
 
-        _computeArm( x, y, z );
+        setXYZ( x, y, z );
         return _base;
     }
 
     public double getElbow(double x, double y, double z) {
 
-        _computeArm( x, y, z );
+        setXYZ( x, y, z );
         return _elbow;
     }
 
     public double getWrist(double x, double y, double z) {
 
-        _computeArm( x, y, z );
+        setXYZ( x, y, z );
         return _wrist;
     }
 
     public double getTurret(double x, double y, double z) {
 
-        _computeArm( x, y, z );
+        setXYZ( x, y, z );
         return _turret;
     }
 }
