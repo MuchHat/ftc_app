@@ -69,6 +69,11 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
     public double lControlLast = 0;
     public double rControlLast = 0;
 
+    public double baseControlLast = 0;
+    public double elbowControlLast = 0;
+    public double wristControlLast = 0;
+    public double turretControlLast = 0;
+
     boolean useAxisControl = false;
     boolean useDriveControl = false;
 
@@ -116,6 +121,11 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
 
         lControlLast = lControl;
         rControlLast = rControl;
+
+        baseControlLast = baseControl;
+        elbowControlLast = elbowControl;
+        wristControlLast = wristControl;
+        turretControlLast = turretControl;
 
         waitForStart();
 
@@ -390,39 +400,57 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
         robot._leftClaw.setPosition(clawControlL);
         robot._rightClaw.setPosition(clawControlR);
 
-        //do a collision check
-        testArm.setServos(turretControl, baseControl, elbowControl);
-        if (testArm.collisionCheck(true)) {
-            turretControl = testArm.getTurretServo();
-            elbowControl = testArm.getElbowServo();
-            wristControl = testArm.getWristServo();
-            baseControl = testArm.getBaseServo();
-        }
-
-        // move in an order to minimize colision
         elbowControl = Range.clip(elbowControl, theArm.elbowAngle.minServo, theArm.elbowAngle.maxServo);
         baseControl = Range.clip(baseControl, theArm.baseAngle.minServo, theArm.baseAngle.maxServo);
         wristControl = Range.clip(wristControl, theArm.wristAngle.minServo, theArm.wristAngle.maxServo);
         turretControl = Range.clip(turretControl, theArm.turretAngle.minServo, theArm.turretAngle.maxServo);
 
-        robot._elbow.setPosition(elbowControl);
-        robot._base.setPosition(baseControl);
-        robot._wrist.setPosition(wristControl);
-        robot._turret.setPosition(turretControl);
+        //do a collision check
+        testArm.setServos(turretControl, baseControl, elbowControl);
+        if (!testArm.collisionCheck(false)) {
 
-        xControlLast = xControl;
-        yControlLast = yControl;
-        zControlLast = zControl;
+            // slow down if needed
+            double maxServoStep = 0.1; // 6mm per axis and step
+            double stepCount = 0;
+            stepCount = Math.max(stepCount, Math.abs(elbowControl - elbowControlLast) / maxServoStep);
+            stepCount = Math.max(stepCount, Math.abs(baseControl - baseControlLast) / maxServoStep);
+            stepCount = Math.max(stepCount, Math.abs(wristControl - wristControlLast) / maxServoStep);
+            stepCount = Math.max(stepCount, Math.abs(turretControl - turretControlLast) / maxServoStep);
 
-        lControlLast = lControl;
-        rControlLast = rControl;
+            if (stepCount > 0) {
+                for (int i = 0; i < stepCount; i++) {
+                    double elbowControlStep = elbowControlLast + (elbowControl - elbowControlLast) / maxServoStep;
+                    double baseControlStep = baseControlLast + (baseControl - baseControlLast) / maxServoStep;
+                    double wristControlStep = wristControlLast + (wristControl - wristControlLast) / maxServoStep;
+                    double turretControlStep = turretControlLast + (turretControl - turretControlLast) / maxServoStep;
+                    //TODO - add colision detection?
+
+                    // use the order for minimum colision
+                    robot._elbow.setPosition(elbowControlStep);
+                    robot._base.setPosition(baseControlStep);
+                    robot._wrist.setPosition(wristControlStep);
+                    robot._turret.setPosition(turretControlStep);
+                    //TODO : add delay
+                }
+            }
+
+            robot._elbow.setPosition(elbowControl);
+            robot._base.setPosition(baseControl);
+            robot._wrist.setPosition(wristControl);
+            robot._turret.setPosition(turretControl);
+
+            baseControlLast = baseControl;
+            elbowControlLast = elbowControl;
+            wristControlLast = wristControl;
+            turretControlLast = turretControl;
+        }
     }
 
     public void xyzSetServos() {
 
         theArm.setXYZ(xControl, yControl, zControl);
 
-        //slow down the move here if needed
+        //slow down the move here if needed, also use for collision correction
         double maxStep = 6; // 6mm per axis and step
         double stepCount = 0;
         stepCount = Math.max(stepCount, Math.abs(xControl - xControlLast) / maxStep);
@@ -438,29 +466,26 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
                         zControlLast + ((zControl - zControlLast) / stepCount) * i);
 
                 // use the order for minimum colision
-                robot._elbow.setPosition( stepArm.getTurretServo() );
-                robot._base.setPosition( stepArm.getBaseServo() );
-                robot._turret.setPosition( stepArm.getTurretServo() );
-                robot._wrist.setPosition( stepArm.getWristServo() );
-                robot._leftClaw.setPosition( stepArm.getLeftClawServo() );
-                robot._rightClaw.setPosition( stepArm.getRightClawServo());
+                robot._elbow.setPosition(stepArm.getTurretServo());
+                robot._base.setPosition(stepArm.getBaseServo());
+                robot._turret.setPosition(stepArm.getTurretServo());
+                robot._wrist.setPosition(stepArm.getWristServo());
+                robot._leftClaw.setPosition(stepArm.getLeftClawServo());
+                robot._rightClaw.setPosition(stepArm.getRightClawServo());
                 //TODO : add delay
             }
         }
 
-        robot._elbow.setPosition( theArm.getTurretServo() );
-        robot._base.setPosition(  theArm.getBaseServo() );
-        robot._turret.setPosition( theArm.getTurretServo() );
-        robot._wrist.setPosition( theArm.getWristServo() );
-        robot._leftClaw.setPosition( theArm.getLeftClawServo() );
-        robot._rightClaw.setPosition( theArm.getRightClawServo());
+        robot._elbow.setPosition(theArm.getTurretServo());
+        robot._base.setPosition(theArm.getBaseServo());
+        robot._turret.setPosition(theArm.getTurretServo());
+        robot._wrist.setPosition(theArm.getWristServo());
+        robot._leftClaw.setPosition(theArm.getLeftClawServo());
+        robot._rightClaw.setPosition(theArm.getRightClawServo());
 
         xControlLast = xControl;
         yControlLast = yControl;
         zControlLast = zControl;
-
-        lControlLast = lControl;
-        rControlLast = rControl
     }
 
     public void driveSetPower() {
@@ -470,10 +495,6 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
 
         robot.leftDrive.setPower(lErr * kDrive);
         robot.rightDrive.setPower(lErr * kDrive);
-
-        xControlLast = xControl;
-        yControlLast = yControl;
-        zControlLast = zControl;
 
         lControlLast = lControl;
         rControlLast = rControl;
