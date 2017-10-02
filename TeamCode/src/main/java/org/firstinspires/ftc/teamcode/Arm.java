@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 
 /**
- * Created by gigela on 9/27/2017.
+ * Created by MuchHat on 9/27/2017.
  */
 
 public class Arm {

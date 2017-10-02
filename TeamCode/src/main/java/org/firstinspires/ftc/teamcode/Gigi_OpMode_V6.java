@@ -357,13 +357,13 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
                     driveSetPower();
                 }
                 // control: BASE
-                if (gamepad1.left_stick_x != 0) {
-                    lControl -= gamepad1.left_stick_x * turnDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
-                    rControl += gamepad1.left_stick_x * turnDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
+                if (gamepad1.right_stick_x != 0) {
+                    lControl -= gamepad1.right_stick_x * turnDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
+                    rControl += gamepad1.right_stick_x * turnDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
                     driveSetPower();
                 }
                 // control: WRIST
-                if (gamepad1.right_stick_x != 0) {
+                if (gamepad1.right_stick_y != 0) {
                 }
                 // control: ELBOW
                 if (gamepad1.left_stick_x != 0) {
@@ -419,10 +419,10 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
 
             if (stepCount > 0) {
                 for (int i = 0; i < stepCount; i++) {
-                    double elbowControlStep = elbowControlLast + (elbowControl - elbowControlLast) / maxServoStep;
-                    double baseControlStep = baseControlLast + (baseControl - baseControlLast) / maxServoStep;
-                    double wristControlStep = wristControlLast + (wristControl - wristControlLast) / maxServoStep;
-                    double turretControlStep = turretControlLast + (turretControl - turretControlLast) / maxServoStep;
+                    double elbowControlStep = elbowControlLast + i* (elbowControl - elbowControlLast) / maxServoStep;
+                    double baseControlStep = baseControlLast + i* (baseControl - baseControlLast) / maxServoStep;
+                    double wristControlStep = wristControlLast + i* (wristControl - wristControlLast) / maxServoStep;
+                    double turretControlStep = turretControlLast + i* (turretControl - turretControlLast) / maxServoStep;
                     //TODO - add colision detection?
 
                     // use the order for minimum colision
@@ -496,7 +496,7 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
         double rErr = Range.clip(rControl - rControlLast, 0, 1);
 
         //TODO - adjust below
-        if( lErr < 0.15 && rErr < 0.15 ){
+        if (lErr < 0.15 && rErr < 0.15) {
             kCrr = 1;
         }
 

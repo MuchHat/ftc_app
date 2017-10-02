@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.util.Range;
 
 /**
- * Created by gigela on 9/26/2017.
+ * Created by MuchHat on 9/26/2017.
  */
 
 public class Triangle {
@@ -93,5 +93,4 @@ public class Triangle {
         }
         isValid = true;
     }
-
 }
