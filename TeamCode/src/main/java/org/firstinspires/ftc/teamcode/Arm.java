@@ -233,12 +233,20 @@ public class Arm {
 
         boolean collisionDetected = false;
 
+        // check for the extremes
+        if( x < xMin || x > xMax ) collisionDetected = true;
+        if( y < yMin || y > yMax ) collisionDetected = true;
+        if( z < zMin || z > zMax ) collisionDetected = true;
+        if( adjust ){
+            x = Range.clip( x, xMin, xMax );
+            y = Range.clip( y, yMin, yMax );
+            z = Range.clip( z, zMin, zMax );
+        }
         // check if hitting the ground
         if (z < -robotHeight) {
             collisionDetected = true;
             if (adjust) z = armBaseLocationZ;
         }
-
         // check if hitting the robot
         if ((x > -armBaseLocationX && x < armBaseLocationX) &&
                 (y < armBaseLocationY) &&
@@ -255,7 +263,7 @@ public class Arm {
                 min = Math.min(min, left);
                 min = Math.min(min, right);
 
-                if (left == min) x = armBaseLocationX;
+                if (left == min) x = -armBaseLocationX;
                 if (right == min) x = armBaseLocationX;
                 if (front == min) y = armBaseLocationY;
                 if (top == min) z = armBaseLocationZ;
