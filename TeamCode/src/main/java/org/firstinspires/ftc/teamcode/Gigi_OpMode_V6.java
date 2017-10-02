@@ -119,6 +119,8 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
             clawControlL = robot._leftClaw.getPosition();
             clawControlR = robot._rightClaw.getPosition();
 
+            testArm.setServos(turretControl, baseControl, elbowControl);
+
             telemetry.addData("loopTime", "{%.3fms}",
                     crrLoopTime);
 
@@ -158,6 +160,12 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
                     theArm.getElbowServo(),
                     theArm.getWristServo());
 
+            telemetry.addData("test servos->", "{%.3f  %.3f  %.3f, %.3f}",
+                    testArm.getTurretServo(),
+                    testArm.getBaseServo(),
+                    testArm.getElbowServo(),
+                    testArm.getWristServo());
+
             telemetry.addData("test xyz ->", "{%.0fmm  %.0fmm  %.0fmm}",
                     testArm.getX(),
                     testArm.getY(),
@@ -169,15 +177,10 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
                     testArm.getPhi() / Math.PI * 180,
                     testArm.getA2() / Math.PI * 180);
 
-            telemetry.addData("test servos->", "{%.3f  %.3f  %.3f, %.3f}",
-                    testArm.getTurretServo(),
-                    testArm.getBaseServo(),
-                    testArm.getElbowServo(),
-                    testArm.getWristServo());
-
             telemetry.update();
 
             /**************************** START  OF USE AXIS CONTROL*****************************/
+
             if (!useAxisControl) {
 
                 theArm.setServos(turretControl, baseControl, elbowControl);
@@ -263,6 +266,7 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
                 }
             }
             /**************************** START  OF USE AXIS CONTROL*****************************/
+
             if (useAxisControl) {
 
                 theArm.setXYZ(xControl, yControl, zControl);
@@ -317,7 +321,9 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
                     useDriveControl = true;
                 }
             }
+
             /**************************** START  OF USE DRIVE CONTROL*****************************/
+
             if (useDriveControl) {
 
                 theArm.setXYZ(xControl, yControl, zControl);
@@ -389,10 +395,10 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
 
         theArm.setXYZ(xControl, yControl, zControl);
 
-        double newTurret = theArm.getTurretServo();
-        double newBase = theArm.getBaseServo();
-        double newElbow = theArm.getElbowServo();
-        double newWrist = theArm.getWristServo();
+        double newTurretServoPos = theArm.getTurretServo();
+        double newBaseServoPos = theArm.getBaseServo();
+        double newElbowServoPos = theArm.getElbowServo();
+        double newWrisServoPos = theArm.getWristServo();
 
         //robot._turret.setPosition( turretAngle.getServo( ewTurret ) );
         //robot._base.setPosition( baseAngle.getServo( newBase ) );
@@ -401,8 +407,6 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
     }
 
     public void driveSetPower() {
-
-        theArm.setXYZ(xControl, yControl, zControl);
 
         double lErr = Range.clip(lControl - lControlLast, 0, 1);
         double rErr = Range.clip(rControl - rControlLast, 0, 1);
