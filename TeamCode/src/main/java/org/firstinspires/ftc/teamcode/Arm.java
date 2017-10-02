@@ -36,12 +36,11 @@ public class Arm {
     double rMin = 11;
     double armBaseLocationX = 444;
     double armBaseLocationY = 222;
-    double armBaseLocationZ = 111;
+    double armBaseLocationZ = 11;
     double robotHeight = 111;
     double robotWidth = 111;
     double robotLenght = 333;
     boolean isInitialized = false;
-    String log = new String();
     private double x = 0;
     private double y = 0;
     private double z = 0;
@@ -75,11 +74,6 @@ public class Arm {
         leftClawAngle.Init_45_135(0.818, 1.582, 0.436, 0.818); // left claw setup
 
         setClawMM(lClawGap);
-    }
-
-    public void colisionCheck() {
-        // TODO
-        // adjust x,y,z as needed
     }
 
     public double getX() {
@@ -212,7 +206,7 @@ public class Arm {
         y = Range.clip(ay, yMin, yMax);
         z = Range.clip(az, zMin, zMax);
 
-        colisionCheck();
+        colisionCheck(true);
 
         r = Range.clip(Math.sqrt(x * x + y * y + z * z), rMin, rMax);
 
@@ -235,4 +229,39 @@ public class Arm {
         elbowAngle.setPI(elbowTriangle.a3);
     }
 
+    public boolean colisionCheck(boolean adjust) {
+
+        boolean collisionDetected = false;
+
+        // check if hitting the ground
+        if (z < -robotHeight) {
+            collisionDetected = true;
+            if (adjust) z = armBaseLocationZ;
+        }
+
+        // check if hitting the robot
+        if ((x > -armBaseLocationX && x < armBaseLocationX) &&
+                (y < armBaseLocationY) &&
+                (z < armBaseLocationZ)) {
+            collisionDetected = true;
+            if (adjust) {
+                // move to the closest
+                double top = armBaseLocationZ - z;
+                double front = armBaseLocationY - y;
+                double left = armBaseLocationX + x;
+                double right = armBaseLocationX - x;
+
+                double min = Math.min(top, front);
+                min = Math.min(min, left);
+                min = Math.min(min, right);
+
+                if (left == min) x = armBaseLocationX;
+                if (right == min) x = armBaseLocationX;
+                if (front == min) y = armBaseLocationY;
+                if (top == min) z = armBaseLocationZ;
+            }
+        }
+
+        return collisionDetected;
+    }
 }

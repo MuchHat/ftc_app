@@ -22,31 +22,6 @@ public class Triangle {
     public void Triangle() {
     }
 
-    void check() {
-        if (l1 + l2 < l3) {
-            isValid = false;
-            l3 = l1 + l2 + 1;
-            a1 = 1 / Math.PI;
-            a2 = 1 / Math.PI;
-            a3 = Math.PI - a1 - a2;
-        }
-        if (l1 + l3 < l2) {
-            isValid = false;
-            l2 = l1 + l3 + 1;
-            a1 = 1 / Math.PI;
-            a3 = 1 / Math.PI;
-            a2 = Math.PI - a1 - a3;
-        }
-        if (l3 + l2 < l1) {
-            isValid = false;
-            l1 = l3 + l2 + 1;
-            a3 = 1 / Math.PI;
-            a2 = 1 / Math.PI;
-            a1 = Math.PI - a1 - a3;
-        }
-        isValid = true;
-    }
-
     public void setSAA(double al1, double aa2, double aa3) {
 
         l1 = Math.abs(al1);
@@ -93,4 +68,30 @@ public class Triangle {
         a2 = Math.acos((l1 * l1 + l3 * l3 - l2 * l2) / (2 * l1 * l3));
         a3 = Math.PI - a1 - a2;
     }
+
+    void check() {
+        if (l1 + l2 < l3) {
+            isValid = false;
+            l3 = l1 + l2 + 1;
+            a1 = 1 / Math.PI;
+            a2 = 1 / Math.PI;
+            a3 = Math.PI - a1 - a2;
+        }
+        if (l1 + l3 < l2) {
+            isValid = false;
+            l2 = l1 + l3 + 1;
+            a1 = 1 / Math.PI;
+            a3 = 1 / Math.PI;
+            a2 = Math.PI - a1 - a3;
+        }
+        if (l3 + l2 < l1) {
+            isValid = false;
+            l1 = l3 + l2 + 1;
+            a3 = 1 / Math.PI;
+            a2 = 1 / Math.PI;
+            a1 = Math.PI - a1 - a3;
+        }
+        isValid = true;
+    }
+
 }

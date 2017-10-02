@@ -378,17 +378,25 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
         robot._leftClaw.setPosition(clawControlL);
         robot._rightClaw.setPosition(clawControlR);
 
-        turretControl = Range.clip(turretControl, theArm.turretAngle.minServo, theArm.turretAngle.maxServo);
-        robot._turret.setPosition(turretControl);
+        //do a collision check
+        testArm.setServos(turretControl, baseControl, elbowControl);
+        if (testArm.colisionCheck(true)) {
+            turretControl = testArm.getTurretServo();
+            elbowControl = testArm.getElbowServo();
+            wristControl = testArm.getWristServo();
+            baseControl = testArm.getBaseServo();
+        }
 
+        // move in an order to minimize colision
         elbowControl = Range.clip(elbowControl, theArm.elbowAngle.minServo, theArm.elbowAngle.maxServo);
-        robot._elbow.setPosition(elbowControl);
-
-        wristControl = Range.clip(wristControl, theArm.wristAngle.minServo, theArm.wristAngle.maxServo);
-        robot._wrist.setPosition(wristControl);
-
         baseControl = Range.clip(baseControl, theArm.baseAngle.minServo, theArm.baseAngle.maxServo);
+        wristControl = Range.clip(wristControl, theArm.wristAngle.minServo, theArm.wristAngle.maxServo);
+        turretControl = Range.clip(turretControl, theArm.turretAngle.minServo, theArm.turretAngle.maxServo);
+
+        robot._elbow.setPosition(elbowControl);
         robot._base.setPosition(baseControl);
+        robot._wrist.setPosition(wristControl);
+        robot._turret.setPosition(turretControl);
     }
 
     public void xyzSetServos() {
