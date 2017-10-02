@@ -58,22 +58,37 @@ public class Gigi_OpMode_V5 extends LinearOpMode {
     public double yControl = 0;
     public double zControl = 0;
 
+    AngleCalculator turretAngle = null;
+    AngleCalculator baseAngle = null;
+    AngleCalculator elbowAngle = null;
+    AngleCalculator wristAngle = null;
+    AngleCalculator clawRightAngle = null;
+    AngleCalculator clawLeftAngle  = null;
+
     boolean useAxisControl = false;
-
-            turretAngle.Init_45_135(0.140, 0.644, 0.05, 0.897); // turret setup
-
-        baseAngle.Init_45_135(0.25, 0.75, 0.05, 0.95); // TODO
-        elbowAngle.Init_45_135(0.404, 0.950, 0.20, 0.95); //elbow setup
-
-        wristAngle.Init_45_135(1.1775, 0.6105, 0.32, 0.89);
-        clawRightAngle.Init_45_135(0.221, -0.437, 0.221, 0.55); // right claw setup
-        clawLeftAngle.Init_45_135(0.818, 1.582, 0.436, 0.818); // left claw setup
 
     @Override
     public void runOpMode() {
 
         robot.init(hardwareMap);
-        theServoCalculator.init();
+
+        AngleCalculator turretAngle = new AngleCalculator();
+        turretAngle.init( 0.140, 0.644, 0.05, 0.897 );
+
+        AngleCalculator baseAngle = new AngleCalculator();
+        baseAngle.init( 0.25, 0.75, 0.05, 0.95 );
+
+        AngleCalculator elbowAngle = new AngleCalculator();
+        elbowAngle.init(0.404, 0.950, 0.20, 0.95); //elbow setup
+
+        AngleCalculator wristAngle = new AngleCalculator();
+        wristAngle.init(1.1775, 0.6105, 0.32, 0.89);
+
+        AngleCalculator clawRightAngle = new AngleCalculator();
+        clawRightAngle.init(0.221, -0.437, 0.221, 0.55); // right claw setup
+
+        AngleCalculator clawLeftAngle = new AngleCalculator();
+        clawLeftAngle.init((0.818, 1.582, 0.436, 0.818); // left claw setup
 
         robot._turret.setPosition( 0.50 );
         robot._base.setPosition( 0.66 );
@@ -93,7 +108,7 @@ public class Gigi_OpMode_V5 extends LinearOpMode {
 
         while ( opModeIsActive() ) {
 
-            double crrLoopTime = runtime.nanoseconds()/1000;
+            double crrLoopTime = runtime.nanoseconds() / 1000;
             runtime.reset();
 
             turretControl = robot._turret.getPosition();
@@ -331,15 +346,10 @@ public class Gigi_OpMode_V5 extends LinearOpMode {
 
     public void xyzSetServos(){
 
-        theServoCalculator.baseAngle.setPI( theArmCalculator.getBase( xControl, yControl, zControl ));
-        theServoCalculator.elbowAngle.setPI( theArmCalculator.getElbow( xControl, yControl, zControl ));
-        theServoCalculator.turretAngle.setPI( theArmCalculator.getTurret( xControl, yControl, zControl ));
-        theServoCalculator.wristAngle.setPI( theArmCalculator.getWrist( xControl, yControl, zControl ));
-
-        robot._turret.setPosition( theServoCalculator.turretAngle.getServo() );
-        robot._base.setPosition( theServoCalculator.baseAngle.getServo() );
-        robot._elbow.setPosition( theServoCalculator.elbowAngle.getServo() );
-        robot._wrist.setPosition( theServoCalculator.wristAngle.getServo() );
+        robot._turret.setPosition( turretAngle.getServo( theArmCalculator.getTurret( xControl, yControl, zControl ) ) );
+        robot._base.setPosition( baseAngle.getServo( theArmCalculator.getBase( xControl, yControl, zControl ) ) );
+        robot._elbow.setPosition( elbowAngle.getServo( theArmCalculator.getElbow( xControl, yControl, zControl ) ) );
+        robot._wrist.setPosition( wristAngle.getServo( theArmCalculator.getWrist( xControl, yControl, zControl ) ) );
     }
 }
 

@@ -16,11 +16,11 @@ public class AngleCalculator {
     private double minServo = 0.05;
     private double maxServo = 0.95;
 
-    public void Angle() {
+    public void AngleCalculator(){
 
     }
 
-    public void AngleCalculator( double s45, double s135, double aMin, double aMax ) {
+    public void init( double s45, double s135, double aMin, double aMax ) {
 
         slopeServo = 0.5 / ( s135 - s45 );
         offsetServo = 0.25 - ( s45 * slopeServo );
