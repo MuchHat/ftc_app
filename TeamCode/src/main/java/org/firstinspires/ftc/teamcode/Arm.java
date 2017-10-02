@@ -12,34 +12,19 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 
 public class Arm {
 
-    private double x = 0;
-    private double y = 0;
-    private double z = 0;
-
-    private double teta = 0;
-    private double phi = 0;
-    private double r = 0;
-    private double e_a2 = 0;
-
-    private double clawMM = 0;
-
     public Angle turretAngle = null;
     public Angle baseAngle = null;
     public Angle elbowAngle = null;
-
     public Angle wristAngle = null;
     public Angle wristHorizontalAngle = null;
     public Angle rightClawAngle = null;
     public Angle leftClawAngle = null;
-
     double mmClawOpen = 222;  // mm
     double mmClawClose = 188; // mm
-
     double lBase = 188; // mm
     double lElbow = 233; // mm
     double lClawArm = 150; // mm
     double lClawGap = 37;  // mm
-
     //TODO
     double xMax = 333; // mm
     double xMin = -333; // mm
@@ -49,18 +34,23 @@ public class Arm {
     double zMin = -111; // mm
     double rMax = (lBase + lElbow) * 0.95; // mm
     double rMin = 11;
-
     double armBaseLocationX = 444;
     double armBaseLocationY = 222;
     double armBaseLocationZ = 111;
-
     double robotHeight = 111;
     double robotWidth = 111;
     double robotLenght = 333;
-    // TODO END
-
     boolean isInitialized = false;
     String log = new String();
+    private double x = 0;
+    private double y = 0;
+    private double z = 0;
+    private double teta = 0;
+    private double phi = 0;
+    private double r = 0;
+    // TODO END
+    private double e_a2 = 0;
+    private double clawMM = 0;
 
     /* Constructor */
     public void Arm() {
@@ -80,7 +70,7 @@ public class Arm {
         turretAngle.Init_45_135(0.140, 0.644, 0.05, 0.897); // turret setup
         baseAngle.Init_45_135(0.25, 0.75, 0.05, 0.95); // TODO
         elbowAngle.Init_45_135(0.404, 0.950, 0.20, 0.95); //elbow setup
-        wristAngle.Init_45_135(1.1775, 0.6105, 0.32, 0.89);
+        wristAngle.Init_45_135(1.1775, 0.6105, 0.32, 0.89);  //wrist setup
         rightClawAngle.Init_45_135(0.221, -0.437, 0.221, 0.55); // right claw setup
         leftClawAngle.Init_45_135(0.818, 1.582, 0.436, 0.818); // left claw setup
 

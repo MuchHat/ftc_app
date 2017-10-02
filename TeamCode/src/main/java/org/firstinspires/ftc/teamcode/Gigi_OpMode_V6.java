@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.util.Range;
  * This file illustrates the concept of driving a path based on time.
  */
 
-@TeleOp(name="OpMode V6", group="Gigi")
+@TeleOp(name = "OpMode V6", group = "Gigi")
 // @Disabled
 public class Gigi_OpMode_V6 extends LinearOpMode {
 
@@ -64,16 +64,19 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
 
     boolean useAxisControl = false;
     boolean useDriveControl = false;
+    double lControlLast = 0;
+    double rControlLast = 0;
+
+    double servoDefaultSpeed = 0.33 / 1000; // 0.3 servo angle per sec
+    double axisDefaultSpeed = 33 / 1000; // 33 mm per sec
+    double driveDefaultSpeed = 0.1; // ??
+    double turnDefaultSpeed = 0.01; // ??
+    double kDrive = 0.33; // ??
 
     @Override
     public void runOpMode() {
 
-        double servoDefaultSpeed = 0.33 / 1000000; // 0.3 per sec
-        double axisDefaultSpeed = servoDefaultSpeed * 100;
-        double driveDefaultSpeed = 0.1;
-        double turnDefaultSpeed = 0.01;
-
-        robot.init( hardwareMap );
+        robot.init(hardwareMap);
         theArm = new Arm();
         theArm.init();
         testArm = new Arm();
@@ -81,32 +84,32 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
 
         testArm.setZeroXYZ();
 
-        robot._turret.setPosition( testArm.getTurretServo() );
-        robot._base.setPosition( testArm.getBaseServo() );
-        robot._elbow.setPosition( testArm.getElbowServo() );
-        robot._wrist.setPosition( testArm.getWristServo() );
-        robot._leftClaw.setPosition( testArm.getLeftClawServo() );
-        robot._rightClaw.setPosition( testArm.getRightClawServo() );
+        robot._turret.setPosition(testArm.getTurretServo());
+        robot._base.setPosition(testArm.getBaseServo());
+        robot._elbow.setPosition(testArm.getElbowServo());
+        robot._wrist.setPosition(testArm.getWristServo());
+        robot._leftClaw.setPosition(testArm.getLeftClawServo());
+        robot._rightClaw.setPosition(testArm.getRightClawServo());
 
         xControl = testArm.getX();
         yControl = testArm.getY();
         zControl = testArm.getZ();
 
         turretControl = robot._turret.getPosition();
-        baseControl   = robot._base.getPosition();
-        elbowControl  = robot._elbow.getPosition();
-        wristControl  = robot._wrist.getPosition();
-        clawControlL  = robot._leftClaw.getPosition();
-        clawControlR  = robot._rightClaw.getPosition();
+        baseControl = robot._base.getPosition();
+        elbowControl = robot._elbow.getPosition();
+        wristControl = robot._wrist.getPosition();
+        clawControlL = robot._leftClaw.getPosition();
+        clawControlR = robot._rightClaw.getPosition();
 
         lControl = 0;
         rControl = 0;
 
         waitForStart();
 
-        while ( opModeIsActive() ) {
+        while (opModeIsActive()) {
 
-            double crrLoopTime = runtime.nanoseconds() / 1000;
+            double crrLoopTime = runtime.nanoseconds() / 1000000; // coverted to millis
             runtime.reset();
 
             turretControl = robot._turret.getPosition();
@@ -117,12 +120,12 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
             clawControlR = robot._rightClaw.getPosition();
 
             telemetry.addData("loopTime", "{%.3fms}",
-                    crrLoopTime / 1000 );
+                    crrLoopTime);
 
             telemetry.addData("servos control->", "{%.3f  %.3f  %.3f}",
                     turretControl,
                     baseControl,
-                    elbowControl );
+                    elbowControl);
 
             telemetry.addData("servos control->", "{%.3f} {%.3f %.3f}",
                     wristControl,
@@ -131,74 +134,74 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
 
             telemetry.addData("drives control->", "{%.3f %.3f}",
                     lControl,
-                    rControl );
+                    rControl);
 
             telemetry.addData("xyz control->", "{%.0fmm  %.0fmm  %.0fmm}",
                     xControl,
                     yControl,
-                    zControl );
+                    zControl);
 
             telemetry.addData("xyz ->", "{%.0fmm  %.0fmm  %.0fmm}",
                     theArm.getX(),
                     theArm.getY(),
-                    theArm.getZ() );
+                    theArm.getZ());
 
             telemetry.addData("rtp->", "{%.0fmm  %.0fg  %.0fg, %.0fg}",
                     theArm.getR(),
                     theArm.getTeta() / Math.PI * 180,
                     theArm.getPhi() / Math.PI * 180,
-                    theArm.getA2() / Math.PI * 180 );
+                    theArm.getA2() / Math.PI * 180);
 
             telemetry.addData("tbew->", "{%.3f  %.3f  %.3f, %.3f}",
                     theArm.getTurretServo(),
                     theArm.getBaseServo(),
                     theArm.getElbowServo(),
-                    theArm.getWristServo() );
+                    theArm.getWristServo());
 
             telemetry.addData("test xyz ->", "{%.0fmm  %.0fmm  %.0fmm}",
                     testArm.getX(),
                     testArm.getY(),
-                    testArm.getZ() );
+                    testArm.getZ());
 
             telemetry.addData("test rtp->", "{%.0fmm  %.0fg  %.0fg, %.0fg}",
                     testArm.getR(),
                     testArm.getTeta() / Math.PI * 180,
                     testArm.getPhi() / Math.PI * 180,
-                    testArm.getA2() / Math.PI * 180 );
+                    testArm.getA2() / Math.PI * 180);
 
             telemetry.addData("test servos->", "{%.3f  %.3f  %.3f, %.3f}",
                     testArm.getTurretServo(),
                     testArm.getBaseServo(),
                     testArm.getElbowServo(),
-                    testArm.getWristServo() );
+                    testArm.getWristServo());
 
             telemetry.update();
 
             /**************************** START  OF USE AXIS CONTROL*****************************/
-            if( !useAxisControl ) {
+            if (!useAxisControl) {
 
-                theArm.setServos( turretControl, baseControl, elbowControl );
+                theArm.setServos(turretControl, baseControl, elbowControl);
 
                 // control: BASE
                 if (gamepad1.left_stick_y != 0) {
-                        baseControl += gamepad1.left_stick_y * servoDefaultSpeed * crrLoopTime;
-                        angleSetServos();
+                    baseControl += gamepad1.left_stick_y * servoDefaultSpeed * crrLoopTime;
+                    angleSetServos();
                 }
                 // control: WRIST
                 if (gamepad1.left_stick_x != 0) {
-                        wristControl += gamepad1.left_stick_x * servoDefaultSpeed * crrLoopTime;
-                        angleSetServos();
+                    wristControl += gamepad1.left_stick_x * servoDefaultSpeed * crrLoopTime;
+                    angleSetServos();
                 }
                 // control: ELBOW
-                    if (gamepad1.right_stick_y != 0) {
-                        elbowControl += gamepad1.right_stick_y * servoDefaultSpeed * crrLoopTime;
-                        angleSetServos();
+                if (gamepad1.right_stick_y != 0) {
+                    elbowControl += gamepad1.right_stick_y * servoDefaultSpeed * crrLoopTime;
+                    angleSetServos();
 
                 }
                 // control: TURRET
                 if (gamepad1.right_stick_x != 0) {
-                        turretControl += gamepad1.right_stick_x * servoDefaultSpeed * crrLoopTime;
-                        angleSetServos();
+                    turretControl += gamepad1.right_stick_x * servoDefaultSpeed * crrLoopTime;
+                    angleSetServos();
 
                 }
                 // control: CLAW CLOSE
@@ -217,12 +220,12 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
                 if (gamepad1.back) {
                     testArm.setZeroXYZ();
 
-                    robot._turret.setPosition( testArm.getTurretServo() );
-                    robot._base.setPosition( testArm.getBaseServo() );
-                    robot._elbow.setPosition( testArm.getElbowServo() );
-                    robot._wrist.setPosition( testArm.getWristServo() );
-                    robot._leftClaw.setPosition( testArm.getLeftClawServo() );
-                    robot._rightClaw.setPosition( testArm.getRightClawServo() );
+                    robot._turret.setPosition(testArm.getTurretServo());
+                    robot._base.setPosition(testArm.getBaseServo());
+                    robot._elbow.setPosition(testArm.getElbowServo());
+                    robot._wrist.setPosition(testArm.getWristServo());
+                    robot._leftClaw.setPosition(testArm.getLeftClawServo());
+                    robot._rightClaw.setPosition(testArm.getRightClawServo());
                 }
                 // control:
                 if (gamepad1.dpad_up) {
@@ -260,41 +263,41 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
                 }
             }
             /**************************** START  OF USE AXIS CONTROL*****************************/
-            if( useAxisControl ) {
+            if (useAxisControl) {
 
-                theArm.setXYZ( xControl, yControl, zControl );
+                theArm.setXYZ(xControl, yControl, zControl);
 
                 // control: TURRET
                 if (gamepad1.left_stick_y != 0) {
-                    zControl += gamepad1.left_stick_y * servoDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
+                    zControl += gamepad1.left_stick_y * axisDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
                     xyzSetServos();
                 }
                 // control: BASE
                 if (gamepad1.right_stick_y != 0) {
-                    yControl += -gamepad1.right_stick_y * servoDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
+                    yControl += -gamepad1.right_stick_y * axisDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
                     xyzSetServos();
                 }
                 // control: WRIST
                 if (gamepad1.right_stick_x != 0) {
-                    xControl += -gamepad1.right_stick_x * servoDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
+                    xControl += -gamepad1.right_stick_x * axisDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
                     xyzSetServos();
                 }
                 // control: ELBOW
                 if (gamepad1.left_stick_x != 0) {
-                    clawControlR += gamepad1.left_stick_x * servoDefaultSpeed * crrLoopTime;
-                    clawControlL -= gamepad1.left_stick_x * servoDefaultSpeed * crrLoopTime;
+                    clawControlR += gamepad1.left_stick_x * axisDefaultSpeed * crrLoopTime;
+                    clawControlL -= gamepad1.left_stick_x * axisDefaultSpeed * crrLoopTime;
                     xyzSetServos();
 
                 }
                 if (gamepad1.back) {
                     testArm.setZeroXYZ();
 
-                    robot._turret.setPosition( testArm.getTurretServo() );
-                    robot._base.setPosition( testArm.getBaseServo() );
-                    robot._elbow.setPosition( testArm.getElbowServo() );
-                    robot._wrist.setPosition( testArm.getWristServo() );
-                    robot._leftClaw.setPosition( testArm.getLeftClawServo() );
-                    robot._rightClaw.setPosition( testArm.getRightClawServo() );
+                    robot._turret.setPosition(testArm.getTurretServo());
+                    robot._base.setPosition(testArm.getBaseServo());
+                    robot._elbow.setPosition(testArm.getElbowServo());
+                    robot._wrist.setPosition(testArm.getWristServo());
+                    robot._leftClaw.setPosition(testArm.getLeftClawServo());
+                    robot._rightClaw.setPosition(testArm.getRightClawServo());
 
                     xControl = testArm.getX();
                     yControl = testArm.getY();
@@ -313,11 +316,11 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
                 if (gamepad1.x) {
                     useDriveControl = true;
                 }
-             }
+            }
             /**************************** START  OF USE DRIVE CONTROL*****************************/
-            if( useAxisControl ) {
+            if (useDriveControl) {
 
-                theArm.setXYZ( xControl, yControl, zControl );
+                theArm.setXYZ(xControl, yControl, zControl);
 
                 // control: TURRET
                 if (gamepad1.left_stick_y != 0) {
@@ -361,30 +364,30 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
         }
     }
 
-    public void angleSetServos(){
+    public void angleSetServos() {
 
-        clawControlL = Range.clip( clawControlL, theArm.leftClawAngle.minServo, theArm.leftClawAngle.maxServo );
-        clawControlR = Range.clip( clawControlR, theArm.rightClawAngle.minServo, theArm.rightClawAngle.maxServo );
+        clawControlL = Range.clip(clawControlL, theArm.leftClawAngle.minServo, theArm.leftClawAngle.maxServo);
+        clawControlR = Range.clip(clawControlR, theArm.rightClawAngle.minServo, theArm.rightClawAngle.maxServo);
 
-        robot._leftClaw.setPosition( clawControlL );
-        robot._rightClaw.setPosition( clawControlR );
+        robot._leftClaw.setPosition(clawControlL);
+        robot._rightClaw.setPosition(clawControlR);
 
-        turretControl = Range.clip( turretControl, theArm.turretAngle.minServo, theArm.turretAngle.maxServo);
-        robot._turret.setPosition( turretControl );
+        turretControl = Range.clip(turretControl, theArm.turretAngle.minServo, theArm.turretAngle.maxServo);
+        robot._turret.setPosition(turretControl);
 
-        elbowControl = Range.clip( elbowControl, theArm.elbowAngle.minServo, theArm.elbowAngle.maxServo );
-        robot._elbow.setPosition( elbowControl );
+        elbowControl = Range.clip(elbowControl, theArm.elbowAngle.minServo, theArm.elbowAngle.maxServo);
+        robot._elbow.setPosition(elbowControl);
 
-        wristControl = Range.clip( wristControl, theArm.wristAngle.minServo, theArm.wristAngle.maxServo );
-        robot._wrist.setPosition( wristControl );
+        wristControl = Range.clip(wristControl, theArm.wristAngle.minServo, theArm.wristAngle.maxServo);
+        robot._wrist.setPosition(wristControl);
 
-        baseControl = Range.clip( baseControl, theArm.baseAngle.minServo, theArm.baseAngle.maxServo );
-        robot._base.setPosition( baseControl );
+        baseControl = Range.clip(baseControl, theArm.baseAngle.minServo, theArm.baseAngle.maxServo);
+        robot._base.setPosition(baseControl);
     }
 
-    public void xyzSetServos(){
+    public void xyzSetServos() {
 
-        theArm.setXYZ( xControl, yControl, zControl );
+        theArm.setXYZ(xControl, yControl, zControl);
 
         double newTurret = theArm.getTurretServo();
         double newBase = theArm.getBaseServo();
@@ -397,20 +400,15 @@ public class Gigi_OpMode_V6 extends LinearOpMode {
         //robot._wrist.setPosition( wristAngle.getServo( newWrist ) );
     }
 
-    double lControlLast = 0;
-    double rControlLast = 0;
+    public void driveSetPower() {
 
-    double kDrive = 0.33;
+        theArm.setXYZ(xControl, yControl, zControl);
 
-    public void driveSetPower(){
+        double lErr = Range.clip(lControl - lControlLast, 0, 1);
+        double rErr = Range.clip(rControl - rControlLast, 0, 1);
 
-        theArm.setXYZ( xControl, yControl, zControl );
-
-        double lErr = Range.clip( lControl - lControlLast, 0, 1 );
-        double rErr = Range.clip( rControl - rControlLast, 0, 1 );
-
-        robot.leftDrive.setPower( lErr * kDrive );
-        robot.rightDrive.setPower( lErr * kDrive );
+        robot.leftDrive.setPower(lErr * kDrive);
+        robot.rightDrive.setPower(lErr * kDrive);
 
         lControlLast = lControl;
         rControlLast = rControl;
