@@ -43,8 +43,8 @@ import com.qualcomm.robotcore.util.Range;
 public class Gigi_OpMode_V5 extends LinearOpMode {
 
     public Gigi_Hardware_V2 robot = new Gigi_Hardware_V2();
-    public armCalculator theArmCalculator = new armCalculator();
-    public servoCalculator theServoCalculator = new servoCalculator();
+    public ArmCalculator_2 theArmCalculator = new ArmCalculator_2();
+    public ServoCalculator_2 theServoCalculator = new ServoCalculator_2();
     public ElapsedTime runtime = new ElapsedTime();
 
     public double turretControl = 0;
@@ -59,6 +59,15 @@ public class Gigi_OpMode_V5 extends LinearOpMode {
     public double zControl = 0;
 
     boolean useAxisControl = false;
+
+            turretAngle.Init_45_135(0.140, 0.644, 0.05, 0.897); // turret setup
+
+        baseAngle.Init_45_135(0.25, 0.75, 0.05, 0.95); // TODO
+        elbowAngle.Init_45_135(0.404, 0.950, 0.20, 0.95); //elbow setup
+
+        wristAngle.Init_45_135(1.1775, 0.6105, 0.32, 0.89);
+        clawRightAngle.Init_45_135(0.221, -0.437, 0.221, 0.55); // right claw setup
+        clawLeftAngle.Init_45_135(0.818, 1.582, 0.436, 0.818); // left claw setup
 
     @Override
     public void runOpMode() {
@@ -82,7 +91,7 @@ public class Gigi_OpMode_V5 extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive()) {
+        while ( opModeIsActive() ) {
 
             double crrLoopTime = runtime.nanoseconds()/1000;
             runtime.reset();

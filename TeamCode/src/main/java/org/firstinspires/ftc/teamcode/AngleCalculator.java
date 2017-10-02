@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.Range;
  * Created by gigela on 9/27/2017.
  */
 
-public class AngleCalculator_2 {
+public class AngleCalculator {
 
     private double angleServo = 0; // between 0 and 1.0
     private double anglePI = 0;  // between -pi/2 to pi/2
@@ -20,7 +20,7 @@ public class AngleCalculator_2 {
 
     }
 
-    public void Angle( double s45, double s135, double aMin, double aMax ) {
+    public void AngleCalculator( double s45, double s135, double aMin, double aMax ) {
 
         slopeServo = 0.5 / ( s135 - s45 );
         offsetServo = 0.25 - ( s45 * slopeServo );
