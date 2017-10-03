@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -44,7 +45,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.BasicOpMode_Linear
  */
 
 @TeleOp(name="OpMode V2", group="Gigi Iterative")
-// @Disabled
+@Disabled
 public class Gigi_OpMode_V2 extends BasicOpMode_Iterative{
 
     public  Gigi_Hardware_V2   robot         = new Gigi_Hardware_V2();

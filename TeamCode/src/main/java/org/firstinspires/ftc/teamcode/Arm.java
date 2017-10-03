@@ -57,6 +57,7 @@ public class Arm {
 
     public void init() {
 
+
         turretAngle = new Angle();
         baseAngle = new Angle();
         elbowAngle = new Angle();
@@ -190,7 +191,7 @@ public class Arm {
 
         e_a2 = elbowTriangle.a2;
 
-        phi = baseAngle.getPI() - Math.PI / 2 + elbowTriangle.a2;
+        phi = Math.PI / 2 - ( baseAngle.getPI() - e_a2 );
 
         r = elbowTriangle.l3;
 
