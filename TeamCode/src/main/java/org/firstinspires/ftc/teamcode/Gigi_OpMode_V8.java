@@ -84,6 +84,8 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
     double turnDefaultSpeed = 0.22; // ??
     double kDrive = 1; // ??
 
+    boolean extendedLogging = true;
+
     @Override
     public void runOpMode() {
 
@@ -152,63 +154,19 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
                     baseControl * 180,
                     elbowControl * 180);
 
-            telemetry.addData("POS wclclr->", "{%.0fg} {%.0fg %.0fg}",
-                    wristControl * 180,
-                    leftClawControl * 180,
-                    rightClawControl * 180);
-
             telemetry.addData("DEG servos->", "{%.0fdeg %.0fdeg %.0fdeg}",
                     testArm.turretAngle.getPI() / Math.PI * 180,
                     testArm.baseAngle.getPI() / Math.PI * 180,
                     testArm.elbowAngle.getPI() / Math.PI * 180);
-
-            telemetry.addData("DEG wclclr->", "{%.0fdeg} {%.0fdeg %.0fdeg}",
-                    testArm.wristAngle.getPI() / Math.PI * 180,
-                    testArm.leftClawAngle.getPI() / Math.PI * 180,
-                    testArm.rightClawAngle.getPI() / Math.PI * 180);
-
-            telemetry.addData("CONTROL lr->", "{%.0fp %.0fp}",
-                    lControl * 100,
-                    rControl * 100);
-
-            telemetry.addData("CONTROL xyz->", "{%.0fmm  %.0fmm  %.0fmm}",
-                    xControl,
-                    yControl,
-                    zControl);
 
             telemetry.addData("ARM xyz ->", "{%.0fmm  %.0fmm  %.0fmm}",
                     theArm.getX(),
                     theArm.getY(),
                     theArm.getZ());
 
-            telemetry.addData("ARM rtpa2->", "{%.0fmm  %.0fg  %.0fg, %.0fg}",
-                    theArm.getR(),
-                    theArm.getTeta() / Math.PI * 180,
-                    theArm.getPhi() / Math.PI * 180,
-                    theArm.getA2() / Math.PI * 180);
-
-            telemetry.addData("ARM servos->", "{%.0fg  %.0fg  %.0fg, %.0fg}",
-                    theArm.getTurretServo() * 180,
-                    theArm.getBaseServo() * 180,
-                    theArm.getElbowServo() * 180,
-                    theArm.getWristServo() * 180);
-
-            telemetry.addData("TEST servos->", "{%.0fg  %.0fg  %.0fg, %.0fg}",
-                    testArm.getTurretServo() * 180,
-                    testArm.getBaseServo() * 180,
-                    testArm.getElbowServo() * 180,
-                    testArm.getWristServo() * 180);
-
-            telemetry.addData("TEST xyz ->", "{%.0fmm  %.0fmm  %.0fmm}",
-                    testArm.getX(),
-                    testArm.getY(),
-                    testArm.getZ());
-
-            telemetry.addData("TEST rtpa2->", "{%.0fmm  %.0fg  %.0fg, %.0fg}",
-                    testArm.getR(),
-                    testArm.getTeta() / Math.PI * 180,
-                    testArm.getPhi() / Math.PI * 180,
-                    testArm.getA2() / Math.PI * 180);
+            telemetry.addData("CONTROL lr->", "{%.0fp %.0fp}",
+                    lControl * 100,
+                    rControl * 100);
 
             String controlMode = new String("servos");
             if (useDriveControl) controlMode = "drive";
@@ -216,6 +174,55 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
 
             telemetry.addData("control mode->", "%s",
                     controlMode);
+
+            telemetry.addData( "-------->", "" );
+
+            if (extendedLogging) {
+
+                telemetry.addData("POS wclclr->", "{%.0fg} {%.0fg %.0fg}",
+                        wristControl * 180,
+                        leftClawControl * 180,
+                        rightClawControl * 180);
+
+                telemetry.addData("DEG wclclr->", "{%.0fdeg} {%.0fdeg %.0fdeg}",
+                        testArm.wristAngle.getPI() / Math.PI * 180,
+                        testArm.leftClawAngle.getPI() / Math.PI * 180,
+                        testArm.rightClawAngle.getPI() / Math.PI * 180);
+
+                telemetry.addData("CONTROL xyz->", "{%.0fmm  %.0fmm  %.0fmm}",
+                        xControl,
+                        yControl,
+                        zControl);
+
+                telemetry.addData("ARM rtpa2->", "{%.0fmm  %.0fg  %.0fg, %.0fg}",
+                        theArm.getR(),
+                        theArm.getTeta() / Math.PI * 180,
+                        theArm.getPhi() / Math.PI * 180,
+                        theArm.getA2() / Math.PI * 180);
+
+                telemetry.addData("ARM servos->", "{%.0fg  %.0fg  %.0fg, %.0fg}",
+                        theArm.getTurretServo() * 180,
+                        theArm.getBaseServo() * 180,
+                        theArm.getElbowServo() * 180,
+                        theArm.getWristServo() * 180);
+
+                telemetry.addData("TEST servos->", "{%.0fg  %.0fg  %.0fg, %.0fg}",
+                        testArm.getTurretServo() * 180,
+                        testArm.getBaseServo() * 180,
+                        testArm.getElbowServo() * 180,
+                        testArm.getWristServo() * 180);
+
+                telemetry.addData("TEST xyz ->", "{%.0fmm  %.0fmm  %.0fmm}",
+                        testArm.getX(),
+                        testArm.getY(),
+                        testArm.getZ());
+
+                telemetry.addData("TEST rtpa2->", "{%.0fmm  %.0fg  %.0fg, %.0fg}",
+                        testArm.getR(),
+                        testArm.getTeta() / Math.PI * 180,
+                        testArm.getPhi() / Math.PI * 180,
+                        testArm.getA2() / Math.PI * 180);
+            }
 
             telemetry.update();
 
@@ -370,8 +377,8 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
                     double xInput = gamepad1.left_stick_x;
                     double yInput = -gamepad1.right_stick_y;
 
-                    if( Math.abs( xInput ) < 0.15 ) xInput = 0; //acts as brake
-                    if( Math.abs( yInput ) < 0.15 ) yInput = 0; //acts as brake
+                    if (Math.abs(xInput) < 0.15) xInput = 0; //acts as brake
+                    if (Math.abs(yInput) < 0.15) yInput = 0; //acts as brake
 
                     lControl = yInput * driveDefaultSpeed;
                     rControl = yInput * driveDefaultSpeed;
