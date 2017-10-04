@@ -153,12 +153,11 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
                     turretControl * 100,
                     baseControl * 100,
                     elbowControl * 100,
-                    wristControl * 100 );
+                    wristControl * 100);
 
             telemetry.addData("CONTROL CLAW servos POS->", "{%.0f\\% %.0f\\%}",
                     leftClawControl * 100,
                     rightClawControl * 100);
-
 
             telemetry.addData("ARM coord XYZ->", "{%.0fmm  %.0fmm  %.0fmm}",
                     theArm.getX(),
@@ -175,11 +174,11 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
                     testArm.turretAngle.getPI() / Math.PI * 180,
                     testArm.baseAngle.getPI() / Math.PI * 180,
                     testArm.elbowAngle.getPI() / Math.PI * 180,
-                    testArm.wristAngle.getPI() / Math.PI * 180 );
+                    testArm.wristAngle.getPI() / Math.PI * 180);
 
             telemetry.addData("ARM CLAW servos POS->", "{%.0f//% %.0f//%}",
                     testArm.getLeftClawServo() * 100,
-                    testArm.getRightClawServo() * 100 );
+                    testArm.getRightClawServo() * 100);
 
             telemetry.addData("ARM CLAW servos DEG->", "{%.0fdeg %.0fdeg}",
                     testArm.leftClawAngle.getPI() / Math.PI * 180,
@@ -188,9 +187,9 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
             telemetry.addData("ARM claw MM->", "{%.0fmm}",
                     theArm.getClawMM());
 
-            telemetry.addData("CONTROL lr->", "{%.0f\\% %.0f\\%}",
+            telemetry.addData("CONTROL lr POS->", "{%.0f\\% %.0f\\%}",
                     lControl * 100,
-                    rControl * 100);
+                    rControl * 100 );
 
             String controlMode = new String("servos");
             if (useDriveControl) controlMode = "drive";
@@ -199,7 +198,7 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
             telemetry.addData("control mode->", "%s",
                     controlMode);
 
-            telemetry.addData("-------->", "");
+            telemetry.addData("----", "");
 
             if (extendedLogging) {
 
@@ -215,7 +214,7 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
                         testArm.getElbowServo() * 100,
                         testArm.getWristServo() * 100);
 
-                telemetry.addData("ARM TBEW servos DEG->", "{%.0fdeg  %.0fdeg  %.0fdeg, %.0fdeg}",
+                telemetry.addData("TEST TBEW servos DEG->", "{%.0fdeg  %.0fdeg  %.0fdeg, %.0fdeg}",
                         testArm.turretAngle.getPI() / Math.PI * 180,
                         testArm.baseAngle.getPI() / Math.PI * 180,
                         testArm.elbowAngle.getPI() / Math.PI * 180,
