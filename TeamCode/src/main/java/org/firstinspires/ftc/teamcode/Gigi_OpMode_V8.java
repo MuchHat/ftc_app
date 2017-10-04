@@ -194,7 +194,7 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
                     rControl * 100);
 
             String collision = new String("->no");
-            if (collisionDetected) collision = "->YES";
+            if (collisionDetected) collision = "->YES " + testArm.collisionDescription;
             telemetry.addData("collision->", "%s",
                     collision);
 

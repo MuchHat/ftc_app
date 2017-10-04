@@ -49,6 +49,7 @@ public class Arm {
     // TODO END
     private double e_a2 = 0;
     private double clawMM = 0;
+    String collisionDescription = null;
 
     /* Constructor */
     public void Arm() {
@@ -73,6 +74,8 @@ public class Arm {
         leftClawAngle.Init(0.25, 0.75, 0.818, 1.582, 0.436, 0.818); // left claw setup
 
         setClawMM(lClawGap);
+
+        collisionDescription = new String( "" );
     }
 
     public double getX() {
@@ -236,9 +239,18 @@ public class Arm {
         adjust = false;
 
         // check for the extremes
-        if (x < xMin || x > xMax) collisionDetected = true;
-        if (y < yMin || y > yMax) collisionDetected = true;
-        if (z < zMin || z > zMax) collisionDetected = true;
+        if (x < xMin || x > xMax) {
+            collisionDetected = true;
+            collisionDescription = "X out of bounds";
+        }
+        if (y < yMin || y > yMax) {
+            collisionDetected = true;
+            collisionDescription = "Y out of bounds";
+        }
+        if (z < zMin || z > zMax) {
+            collisionDetected = true;
+            collisionDescription = "Z out of bounds";
+        }
         if (adjust) {
             x = Range.clip(x, xMin, xMax);
             y = Range.clip(y, yMin, yMax);
@@ -247,6 +259,7 @@ public class Arm {
         // check if hitting the ground
         if (z < -robotHeight) {
             collisionDetected = true;
+            collisionDescription = "hitting the ground";
             if (adjust) z = armBaseLocationZ;
         }
         // check if hitting the robot
@@ -254,6 +267,7 @@ public class Arm {
                 (y < armBaseLocationY) &&
                 (z < armBaseLocationZ)) {
             collisionDetected = true;
+            collisionDescription = "hitting the robot body";
             if (adjust) {
                 // move to the closest
                 double top = armBaseLocationZ - z;
