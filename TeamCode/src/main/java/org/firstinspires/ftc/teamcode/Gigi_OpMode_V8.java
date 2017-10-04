@@ -149,20 +149,32 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
             telemetry.addData("loopTime", "{%.3fms}",
                     crrLoopTime);
 
-            telemetry.addData("POS servos->", "{%.0fg %.0fg %.0fg}",
-                    turretControl * 180,
-                    baseControl * 180,
-                    elbowControl * 180);
+            telemetry.addData("servos POS->", "{%.0fp %.0fp %.0fp}",
+                    turretControl * 100,
+                    baseControl * 100,
+                    elbowControl * 100);
+            telemetry.addData("servos POS->", "{%.0fp %.0fp %.0fp}",
+                    wristControl * 100,
+                    leftClawControl * 100,
+                    rightClawControl * 100);
 
-            telemetry.addData("DEG servos->", "{%.0fdeg %.0fdeg %.0fdeg}",
+            telemetry.addData("servos DEG->", "{%.0fdeg %.0fdeg %.0fdeg}",
                     testArm.turretAngle.getPI() / Math.PI * 180,
                     testArm.baseAngle.getPI() / Math.PI * 180,
                     testArm.elbowAngle.getPI() / Math.PI * 180);
 
-            telemetry.addData("ARM xyz ->", "{%.0fmm  %.0fmm  %.0fmm}",
+            telemetry.addData("servos DEG->", "{%.0fdeg} {%.0fdeg %.0fdeg}",
+                    testArm.wristAngle.getPI() / Math.PI * 180,
+                    testArm.leftClawAngle.getPI() / Math.PI * 180,
+                    testArm.rightClawAngle.getPI() / Math.PI * 180);
+
+            telemetry.addData("coord XYZ->", "{%.0fmm  %.0fmm  %.0fmm}",
                     theArm.getX(),
                     theArm.getY(),
                     theArm.getZ());
+
+            telemetry.addData("claw->", "{%.0fmm}",
+                    theArm.getClawMM());
 
             telemetry.addData("CONTROL lr->", "{%.0fp %.0fp}",
                     lControl * 100,
@@ -175,24 +187,9 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
             telemetry.addData("control mode->", "%s",
                     controlMode);
 
-            telemetry.addData( "-------->", "" );
+            telemetry.addData("-------->", "");
 
             if (extendedLogging) {
-
-                telemetry.addData("POS wclclr->", "{%.0fg} {%.0fg %.0fg}",
-                        wristControl * 180,
-                        leftClawControl * 180,
-                        rightClawControl * 180);
-
-                telemetry.addData("DEG wclclr->", "{%.0fdeg} {%.0fdeg %.0fdeg}",
-                        testArm.wristAngle.getPI() / Math.PI * 180,
-                        testArm.leftClawAngle.getPI() / Math.PI * 180,
-                        testArm.rightClawAngle.getPI() / Math.PI * 180);
-
-                telemetry.addData("CONTROL xyz->", "{%.0fmm  %.0fmm  %.0fmm}",
-                        xControl,
-                        yControl,
-                        zControl);
 
                 telemetry.addData("ARM rtpa2->", "{%.0fmm  %.0fg  %.0fg, %.0fg}",
                         theArm.getR(),
@@ -200,17 +197,30 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
                         theArm.getPhi() / Math.PI * 180,
                         theArm.getA2() / Math.PI * 180);
 
-                telemetry.addData("ARM servos->", "{%.0fg  %.0fg  %.0fg, %.0fg}",
-                        theArm.getTurretServo() * 180,
-                        theArm.getBaseServo() * 180,
-                        theArm.getElbowServo() * 180,
-                        theArm.getWristServo() * 180);
+                telemetry.addData("ARM servos->", "{%.0fp  %.0fp  %.0fp, %.0fp}",
+                        theArm.getTurretServo() * 100,
+                        theArm.getBaseServo() * 100,
+                        theArm.getElbowServo() * 100,
+                        theArm.getWristServo() * 100);
 
-                telemetry.addData("TEST servos->", "{%.0fg  %.0fg  %.0fg, %.0fg}",
-                        testArm.getTurretServo() * 180,
-                        testArm.getBaseServo() * 180,
-                        testArm.getElbowServo() * 180,
-                        testArm.getWristServo() * 180);
+                telemetry.addData("ARM servos DEG->", "{%.0fg  %.0fg  %.0fg, %.0fg}",
+                        theArm.turretAngle.getPI() / Math.PI * 180,
+                        theArm.baseAngle.getPI() / Math.PI * 180,
+                        theArm.elbowAngle.getPI() / Math.PI * 180,
+                        theArm.wristAngle.getPI() / Math.PI * 180);
+
+                telemetry.addData("TEST servos DEG->", "{%.0fp  %.0fp  %.0fp, %.0fp}",
+                        testArm.getTurretServo() * 100,
+                        testArm.getBaseServo() * 100,
+                        testArm.getElbowServo() * 100,
+                        testArm.getWristServo() * 100);
+
+
+                telemetry.addData("ARM servos DEG->", "{%.0fg  %.0fg  %.0fg, %.0fg}",
+                        testArm.turretAngle.getPI() / Math.PI * 180,
+                        testArm.baseAngle.getPI() / Math.PI * 180,
+                        testArm.elbowAngle.getPI() / Math.PI * 180,
+                        testArm.wristAngle.getPI() / Math.PI * 180);
 
                 telemetry.addData("TEST xyz ->", "{%.0fmm  %.0fmm  %.0fmm}",
                         testArm.getX(),
