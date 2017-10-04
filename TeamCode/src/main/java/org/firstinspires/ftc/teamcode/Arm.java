@@ -16,7 +16,6 @@ public class Arm {
     public Angle baseAngle = null;
     public Angle elbowAngle = null;
     public Angle wristAngle = null;
-    public Angle wristHorizontalAngle = null;
     public Angle rightClawAngle = null;
     public Angle leftClawAngle = null;
     double mmClawOpen = 222;  // mm
@@ -63,7 +62,6 @@ public class Arm {
         elbowAngle = new Angle();
 
         wristAngle = new Angle();
-        wristHorizontalAngle = new Angle();
         rightClawAngle = new Angle();
         leftClawAngle = new Angle();
 

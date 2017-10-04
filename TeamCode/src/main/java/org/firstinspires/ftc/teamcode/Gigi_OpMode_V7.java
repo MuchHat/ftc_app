@@ -147,21 +147,31 @@ public class Gigi_OpMode_V7 extends LinearOpMode {
             telemetry.addData("loopTime", "{%.3fms}",
                     crrLoopTime);
 
-            telemetry.addData("control servos->", "{%.0fg %.0fg %.0fg}",
+            telemetry.addData("POS servos->", "{%.0fg %.0fg %.0fg}",
                     turretControl * 180,
                     baseControl * 180,
                     elbowControl * 180);
 
-            telemetry.addData("control wclclr->", "{%.0fg} {%.0fg %.0fg}",
+            telemetry.addData("POS wclclr->", "{%.0fg} {%.0fg %.0fg}",
                     wristControl * 180,
                     leftClawControl * 180,
                     rightClawControl * 180);
 
-            telemetry.addData("control lr->", "{%.0fp %.0fp}",
+            telemetry.addData("DEG servos->", "{%.0fdeg %.0fdeg %.0fdeg}",
+                    testArm.turretAngle.getPI() / Math.PI * 180,
+                    testArm.baseAngle.getPI() / Math.PI * 180,
+                    testArm.elbowAngle.getPI() / Math.PI * 180);
+
+            telemetry.addData("DEG wclclr->", "{%.0fdeg} {%.0fdeg %.0fdeg}",
+                    testArm.wristAngle.getPI() / Math.PI * 180,
+                    testArm.leftClawAngle.getPI() / Math.PI * 180,
+                    testArm.rightClawAngle.getPI() / Math.PI * 180);
+
+            telemetry.addData("CONTROL lr->", "{%.0fp %.0fp}",
                     lControl * 100,
                     rControl * 100);
 
-            telemetry.addData("control xyz->", "{%.0fmm  %.0fmm  %.0fmm}",
+            telemetry.addData("CONTROL xyz->", "{%.0fmm  %.0fmm  %.0fmm}",
                     xControl,
                     yControl,
                     zControl);
@@ -359,8 +369,7 @@ public class Gigi_OpMode_V7 extends LinearOpMode {
                 theArm.setXYZ(xControl, yControl, zControl);
 
                 // control: TURRET
-                if (gamepad1.right_stick_y != 0 ||
-                        gamepad1.left_stick_x != 0) {
+                {
 
                     double xInput = gamepad1.left_stick_x;
                     double yInput = -gamepad1.right_stick_y;

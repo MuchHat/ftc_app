@@ -106,12 +106,12 @@ public class Gigi_OpMode_V5_Working extends LinearOpMode {
             telemetry.addData("loopTime", "{%.3fms}",
                     crrLoopTime / 1000 );
 
-            telemetry.addData("servos control->", "{%.3f  %.3f  %.3f}",
+            telemetry.addData("servos tbe pos->", "{%.3f  %.3f  %.3f}",
                     turretControl,
                     baseControl,
                     elbowControl );
 
-            telemetry.addData("servos control->", "{%.3f} {%.3f %.3f}",
+            telemetry.addData("servos wclcr pos->", "{%.3f} {%.3f %.3f}",
                     wristControl,
                     clawControlR,
                     clawControlL);
