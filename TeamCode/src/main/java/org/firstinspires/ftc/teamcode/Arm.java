@@ -189,7 +189,7 @@ public class Arm {
 
         e_a2 = elbowTriangle.a2;
 
-        phi = Math.PI / 2 - ( baseAngle.getPI() - e_a2 );
+        phi = Math.PI / 2 - (baseAngle.getPI() - e_a2);
 
         r = elbowTriangle.l3;
 
@@ -224,7 +224,7 @@ public class Arm {
         e_a2 = elbowTriangle.a2;
 
         turretAngle.setPI(Math.PI - teta);
-        baseAngle.setPI(Math.PI/2 - phi + elbowTriangle.a2);
+        baseAngle.setPI(Math.PI / 2 - phi + elbowTriangle.a2);
         elbowAngle.setPI(elbowTriangle.a3);
     }
 
@@ -236,13 +236,13 @@ public class Arm {
         adjust = false;
 
         // check for the extremes
-        if( x < xMin || x > xMax ) collisionDetected = true;
-        if( y < yMin || y > yMax ) collisionDetected = true;
-        if( z < zMin || z > zMax ) collisionDetected = true;
-        if( adjust ){
-            x = Range.clip( x, xMin, xMax );
-            y = Range.clip( y, yMin, yMax );
-            z = Range.clip( z, zMin, zMax );
+        if (x < xMin || x > xMax) collisionDetected = true;
+        if (y < yMin || y > yMax) collisionDetected = true;
+        if (z < zMin || z > zMax) collisionDetected = true;
+        if (adjust) {
+            x = Range.clip(x, xMin, xMax);
+            y = Range.clip(y, yMin, yMax);
+            z = Range.clip(z, zMin, zMax);
         }
         // check if hitting the ground
         if (z < -robotHeight) {
