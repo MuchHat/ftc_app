@@ -146,7 +146,7 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
 
             testArm.setServos(turretControl, baseControl, elbowControl);
 
-            boolean collisitionDetected = testArm.collisionCheck( false );
+            boolean collisionDetected = testArm.collisionCheck(false);
 
             telemetry.addData("loopTime", "{%.3fms}",
                     crrLoopTime);
@@ -194,7 +194,7 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
                     rControl * 100);
 
             String collision = new String("->no");
-            if (collisitionDetected) collision = "->YES";
+            if (collisionDetected) collision = "->YES";
             telemetry.addData("collision->", "%s",
                     collision);
 
