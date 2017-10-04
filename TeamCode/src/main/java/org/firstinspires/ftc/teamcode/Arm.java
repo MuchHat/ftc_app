@@ -286,6 +286,10 @@ public class Arm {
             }
         }
 
+        if( !collisionDetected ){
+            collisionDescription = "";
+        }
+
         return collisionDetected;
     }
 }
