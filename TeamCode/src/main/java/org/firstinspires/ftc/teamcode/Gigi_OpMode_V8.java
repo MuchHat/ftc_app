@@ -146,6 +146,8 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
 
             testArm.setServos(turretControl, baseControl, elbowControl);
 
+            boolean collisitionDetected = testArm.collisionCheck( false );
+
             telemetry.addData("loopTime", "{%.3fms}",
                     crrLoopTime);
 
@@ -191,16 +193,20 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
                     lControl * 100,
                     rControl * 100);
 
+            String collision = new String("->no");
+            if (collisitionDetected) collision = "->YES";
+            telemetry.addData("collision->", "%s",
+                    collision);
+
             String controlMode = new String("->servos");
             if (useDriveControl) controlMode = "->drive";
             else if (useAxisControl) controlMode = "->axis";
-
             telemetry.addData("control mode->", "%s",
                     controlMode);
 
-            telemetry.addData("----", "");
-
             if (extendedLogging) {
+
+                telemetry.addData("----", "");
 
                 telemetry.addData("ARM rtpa2->", "{%.0fmm  %.0fdeg  %.0fdeg, %.0fdeg}",
                         theArm.getR(),
