@@ -232,6 +232,9 @@ public class Arm {
 
         boolean collisionDetected = false;
 
+        //TODO
+        adjust = false;
+
         // check for the extremes
         if( x < xMin || x > xMax ) collisionDetected = true;
         if( y < yMin || y > yMax ) collisionDetected = true;
