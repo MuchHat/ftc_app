@@ -415,12 +415,13 @@ public class Gigi_OpMode_V7 extends LinearOpMode {
         wristControl = Range.clip(wristControl, theArm.wristAngle.minServo, theArm.wristAngle.maxServo);
         turretControl = Range.clip(turretControl, theArm.turretAngle.minServo, theArm.turretAngle.maxServo);
 
-        //do a collision check
         testArm.setServos(turretControl, baseControl, elbowControl);
 
-        if( testArm.collisionCheck(false) ){
+        /*
+        //do a collision check TODO
+         if( testArm.collisionCheck(false) ){
             return;
-        }
+        } */
 
         // slow down if needed
         double maxServoStep = 1; // 0.1 per servo and step
@@ -466,9 +467,12 @@ public class Gigi_OpMode_V7 extends LinearOpMode {
 
         theArm.setXYZ(xControl, yControl, zControl);
 
+        /*
+        //TODO
         if( theArm.collisionCheck( false )){
             return;
         }
+         */
 
         //slow down the move here if needed, also use for collision correction
         double maxStep = 666; // 6mm per axis and step
@@ -487,7 +491,7 @@ public class Gigi_OpMode_V7 extends LinearOpMode {
                         zControlLast + ((zControl - zControlLast) / stepCount) * i);
 
                 // use the order for minimum colision
-                robot._elbow.setPosition(stepArm.getTurretServo());
+                robot._elbow.setPosition(stepArm.getElbowServo());
                 robot._base.setPosition(stepArm.getBaseServo());
                 robot._turret.setPosition(stepArm.getTurretServo());
                 robot._wrist.setPosition(stepArm.getWristServo());
@@ -497,7 +501,7 @@ public class Gigi_OpMode_V7 extends LinearOpMode {
             }
         }
 
-        robot._elbow.setPosition(theArm.getTurretServo());
+        robot._elbow.setPosition(theArm.getElbowServo());
         robot._base.setPosition(theArm.getBaseServo());
         robot._turret.setPosition(theArm.getTurretServo());
         robot._wrist.setPosition(theArm.getWristServo());
