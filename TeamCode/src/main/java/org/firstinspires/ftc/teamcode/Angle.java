@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.util.Range;
 public class Angle {
 
     public double angleServo = 0.0; // between 0 and 1.0
-    public double anglePI = 0.0;  // between -0 to pi
+    public double anglePI = 0.0;  // between 0 to pi
 
     public double offsetServo = 0.0; // default 0.0
     public double slopeServo = 1.0; // default 1.0
