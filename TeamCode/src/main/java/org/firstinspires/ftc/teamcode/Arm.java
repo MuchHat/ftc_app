@@ -65,12 +65,12 @@ public class Arm {
         rightClawAngle = new Angle();
         leftClawAngle = new Angle();
 
-        turretAngle.Init_45_135(0.140, 0.644, 0.05, 0.897); // turret setup
-        baseAngle.Init_45_135(0.25, 0.75, 0.05, 0.95); // TODO
-        elbowAngle.Init_45_135(0.404, 0.950, 0.20, 0.95); //elbow setup
-        wristAngle.Init_45_135(1.1775, 0.6105, 0.32, 0.89);  //wrist setup
-        rightClawAngle.Init_45_135(0.221, -0.437, 0.221, 0.55); // right claw setup
-        leftClawAngle.Init_45_135(0.818, 1.582, 0.436, 0.818); // left claw setup
+        turretAngle.Init(0.25, 0.75, 0.140, 0.644, 0.05, 0.897); // turret setup
+        baseAngle.Init(0.25, 0.75, 0.25, 0.75, 0.05, 0.95); // TODO
+        elbowAngle.Init(0.25, 0.75, 0.404, 0.950, 0.20, 0.95); //elbow setup
+        wristAngle.Init(0.25, 0.75, 1.1775, 0.6105, 0.32, 0.89);  //wrist setup
+        rightClawAngle.Init(0.25, 0.75, 0.221, -0.437, 0.221, 0.55); // right claw setup
+        leftClawAngle.Init(0.25, 0.75, 0.818, 1.582, 0.436, 0.818); // left claw setup
 
         setClawMM(lClawGap);
     }

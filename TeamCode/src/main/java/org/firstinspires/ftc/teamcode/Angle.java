@@ -22,10 +22,13 @@ public class Angle {
 
     }
 
-    public void Init_45_135( double s45, double s135, double aMin, double aMax ) {
+    public void Init( double angle1, double angle2, double pos1, double pos2, double aMin, double aMax ) {
 
-        slopeServo = 0.5 / ( s135 - s45 );
-        offsetServo = 0.25 - ( s45 * slopeServo );
+        // angle1 and angle2 are the observed angles for pos1 and pos2 -
+        // angle1 and angle2 are in 0.0->1.1
+
+        slopeServo = ( angle2 - angle1 ) / ( pos2 - pos1 );
+        offsetServo = angle1 - ( pos1 * slopeServo );
         minServo = aMin;
         maxServo = aMax;
     }
@@ -42,7 +45,6 @@ public class Angle {
 
         anglePI = Range.clip( anglePI, 0, Math.PI );
 
-        //Log.d( "MuchHat", String.format( "Angle_setServo: %.3f, %.3f pi", angleServo, anglePI ) );
     }
 
     public void setPI( double ap ) {
@@ -52,8 +54,6 @@ public class Angle {
         angleServo = ( anglePI / Math.PI  - offsetServo ) / slopeServo;
 
         angleServo = Range.clip( angleServo, minServo, maxServo );
-
-        //Log.d( "MuchHat", String.format( "Angle_setPI: %.3f, %.3fpi", angleServo, anglePI ) );
 
     }
 }
