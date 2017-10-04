@@ -224,7 +224,7 @@ public class Arm {
         e_a2 = elbowTriangle.a2;
 
         turretAngle.setPI(Math.PI - teta);
-        baseAngle.setPI(Math.PI - phi + elbowTriangle.a2);
+        baseAngle.setPI(Math.PI/2 - phi + elbowTriangle.a2);
         elbowAngle.setPI(elbowTriangle.a3);
     }
 
