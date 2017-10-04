@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -39,8 +40,8 @@ import com.qualcomm.robotcore.util.Range;
  * This file illustrates the concept of driving a path based on time.
  */
 
-@TeleOp(name = "OpMode V6 Working", group = "Gigi")
-// @Disabled
+@TeleOp(name = "Gigi V6", group = "Gigi")
+@Disabled
 public class Gigi_OpMode_V6_Working extends LinearOpMode {
 
     public Gigi_Hardware_V2 robot = new Gigi_Hardware_V2();
@@ -365,8 +366,8 @@ public class Gigi_OpMode_V6_Working extends LinearOpMode {
                     double xInput = gamepad1.left_stick_x;
                     double yInput = -gamepad1.right_stick_y;
 
-                    if( Math.abs( xInput ) < 0.15 ) xInput = 0; //acts as brake
-                    if( Math.abs( yInput ) < 0.15 ) yInput = 0; //acts as brake
+                    if (Math.abs(xInput) < 0.15) xInput = 0; //acts as brake
+                    if (Math.abs(yInput) < 0.15) yInput = 0; //acts as brake
 
                     lControl = yInput * driveDefaultSpeed;
                     rControl = yInput * driveDefaultSpeed;

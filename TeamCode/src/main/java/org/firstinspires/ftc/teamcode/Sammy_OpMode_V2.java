@@ -39,7 +39,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.BasicOpMode_Iterat
  * This file illustrates the concept of driving a path based on time.
  */
 
-@TeleOp(name = "Sammy OpMode V2", group = "Sammy")
+@TeleOp(name = "Sammy V2", group = "Sammy")
 // @Disabled
 public class Sammy_OpMode_V2 extends BasicOpMode_Iterative {
 

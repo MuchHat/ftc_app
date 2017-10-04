@@ -39,7 +39,7 @@ import com.qualcomm.robotcore.util.Range;
  * This file illustrates the concept of driving a path based on time.
  */
 
-@TeleOp(name = "OpMode V7", group = "Gigi")
+@TeleOp(name = "Gigi V8", group = "Gigi")
 // @Disabled
 public class Gigi_OpMode_V8 extends LinearOpMode {
 
@@ -189,11 +189,11 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
 
             telemetry.addData("CONTROL lr POS->", "{%.0f\\% %.0f\\%}",
                     lControl * 100,
-                    rControl * 100 );
+                    rControl * 100);
 
-            String controlMode = new String("servos");
-            if (useDriveControl) controlMode = "drive";
-            else if (useAxisControl) controlMode = "axis";
+            String controlMode = new String("->servos");
+            if (useDriveControl) controlMode = "->drive";
+            else if (useAxisControl) controlMode = "->axis";
 
             telemetry.addData("control mode->", "%s",
                     controlMode);

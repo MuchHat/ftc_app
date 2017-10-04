@@ -39,17 +39,17 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * This OpMode uses the common Pushbot hardware class to define the devices on the robot.
  * All device access is managed through the HardwarePushbot class.
  * The code is structured as a LinearOpMode
- *
+ * <p>
  * This particular OpMode executes a POV Game style Teleop for a PushBot
  * In this mode the left stick moves the robot FWD and back, the Right stick turns left and right.
  * It raises and lowers the claw using the Gampad Y and A buttons respectively.
  * It also opens and closes the claws slowly using the left and right Bumper buttons.
- *
+ * <p>
  * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Adrian_ServoOpMode", group="Adrian")
+@TeleOp(name = "Adrian V1", group = "Adrian")
 @Disabled
 public class Adrian_V1_ServoOpMode extends LinearOpMode {
 
@@ -77,21 +77,20 @@ public class Adrian_V1_ServoOpMode extends LinearOpMode {
         /* Initialize the hardware variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init( hardwareMap );
+        robot.init(hardwareMap);
 
-        if(firstrun)
-        {
-            robot.turret.setPosition( homeTurret / 255 );
-            robot.base.setPosition( homeBottom / 255 );
-            robot.elbow.setPosition( homeTop /255 );
-            robot.wrist.setPosition( homeWrist /255 );
-            robot.clawLeft.setPosition( homeLeftClaw /255 );
-            robot.clawRight.setPosition( homeRightClaw /255 );
+        if (firstrun) {
+            robot.turret.setPosition(homeTurret / 255);
+            robot.base.setPosition(homeBottom / 255);
+            robot.elbow.setPosition(homeTop / 255);
+            robot.wrist.setPosition(homeWrist / 255);
+            robot.clawLeft.setPosition(homeLeftClaw / 255);
+            robot.clawRight.setPosition(homeRightClaw / 255);
             firstrun = false;
         }
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData( "Say", "Hello Driver" );    //
+        telemetry.addData("Say", "Hello Driver");    //
         telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
@@ -118,33 +117,33 @@ public class Adrian_V1_ServoOpMode extends LinearOpMode {
             }
 
             // Output the safe vales to the motor drives.
-            robot.leftDrive.setPower( left );
-            robot.rightDrive.setPower( right );
+            robot.leftDrive.setPower(left);
+            robot.rightDrive.setPower(right);
 
             if (gamepad1.a) {
-                telemetry.addData( "GamePad 1", "A" );
+                telemetry.addData("GamePad 1", "A");
                 telemetry.update();
 
                 // fill in here the actual home positions
 
 
-                robot.turret.setPosition( homeTurret / 255 );
-                robot.base.setPosition( homeBottom / 255 );
-                robot.elbow.setPosition( homeTop /255 );
-                robot.wrist.setPosition( homeWrist /255 );
-                robot.clawLeft.setPosition( homeLeftClaw /255 );
-                robot.clawRight.setPosition( homeRightClaw /255 );
+                robot.turret.setPosition(homeTurret / 255);
+                robot.base.setPosition(homeBottom / 255);
+                robot.elbow.setPosition(homeTop / 255);
+                robot.wrist.setPosition(homeWrist / 255);
+                robot.clawLeft.setPosition(homeLeftClaw / 255);
+                robot.clawRight.setPosition(homeRightClaw / 255);
 
-                telemetry.addData( "turret at ", "%5.2f", robot.turret.getPosition() );
-                telemetry.addData( "bottom at ", "%5.2f", robot.base.getPosition() );
-                telemetry.addData( "top at ", "%5.2f", robot.elbow.getPosition() );
-                telemetry.addData( "wrist at ", "%5.2f", robot.wrist.getPosition() );
-                telemetry.addData( "left claw at ", "%5.2f", robot.clawLeft.getPosition() );
-                telemetry.addData( "right claw at ", "%5.2f", robot.clawRight.getPosition() );
+                telemetry.addData("turret at ", "%5.2f", robot.turret.getPosition());
+                telemetry.addData("bottom at ", "%5.2f", robot.base.getPosition());
+                telemetry.addData("top at ", "%5.2f", robot.elbow.getPosition());
+                telemetry.addData("wrist at ", "%5.2f", robot.wrist.getPosition());
+                telemetry.addData("left claw at ", "%5.2f", robot.clawLeft.getPosition());
+                telemetry.addData("right claw at ", "%5.2f", robot.clawRight.getPosition());
                 telemetry.update();
             }
 
-            if(gamepad1.right_stick_x != 0){
+            if (gamepad1.right_stick_x != 0) {
                 // move arm forward
 
                 // fill in here the limit positions
@@ -159,70 +158,69 @@ public class Adrian_V1_ServoOpMode extends LinearOpMode {
                 double changeBottom = speedBottom * dirBottom * gamepad1.right_stick_x;
                 double newBottom = crrBottom + changeBottom;
 
-                if( dirBottom > 0 ){
+                if (dirBottom > 0) {
                     if (newBottom * 255 > maxBottom) newBottom = maxBottom / 255;
                     if (newBottom * 255 < minBottom) newBottom = minBottom / 255;
                 }
-                if( dirBottom < 0 ){
+                if (dirBottom < 0) {
                     if (newBottom * 255 < maxBottom) newBottom = maxBottom / 255;
                     if (newBottom * 255 > minBottom) newBottom = minBottom / 255;
                 }
 
-                robot.base.setPosition( newBottom );
+                robot.base.setPosition(newBottom);
 
-                telemetry.addData( "bottom at ", "%5.2f", robot.base.getPosition() );
+                telemetry.addData("bottom at ", "%5.2f", robot.base.getPosition());
                 telemetry.update();
             }
             if (gamepad1.x) {
-                telemetry.addData( "GamePad 1", "X" );
+                telemetry.addData("GamePad 1", "X");
                 telemetry.update();
 
                 //turret, base, elbow, wrist, claw_left, claw_right
-                moveServo(50,150,255, "turret");
+                moveServo(50, 150, 255, "turret");
             }
 
             if (gamepad1.b) {
-                telemetry.addData( "GamePad 1", "B" );
+                telemetry.addData("GamePad 1", "B");
                 telemetry.update();
 
                 // ADD CODE HERE
             }
 
             if (gamepad1.y) {
-                telemetry.addData( "GamePad 1", "Y" );
+                telemetry.addData("GamePad 1", "Y");
                 telemetry.update();
 
                 // ADD CODE HERE
             }
 
             if (gamepad1.right_bumper) {
-                telemetry.addData( "GamePad 1", "R bumper" );
+                telemetry.addData("GamePad 1", "R bumper");
                 telemetry.update();
 
                 // ADD CODE HERE
             }
 
             if (gamepad1.left_bumper) {
-                telemetry.addData( "GamePad 1", "L bumper" );
+                telemetry.addData("GamePad 1", "L bumper");
                 telemetry.update();
 
                 // ADD CODE HERE
             }
 
             if (gamepad1.back) {
-                telemetry.addData( "GamePad 1", "Back" );
+                telemetry.addData("GamePad 1", "Back");
                 telemetry.update();
 
                 // ADD CODE HERE
             }
         }
-        sleep( 50 );
+        sleep(50);
     }
-    public void moveServo(int initialValue, int finalValue, final int max, String servoName)
-    {
+
+    public void moveServo(int initialValue, int finalValue, final int max, String servoName) {
         servoName = servoName.toLowerCase();
-        switch (servoName)
-        {
+        switch (servoName) {
             case "turret":
                 break;
             case "elbow":
