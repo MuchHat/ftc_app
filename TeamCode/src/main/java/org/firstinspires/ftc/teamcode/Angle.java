@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 
 public class Angle {
 
-    public double angleServo = 0; // between 0 and 1.0
+    public double angleServo = 1.0; // between 0 and 1.0
     public double anglePI = 0;  // between -pi/2 to pi/2
 
     public double offsetServo = 0;  // servo 0.2 coincides with 0 PI
