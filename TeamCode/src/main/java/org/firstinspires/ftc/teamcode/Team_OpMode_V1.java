@@ -173,7 +173,7 @@ public class Team_OpMode_V1 extends LinearOpMode {
 
             /**************************** START  OF USE SERVOS CONTROL*****************************/
 
-            if (doArmControl&&!doDriveControl) {
+            if (doArmControl && !doDriveControl) {
 
                 // control: BASE
                 if (gamepad1.left_stick_y != 0) {
@@ -255,7 +255,7 @@ public class Team_OpMode_V1 extends LinearOpMode {
             }
             /**************************** START  OF USE DRIVE CONTROL*****************************/
 
-            if (doDriveControl&&!doArmControl) {
+            if (doDriveControl && !doArmControl) {
                 {
                     double xInput = gamepad1.left_stick_x;
                     double yInput = -gamepad1.right_stick_y;
