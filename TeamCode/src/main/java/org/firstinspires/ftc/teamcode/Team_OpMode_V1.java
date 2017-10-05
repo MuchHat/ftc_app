@@ -306,21 +306,10 @@ public class Team_OpMode_V1 extends LinearOpMode {
 
                 double elbowControlStep = elbowControlLast + i * (elbowControl - elbowControlLast) / stepCount;
                 elbowControlStep = Range.clip(elbowControlStep, theArm.elbowAngle.minServo, theArm.elbowAngle.maxServo);
-
-
-                //TODO - add collision detection?
-
-
                 while (stepElapsedTime.milliseconds() < 6) {
                     idle();
                 }
-
-                // use the order for minimum colision
                 robot._elbow.setPosition(elbowControlStep);
-
-
-                // sleep( 166 );
-                //TODO : add delay
             }
             for (int i = 0; i < stepCount; i++) {
 
@@ -330,23 +319,17 @@ public class Team_OpMode_V1 extends LinearOpMode {
 
                 double wristControlStep = wristControlLast + i * (wristControl - wristControlLast) / stepCount;
                 double turretControlStep = turretControlLast + i * (turretControl - turretControlLast) / stepCount;
-                //TODO - add collision detection?
-                baseControlStep = Range.clip(baseControlStep, theArm.baseAngle.minServo, theArm.baseAngle.maxServo);
 
+                baseControlStep = Range.clip(baseControlStep, theArm.baseAngle.minServo, theArm.baseAngle.maxServo);
                 wristControlStep = Range.clip(wristControlStep, theArm.wristAngle.minServo, theArm.wristAngle.maxServo);
                 turretControlStep = Range.clip(turretControlStep, theArm.turretAngle.minServo, theArm.turretAngle.maxServo);
 
                 while (stepElapsedTime.milliseconds() < 6) {
                     idle();
                 }
-
                 robot._base.setPosition(baseControlStep);
-                // use the order for minimum colision
                 robot._wrist.setPosition(wristControlStep);
                 robot._turret.setPosition(turretControlStep);
-
-                // sleep( 166 );
-                //TODO : add delay
             }
 
         }
