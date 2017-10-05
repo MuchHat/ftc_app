@@ -283,6 +283,15 @@ public class Team_OpMode_V1 extends LinearOpMode {
 
     public void setServos() {
 
+        boolean doInStages = false;
+
+        // determine do in stages based on the base angle before and after
+        // posZero[1] is base and pozFront[1] is base
+        if (Math.abs(baseControl - posZero[1]) < 0.2 ||
+                Math.abs(baseControlLast - posZero[1]) < 0.2 ) {
+            doInStages = true;
+        }
+
         elbowControl = Range.clip(elbowControl, theArm.elbowAngle.minServo, theArm.elbowAngle.maxServo);
         baseControl = Range.clip(baseControl, theArm.baseAngle.minServo, theArm.baseAngle.maxServo);
         wristControl = Range.clip(wristControl, theArm.wristAngle.minServo, theArm.wristAngle.maxServo);
@@ -301,27 +310,30 @@ public class Team_OpMode_V1 extends LinearOpMode {
         if (stepCount > 0) {
             // move the elbow first to avoid hitting the robot
 
-            for (int i = 0; i < stepCount; i++) {
+            if (doInStages) {
+                for (int i = 0; i < stepCount; i++) {
 
-                ElapsedTime stepElapsedTime = new ElapsedTime();
-                stepElapsedTime.reset();
-
-                double elbowControlStep = elbowControlLast + i * (elbowControl - elbowControlLast) / stepCount;
-                elbowControlStep = Range.clip(elbowControlStep, theArm.elbowAngle.minServo, theArm.elbowAngle.maxServo);
-                while (stepElapsedTime.milliseconds() < 6) {
-                    idle();
+                    ElapsedTime stepElapsedTime = new ElapsedTime();
+                    stepElapsedTime.reset();
+                    double elbowControlStep = elbowControlLast + i * (elbowControl - elbowControlLast) / stepCount;
+                    elbowControlStep = Range.clip(elbowControlStep, theArm.elbowAngle.minServo, theArm.elbowAngle.maxServo);
+                    while (stepElapsedTime.milliseconds() < 6) {
+                        idle();
+                    }
+                    robot._elbow.setPosition(elbowControlStep);
                 }
-                robot._elbow.setPosition(elbowControlStep);
             }
             for (int i = 0; i < stepCount; i++) {
 
                 ElapsedTime stepElapsedTime = new ElapsedTime();
                 stepElapsedTime.reset();
-                double baseControlStep = baseControlLast + i * (baseControl - baseControlLast) / stepCount;
 
+                double baseControlStep = baseControlLast + i * (baseControl - baseControlLast) / stepCount;
                 double wristControlStep = wristControlLast + i * (wristControl - wristControlLast) / stepCount;
                 double turretControlStep = turretControlLast + i * (turretControl - turretControlLast) / stepCount;
+                double elbowControlStep = elbowControlLast + i * (elbowControl - elbowControlLast) / stepCount;
 
+                elbowControlStep = Range.clip(elbowControlStep, theArm.elbowAngle.minServo, theArm.elbowAngle.maxServo);
                 baseControlStep = Range.clip(baseControlStep, theArm.baseAngle.minServo, theArm.baseAngle.maxServo);
                 wristControlStep = Range.clip(wristControlStep, theArm.wristAngle.minServo, theArm.wristAngle.maxServo);
                 turretControlStep = Range.clip(turretControlStep, theArm.turretAngle.minServo, theArm.turretAngle.maxServo);
@@ -329,11 +341,11 @@ public class Team_OpMode_V1 extends LinearOpMode {
                 while (stepElapsedTime.milliseconds() < 6) {
                     idle();
                 }
+                if (!doInStages) robot._elbow.setPosition(elbowControlStep);
                 robot._base.setPosition(baseControlStep);
                 robot._wrist.setPosition(wristControlStep);
                 robot._turret.setPosition(turretControlStep);
             }
-
         }
 
         robot._elbow.setPosition(elbowControl);
