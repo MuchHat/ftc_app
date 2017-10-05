@@ -194,9 +194,8 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
                     rControl * 100);
 
             String collision = new String("->no");
-            if (collisionDetected) collision = "->YES " + testArm.collisionDescription;
-            telemetry.addData("collision->", "%s",
-                    collision);
+            if (collisionDetected) collision = "->YES, " + testArm.collisionDescription;
+            telemetry.addData("collision->", "%s", collision);
 
             String controlMode = new String("->servos");
             if (useDriveControl) controlMode = "->drive";
