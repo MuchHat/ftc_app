@@ -47,7 +47,6 @@ public class Team_OpMode_V1 extends LinearOpMode {
     public ElapsedTime runtime = new ElapsedTime();
 
     public Arm theArm = null;
-    public Arm testArm = null;
 
     public double turretControl = 0;
     public double baseControl = 0;
@@ -59,14 +58,9 @@ public class Team_OpMode_V1 extends LinearOpMode {
     public double xControl = 0;
     public double yControl = 0;
     public double zControl = 0;
-    public double clawMMControl = 0;
 
     public double lControl = 0;
     public double rControl = 0;
-
-    public double xControlLast = 0;
-    public double yControlLast = 0;
-    public double zControlLast = 0;
 
     public double lControlLast = 0;
     public double rControlLast = 0;
@@ -76,14 +70,11 @@ public class Team_OpMode_V1 extends LinearOpMode {
     public double wristControlLast = 0;
     public double turretControlLast = 0;
 
-    boolean useAxisControl = false;
     boolean useDriveControl = false;
 
     double servoDefaultSpeed = 0.00033; // 0.33 servo angle per sec
-    double axisDefaultSpeed = 0.44; // 1100 mm per sec
     double driveDefaultSpeed = 0.44; // ??
     double turnDefaultSpeed = 0.22; // ??
-    double kDrive = 1; // ??
 
     boolean extendedLogging = true;
 
@@ -93,12 +84,8 @@ public class Team_OpMode_V1 extends LinearOpMode {
         robot.init(hardwareMap);
         theArm = new Arm();
         theArm.init();
-        testArm = new Arm();
-        testArm.init();
 
-        testArm.setZeroXYZ();
-
-        robot._turret.setPosition(testArm.getTurretServo());
+        robot._turret.setPosition(theArm.getTurretServo());
         robot._base.setPosition(testArm.getBaseServo());
         robot._elbow.setPosition(testArm.getElbowServo());
         robot._wrist.setPosition(testArm.getWristServo());
