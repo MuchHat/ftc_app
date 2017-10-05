@@ -203,14 +203,12 @@ public class Team_OpMode_V1 extends LinearOpMode {
                 if (gamepad1.left_trigger != 0) {
                     leftClawControl -= gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
                     rightClawControl += gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
-                    currentPos = "none";
                     setServos();
                 }
                 // control: CLAW OPEN
                 if (gamepad1.right_trigger != 0) {
                     leftClawControl += gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
                     rightClawControl -= gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
-                    currentPos = "none";
                     setServos();
                 }
                 // control:
