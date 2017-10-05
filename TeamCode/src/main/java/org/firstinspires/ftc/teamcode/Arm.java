@@ -20,17 +20,17 @@ public class Arm {
     public Angle leftClawAngle = null;
     double mmClawOpen = 222;  // mm
     double mmClawClose = 188; // mm
-    double lBase = 188; // mm
-    double lElbow = 200; // mm
+    double lBase = 190; // mm
+    double lElbow = 170; // mm
     double lClawArm = 150; // mm
     double lClawGap = 37;  // mm
     //TODO
-    double xMax = 333; // mm
-    double xMin = -333; // mm
-    double yMax = 333; // mm
+    double xMax = 55; // mm
+    double xMin = -55; // mm
+    double yMax = 666; // mm
     double yMin = 0; // mm
-    double zMax = 333; // mm
-    double zMin = -111; // mm
+    double zMax = 666; // mm
+    double zMin = -333; // mm
     double rMax = (lBase + lElbow) * 0.95; // mm
     double rMin = 11;
     double armBaseLocationX = 444;
@@ -67,8 +67,8 @@ public class Arm {
         leftClawAngle = new Angle();
 
         turretAngle.Init(45, 90, 0.13, 0.41, 0.05, 0.95); // turret setup
-        baseAngle.Init(45, 90, 0.95, 0.70, 0.05, 0.95); // TODO
-        elbowAngle.Init(45, 90, 0.51, 0.71, 0.05, 0.95); //elbow setup
+        baseAngle.Init(45, 90, 0.95, 0.75, 0.35, 0.95); // TODO
+        elbowAngle.Init(45, 90, 0.32, 0.71, 0.05, 0.95); //elbow setup
         wristAngle.Init(45, 90, 0.89, 0.58, 0.05, 0.95);  //wrist setup
         rightClawAngle.Init(0, 45, 0.44, 0.76, 0.05, 0.95); // right claw setup
         leftClawAngle.Init(0, 45, 0.55, 0.22, 0.05, 0.95); // left claw setup
@@ -91,15 +91,15 @@ public class Arm {
     }
 
     public void setHomeXYZ() {
-        setXYZ(0, armBaseLocationY+33, robotHeight+33);
+        setXYZ(19, 109, -37 );
     }
 
     public void setFrontXYZ() {
-        setXYZ(0, armBaseLocationY + 66, 88);
+        setXYZ(19, 109, -37);
     }
 
     public void setZeroXYZ() {
-        setXYZ(0, armBaseLocationY+33, robotHeight+33);
+        setXYZ(19, 109, -37);
     }
 
     public double getR() {
@@ -165,8 +165,8 @@ public class Arm {
         double l2 = Math.sqrt(l3 * l3 - l1 * l1);
 
         clawTriangle.setSSS(l1, l2, l3);
-        rightClawAngle.setPI(clawTriangle.a1);
-        leftClawAngle.setPI(clawTriangle.a1);
+        rightClawAngle.setPI(Math.PI/2 - clawTriangle.a1);
+        leftClawAngle.setPI(Math.PI/2 -clawTriangle.a1);
 
         clawMM = amm;
     }
@@ -192,7 +192,7 @@ public class Arm {
 
         e_a2 = elbowTriangle.a2;
 
-        phi = Math.PI / 2 - (baseAngle.getPI() - e_a2);
+        phi = baseAngle.getPI() + e_a2 - Math.PI / 2;
 
         r = elbowTriangle.l3;
 
@@ -227,8 +227,9 @@ public class Arm {
         e_a2 = elbowTriangle.a2;
 
         turretAngle.setPI(Math.PI - teta);
-        baseAngle.setPI(Math.PI / 2 - phi + elbowTriangle.a2);
+        baseAngle.setPI(Math.PI/2 + phi - elbowTriangle.a2);
         elbowAngle.setPI(elbowTriangle.a3);
+        wristAngle.setPI(Math.PI - baseAngle.getPI() - elbowTriangle.a3);
     }
 
     public boolean collisionCheck(boolean adjust) {

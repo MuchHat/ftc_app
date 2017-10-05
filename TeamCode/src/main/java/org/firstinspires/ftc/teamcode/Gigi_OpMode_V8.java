@@ -59,6 +59,7 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
     public double xControl = 0;
     public double yControl = 0;
     public double zControl = 0;
+    public double clawMMControl = 0;
 
     public double lControl = 0;
     public double rControl = 0;
@@ -330,7 +331,7 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
 
                 // control:
                 if (gamepad1.left_stick_x != 0) {
-                    xControl += gamepad1.left_stick_x * axisDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
+                    xControl += gamepad1.left_stick_x * axisDefaultSpeed / 10 * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
                     xyzSetServos();
                 }
                 // control:
@@ -340,13 +341,12 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
                 }
                 // control:
                 if (gamepad1.left_stick_y != 0) { //
-                    zControl += -gamepad1.left_stick_y * axisDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
+                    zControl -= -gamepad1.left_stick_y * axisDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
                     xyzSetServos();
                 }
                 // control: claw
                 if (gamepad1.right_stick_x != 0) {
-                    rightClawControl += gamepad1.right_stick_x * axisDefaultSpeed * crrLoopTime;
-                    leftClawControl -= gamepad1.right_stick_x * axisDefaultSpeed * crrLoopTime;
+                    clawMMControl += gamepad1.right_stick_x * axisDefaultSpeed * crrLoopTime;
                     xyzSetServos();
                 }
                 if (gamepad1.back) {
@@ -487,6 +487,7 @@ public class Gigi_OpMode_V8 extends LinearOpMode {
         zControl = Range.clip(zControl, theArm.zMin, theArm.zMax);
 
         theArm.setXYZ(xControl, yControl, zControl);
+        theArm.setClawMM(clawMMControl);
 
         /*
         //TODO
