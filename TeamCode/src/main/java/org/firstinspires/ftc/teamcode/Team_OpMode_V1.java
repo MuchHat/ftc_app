@@ -214,7 +214,7 @@ public class Team_OpMode_V1 extends LinearOpMode {
                     setServos();
                 }
                 // control:
-                if (gamepad1.back) {
+                if (gamepad1.x) {
                     turretControl = posZero[0];
                     baseControl = posZero[1];
                     elbowControl = posZero[2];
@@ -299,6 +299,8 @@ public class Team_OpMode_V1 extends LinearOpMode {
         stepCount = Math.max(stepCount, Math.abs(turretControl - turretControlLast) / maxServoStep);
 
         if (stepCount > 0) {
+            // move the elbow first to avoid hitting the robot
+
             for (int i = 0; i < stepCount; i++) {
 
                 ElapsedTime stepElapsedTime = new ElapsedTime();
