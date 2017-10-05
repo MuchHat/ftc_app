@@ -70,7 +70,8 @@ public class Team_OpMode_V1 extends LinearOpMode {
     public double wristControlLast = 0;
     public double turretControlLast = 0;
 
-    boolean useDriveControl = false;
+    boolean doArmControl = false;
+    boolean doDriveControl = false;
 
     double servoDefaultSpeed = 0.00033; // 0.33 servo angle per sec
     double driveDefaultSpeed = 0.44; // ??
@@ -139,10 +140,10 @@ public class Team_OpMode_V1 extends LinearOpMode {
             theArm.leftClawAngle.setServo(leftClawControl);
             theArm.rightClawAngle.setServo(rightClawControl);
 
-            String controlMode = new String("->servos");
-            if (useDriveControl) controlMode = "->drive";
+            String controlMode = new String("->none");
+            if (doDriveControl) controlMode = "->drive";
+            if (doArmControl) controlMode = "->arm";
 
-            telemetry.addData("loopTime", "{%.3fms}", crrLoopTime);
             telemetry.addData("mode", controlMode);
             telemetry.addData("position", currentPos);
             telemetry.addData("Turret->", "{%.0f%% %.0fdeg}",
@@ -157,11 +158,22 @@ public class Team_OpMode_V1 extends LinearOpMode {
                     leftClawControl * 100, theArm.leftClawAngle.getPI() / Math.PI * 180);
             telemetry.addData("RightClaw->", "{%.0f%% %.0fdeg}",
                     rightClawControl * 100, theArm.rightClawAngle.getPI() / Math.PI * 180);
+            telemetry.addData("loopTime", "{%.3fms}", crrLoopTime);
             telemetry.update();
+
+            // control:
+            if (gamepad1.a) {
+                doDriveControl = true;
+                doArmControl = false;
+            }
+            if (gamepad1.b) {
+                doDriveControl = false;
+                doArmControl = true;
+            }
 
             /**************************** START  OF USE SERVOS CONTROL*****************************/
 
-            if (useDriveControl) {
+            if (doArmControl&&!doDriveControl) {
 
                 // control: BASE
                 if (gamepad1.left_stick_y != 0) {
@@ -242,17 +254,10 @@ public class Team_OpMode_V1 extends LinearOpMode {
                     rightClawControl = clawClosed[1];
                     setServos();
                 }
-                if (gamepad1.b) {
-                    useDriveControl = false;
-                }
-                // control:
-                if (gamepad1.a) {
-                    useDriveControl = true;
-                }
             }
             /**************************** START  OF USE DRIVE CONTROL*****************************/
 
-            if (useDriveControl) {
+            if (doDriveControl&&!doArmControl) {
                 {
                     double xInput = gamepad1.left_stick_x;
                     double yInput = -gamepad1.right_stick_y;
@@ -271,13 +276,6 @@ public class Team_OpMode_V1 extends LinearOpMode {
                     lControl = 0;//
                     rControl = 0;//
                     setDrives();
-                }
-                if (gamepad1.b) {
-                    useDriveControl = false;
-                }
-                // control:
-                if (gamepad1.a) {
-                    useDriveControl = true;
                 }
             }
         }
