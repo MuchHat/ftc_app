@@ -94,7 +94,7 @@ public class Team_OpMode_V1 extends LinearOpMode {
         theArm = new Arm();
         theArm.init();
 
-        theArm.turretAngle.Init(45, 90, 0.13, 0.41, 0.05, 0.95); // turret setup
+        theArm.turretAngle.Init(45, 90, 0.13, 0.41, 0.10, 0.70); // turret setup
         theArm.baseAngle.Init(45, 90, 0.95, 0.75, 0.35, 0.95); // //base setup
         theArm.elbowAngle.Init(45, 90, 0.32, 0.71, 0.05, 0.95); //elbow setup
         theArm.wristAngle.Init(45, 90, 0.89, 0.58, 0.05, 0.95);  //wrist setup
