@@ -35,6 +35,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import static android.R.attr.delay;
+
 /**
  * This file illustrates the concept of driving a path based on time.
  */
@@ -80,12 +82,12 @@ public class Team_OpMode_V1 extends LinearOpMode {
     String currentPos = new String("none");
     String lastPos = new String("none");
 
-    double posZero[] = {0, 0, 0, 0};
-    double posFront[] = {0, 0, 0, 0};
-    double posFrontUp[] = {0, 0, 0, 0};
+    double posZero[] = {0.40, 0.95, 0.15, 0.95};
+    double posFront[] = {0.40, 0.18, 0.33, 0.91};
+    double posFrontUp[] = {0.40, 0.39, 0.28, 0.88};
 
-    double clawOpen[] = {0, 0};
-    double clawClosed[] = {0, 0};
+    double clawOpen[] = {0.72, 0.28};
+    double clawClosed[] = {0.83, 0.17};
 
     @Override
     public void runOpMode() {
@@ -94,12 +96,12 @@ public class Team_OpMode_V1 extends LinearOpMode {
         theArm = new Arm();
         theArm.init();
 
-        theArm.turretAngle.Init(45, 90, 0.13, 0.41, 0.10, 0.70); // turret setup
-        theArm.baseAngle.Init(45, 90, 0.95, 0.75, 0.35, 0.95); // //base setup
+        theArm.turretAngle.Init(45, 90, 0.13, 0.41, 0.20, 0.56); // turret setup
+        theArm.baseAngle.Init(45, 90, 0.95, 0.75, 0.05, 0.95); // //base setup
         theArm.elbowAngle.Init(45, 90, 0.32, 0.71, 0.05, 0.95); //elbow setup
         theArm.wristAngle.Init(45, 90, 0.89, 0.58, 0.05, 0.95);  //wrist setup
-        theArm.rightClawAngle.Init(0, 45, 0.44, 0.76, 0.05, 0.95); // right claw setup
         theArm.leftClawAngle.Init(0, 45, 0.55, 0.22, 0.05, 0.95); // left claw setup
+        theArm.rightClawAngle.Init(0, 45, 0.44, 0.76, 0.31, 0.95); // right claw setup
 
         robot._turret.setPosition(posZero[0]);
         robot._base.setPosition(posZero[1]);
@@ -289,7 +291,7 @@ public class Team_OpMode_V1 extends LinearOpMode {
         rightClawControl = Range.clip(rightClawControl, theArm.rightClawAngle.minServo, theArm.rightClawAngle.maxServo);
 
         // slow down if needed
-        double maxServoStep = 1; // 0.1 per servo and step
+        double maxServoStep = 0.02; // 0.1 per servo and step
         double stepCount = 0;
         stepCount = Math.max(stepCount, Math.abs(elbowControl - elbowControlLast) / maxServoStep);
         stepCount = Math.max(stepCount, Math.abs(baseControl - baseControlLast) / maxServoStep);
@@ -298,19 +300,55 @@ public class Team_OpMode_V1 extends LinearOpMode {
 
         if (stepCount > 0) {
             for (int i = 0; i < stepCount; i++) {
-                double elbowControlStep = elbowControlLast + i * (elbowControl - elbowControlLast) / maxServoStep;
-                double baseControlStep = baseControlLast + i * (baseControl - baseControlLast) / maxServoStep;
-                double wristControlStep = wristControlLast + i * (wristControl - wristControlLast) / maxServoStep;
-                double turretControlStep = turretControlLast + i * (turretControl - turretControlLast) / maxServoStep;
-                //TODO - add colision detection?
+
+                ElapsedTime stepElapsedTime = new ElapsedTime();
+                stepElapsedTime.reset();
+
+                double baseControlStep = baseControlLast + i * (baseControl - baseControlLast) / stepCount;
+
+                //TODO - add collision detection?
+
+
+                baseControlStep = Range.clip(baseControlStep, theArm.baseAngle.minServo, theArm.baseAngle.maxServo);
+
+
+                while( stepElapsedTime.milliseconds() < 66 ){
+                    idle();
+                }
+
+                // use the order for minimum colision
+                robot._base.setPosition(baseControlStep);
+
+
+                // sleep( 166 );
+                //TODO : add delay
+            }            for (int i = 0; i < stepCount; i++) {
+
+                ElapsedTime stepElapsedTime = new ElapsedTime();
+                stepElapsedTime.reset();
+
+                double elbowControlStep = elbowControlLast + i * (elbowControl - elbowControlLast) / stepCount;
+                double wristControlStep = wristControlLast + i * (wristControl - wristControlLast) / stepCount;
+                double turretControlStep = turretControlLast + i * (turretControl - turretControlLast) / stepCount;
+                //TODO - add collision detection?
+
+                elbowControlStep = Range.clip(elbowControlStep, theArm.elbowAngle.minServo, theArm.elbowAngle.maxServo);
+                wristControlStep = Range.clip(wristControlStep, theArm.wristAngle.minServo, theArm.wristAngle.maxServo);
+                turretControlStep = Range.clip(turretControlStep, theArm.turretAngle.minServo, theArm.turretAngle.maxServo);
+
+                while( stepElapsedTime.milliseconds() < 66 ){
+                    idle();
+                }
 
                 // use the order for minimum colision
                 robot._elbow.setPosition(elbowControlStep);
-                robot._base.setPosition(baseControlStep);
                 robot._wrist.setPosition(wristControlStep);
                 robot._turret.setPosition(turretControlStep);
+
+                // sleep( 166 );
                 //TODO : add delay
             }
+
         }
 
         robot._elbow.setPosition(elbowControl);
