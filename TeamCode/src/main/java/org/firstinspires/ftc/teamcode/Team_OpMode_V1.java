@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -40,9 +39,9 @@ import com.qualcomm.robotcore.util.Range;
  * This file illustrates the concept of driving a path based on time.
  */
 
-@TeleOp(name = "Gigi V7", group = "Gigi")
-@Disabled
-public class Gigi_OpMode_V7_Working extends LinearOpMode {
+@TeleOp(name = "Team V1", group = "Team")
+// @Disabled
+public class Team_OpMode_V1 extends LinearOpMode {
 
     public Gigi_Hardware_V2 robot = new Gigi_Hardware_V2();
     public ElapsedTime runtime = new ElapsedTime();
@@ -60,6 +59,7 @@ public class Gigi_OpMode_V7_Working extends LinearOpMode {
     public double xControl = 0;
     public double yControl = 0;
     public double zControl = 0;
+    public double clawMMControl = 0;
 
     public double lControl = 0;
     public double rControl = 0;
@@ -84,6 +84,8 @@ public class Gigi_OpMode_V7_Working extends LinearOpMode {
     double driveDefaultSpeed = 0.44; // ??
     double turnDefaultSpeed = 0.22; // ??
     double kDrive = 1; // ??
+
+    boolean extendedLogging = true;
 
     @Override
     public void runOpMode() {
@@ -144,79 +146,98 @@ public class Gigi_OpMode_V7_Working extends LinearOpMode {
             rightClawControl = robot._rightClaw.getPosition();
 
             testArm.setServos(turretControl, baseControl, elbowControl);
+            theArm.setServos(turretControl, baseControl, elbowControl);
+
+            boolean collisionDetected = testArm.collisionCheck(false);
 
             telemetry.addData("loopTime", "{%.3fms}",
                     crrLoopTime);
 
-            telemetry.addData("POS servos->", "{%.0fg %.0fg %.0fg}",
-                    turretControl * 180,
-                    baseControl * 180,
-                    elbowControl * 180);
+            telemetry.addData("CONTROL TBEW servos POS->", "{%.0f%% %.0f%% %.0f%% %.0f%%}",
+                    turretControl * 100,
+                    baseControl * 100,
+                    elbowControl * 100,
+                    wristControl * 100);
 
-            telemetry.addData("POS wclclr->", "{%.0fg} {%.0fg %.0fg}",
-                    wristControl * 180,
-                    leftClawControl * 180,
-                    rightClawControl * 180);
+            telemetry.addData("CONTROL CLAW servos POS->", "{%.0f%% %.0f%%}",
+                    leftClawControl * 100,
+                    rightClawControl * 100);
 
-            telemetry.addData("DEG servos->", "{%.0fdeg %.0fdeg %.0fdeg}",
-                    testArm.turretAngle.getPI() / Math.PI * 180,
-                    testArm.baseAngle.getPI() / Math.PI * 180,
-                    testArm.elbowAngle.getPI() / Math.PI * 180);
-
-            telemetry.addData("DEG wclclr->", "{%.0fdeg} {%.0fdeg %.0fdeg}",
-                    testArm.wristAngle.getPI() / Math.PI * 180,
-                    testArm.leftClawAngle.getPI() / Math.PI * 180,
-                    testArm.rightClawAngle.getPI() / Math.PI * 180);
-
-            telemetry.addData("CONTROL lr->", "{%.0fp %.0fp}",
-                    lControl * 100,
-                    rControl * 100);
-
-            telemetry.addData("CONTROL xyz->", "{%.0fmm  %.0fmm  %.0fmm}",
-                    xControl,
-                    yControl,
-                    zControl);
-
-            telemetry.addData("ARM xyz ->", "{%.0fmm  %.0fmm  %.0fmm}",
+            telemetry.addData("ARM coord XYZ->", "{%.0fmm  %.0fmm  %.0fmm}",
                     theArm.getX(),
                     theArm.getY(),
                     theArm.getZ());
 
-            telemetry.addData("ARM rtpa2->", "{%.0fmm  %.0fg  %.0fg, %.0fg}",
-                    theArm.getR(),
-                    theArm.getTeta() / Math.PI * 180,
-                    theArm.getPhi() / Math.PI * 180,
-                    theArm.getA2() / Math.PI * 180);
+            telemetry.addData("ARM TBEW servos POS->", "{%.0f%%  %.0f%%  %.0f%%, %.0f%%}",
+                    theArm.getTurretServo() * 100,
+                    theArm.getBaseServo() * 100,
+                    theArm.getElbowServo() * 100,
+                    theArm.getWristServo() * 100);
 
-            telemetry.addData("ARM servos->", "{%.0fg  %.0fg  %.0fg, %.0fg}",
-                    theArm.getTurretServo() * 180,
-                    theArm.getBaseServo() * 180,
-                    theArm.getElbowServo() * 180,
-                    theArm.getWristServo() * 180);
+            telemetry.addData("ARM TBEW servos DEG->", "{%.0fdeg %.0fdeg %.0fdeg %.0fdeg}",
+                    testArm.turretAngle.getPI() / Math.PI * 180,
+                    testArm.baseAngle.getPI() / Math.PI * 180,
+                    testArm.elbowAngle.getPI() / Math.PI * 180,
+                    testArm.wristAngle.getPI() / Math.PI * 180);
 
-            telemetry.addData("TEST servos->", "{%.0fg  %.0fg  %.0fg, %.0fg}",
-                    testArm.getTurretServo() * 180,
-                    testArm.getBaseServo() * 180,
-                    testArm.getElbowServo() * 180,
-                    testArm.getWristServo() * 180);
+            telemetry.addData("ARM CLAW servos POS->", "{%.0f%% %.0f%%}",
+                    testArm.getLeftClawServo() * 100,
+                    testArm.getRightClawServo() * 100);
 
-            telemetry.addData("TEST xyz ->", "{%.0fmm  %.0fmm  %.0fmm}",
-                    testArm.getX(),
-                    testArm.getY(),
-                    testArm.getZ());
+            telemetry.addData("ARM CLAW servos DEG->", "{%.0fdeg %.0fdeg}",
+                    testArm.leftClawAngle.getPI() / Math.PI * 180,
+                    testArm.rightClawAngle.getPI() / Math.PI * 180);
 
-            telemetry.addData("TEST rtpa2->", "{%.0fmm  %.0fg  %.0fg, %.0fg}",
-                    testArm.getR(),
-                    testArm.getTeta() / Math.PI * 180,
-                    testArm.getPhi() / Math.PI * 180,
-                    testArm.getA2() / Math.PI * 180);
+            telemetry.addData("ARM claw MM->", "{%.0fmm}",
+                    theArm.getClawMM());
 
-            String controlMode = new String("servos");
-            if (useDriveControl) controlMode = "drive";
-            else if (useAxisControl) controlMode = "axis";
+            telemetry.addData("CONTROL lr POS->", "{%.0f%% %.0f%%}",
+                    lControl * 100,
+                    rControl * 100);
 
+            String collision = new String("->no");
+            if (collisionDetected) collision = "->YES, " + testArm.collisionDescription;
+            telemetry.addData("collision->", "%s", collision);
+
+            String controlMode = new String("->servos");
+            if (useDriveControl) controlMode = "->drive";
+            else if (useAxisControl) controlMode = "->axis";
             telemetry.addData("control mode->", "%s",
                     controlMode);
+
+            if (extendedLogging) {
+
+                telemetry.addData("----", "");
+
+                telemetry.addData("ARM rtpa2->", "{%.0fmm  %.0fdeg  %.0fdeg, %.0fdeg}",
+                        theArm.getR(),
+                        theArm.getTeta() / Math.PI * 180,
+                        theArm.getPhi() / Math.PI * 180,
+                        theArm.getA2() / Math.PI * 180);
+
+                telemetry.addData("TEST TBEW servos POS->", "{%.0f%%  %.0f%%  %.0f%%, %.0f%%}",
+                        testArm.getTurretServo() * 100,
+                        testArm.getBaseServo() * 100,
+                        testArm.getElbowServo() * 100,
+                        testArm.getWristServo() * 100);
+
+                telemetry.addData("TEST TBEW servos DEG->", "{%.0fdeg  %.0fdeg  %.0fdeg, %.0fdeg}",
+                        testArm.turretAngle.getPI() / Math.PI * 180,
+                        testArm.baseAngle.getPI() / Math.PI * 180,
+                        testArm.elbowAngle.getPI() / Math.PI * 180,
+                        testArm.wristAngle.getPI() / Math.PI * 180);
+
+                telemetry.addData("TEST coord xyz ->", "{%.0fmm  %.0fmm  %.0fmm}",
+                        testArm.getX(),
+                        testArm.getY(),
+                        testArm.getZ());
+
+                telemetry.addData("TEST rtpa2->", "{%.0fmm  %.0fdeg  %.0fdeg, %.0fdeg}",
+                        testArm.getR(),
+                        testArm.getTeta() / Math.PI * 180,
+                        testArm.getPhi() / Math.PI * 180,
+                        testArm.getA2() / Math.PI * 180);
+            }
 
             telemetry.update();
 
@@ -310,7 +331,7 @@ public class Gigi_OpMode_V7_Working extends LinearOpMode {
 
                 // control:
                 if (gamepad1.left_stick_x != 0) {
-                    xControl += gamepad1.left_stick_x * axisDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
+                    xControl += gamepad1.left_stick_x * axisDefaultSpeed / 10 * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
                     xyzSetServos();
                 }
                 // control:
@@ -320,13 +341,12 @@ public class Gigi_OpMode_V7_Working extends LinearOpMode {
                 }
                 // control:
                 if (gamepad1.left_stick_y != 0) { //
-                    zControl += -gamepad1.left_stick_y * axisDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
+                    zControl -= -gamepad1.left_stick_y * axisDefaultSpeed * crrLoopTime;// * axisDefaultSpeed * crrLoopTime;
                     xyzSetServos();
                 }
                 // control: claw
                 if (gamepad1.right_stick_x != 0) {
-                    rightClawControl += gamepad1.right_stick_x * axisDefaultSpeed * crrLoopTime;
-                    leftClawControl -= gamepad1.right_stick_x * axisDefaultSpeed * crrLoopTime;
+                    clawMMControl += gamepad1.right_stick_x * axisDefaultSpeed * crrLoopTime;
                     xyzSetServos();
                 }
                 if (gamepad1.back) {
@@ -467,6 +487,7 @@ public class Gigi_OpMode_V7_Working extends LinearOpMode {
         zControl = Range.clip(zControl, theArm.zMin, theArm.zMax);
 
         theArm.setXYZ(xControl, yControl, zControl);
+        theArm.setClawMM(clawMMControl);
 
         /*
         //TODO
