@@ -21,7 +21,7 @@ public class Arm {
     double mmClawOpen = 222;  // mm
     double mmClawClose = 188; // mm
     double lBase = 188; // mm
-    double lElbow = 233; // mm
+    double lElbow = 200; // mm
     double lClawArm = 150; // mm
     double lClawGap = 37;  // mm
     //TODO
@@ -66,12 +66,12 @@ public class Arm {
         rightClawAngle = new Angle();
         leftClawAngle = new Angle();
 
-        turretAngle.Init(0.25, 0.75, 0.140, 0.644, 0.05, 0.897); // turret setup
-        baseAngle.Init(0.25, 0.75, 0.25, 0.75, 0.05, 0.95); // TODO
-        elbowAngle.Init(0.25, 0.75, 0.404, 0.950, 0.20, 0.95); //elbow setup
-        wristAngle.Init(0.25, 0.75, 1.1775, 0.6105, 0.32, 0.89);  //wrist setup
-        rightClawAngle.Init(0.25, 0.75, 0.221, -0.437, 0.221, 0.55); // right claw setup
-        leftClawAngle.Init(0.25, 0.75, 0.818, 1.582, 0.436, 0.818); // left claw setup
+        turretAngle.Init(45, 90, 0.13, 0.41, 0.05, 0.95); // turret setup
+        baseAngle.Init(45, 90, 0.95, 0.70, 0.05, 0.95); // TODO
+        elbowAngle.Init(45, 90, 0.51, 0.71, 0.05, 0.95); //elbow setup
+        wristAngle.Init(45, 90, 0.89, 0.58, 0.05, 0.95);  //wrist setup
+        rightClawAngle.Init(0, 45, 0.44, 0.76, 0.05, 0.95); // right claw setup
+        leftClawAngle.Init(0, 45, 0.55, 0.22, 0.05, 0.95); // left claw setup
 
         setClawMM(lClawGap);
 
@@ -91,15 +91,15 @@ public class Arm {
     }
 
     public void setHomeXYZ() {
-        setXYZ(0, armBaseLocationY, robotHeight);
+        setXYZ(0, armBaseLocationY+33, robotHeight+33);
     }
 
     public void setFrontXYZ() {
-        setXYZ(0, armBaseLocationY + 33, zMin);
+        setXYZ(0, armBaseLocationY + 66, 88);
     }
 
     public void setZeroXYZ() {
-        setXYZ(0, yMin, robotHeight);
+        setXYZ(0, armBaseLocationY+33, robotHeight+33);
     }
 
     public double getR() {

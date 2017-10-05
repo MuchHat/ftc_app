@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 
 public class Angle {
 
-    public double angleServo = 0.0; // between 0 and 1.0
+    public double angleServo = 0.0; // between 0 and 180
     public double anglePI = 0.0;  // between 0 to pi
 
     public double offsetServo = 0.0; // default 0.0
@@ -27,8 +27,8 @@ public class Angle {
         // angle1 and angle2 are the observed angles for pos1 and pos2 -
         // angle1 and angle2 are in 0.0->1.1
 
-        slopeServo = (angle2 - angle1) / (pos2 - pos1);
-        offsetServo = angle1 - (pos1 * slopeServo);
+        slopeServo = (angle2/180 - angle1/180) / (pos2 - pos1);
+        offsetServo = angle1/180 - (pos1 * slopeServo);
         minServo = aMin;
         maxServo = aMax;
     }
