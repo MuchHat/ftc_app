@@ -82,13 +82,13 @@ public class Team_OpMode_V1 extends LinearOpMode {
     String currentPos = new String("none");
     String lastPos = new String("none");
 
-    double posZero[] = {0.40, 0.11, 0.18, 0.95};
-    double posFront[] = {0.40, 0.59, 0.22, 0.47};
-    double posFrontUp[] = {0.40, 0.89, 0.27, 0.69 };
+    double posZero[] = {0.40, 0.41, 0.95, 0.85};
+    double posFront[] = {0.40, 0.59, 0.36, 0.05};
+    double posFrontUp[] = {0.40, 0.42, 0.58, 0.45 };
 
     double clawOpen[] = {0.76, 0.44};
     double clawClosed[] = {0.85, 0.34};
-    double clawZero[] = {0.35, 0.89};
+    double clawZero[] = {0.76, 0.44};
 
     @Override
     public void runOpMode() {
@@ -292,6 +292,8 @@ public class Team_OpMode_V1 extends LinearOpMode {
                 Math.abs(baseControlLast - posZero[1]) < 0.2) {
             doInStages = true;
         }
+        //TODO
+        doInStages = false;
 
         elbowControl = Range.clip(elbowControl, theArm.elbowAngle.minServo, theArm.elbowAngle.maxServo);
         baseControl = Range.clip(baseControl, theArm.baseAngle.minServo, theArm.baseAngle.maxServo);
