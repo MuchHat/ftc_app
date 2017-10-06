@@ -82,12 +82,13 @@ public class Team_OpMode_V1 extends LinearOpMode {
     String currentPos = new String("none");
     String lastPos = new String("none");
 
-    double posZero[] = {0.40, 0.95, 0.15, 0.95};
-    double posFront[] = {0.40, 0.18, 0.33, 0.91};
-    double posFrontUp[] = {0.40, 0.39, 0.28, 0.88};
+    double posZero[] = {0.40, 0.11, 0.18, 0.95};
+    double posFront[] = {0.40, 0.59, 0.22, 0.47};
+    double posFrontUp[] = {0.40, 0.89, 0.27, 0.69 };
 
-    double clawOpen[] = {0.72, 0.28};
-    double clawClosed[] = {0.83, 0.17};
+    double clawOpen[] = {0.76, 0.44};
+    double clawClosed[] = {0.85, 0.34};
+    double clawZero[] = {0.35, 0.89};
 
     @Override
     public void runOpMode() {
@@ -107,8 +108,8 @@ public class Team_OpMode_V1 extends LinearOpMode {
         robot._base.setPosition(posZero[1]);
         robot._elbow.setPosition(posZero[2]);
         robot._wrist.setPosition(posZero[3]);
-        robot._leftClaw.setPosition(clawOpen[0]);
-        robot._rightClaw.setPosition(clawOpen[1]);
+        robot._leftClaw.setPosition(clawZero[0]);
+        robot._rightClaw.setPosition(clawZero[1]);
         currentPos = "zero";
 
         lControl = 0;
@@ -219,8 +220,8 @@ public class Team_OpMode_V1 extends LinearOpMode {
                     baseControl = posZero[1];
                     elbowControl = posZero[2];
                     wristControl = posZero[3];
-                    leftClawControl = clawOpen[0];
-                    rightClawControl = clawOpen[1];
+                    leftClawControl = clawZero[0];
+                    rightClawControl = clawZero[1];
                     currentPos = "zero";
                     setServos();
                 }
@@ -300,7 +301,7 @@ public class Team_OpMode_V1 extends LinearOpMode {
         rightClawControl = Range.clip(rightClawControl, theArm.rightClawAngle.minServo, theArm.rightClawAngle.maxServo);
 
         // slow down if needed
-        double maxServoStep = 0.002; // 0.1 per servo and step
+        double maxServoStep = 0.004; // 0.1 per servo and step
         double stepCount = 0;
         stepCount = Math.max(stepCount, Math.abs(elbowControl - elbowControlLast) / maxServoStep);
         stepCount = Math.max(stepCount, Math.abs(baseControl - baseControlLast) / maxServoStep);
@@ -318,7 +319,7 @@ public class Team_OpMode_V1 extends LinearOpMode {
 
                     double elbowControlStep = elbowControlLast + i * (elbowControl - elbowControlLast) / stepCount;
                     elbowControlStep = Range.clip(elbowControlStep, theArm.elbowAngle.minServo, theArm.elbowAngle.maxServo);
-                    while (stepElapsedTime.milliseconds() < 6 * (i + 1)) {
+                    while (stepElapsedTime.milliseconds() < 3 * (i + 1)) {
                         idle();
                     }
                     robot._elbow.setPosition(elbowControlStep);
@@ -337,7 +338,7 @@ public class Team_OpMode_V1 extends LinearOpMode {
                 wristControlStep = Range.clip(wristControlStep, theArm.wristAngle.minServo, theArm.wristAngle.maxServo);
                 turretControlStep = Range.clip(turretControlStep, theArm.turretAngle.minServo, theArm.turretAngle.maxServo);
 
-                while (stepElapsedTime.milliseconds() < 6 * (i + 1)) {
+                while (stepElapsedTime.milliseconds() < 3 * (i + 1)) {
                     idle();
                 }
                 if (!doInStages) robot._elbow.setPosition(elbowControlStep);
