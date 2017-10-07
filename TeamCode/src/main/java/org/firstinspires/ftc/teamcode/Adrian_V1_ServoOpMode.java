@@ -50,7 +50,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  */
 
 @TeleOp(name = "Adrian V1", group = "Adrian")
-@Disabled
+//@Disabled
 public class Adrian_V1_ServoOpMode extends LinearOpMode {
 
     /* Declare OpMode members. */
