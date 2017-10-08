@@ -184,12 +184,12 @@ public class Team_OpMode_V3 extends LinearOpMode {
         double error = Math.abs(virtualEndHeading - virtualStartHeading);
         double iterations = 0;
 
-        while (error > 0 && iterations < 999) {
-            double turnPower = 0.2;
+        while (error > 5 && iterations < 999) { //TODO
+            double turnPower = 0.2; //TODO
 
             if (error < 15) {
                 turnPower *= error / 15;
-                turnPower = Range.clip(turnPower, 0.05, 0.2);
+                turnPower = Range.clip(turnPower, 0.05, 0.2); //TODO
             }
 
             lControl = turnPower * direction;
@@ -197,7 +197,7 @@ public class Team_OpMode_V3 extends LinearOpMode {
             setDrives();
 
             runtimeTurn.reset();
-            while (runtimeTurn.milliseconds() < 5) {
+            while (runtimeTurn.milliseconds() < 5) { //TODO
                 idle();
             }
 
