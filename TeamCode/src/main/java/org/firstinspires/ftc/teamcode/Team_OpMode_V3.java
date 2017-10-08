@@ -45,17 +45,16 @@ import com.qualcomm.robotcore.util.Range;
 // @Disabled
 public class Team_OpMode_V3 extends LinearOpMode {
 
-    public Gigi_Hardware_V2 robot = new Gigi_Hardware_V2();
+    public Team_Hardware_V2 robot = new Team_Hardware_V2();
 
-    //Gyro stuff
     public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     public IntegratingGyroscope gyro;
 
     public ElapsedTime runtimeLoop = new ElapsedTime();
 
-    public double lControl = 0;
-    public double rControl = 0;
-    public double hControl = 0;
+    public double leftControl = 0;
+    public double rightControl = 0;
+    public double headingControl = 0;
     public double liftControl = 0;
     public double leftClawControl = 0;
     public double rightClawControl = 0;
@@ -89,21 +88,21 @@ public class Team_OpMode_V3 extends LinearOpMode {
         telemetry.clear();
         telemetry.update();
 
-        lControl = 0;
-        rControl = 0;
+        leftControl = 0;
+        rightControl = 0;
         liftControl = 0;
         leftClawControl = 0.5; // TODO
         rightClawControl = 0.5; // TODO
-        hControl = modernRoboticsI2cGyro.getHeading();
+        headingControl = modernRoboticsI2cGyro.getHeading();
 
         setDrives();
         setServos();
 
         telemetry.addData("Heading->", "{%.0fdeg}", modernRoboticsI2cGyro.getHeading());
-        telemetry.addData("LeftDrive->", "{%.0f%%}", lControl * 100);
+        telemetry.addData("LeftDrive->", "{%.0f%%}", leftControl * 100);
         telemetry.addData("RightDrive->", "{%.0f%%}", liftControl * 100);
         telemetry.addData("Lift->", "{%.0f%%}", liftControl * 100);
-        telemetry.addData("LeftClaw->", "{%.0f%%}", rControl * 100);
+        telemetry.addData("LeftClaw->", "{%.0f%%}", rightControl * 100);
         telemetry.addData("RightClaw->", "{%.0f%%}", rightClawControl * 100);
         telemetry.update();
 
@@ -116,11 +115,11 @@ public class Team_OpMode_V3 extends LinearOpMode {
             runtimeLoop.reset();
 
             telemetry.addData("crrHeading->", "{%.0fdeg}", modernRoboticsI2cGyro.getHeading());
-            telemetry.addData("Heading->", "{%.0fdeg}", hControl);
-            telemetry.addData("LeftDrive->", "{%.0f%%}", lControl * 100);
+            telemetry.addData("Heading->", "{%.0fdeg}", headingControl);
+            telemetry.addData("LeftDrive->", "{%.0f%%}", leftControl * 100);
             telemetry.addData("RightDrive->", "{%.0f%%}", liftControl * 100);
             telemetry.addData("Lift->", "{%.0f%%}", liftControl * 100);
-            telemetry.addData("LeftClaw->", "{%.0f%%}", rControl * 100);
+            telemetry.addData("LeftClaw->", "{%.0f%%}", rightControl * 100);
             telemetry.addData("RightClaw->", "{%.0f%%}", rightClawControl * 100);
             telemetry.update();
 
@@ -132,14 +131,14 @@ public class Team_OpMode_V3 extends LinearOpMode {
                 if (Math.abs(gamepad1.left_stick_x) > 0.15) xInput = gamepad1.left_stick_x;
                 if (Math.abs(gamepad1.left_stick_y) > 0.15) yInput = gamepad1.left_stick_y;
 
-                lControl = yInput * driveDefaultSpeed;
-                rControl = yInput * driveDefaultSpeed;
+                leftControl = yInput * driveDefaultSpeed;
+                rightControl = yInput * driveDefaultSpeed;
 
-                lControl += xInput * turnDefaultSpeed;
-                rControl -= xInput * turnDefaultSpeed;
+                leftControl += xInput * turnDefaultSpeed;
+                rightControl -= xInput * turnDefaultSpeed;
 
-                lControl = Range.clip(lControl, -0.66, 0.66); //TODO max max power
-                rControl = Range.clip(rControl, -0.66, 0.66); //TODO max max power
+                leftControl = Range.clip(leftControl, -0.66, 0.66); //TODO max max power
+                rightControl = Range.clip(rightControl, -0.66, 0.66); //TODO max max power
                 setDrives();
             }
 
@@ -201,8 +200,8 @@ public class Team_OpMode_V3 extends LinearOpMode {
                 turnPower = Range.clip(turnPower, 0.05, 0.2); //TODO
             }
 
-            lControl = turnPower * direction;
-            rControl = -turnPower * direction;
+            leftControl = turnPower * direction;
+            rightControl = -turnPower * direction;
             setDrives();
 
             runtimeTurn.reset();
@@ -223,30 +222,38 @@ public class Team_OpMode_V3 extends LinearOpMode {
             error = Math.abs(virtualEndHeading - virtualCrrHeading);
             iterations++;
         }
-        lControl = 0;
-        rControl = 0;
+        leftControl = 0;
+        rightControl = 0;
         setDrives();
 
-        lControl = modernRoboticsI2cGyro.getHeading();
+        leftControl = modernRoboticsI2cGyro.getHeading();
     }
 
     public void setDrives() {
 
-        if (lControl >= 0) {
+        if (leftControl >= 0) {
             robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            robot.leftDrive.setPower(lControl);
+            robot.leftDrive.setPower(leftControl);
         }
-        if (lControl < 0) {
+        if (leftControl < 0) {
             robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            robot.leftDrive.setPower(-lControl);
+            robot.leftDrive.setPower(-leftControl);
         }
-        if (rControl >= 0) {
+        if (rightControl >= 0) {
             robot.rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            robot.rightDrive.setPower(rControl);
+            robot.rightDrive.setPower(rightControl);
         }
-        if (rControl < 0) {
+        if (rightControl < 0) {
             robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            robot.rightDrive.setPower(-rControl);
+            robot.rightDrive.setPower(-rightControl);
+        }
+        if (liftControl < 0) {
+            robot.liftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+            robot.liftDrive.setPower(-liftControl);
+        }
+        if (liftControl >= 0) {
+            robot.liftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+            robot.liftDrive.setPower(liftControl);
         }
     }
 
@@ -255,8 +262,8 @@ public class Team_OpMode_V3 extends LinearOpMode {
         leftClawControl = Range.clip(leftClawControl, 0.05, 0.95); //TODO
         rightClawControl = Range.clip(rightClawControl, 0.05, 0.95); //TODO
 
-        robot._leftClaw.setPosition(leftClawControl);
-        robot._rightClaw.setPosition(rightClawControl);
+        robot.leftClaw.setPosition(leftClawControl);
+        robot.rightClaw.setPosition(rightClawControl);
     }
 }
 
