@@ -114,13 +114,11 @@ public class Team_OpMode_V3 extends LinearOpMode {
             telemetry.addData("RightClaw->", "{%.0f%%}", rightClawControl * 100);
             telemetry.update();
 
-            // control:
+            // control: DRIVES
             {
                 double xInput = 0;
                 double yInput = 0;
-                double liftInput = 0;
 
-                if (Math.abs(gamepad1.right_stick_y) > 0.15) liftInput = gamepad1.right_stick_y;
                 if (Math.abs(gamepad1.left_stick_x) > 0.15) xInput = gamepad1.left_stick_x;
                 if (Math.abs(gamepad1.left_stick_y) > 0.15) yInput = gamepad1.left_stick_y;
 
@@ -130,29 +128,41 @@ public class Team_OpMode_V3 extends LinearOpMode {
                 lControl += xInput * turnDefaultSpeed;
                 rControl -= xInput * turnDefaultSpeed;
 
-                liftControl = liftInput * liftDefaultSpeed;
 
                 lControl = Range.clip(lControl, -0.66, 0.66); //TODO max max power
                 rControl = Range.clip(rControl, -0.66, 0.66); //TODO max max power
-                liftControl = Range.clip(liftControl, -0.66, 0.66); //TODO max max power
-
                 setDrives();
             }
 
-            // control:
+            // control: LIFT
+            {
+                double liftInput = 0;
+
+                if (Math.abs(gamepad1.right_stick_y) > 0.15) liftInput = gamepad1.right_stick_y;
+
+                liftControl = liftInput * liftDefaultSpeed;
+
+                liftControl = Range.clip(liftControl, -0.66, 0.66); //TODO max max power
+                setDrives();
+            }
+
+            // control: TURNS 90
             if (gamepad1.dpad_right) {
                 doTurn(90);
             }
-            // control:
+
+            // control: TURNS 90
             if (gamepad1.dpad_left) {
                 doTurn(-90);
             }
+
             // control: CLAW CLOSE
             if (gamepad1.left_trigger != 0) {
                 leftClawControl -= gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
                 rightClawControl += gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
                 setServos();
             }
+
             // control: CLAW OPEN
             if (gamepad1.right_trigger != 0) {
                 leftClawControl += gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
