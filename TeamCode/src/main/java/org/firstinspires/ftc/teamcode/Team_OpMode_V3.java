@@ -160,7 +160,6 @@ public class Team_OpMode_V3 extends LinearOpMode {
                 setServos();
             }
         }
-
     }
 
     public void doTurn(double angleDeg) {
