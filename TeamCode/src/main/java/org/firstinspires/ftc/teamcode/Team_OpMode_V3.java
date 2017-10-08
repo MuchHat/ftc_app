@@ -53,12 +53,12 @@ public class Team_OpMode_V3 extends LinearOpMode {
 
     public ElapsedTime runtimeLoop = new ElapsedTime();
 
+    public double lControl = 0;
+    public double rControl = 0;
+    public double hControl = 0;
     public double liftControl = 0;
     public double leftClawControl = 0;
     public double rightClawControl = 0;
-
-    public double lControl = 0;
-    public double rControl = 0;
 
     double driveDefaultSpeed = 0.44; // TODO
     double turnDefaultSpeed = 0.22; // TODO
@@ -69,15 +69,6 @@ public class Team_OpMode_V3 extends LinearOpMode {
     public void runOpMode() {
 
         robot.init(hardwareMap);
-
-        lControl = 0;
-        rControl = 0;
-        liftControl = 0;
-        leftClawControl = 0.5; // TODO
-        rightClawControl = 0.5; // TODO
-
-        setDrives();
-        setServos();
 
         modernRoboticsI2cGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
         gyro = (IntegratingGyroscope) modernRoboticsI2cGyro;
@@ -96,6 +87,24 @@ public class Team_OpMode_V3 extends LinearOpMode {
         telemetry.log().clear();
         telemetry.log().add("Gyro Calibrated. Press Start.");
         telemetry.clear();
+        telemetry.update();
+
+        lControl = 0;
+        rControl = 0;
+        liftControl = 0;
+        leftClawControl = 0.5; // TODO
+        rightClawControl = 0.5; // TODO
+        hControl = modernRoboticsI2cGyro.getHeading();
+
+        setDrives();
+        setServos();
+
+        telemetry.addData("Heading->", "{%.0fdeg}", modernRoboticsI2cGyro.getHeading());
+        telemetry.addData("LeftDrive->", "{%.0f%%}", lControl * 100);
+        telemetry.addData("RightDrive->", "{%.0f%%}", liftControl * 100);
+        telemetry.addData("Lift->", "{%.0f%%}", liftControl * 100);
+        telemetry.addData("LeftClaw->", "{%.0f%%}", rControl * 100);
+        telemetry.addData("RightClaw->", "{%.0f%%}", rightClawControl * 100);
         telemetry.update();
 
         waitForStart();
@@ -217,6 +226,8 @@ public class Team_OpMode_V3 extends LinearOpMode {
         lControl = 0;
         rControl = 0;
         setDrives();
+
+        lControl = modernRoboticsI2cGyro.getHeading();
     }
 
     public void setDrives() {
