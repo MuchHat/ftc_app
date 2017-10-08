@@ -98,11 +98,12 @@ public class Team_OpMode_V3 extends LinearOpMode {
         setDrives();
         setServos();
 
-        telemetry.addData("Heading->", "{%.0fdeg}", modernRoboticsI2cGyro.getHeading());
+        telemetry.addData("crrHeading->", "{%.0fdeg}", modernRoboticsI2cGyro.getHeading());
+        telemetry.addData("Heading->", "{%.0fdeg}", headingControl);
         telemetry.addData("LeftDrive->", "{%.0f%%}", leftControl * 100);
-        telemetry.addData("RightDrive->", "{%.0f%%}", liftControl * 100);
+        telemetry.addData("RightDrive->", "{%.0f%%}", rightControl * 100);
         telemetry.addData("Lift->", "{%.0f%%}", liftControl * 100);
-        telemetry.addData("LeftClaw->", "{%.0f%%}", rightControl * 100);
+        telemetry.addData("LeftClaw->", "{%.0f%%}", leftClawControl * 100);
         telemetry.addData("RightClaw->", "{%.0f%%}", rightClawControl * 100);
         telemetry.update();
 
@@ -117,9 +118,9 @@ public class Team_OpMode_V3 extends LinearOpMode {
             telemetry.addData("crrHeading->", "{%.0fdeg}", modernRoboticsI2cGyro.getHeading());
             telemetry.addData("Heading->", "{%.0fdeg}", headingControl);
             telemetry.addData("LeftDrive->", "{%.0f%%}", leftControl * 100);
-            telemetry.addData("RightDrive->", "{%.0f%%}", liftControl * 100);
+            telemetry.addData("RightDrive->", "{%.0f%%}", rightControl * 100);
             telemetry.addData("Lift->", "{%.0f%%}", liftControl * 100);
-            telemetry.addData("LeftClaw->", "{%.0f%%}", rightControl * 100);
+            telemetry.addData("LeftClaw->", "{%.0f%%}", leftClawControl * 100);
             telemetry.addData("RightClaw->", "{%.0f%%}", rightClawControl * 100);
             telemetry.update();
 
@@ -137,8 +138,6 @@ public class Team_OpMode_V3 extends LinearOpMode {
                 leftControl += xInput * turnDefaultSpeed;
                 rightControl -= xInput * turnDefaultSpeed;
 
-                leftControl = Range.clip(leftControl, -0.66, 0.66); //TODO max max power
-                rightControl = Range.clip(rightControl, -0.66, 0.66); //TODO max max power
                 setDrives();
             }
 
@@ -226,10 +225,14 @@ public class Team_OpMode_V3 extends LinearOpMode {
         rightControl = 0;
         setDrives();
 
-        leftControl = modernRoboticsI2cGyro.getHeading();
+        headingControl = modernRoboticsI2cGyro.getHeading();
     }
 
     public void setDrives() {
+
+        leftControl = Range.clip(leftControl, -0.66, 0.66); //TODO max max power
+        rightControl = Range.clip(rightControl, -0.66, 0.66); //TODO max max power
+        liftControl = Range.clip(liftControl, -0.66, 0.66); //TODO max max power
 
         if (leftControl >= 0) {
             robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
