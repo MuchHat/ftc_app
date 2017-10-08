@@ -115,7 +115,8 @@ public class Team_OpMode_V3 extends LinearOpMode {
             double crrLoopTime = runtimeLoop.nanoseconds() / 1000000; // covert to millis
             runtimeLoop.reset();
 
-            telemetry.addData("Heading->", "{%.0fdeg}", modernRoboticsI2cGyro.getHeading());
+            telemetry.addData("crrHeading->", "{%.0fdeg}", modernRoboticsI2cGyro.getHeading());
+            telemetry.addData("Heading->", "{%.0fdeg}", hControl);
             telemetry.addData("LeftDrive->", "{%.0f%%}", lControl * 100);
             telemetry.addData("RightDrive->", "{%.0f%%}", liftControl * 100);
             telemetry.addData("Lift->", "{%.0f%%}", liftControl * 100);
