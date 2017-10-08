@@ -156,7 +156,6 @@ public class Team_OpMode_V3 extends LinearOpMode {
 
                 liftControl = liftInput * liftDefaultSpeed;
 
-                liftControl = Range.clip(liftControl, -0.66, 0.66); //TODO max max power
                 setDrives();
             }
 
