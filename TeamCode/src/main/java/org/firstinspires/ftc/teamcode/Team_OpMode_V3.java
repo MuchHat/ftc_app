@@ -64,6 +64,11 @@ public class Team_OpMode_V3 extends LinearOpMode {
     double liftDefaultSpeed = 0.22; // TODO
     double servoDefaultSpeed = 0.00033; // TODO
 
+    double gameStartHeading = 0;
+
+    double clawOpen[] = {0.76, 0.44};
+    double clawClosed[] = {0.85, 0.34};
+
     @Override
     public void runOpMode() {
 
@@ -94,6 +99,8 @@ public class Team_OpMode_V3 extends LinearOpMode {
         leftClawControl = 0.5; // TODO
         rightClawControl = 0.5; // TODO
         headingControl = modernRoboticsI2cGyro.getHeading();
+
+        gameStartHeading = headingControl;
 
         setDrives();
         setServos();
@@ -163,30 +170,61 @@ public class Team_OpMode_V3 extends LinearOpMode {
                 doTurn(-90);
             }
 
-            // control: CLAW CLOSE
+            // control: CLAW OPEN
             if (gamepad1.left_trigger != 0) {
                 leftClawControl -= gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
                 rightClawControl += gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
                 setServos();
             }
 
-            // control: CLAW OPEN
+            // control: CLAW CLOSE
             if (gamepad1.right_trigger != 0) {
                 leftClawControl += gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
                 rightClawControl -= gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
                 setServos();
             }
+            // control: CLAW PREDEF OPEN
+            if (gamepad1.left_bumper) {
+                leftClawControl = clawOpen[0];
+                rightClawControl = clawOpen[1];
+                setServos();
+            }
+            // control: CLAW PREDEF CLOSE
+            if (gamepad1.right_bumper) {
+                leftClawControl = clawClosed[0];
+                rightClawControl = clawClosed[1];
+                setServos();
+            }
         }
     }
 
-    public void doTurn(double angleDeg) {
+    public void turnToHeading(double newHeading) {
+
+        newHeading %= 360;
+
+        double crrHeading = modernRoboticsI2cGyro.getHeading();
+        double turnDeg = newHeading - crrHeading;
+
+        if( Math.abs( newHeading - crrHeading) > 360 - Math.abs( newHeading - crrHeading ) ){
+            double direction = newHeading > crrHeading ? 1.0 : -1.0;
+
+            turnDeg = 360 - Math.abs( newHeading - crrHeading );
+            turnDeg  *= direction;
+        }
+
+        doTurn( turnDeg );
+    }
+
+    public void doTurn(double turnDeg ) {
 
         ElapsedTime runtimeTurn = new ElapsedTime();
 
+        turnDeg %= 360;
+
         double startHeading = modernRoboticsI2cGyro.getHeading();
         double virtualStartHeading = startHeading + 360;
-        double virtualEndHeading = virtualStartHeading + angleDeg;
-        double direction = angleDeg > 0 ? 1.0 : -1.0;
+        double virtualEndHeading = virtualStartHeading + turnDeg;
+        double direction = turnDeg > 0 ? 1.0 : -1.0;
 
         double error = Math.abs(virtualEndHeading - virtualStartHeading);
         double iterations = 0;
@@ -211,7 +249,7 @@ public class Team_OpMode_V3 extends LinearOpMode {
             double crrHeading = modernRoboticsI2cGyro.getHeading();
             double virtualCrrHeading = crrHeading + 360;
 
-            if (startHeading > 180 && crrHeading < 180 && direction > 0) {
+            if (startHeading >= 180 && crrHeading <= 180 && direction > 0) {
                 virtualCrrHeading += 360;
             }
             if (startHeading < 180 && crrHeading > 180 && direction < 0) {
