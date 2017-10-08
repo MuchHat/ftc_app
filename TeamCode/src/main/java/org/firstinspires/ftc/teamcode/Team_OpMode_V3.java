@@ -205,17 +205,17 @@ public class Team_OpMode_V3 extends LinearOpMode {
         double crrHeading = modernRoboticsI2cGyro.getHeading();
         double turnDeg = newHeading - crrHeading;
 
-        if( Math.abs( newHeading - crrHeading) > 360 - Math.abs( newHeading - crrHeading ) ){
+        if (Math.abs(newHeading - crrHeading) > 360 - Math.abs(newHeading - crrHeading)) {
             double direction = newHeading > crrHeading ? 1.0 : -1.0;
 
-            turnDeg = 360 - Math.abs( newHeading - crrHeading );
-            turnDeg  *= direction;
+            turnDeg = 360 - Math.abs(newHeading - crrHeading);
+            turnDeg *= direction;
         }
 
-        doTurn( turnDeg );
+        doTurn(turnDeg);
     }
 
-    public void doTurn(double turnDeg ) {
+    public void doTurn(double turnDeg) {
 
         ElapsedTime runtimeTurn = new ElapsedTime();
 
