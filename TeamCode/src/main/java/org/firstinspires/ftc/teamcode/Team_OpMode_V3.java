@@ -106,7 +106,8 @@ public class Team_OpMode_V3 extends LinearOpMode {
         setServos();
 
         telemetry.addData("crrHeading->", "{%.0fdeg}", modernRoboticsI2cGyro.getHeading());
-        telemetry.addData("Heading->", "{%.0fdeg}", headingControl);
+        telemetry.addData("lastHeading->", "{%.0fdeg}", headingControl);
+        telemetry.addData("gameStartHeading->", "{%.0fdeg}", gameStartHeading);
         telemetry.addData("LeftDrive->", "{%.0f%%}", leftControl * 100);
         telemetry.addData("RightDrive->", "{%.0f%%}", rightControl * 100);
         telemetry.addData("Lift->", "{%.0f%%}", liftControl * 100);
@@ -123,7 +124,8 @@ public class Team_OpMode_V3 extends LinearOpMode {
             runtimeLoop.reset();
 
             telemetry.addData("crrHeading->", "{%.0fdeg}", modernRoboticsI2cGyro.getHeading());
-            telemetry.addData("Heading->", "{%.0fdeg}", headingControl);
+            telemetry.addData("lastHeading->", "{%.0fdeg}", headingControl);
+            telemetry.addData("gameStartHeading->", "{%.0fdeg}", gameStartHeading);
             telemetry.addData("LeftDrive->", "{%.0f%%}", leftControl * 100);
             telemetry.addData("RightDrive->", "{%.0f%%}", rightControl * 100);
             telemetry.addData("Lift->", "{%.0f%%}", liftControl * 100);
@@ -146,6 +148,8 @@ public class Team_OpMode_V3 extends LinearOpMode {
                 rightControl -= xInput * turnDefaultSpeed;
 
                 setDrives();
+
+                if( xInput != 0 )headingControl = modernRoboticsI2cGyro.getHeading();
             }
 
             // control: LIFT
@@ -167,6 +171,16 @@ public class Team_OpMode_V3 extends LinearOpMode {
             // control: TURNS 90
             if (gamepad1.dpad_left) {
                 doTurn(-90);
+            }
+
+            // control: TURNS 90
+            if (gamepad1.dpad_left) {
+                doTurn(180);
+            }
+
+            // control: TURNS 90
+            if (gamepad1.start) {
+                turnToHeading(gameStartHeading);
             }
 
             // control: CLAW OPEN
