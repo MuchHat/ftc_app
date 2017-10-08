@@ -29,9 +29,11 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -44,10 +46,16 @@ import com.qualcomm.robotcore.util.Range;
 public class Team_OpMode_V2 extends LinearOpMode {
 
     public Gigi_Hardware_V2 robot = new Gigi_Hardware_V2();
+
+    //Gyro stuff
+    ModernRoboticsI2cGyro modernRoboticsI2cGyro;
+    ElapsedTime timer = new ElapsedTime();
+    IntegratingGyroscope gyro;
+
     public ElapsedTime runtime = new ElapsedTime();
 
+    //Declare arm atuff
     public Arm theArm = null;
-
     public double turretControl = 0;
     public double baseControl = 0;
     public double elbowControl = 0;
@@ -101,7 +109,6 @@ public class Team_OpMode_V2 extends LinearOpMode {
         theArm.wristAngle.Init(45, 90, 0.89, 0.58, 0.05, 0.95);  //wrist setup
         theArm.leftClawAngle.Init(0, 45, 0.55, 0.22, 0.05, 0.95); // left claw setup
         theArm.rightClawAngle.Init(0, 45, 0.44, 0.76, 0.31, 0.95); // right claw setup
-
         robot._turret.setPosition(posZero[0]);
         robot._base.setPosition(posZero[1]);
         robot._elbow.setPosition(posZero[2]);
@@ -119,6 +126,33 @@ public class Team_OpMode_V2 extends LinearOpMode {
         elbowControlLast = elbowControl;
         wristControlLast = wristControl;
         turretControlLast = turretControl;
+
+        boolean lastResetState = false;
+        boolean curResetState  = false;
+
+        // Get a reference to a Modern Robotics gyro object. We use several interfaces
+        // on this object to illustrate which interfaces support which functionality.
+        modernRoboticsI2cGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
+        gyro = (IntegratingGyroscope)modernRoboticsI2cGyro;
+        // If you're only interested int the IntegratingGyroscope interface, the following will suffice.
+        // gyro = hardwareMap.get(IntegratingGyroscope.class, "gyro");
+        // A similar approach will work for the Gyroscope interface, if that's all you need.
+
+        // Start calibrating the gyro. This takes a few seconds and is worth performing
+        // during the initialization phase at the start of each opMode.
+        telemetry.log().add("Gyro Calibrating. Do Not Move!");
+        modernRoboticsI2cGyro.calibrate();
+
+        // Wait until the gyro calibration is complete
+        timer.reset();
+        while (!isStopRequested() && modernRoboticsI2cGyro.isCalibrating())  {
+            telemetry.addData("calibrating", "%s", Math.round(timer.seconds())%2==0 ? "|.." : "..|");
+            telemetry.update();
+            sleep(50);
+        }
+
+        telemetry.log().clear(); telemetry.log().add("Gyro Calibrated. Press Start.");
+        telemetry.clear(); telemetry.update();
 
         waitForStart();
 
@@ -160,6 +194,7 @@ public class Team_OpMode_V2 extends LinearOpMode {
             telemetry.addData("RightClaw->", "{%.0f%% %.0fdeg}",
                     rightClawControl * 100, theArm.rightClawAngle.getPI() / Math.PI * 180);
             telemetry.addData("loopTime", "{%.3fms}", crrLoopTime);
+            telemetry.addData("Heading", modernRoboticsI2cGyro.getHeading());
             telemetry.update();
 
             // control:
@@ -259,7 +294,7 @@ public class Team_OpMode_V2 extends LinearOpMode {
             if (doDriveControl && !doArmControl) {
                 {
                     double xInput = gamepad1.left_stick_x;
-                    double yInput = -gamepad1.right_stick_y;
+                    double yInput = gamepad1.left_stick_y;
 
                     if (Math.abs(xInput) < 0.15) xInput = 0; //acts as brake
                     if (Math.abs(yInput) < 0.15) yInput = 0; //acts as brake
@@ -267,14 +302,79 @@ public class Team_OpMode_V2 extends LinearOpMode {
                     lControl = yInput * driveDefaultSpeed;
                     rControl = yInput * driveDefaultSpeed;
 
-                    lControl -= xInput * turnDefaultSpeed;
-                    rControl += xInput * turnDefaultSpeed;
+                    lControl += xInput * turnDefaultSpeed;
+                    rControl -= xInput * turnDefaultSpeed;
                     setDrives();
                 }
-                if (gamepad1.back) {
-                    lControl = 0;//
-                    rControl = 0;//
-                    setDrives();
+
+                double error = 0;
+                if (gamepad1.dpad_right)
+                {
+                    double currHeading;
+                    currHeading = modernRoboticsI2cGyro.getHeading();
+                    double newHeading = currHeading - 90;
+                    boolean overflow = false;
+                    if(newHeading<0)
+                    {
+                        newHeading = newHeading+360;
+                        overflow = true;
+                    }
+
+                    ElapsedTime headingRunTime = new ElapsedTime();
+                    while(currHeading>newHeading || (overflow && currHeading<newHeading))
+                    {
+                        error = Math.abs(currHeading-newHeading);
+                        error/=90;
+                        if(overflow)
+                        {
+                            error = 90 - error;
+                        }
+                        error = Range.clip(error,0.5,1);
+                        lControl = 0.1*error;
+                        rControl = -0.1*error;
+                        setDrives();
+                        headingRunTime.reset();
+                        while(headingRunTime.milliseconds()<5)
+                        {
+                            currHeading = modernRoboticsI2cGyro.getHeading();
+                            idle();
+                        }
+                    }
+                }
+
+                if (gamepad1.dpad_left)
+                {
+                    double currHeading;
+                    currHeading = modernRoboticsI2cGyro.getHeading();
+                    double newHeading = currHeading + 90;
+                    boolean overflow = false;
+                    if(newHeading>360)
+                    {
+                        newHeading = newHeading-360;
+                        overflow = true;
+                    }
+
+                    ElapsedTime headingRunTime = new ElapsedTime();
+                    while( (currHeading<newHeading) ||
+                            (overflow && currHeading>newHeading ) )
+                    {
+                        error = Math.abs(currHeading-newHeading);
+                        error/=90;
+                        if(overflow)
+                        {
+                            error = 360 - error;
+                        }
+                        error = Range.clip(error,0.5,1);
+                        lControl = -0.1*error;
+                        rControl = 0.1*error;
+                        setDrives();
+                        headingRunTime.reset();
+                        while(headingRunTime.milliseconds()<5)
+                        {
+                            currHeading = modernRoboticsI2cGyro.getHeading();
+                            idle();
+                        }
+                    }
                 }
             }
         }
