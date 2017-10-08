@@ -230,8 +230,6 @@ public class Team_OpMode_V3 extends LinearOpMode {
 
     public void doTurn(double turnDeg) {
 
-        ElapsedTime runtimeTurn = new ElapsedTime();
-
         turnDeg %= 360;
 
         double startHeading = modernRoboticsI2cGyro.getHeading();
@@ -254,10 +252,7 @@ public class Team_OpMode_V3 extends LinearOpMode {
             rightControl = -turnPower * direction;
             setDrives();
 
-            runtimeTurn.reset();
-            while (runtimeTurn.milliseconds() < 5) { //TODO
-                idle();
-            }
+            waitMillis( 5 ); //TODO
 
             double crrHeading = modernRoboticsI2cGyro.getHeading();
             double virtualCrrHeading = crrHeading + 360;
@@ -318,6 +313,16 @@ public class Team_OpMode_V3 extends LinearOpMode {
 
         robot.leftClaw.setPosition(leftClawControl);
         robot.rightClaw.setPosition(rightClawControl);
+    }
+
+    void waitMillis( double millis ){
+        ElapsedTime runtimeWait = new ElapsedTime();
+
+        runtimeWait.reset();
+
+        while (runtimeWait.milliseconds() < millis) {
+            idle();
+        }
     }
 }
 
