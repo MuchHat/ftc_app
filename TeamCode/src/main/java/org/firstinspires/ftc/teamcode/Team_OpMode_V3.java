@@ -137,7 +137,6 @@ public class Team_OpMode_V3 extends LinearOpMode {
                 lControl += xInput * turnDefaultSpeed;
                 rControl -= xInput * turnDefaultSpeed;
 
-
                 lControl = Range.clip(lControl, -0.66, 0.66); //TODO max max power
                 rControl = Range.clip(rControl, -0.66, 0.66); //TODO max max power
                 setDrives();
