@@ -316,7 +316,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     public void moveStraight(double mmDistance) {
 
-        //time based
+        //time based: 50 cicles at 5 millis at 0.2 power do 5 mm moves
         for (int i = 0; i < mmDistance * 10; i++) {
             double error = i;
             if (i > mmDistance / 2) error = mmDistance - i;
@@ -325,7 +325,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
             leftDriveControl = 0.2 * error / 60;
             rightDriveControl = 0.2 * error / 60;
             setDrives();
-            waitMillis(1);
+            waitMillis(5);
         }
 
         leftDriveControl = 0;
