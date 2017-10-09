@@ -273,21 +273,22 @@ public class Team_OpMode_V4 extends LinearOpMode {
         turnDeg %= 360;
         if (turnDeg > 180) turnDeg = turnDeg - 360;
         else if (turnDeg < -180) turnDeg = turnDeg + 360;
+        turnDeg %= 180;
 
         double startHeading = modernRoboticsI2cGyro.getHeading();
         double endHeading = startHeading + turnDeg;
         double direction = turnDeg > 0 ? 1.0 : -1.0;
 
-        double error = Math.abs(endHeading - startHeading);
+        double error = Math.abs(endHeading - startHeading) / 180;
+        error = Range.clip(error, 0.0, 0.66); // the bigger the error the more off
+
         double iterations = 0;
 
-        while (error > 5 && iterations < 999) { //TODO
+        while (error > 0.05 && iterations < 999) { //TODO
             double turnPower = 0.2; //TODO
 
-            if (error < 15) {
-                turnPower *= error / 15;
-                turnPower = Range.clip(turnPower, 0.05, 0.2); //TODO
-            }
+            turnPower *= ( 1 - error );
+            turnPower = Range.clip(turnPower, 0.05, 0.2); //TODO
 
             leftDriveControl = -turnPower * direction;
             rightDriveControl = turnPower * direction;
@@ -304,7 +305,9 @@ public class Team_OpMode_V4 extends LinearOpMode {
                 crrHeading -= 360;
             }
 
-            error = Math.abs(endHeading - crrHeading);
+            error = Math.abs(endHeading - crrHeading) / 180;
+            error = Range.clip(error, 0.0, 0.66);
+
             iterations++;
         }
         leftDriveControl = 0;
@@ -316,14 +319,18 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     public void moveStraight(double mmDistance) {
 
-        //time based: 50 cicles at 5 millis at 0.2 power do 5 mm moves
-        for (int i = 0; i < mmDistance * 10; i++) {
-            double error = i;
-            if (i > mmDistance / 2) error = mmDistance - i;
-            error = Range.clip(error, 20, 60); // 2mm to 6mm ramp
+        //time based: 50 cycles at 5 millis at 0.2 power does a 5mm move
+        double totalSteps = mmDistance * 10;
 
-            leftDriveControl = 0.2 * error / 60;
-            rightDriveControl = 0.2 * error / 60;
+        for (int i = 0; i < totalSteps; i++) {
+
+            double error = 1;
+            if (i < totalSteps * 0.33) error = (totalSteps * 0.33 - i) / totalSteps;
+            if (i > totalSteps * 0.66) error = (totalSteps - i) / totalSteps;
+            error = Range.clip(Math.abs(error), 0, 0.66); // 2mm to 6mm ramp
+
+            leftDriveControl = 0.2 * (1 - error);
+            rightDriveControl = 0.2 * (1 - error);
             setDrives();
             waitMillis(5);
         }
