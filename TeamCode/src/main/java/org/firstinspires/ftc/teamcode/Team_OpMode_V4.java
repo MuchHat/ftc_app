@@ -149,7 +149,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
                 setDrives();
 
-                if( xInput != 0 )headingControl = modernRoboticsI2cGyro.getHeading();
+                if (xInput != 0) headingControl = modernRoboticsI2cGyro.getHeading();
             }
 
             // control: LIFT
@@ -231,8 +231,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
     public void doTurn(double turnDeg) {
 
         turnDeg %= 360;
-        if( turnDeg > 180 )turnDeg = turnDeg - 360;
-        else if (turnDeg < -180 )turnDeg = turnDeg + 360;
+        if (turnDeg > 180) turnDeg = turnDeg - 360;
+        else if (turnDeg < -180) turnDeg = turnDeg + 360;
 
         double startHeading = modernRoboticsI2cGyro.getHeading();
         double endHeading = startHeading + turnDeg;
@@ -253,7 +253,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
             rightControl = turnPower * direction;
             setDrives();
 
-            waitMillis( 5 ); //TODO
+            waitMillis(5); //TODO
 
             double crrHeading = modernRoboticsI2cGyro.getHeading();
 
@@ -274,12 +274,38 @@ public class Team_OpMode_V4 extends LinearOpMode {
         headingControl = modernRoboticsI2cGyro.getHeading();
     }
 
+    public void moveStraight(double mmDistance) {
+
+        //time based
+        for (int i = 0; i < mmDistance * 10; i++) {
+            double error = i;
+            if (i > mmDistance / 2) error = mmDistance - i;
+            error = Range.clip( error, 20, 60 ); // 2mm to 6mm ramp
+
+            leftControl = 0.2 * error / 60;
+            rightControl = 0.2 * error / 60;
+            setDrives();
+            waitMillis( 1 );
+        }
+
+        leftControl = 0;
+        rightControl = 0;
+        setDrives();
+    }
+
     void setDrives() {
 
         leftControl = Range.clip(leftControl, -0.66, 0.66); //TODO max max power
         rightControl = Range.clip(rightControl, -0.66, 0.66); //TODO max max power
+
         liftControl = Range.clip(liftControl, -0.66, 0.66); //TODO max max power
 
+        if( liftControl >= 0 && robot.topSwitch.getState() == false){ // false means switch is pressed
+            liftControl = 0;
+        }
+        if( liftControl < 0 && robot.bottomSwitch.getState() == false){ // false means switch is pressed
+            liftControl = 0;
+        }
         if (leftControl >= 0) {
             robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
             robot.leftDrive.setPower(leftControl);
@@ -306,7 +332,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         }
     }
 
-     void setServos() {
+    void setServos() {
 
         leftClawControl = Range.clip(leftClawControl, 0.05, 0.95); //TODO
         rightClawControl = Range.clip(rightClawControl, 0.05, 0.95); //TODO
@@ -315,7 +341,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         robot.rightClaw.setPosition(rightClawControl);
     }
 
-    void waitMillis( double millis ){
+    void waitMillis(double millis) {
         ElapsedTime runtimeWait = new ElapsedTime();
 
         runtimeWait.reset();

@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -46,6 +47,9 @@ public class Team_Hardware_V2 {
 
     public Servo leftClaw = null;
     public Servo rightClaw = null;
+
+    public DigitalChannel topSwitch = null;
+    public DigitalChannel bottomSwitch = null;
 
     /* local OpMode members. */
     public HardwareMap hwMap = null;
@@ -66,6 +70,8 @@ public class Team_Hardware_V2 {
         leftDrive = hwMap.get(DcMotor.class, "Motor_Left");
         rightDrive = hwMap.get(DcMotor.class, "Motor_Right");
         liftDrive = hwMap.get(DcMotor.class, "Motor_Lift");
+        topSwitch = hwMap.get(DigitalChannel.class, "Switch_Top");
+        bottomSwitch = hwMap.get(DigitalChannel.class, "Switch_Bottom");
 
         leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
