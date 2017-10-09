@@ -105,8 +105,8 @@ public class Team_OpMode_V3 extends LinearOpMode {
         setDrives();
         setServos();
 
-        telemetry.addData("crrHeading->", "{%.0fdeg}", modernRoboticsI2cGyro.getHeading());
-        telemetry.addData("lastHeading->", "{%.0fdeg}", headingControl);
+        telemetry.addData("currHeading->", modernRoboticsI2cGyro.getHeading());
+        telemetry.addData("lastHeading->", headingControl);
         telemetry.addData("gameStartHeading->", "{%.0fdeg}", gameStartHeading);
         telemetry.addData("LeftDrive->", "{%.0f%%}", leftControl * 100);
         telemetry.addData("RightDrive->", "{%.0f%%}", rightControl * 100);
@@ -123,8 +123,8 @@ public class Team_OpMode_V3 extends LinearOpMode {
             double crrLoopTime = runtimeLoop.nanoseconds() / 1000000; // covert to millis
             runtimeLoop.reset();
 
-            telemetry.addData("crrHeading->", "{%.0fdeg}", modernRoboticsI2cGyro.getHeading());
-            telemetry.addData("lastHeading->", "{%.0fdeg}", headingControl);
+            telemetry.addData("crrHeading->", modernRoboticsI2cGyro.getHeading());
+            telemetry.addData("lastHeading->", headingControl);
             telemetry.addData("gameStartHeading->", "{%.0fdeg}", gameStartHeading);
             telemetry.addData("LeftDrive->", "{%.0f%%}", leftControl * 100);
             telemetry.addData("RightDrive->", "{%.0f%%}", rightControl * 100);
@@ -139,7 +139,7 @@ public class Team_OpMode_V3 extends LinearOpMode {
                 double yInput = 0;
 
                 if (Math.abs(gamepad1.left_stick_x) > 0.15) xInput = gamepad1.left_stick_x;
-                if (Math.abs(gamepad1.left_stick_y) > 0.15) yInput = gamepad1.left_stick_y;
+                if (Math.abs(gamepad1.left_stick_y) > 0.15) yInput = -gamepad1.left_stick_y;
 
                 leftControl = yInput * driveDefaultSpeed;
                 rightControl = yInput * driveDefaultSpeed;
@@ -274,7 +274,7 @@ public class Team_OpMode_V3 extends LinearOpMode {
         headingControl = modernRoboticsI2cGyro.getHeading();
     }
 
-    public void setDrives() {
+    void setDrives() {
 
         leftControl = Range.clip(leftControl, -0.66, 0.66); //TODO max max power
         rightControl = Range.clip(rightControl, -0.66, 0.66); //TODO max max power
@@ -306,7 +306,7 @@ public class Team_OpMode_V3 extends LinearOpMode {
         }
     }
 
-    public void setServos() {
+     void setServos() {
 
         leftClawControl = Range.clip(leftClawControl, 0.05, 0.95); //TODO
         rightClawControl = Range.clip(rightClawControl, 0.05, 0.95); //TODO
