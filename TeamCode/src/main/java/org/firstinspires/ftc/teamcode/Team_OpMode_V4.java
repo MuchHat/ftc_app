@@ -59,6 +59,11 @@ public class Team_OpMode_V4 extends LinearOpMode {
     public double leftClawControl = 0;
     public double rightClawControl = 0;
 
+    public double baseControl = 0;
+    public double elbowControl = 0;
+
+    Boolean armEnabled = false;
+
     double driveDefaultSpeed = 0.44; // TODO
     double turnDefaultSpeed = 0.22; // TODO
     double liftDefaultSpeed = 0.22; // TODO
@@ -75,7 +80,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         robot.init(hardwareMap);
 
         modernRoboticsI2cGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
-        gyro = (IntegratingGyroscope) modernRoboticsI2cGyro;
+        gyro = modernRoboticsI2cGyro;
 
         telemetry.log().add("Gyro Calibrating. Do Not Move!");
         modernRoboticsI2cGyro.calibrate();
@@ -339,6 +344,50 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         robot.leftClaw.setPosition(leftClawControl);
         robot.rightClaw.setPosition(rightClawControl);
+    }
+
+    void moveArm( double newBase, double newElbow ){
+
+        if( !armEnabled ){
+            return;
+        }
+
+        newBase = Range.clip( newBase, 0.05, 0.95 );
+        newElbow = Range.clip( newElbow, 0.05, 0.95 );
+
+        double maxServoStep = 0.004; // 0.1 per servo and step
+        double stepCount = 0;
+        stepCount = Math.max(stepCount, Math.abs(newElbow - elbowControl) / maxServoStep);
+        stepCount = Math.max(stepCount, Math.abs(newBase - baseControl) / maxServoStep);
+
+        if (stepCount > 0) {
+            // move the elbow first to avoid hitting the robot
+
+            ElapsedTime stepElapsedTime = new ElapsedTime();
+            stepElapsedTime.reset();
+
+            for (int i = 0; i < stepCount; i++) {
+
+                double baseControlStep = baseControl + i * (newBase - baseControl) / stepCount;
+                double elbowControlStep = elbowControl + i * (newElbow - elbowControl) / stepCount;
+
+                elbowControlStep = Range.clip(elbowControlStep, 0.05, 0.95);
+                baseControlStep = Range.clip(baseControlStep, 0.05, 0.95);
+
+                while (stepElapsedTime.milliseconds() < 3 * (i + 1)) {
+                    idle();
+                }
+                robot.elbow.setPosition(elbowControlStep);
+                robot.base.setPosition(baseControlStep);
+            }
+        }
+
+        robot.elbow.setPosition(newElbow);
+        robot.base.setPosition(newBase);
+
+        baseControl = newBase;
+        elbowControl = newElbow;
+
     }
 
     void waitMillis(double millis) {

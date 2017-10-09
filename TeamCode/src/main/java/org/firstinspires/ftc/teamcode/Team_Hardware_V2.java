@@ -51,6 +51,9 @@ public class Team_Hardware_V2 {
     public DigitalChannel topSwitch = null;
     public DigitalChannel bottomSwitch = null;
 
+    public Servo base = null;
+    public Servo elbow = null;
+
     /* local OpMode members. */
     public HardwareMap hwMap = null;
     public ElapsedTime runtime = new ElapsedTime();
@@ -72,6 +75,8 @@ public class Team_Hardware_V2 {
         liftDrive = hwMap.get(DcMotor.class, "Motor_Lift");
         topSwitch = hwMap.get(DigitalChannel.class, "Switch_Top");
         bottomSwitch = hwMap.get(DigitalChannel.class, "Switch_Bottom");
+        base = hwMap.get(Servo.class, "Base");
+        elbow = hwMap.get(Servo.class, "Elbow");
 
         leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
