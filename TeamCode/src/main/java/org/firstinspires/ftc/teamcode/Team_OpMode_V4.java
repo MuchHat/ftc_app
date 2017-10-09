@@ -105,8 +105,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
         setDrives();
         setServos();
 
-        telemetry.addData("currHeading->", modernRoboticsI2cGyro.getHeading());
-        telemetry.addData("lastHeading->", headingControl);
+        telemetry.addData("currHeading->", "{%.0fdeg}", (double)modernRoboticsI2cGyro.getHeading());
+        telemetry.addData("lastHeading->", "{%.0fdeg}", (double)headingControl);
         telemetry.addData("gameStartHeading->", "{%.0fdeg}", gameStartHeading);
         telemetry.addData("LeftDrive->", "{%.0f%%}", leftControl * 100);
         telemetry.addData("RightDrive->", "{%.0f%%}", rightControl * 100);
@@ -123,8 +123,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
             double crrLoopTime = runtimeLoop.nanoseconds() / 1000000; // covert to millis
             runtimeLoop.reset();
 
-            telemetry.addData("crrHeading->", modernRoboticsI2cGyro.getHeading());
-            telemetry.addData("lastHeading->", headingControl);
+            telemetry.addData("currHeading->", "{%.0fdeg}", (double)modernRoboticsI2cGyro.getHeading());
+            telemetry.addData("lastHeading->", "{%.0fdeg}", (double)headingControl);
             telemetry.addData("gameStartHeading->", "{%.0fdeg}", gameStartHeading);
             telemetry.addData("LeftDrive->", "{%.0f%%}", leftControl * 100);
             telemetry.addData("RightDrive->", "{%.0f%%}", rightControl * 100);
