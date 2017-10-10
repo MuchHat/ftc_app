@@ -37,6 +37,10 @@ import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+
 //********************************* OP CLASS*** **************************************************//
 
 @TeleOp(name = "Team V4", group = "Team")
@@ -46,9 +50,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
     //********************************* HW VARIABLES *********************************************//
 
     public Team_Hardware_V2 robot = new Team_Hardware_V2();
-
-    private ModernRoboticsI2cGyro modernRoboticsI2cGyro;
-    private IntegratingGyroscope gyro;
 
     private ElapsedTime runtimeLoop = new ElapsedTime();
 
@@ -89,21 +90,20 @@ public class Team_OpMode_V4 extends LinearOpMode {
         //********************************* INIT LOOP ********************************************//
         robot.init(hardwareMap);
 
-        modernRoboticsI2cGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
-        gyro = modernRoboticsI2cGyro;
-
         telemetry.log().add("calibrating gyro, do not move");
+        telemetry.update();
         sleep(444);
-        modernRoboticsI2cGyro.calibrate();
+        robot.modernRoboticsI2cGyro.calibrate();
 
         // Wait until the gyro calibration is complete
         runtimeLoop.reset();
-        while (!isStopRequested() && modernRoboticsI2cGyro.isCalibrating()) {
+        while (!isStopRequested() && robot.modernRoboticsI2cGyro.isCalibrating()) {
             telemetry.addData("calibrating gyro", "%s",
                     Math.round(runtimeLoop.seconds()) % 2 == 0 ? "..  " : "   ..");
             telemetry.update();
             sleep(66);
         }
+        runtimeLoop.reset();
         telemetry.log().clear();
 
         while (!isStopRequested() && !gamepad1.start) {
@@ -150,7 +150,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
             if (manualMode) {
 
-                // control: DRIVES
+                // ***************************** control: DRIVES
                 {
                     double xInput = 0;
                     double yInput = 0;
@@ -168,10 +168,10 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
                     setDrives();
 
-                    if (xInput != 0) headingControl = modernRoboticsI2cGyro.getHeading();
+                    if (xInput != 0) headingControl = robot.modernRoboticsI2cGyro.getHeading();
                 }
 
-                // control: LIFT
+                // ********************************  control: LIFT
                 {
                     double liftInput = 0;
 
@@ -183,46 +183,72 @@ public class Team_OpMode_V4 extends LinearOpMode {
                     setDrives();
                 }
 
-                // control: TURNS 90
+                // ********************************  control: TURNS 90
                 if (gamepad1.dpad_right) {
                     doTurn(90);
                 }
 
-                // control: TURNS 90
+                // ********************************  control: TURNS -90
                 if (gamepad1.dpad_left) {
                     doTurn(-90);
                 }
 
-                // control: TURNS 90
-                if (gamepad1.dpad_left) {
+                // ********************************  control: TURN TO CRYPTO BOX
+                if (gamepad1.dpad_up) {
+                    turnToHeading(gameStartHeading + 90);
+                }
+
+                // ********************************  control: TURNS 180
+                if (gamepad1.dpad_down) {
                     doTurn(180);
                 }
 
-                // control: TURNS 90
-                if (gamepad1.start) {
-                    turnToHeading(gameStartHeading);
+                // ********************************  control: SMALL STEP FORWARD
+                if (gamepad1.y) {
+                    moveStraight(10);
                 }
 
-                // control: CLAW OPEN
+                // ********************************  control: SMALL STEP REVERSE
+                if (gamepad1.a) {
+                    moveStraight(-10);
+                }
+
+                // ********************************  control: SMALL STEP LEFT
+                if (gamepad1.x) {
+                    doTurn(-45);
+                    moveStraight(-1.5 * 10);
+                    doTurn(45);
+                    moveStraight(10);
+                }
+
+                // ********************************  control: SMALL STEP RIGHT
+                if (gamepad1.b) {
+                    doTurn(45);
+                    moveStraight(-1.5 * 10);
+                    doTurn(-45);
+                    moveStraight(10);
+                }
+
+                // ********************************  control: CLAW OPEN
                 if (gamepad1.left_trigger != 0) {
                     leftClawControl -= gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
                     rightClawControl += gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
                     setServos();
                 }
 
-                // control: CLAW CLOSE
+                // ********************************  control: CLAW CLOSE
                 if (gamepad1.right_trigger != 0) {
                     leftClawControl += gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
                     rightClawControl -= gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
                     setServos();
                 }
-                // control: CLAW PREDEF OPEN
+                // ********************************  control: CLAW PREDEF OPEN
                 if (gamepad1.left_bumper) {
                     leftClawControl = clawOpen[0];
                     rightClawControl = clawOpen[1];
                     setServos();
                 }
-                // control: CLAW PREDEF CLOSE
+                // ********************************  control: CLAW PREDEF CLOSE
                 if (gamepad1.right_bumper) {
                     leftClawControl = clawClosed[0];
                     rightClawControl = clawClosed[1];
@@ -274,7 +300,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         newHeading %= 360;
 
-        double crrHeading = modernRoboticsI2cGyro.getHeading();
+        double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
         double turnDeg = newHeading - crrHeading;
 
         if (Math.abs(newHeading - crrHeading) > 360 - Math.abs(newHeading - crrHeading)) {
@@ -294,7 +320,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         else if (turnDeg < -180) turnDeg = turnDeg + 360;
         turnDeg %= 180;
 
-        double startHeading = modernRoboticsI2cGyro.getHeading();
+        double startHeading = robot.modernRoboticsI2cGyro.getHeading();
         double endHeading = startHeading + turnDeg;
         double direction = turnDeg > 0 ? 1.0 : -1.0;
 
@@ -315,7 +341,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
             waitMillis(5); //TODO
 
-            double crrHeading = modernRoboticsI2cGyro.getHeading();
+            double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
 
             if (startHeading >= 180 && crrHeading <= 180 && direction > 0) {
                 crrHeading += 360;
@@ -333,7 +359,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         rightDriveControl = 0;
         setDrives();
 
-        headingControl = modernRoboticsI2cGyro.getHeading();
+        headingControl = robot.modernRoboticsI2cGyro.getHeading();
     }
 
     private void moveStraight(double mmDistance) {
@@ -431,13 +457,18 @@ public class Team_OpMode_V4 extends LinearOpMode {
         // do not add if already doing a turn
         double headingCorrection = 0;
 
-        if (leftDriveControl != rightDriveControl) {
-            double error = modernRoboticsI2cGyro.getHeading() - headingControl;
+        if (leftDriveControl == rightDriveControl) {
+            double error = headingControl - robot.modernRoboticsI2cGyro.getHeading();
+            double driveDirection = leftDriveControl > 0 ? 1.0 : -1.0;
 
             if (error > 180) error = -360 + error; // convert to +/- 180
-            headingCorrection = error / 180; //TODO tune up the amount of correction
-        }
+            if (error < -180) error = -360 + error; // convert to +/- 180
+            error %= 180;
+            error = Range.clip(error, -45, 45); // if completely off trim down
 
+            headingCorrection = error / 45 * 0.33; //TODO tune up the amount of correction
+            headingCorrection *= driveDirection; // apply correction the other way when running in reverse
+        }
 
         if (leftDriveControl >= 0) {
             robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -445,8 +476,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         }
         if (leftDriveControl < 0) {
             robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            robot.leftDrive.setPower(-leftDriveControl - headingCorrection);
-                // apply the correction the oposite way if going reverse //TODO
+            robot.leftDrive.setPower(leftDriveControl - headingCorrection);
         }
         if (rightDriveControl >= 0) {
             robot.rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -454,10 +484,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
         }
         if (rightDriveControl < 0) {
             robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            robot.rightDrive.setPower(-rightDriveControl + headingCorrection);
-                // apply the correction the oposite way if going reverse //TODO
+            robot.rightDrive.setPower(rightDriveControl + headingCorrection);
         }
-
     }
 
     void setServos() {
@@ -482,16 +510,18 @@ public class Team_OpMode_V4 extends LinearOpMode {
         telemetry.addData("lift", "%.0f%%", liftControl * 100);
         telemetry.addData("left claw", "%.0f%%", leftClawControl * 100);
         telemetry.addData("right claw", "%.0f%%", rightClawControl * 100);
-        telemetry.addData("crr heading", "%.0fdeg", (double) modernRoboticsI2cGyro.getHeading());
-        telemetry.addData("set heading", "%.0fdeg", (double) headingControl);
-        telemetry.addData("start heading", "%.0fdeg", gameStartHeading);
-        telemetry.addData("z value", "%.0fdeg", (double)modernRoboticsI2cGyro.getIntegratedZValue());
+
+        telemetry.addData("crr heading", "%.2fdeg", (double) robot.modernRoboticsI2cGyro.getHeading());
+        telemetry.addData("set heading", "%.2fdeg", (double) headingControl);
+        telemetry.addData("start heading", "%.2fdeg", gameStartHeading);
+        telemetry.addData("z angle", "%.2fdeg",
+                (double) robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
+
         telemetry.addData("mode", mode);
         telemetry.addData("team", team);
         telemetry.addData("field", field);
 
         telemetry.update();
-
     }
 
     private void waitMillis(double millis) {

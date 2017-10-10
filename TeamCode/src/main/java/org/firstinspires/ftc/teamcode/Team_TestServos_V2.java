@@ -46,7 +46,7 @@ import com.qualcomm.robotcore.util.Range;
 public class Team_TestServos_V2 extends LinearOpMode {
 
     public Team_Hardware_V2 robot = new Team_Hardware_V2();
-    public ElapsedTime runtime = new ElapsedTime();
+    public ElapsedTime runtimeLoop = new ElapsedTime();
     //Declare arm atuff
     public double baseControl = 0.5;
     public double elbowControl = 0.5;
@@ -61,6 +61,22 @@ public class Team_TestServos_V2 extends LinearOpMode {
 
         robot.init(hardwareMap);
 
+        telemetry.log().add("calibrating gyro, do not move");
+        telemetry.update();
+        sleep(444);
+        robot.modernRoboticsI2cGyro.calibrate();
+
+        // Wait until the gyro calibration is complete
+        runtimeLoop.reset();
+        while (!isStopRequested() && robot.modernRoboticsI2cGyro.isCalibrating()) {
+            telemetry.addData("calibrating gyro", "%s",
+                    Math.round(runtimeLoop.seconds()) % 2 == 0 ? "..  " : "   ..");
+            telemetry.update();
+            sleep(66);
+        }
+        runtimeLoop.reset();
+        telemetry.log().clear();
+
         robot.base.setPosition(baseControl);
         robot.elbow.setPosition(elbowControl);
         robot.leftClaw.setPosition(leftClawControl);
@@ -70,18 +86,31 @@ public class Team_TestServos_V2 extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            double crrLoopTime = runtime.nanoseconds() / 1000000; // covert to millis
-            runtime.reset();
+            double crrLoopTime = runtimeLoop.nanoseconds() / 1000000; // covert to millis
+            runtimeLoop.reset();
 
             baseControl = robot.base.getPosition();
             elbowControl = robot.elbow.getPosition();
             leftClawControl = robot.leftClaw.getPosition();
             rightClawControl = robot.rightClaw.getPosition();
 
+            robot.colorSensor.enableLed( true );
+            robot.distanceSensorLeft.enableLed( true );
+            robot.distanceSensorRight.enableLed( true );
+
             telemetry.addData("base", "%.0f%%", baseControl * 100);
             telemetry.addData("elbow", "%.0f%%", elbowControl * 100 );
             telemetry.addData("left claw", "%.0f%%", leftClawControl * 100);
             telemetry.addData("right claw", "%.0f%%", rightClawControl * 100);
+
+            telemetry.addData("color sensor red", "%.2f%%", (double)robot.colorSensor.red());
+            telemetry.addData("color sensor green", "%.2f%%", (double)robot.colorSensor.green());
+            telemetry.addData("color sensor blue", "%.2%%", (double)robot.colorSensor.blue());
+            telemetry.addData("distance sensor left", "%.2f%%", (double)robot.distanceSensorLeft.getLightDetected());
+            telemetry.addData("distance sensor right", "%.2f%%", (double)robot.distanceSensorRight.getLightDetected());
+
+            telemetry.addData("crr heading", "%.2fdeg", (double) robot.modernRoboticsI2cGyro.getHeading());
+
             telemetry.update();
 
             // control: BASE
@@ -94,12 +123,12 @@ public class Team_TestServos_V2 extends LinearOpMode {
                 elbowControl += gamepad1.right_stick_y * servoDefaultSpeed * crrLoopTime;
                 setServos();
             }
-            // control: CLAW CLOSE
+            // control: LEFT CLAW
             if (gamepad1.left_trigger != 0) {
                 leftClawControl += gamepad1.left_stick_x * servoDefaultSpeed * crrLoopTime;
                 setServos();
             }
-            // control: CLAW OPEN
+            // control: RIGHT CLAW
             if (gamepad1.right_trigger != 0) {
                 rightClawControl += gamepad1.right_stick_x * servoDefaultSpeed * crrLoopTime;
                 setServos();
