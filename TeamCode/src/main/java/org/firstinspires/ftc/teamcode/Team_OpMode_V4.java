@@ -283,6 +283,11 @@ public class Team_OpMode_V4 extends LinearOpMode {
         doTurn(-90);
         waitMillis(555);
 
+        if (stopTime(30)) {
+            stopRobot();
+            stop(); //stop the opMode
+        }
+
         moveStraight(400);
         doTurn(180);
         waitMillis(555);
@@ -293,12 +298,11 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         turnToHeading(gameStartHeading);
 
-        if (stopTime(30)) {
-            stopRobot();
-            stop(); //stop the opMode
-        }
-
+        stopRobot();
+        stop(); //stop the opMode
     }
+
+}
 
     // ************************** MOVE HELPER FUNCTIONS  *****************************************//
 
