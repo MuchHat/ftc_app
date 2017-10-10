@@ -187,12 +187,12 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
                 // ********************************  control: TURNS 90
                 if (gamepad1.dpad_right) {
-                    doTurn(90);
+                    turn(90);
                 }
 
                 // ********************************  control: TURNS -90
                 if (gamepad1.dpad_left) {
-                    doTurn(-90);
+                    turn(-90);
                 }
 
                 // ********************************  control: TURN TO CRYPTO BOX
@@ -202,33 +202,33 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
                 // ********************************  control: TURNS 180
                 if (gamepad1.dpad_down) {
-                    doTurn(180);
+                    turn(180);
                 }
 
                 // ********************************  control: SMALL STEP FORWARD
                 if (gamepad1.y) {
-                    moveStraight(10);
+                    move(10);
                 }
 
                 // ********************************  control: SMALL STEP REVERSE
                 if (gamepad1.a) {
-                    moveStraight(-10);
+                    move(-10);
                 }
 
                 // ********************************  control: SMALL STEP LEFT
                 if (gamepad1.x) {
-                    doTurn(-45);
-                    moveStraight(-1.5 * 10);
-                    doTurn(45);
-                    moveStraight(10);
+                    turn(-45);
+                    move(-1.5 * 10);
+                    turn(45);
+                    move(10);
                 }
 
                 // ********************************  control: SMALL STEP RIGHT
                 if (gamepad1.b) {
-                    doTurn(45);
-                    moveStraight(-1.5 * 10);
-                    doTurn(-45);
-                    moveStraight(10);
+                    turn(45);
+                    move(-1.5 * 10);
+                    turn(-45);
+                    move(10);
                 }
 
                 // ********************************  control: CLAW OPEN
@@ -275,22 +275,22 @@ public class Team_OpMode_V4 extends LinearOpMode {
         //example
         //TODO
 
-        moveStraight(200);
-        doTurn(90);
+        move(200);
+        turn(90);
         waitMillis(555);
 
-        moveStraight(200);
-        doTurn(-90);
+        move(200);
+        turn(-90);
         waitMillis(555);
 
         checkAndStopAutonomous();
 
-        moveStraight(400);
-        doTurn(180);
+        move(400);
+        turn(180);
         waitMillis(555);
 
-        moveStraight(200);
-        doTurn(-90);
+        move(200);
+        turn(-90);
         waitMillis(555);
 
         turnToHeading(gameStartHeading);
@@ -327,10 +327,10 @@ public class Team_OpMode_V4 extends LinearOpMode {
             turnDeg *= direction;
         }
 
-        doTurn(turnDeg);
+        turn(turnDeg);
     }
 
-    private void doTurn(double turnDeg) {
+    private void turn(double turnDeg) {
 
         turnDeg %= 360;
         if (turnDeg > 180) turnDeg = turnDeg - 360;
@@ -352,8 +352,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
             turnPower *= (1 - error);
             turnPower = Range.clip(turnPower, 0.05, 0.2); //TODO
 
-            leftDriveControl = -turnPower * direction;
             rightDriveControl = turnPower * direction;
+            leftDriveControl = -turnPower * direction;
             setDrives();
 
             waitMillis(5); //TODO
@@ -379,7 +379,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         headingControl = robot.modernRoboticsI2cGyro.getHeading();
     }
 
-    private void moveStraight(double mmDistance) {
+    private void move(double mmDistance) {
 
         //time based: 50 cycles at 5 millis at 0.2 power does a 5mm move
         double totalSteps = mmDistance * 10;
@@ -400,6 +400,18 @@ public class Team_OpMode_V4 extends LinearOpMode {
         leftDriveControl = 0;
         rightDriveControl = 0;
         setDrives();
+        
+        /*ValueAnimator valueAnimator = ValueAnimator.ofInt(initialValue, finalValue);
+        valueAnimator.setDuration(750);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                servoInt = Double.valueOf(valueAnimator.getAnimatedValue().toString());
+                servoInt /= max;
+                robot.turret.setPosition(servoInt);
+            }
+        });
+        valueAnimator.start();*/
     }
 
     private void stopRobot() {
