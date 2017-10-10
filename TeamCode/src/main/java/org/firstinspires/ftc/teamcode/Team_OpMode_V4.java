@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
@@ -50,8 +51,9 @@ public class Team_OpMode_V4 extends LinearOpMode {
     //********************************* HW VARIABLES *********************************************//
 
     public Team_Hardware_V2 robot = new Team_Hardware_V2();
-
-    private ElapsedTime runtimeLoop = new ElapsedTime();
+    private ElapsedTime loopRuntime = new ElapsedTime();
+    private ElapsedTime controlRuntime = new ElapsedTime();
+    private ElapsedTime totalRuntime = new ElapsedTime();
 
     //********************************* MOVE STATE ***********************************************//
 
@@ -90,21 +92,19 @@ public class Team_OpMode_V4 extends LinearOpMode {
         //********************************* INIT LOOP ********************************************//
         robot.init(hardwareMap);
 
-        telemetry.log().add("calibrating gyro, do not move");
+        telemetry.log().add("calibrating gyro ... do not move");
         telemetry.update();
         sleep(444);
         robot.modernRoboticsI2cGyro.calibrate();
 
         // Wait until the gyro calibration is complete
-        runtimeLoop.reset();
+        controlRuntime.reset();
         while (!isStopRequested() && robot.modernRoboticsI2cGyro.isCalibrating()) {
-            telemetry.addData("calibrating gyro", "%s",
-                    Math.round(runtimeLoop.seconds()) % 2 == 0 ? "..  " : "   ..");
+            telemetry.addData("calibrating gyro", "%s", Math.round(controlRuntime.seconds()));
             telemetry.update();
             sleep(66);
         }
-        runtimeLoop.reset();
-        telemetry.log().clear();
+        controlRuntime.reset();
 
         while (!isStopRequested() && !gamepad1.start) {
 
@@ -135,14 +135,16 @@ public class Team_OpMode_V4 extends LinearOpMode {
         updateTelemetry();
 
         waitForStart();
-        runtimeLoop.reset();
+        loopRuntime.reset();
+        totalRuntime.reset();
+        controlRuntime.reset();
 
         while (opModeIsActive()) {
 
             //********************************* START LOOP *****************************************
 
-            double crrLoopTime = runtimeLoop.nanoseconds() / 1000000; // covert to millis
-            runtimeLoop.reset();
+            double crrLoopTime = loopRuntime.nanoseconds() / 1000000; // covert to millis
+            loopRuntime.reset();
 
             updateTelemetry();
 
@@ -291,7 +293,11 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         turnToHeading(gameStartHeading);
 
-        manualMode = false; // stop autonomous
+        if (stopTime(30)) {
+            stopRobot();
+            stop(); //stop the opMode
+        }
+
     }
 
     // ************************** MOVE HELPER FUNCTIONS  *****************************************//
@@ -380,6 +386,12 @@ public class Team_OpMode_V4 extends LinearOpMode {
             waitMillis(5);
         }
 
+        leftDriveControl = 0;
+        rightDriveControl = 0;
+        setDrives();
+    }
+
+    private void stopRobot() {
         leftDriveControl = 0;
         rightDriveControl = 0;
         setDrives();
@@ -516,10 +528,10 @@ public class Team_OpMode_V4 extends LinearOpMode {
         telemetry.addData("start heading", "%.2fdeg", gameStartHeading);
         telemetry.addData("z angle", "%.2fdeg",
                 (double) robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
-
         telemetry.addData("mode", mode);
         telemetry.addData("team", team);
         telemetry.addData("field", field);
+        telemetry.addData("total runtime", "%.0fs", totalRuntime.seconds());
 
         telemetry.update();
     }
@@ -532,6 +544,10 @@ public class Team_OpMode_V4 extends LinearOpMode {
         while (runtimeWait.milliseconds() < millis) {
             idle();
         }
+    }
+
+    private boolean stopTime(double totalSeconds) {
+        return totalRuntime.seconds() > totalSeconds;
     }
 
     // ************************** OP END *********************************************************//
