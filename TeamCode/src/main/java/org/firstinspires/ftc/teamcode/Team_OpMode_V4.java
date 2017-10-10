@@ -181,7 +181,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
                         liftInput = gamepad1.right_stick_y; //TODO
 
                     liftControl = liftInput * liftDefaultSpeed;
-
                     setDrives();
                 }
 
@@ -207,28 +206,36 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
                 // ********************************  control: SMALL STEP FORWARD
                 if (gamepad1.y) {
-                    move(10);
+                    double step = 10;
+
+                    move(step);
                 }
 
                 // ********************************  control: SMALL STEP REVERSE
                 if (gamepad1.a) {
-                    move(-10);
+                    double step = 10;
+
+                    move(-step);
                 }
 
                 // ********************************  control: SMALL STEP LEFT
                 if (gamepad1.x) {
+                    double step = 10;
+
                     turn(-45);
-                    move(-1.5 * 10);
+                    move(-1.5 * step);
                     turn(45);
-                    move(10);
+                    move(step);
                 }
 
                 // ********************************  control: SMALL STEP RIGHT
                 if (gamepad1.b) {
+                    double step = 10;
+
                     turn(45);
-                    move(-1.5 * 10);
+                    move(-1.5 * step);
                     turn(-45);
-                    move(10);
+                    move(step);
                 }
 
                 // ********************************  control: CLAW OPEN
