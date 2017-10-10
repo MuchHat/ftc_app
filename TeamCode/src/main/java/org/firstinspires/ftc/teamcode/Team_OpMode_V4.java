@@ -47,36 +47,36 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     public Team_Hardware_V2 robot = new Team_Hardware_V2();
 
-    public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
-    public IntegratingGyroscope gyro;
+    private ModernRoboticsI2cGyro modernRoboticsI2cGyro;
+    private IntegratingGyroscope gyro;
 
-    public ElapsedTime runtimeLoop = new ElapsedTime();
+    private ElapsedTime runtimeLoop = new ElapsedTime();
 
-    public double leftDriveControl = 0;
-    public double rightDriveControl = 0;
-    public double headingControl = 0;
-    public double liftControl = 0;
-    public double leftClawControl = 0;
-    public double rightClawControl = 0;
+    private double leftDriveControl = 0;
+    private double rightDriveControl = 0;
+    private double headingControl = 0;
+    private double liftControl = 0;
+    private double leftClawControl = 0;
+    private double rightClawControl = 0;
 
-    public double baseControl = 0;
-    public double elbowControl = 0;
+    private double baseControl = 0;
+    private double elbowControl = 0;
 
-    Boolean armEnabled = false;
+    private Boolean armEnabled = false;
 
-    Boolean manualMode = true;
-    Boolean blueTeam = true;
-    Boolean rightField = true;
+    private Boolean manualMode = true;
+    private Boolean blueTeam = true;
+    private Boolean rightField = true;
 
-    double driveDefaultSpeed = 0.44; // TODO
-    double turnDefaultSpeed = 0.22; // TODO
-    double liftDefaultSpeed = 0.22; // TODO
-    double servoDefaultSpeed = 0.00033; // TODO
+    private double driveDefaultSpeed = 0.44; // TODO
+    private double turnDefaultSpeed = 0.22; // TODO
+    private double liftDefaultSpeed = 0.22; // TODO
+    private double servoDefaultSpeed = 0.00033; // TODO
 
-    double gameStartHeading = 0;
+    private double gameStartHeading = 0;
 
-    double clawOpen[] = {0.76, 0.44};
-    double clawClosed[] = {0.85, 0.34};
+    private double clawOpen[] = {0.76, 0.44};
+    private double clawClosed[] = {0.85, 0.34};
 
     @Override
     public void runOpMode() {
@@ -86,29 +86,29 @@ public class Team_OpMode_V4 extends LinearOpMode {
         modernRoboticsI2cGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
         gyro = modernRoboticsI2cGyro;
 
-        telemetry.log().add("Gyro Calibrating. Do Not Move!");
+        telemetry.log().add("calibrating gyro, do not move");
+        sleep(444);
         modernRoboticsI2cGyro.calibrate();
 
         // Wait until the gyro calibration is complete
         runtimeLoop.reset();
         while (!isStopRequested() && modernRoboticsI2cGyro.isCalibrating()) {
-            telemetry.addData("calibrating", "%s", Math.round(runtimeLoop.seconds()) % 2 == 0 ? "|.." : "..|");
+            telemetry.addData("calibrating gyro", "%s", Math.round(runtimeLoop.seconds()) % 2 == 0 ? "..  " : "  ..");
             telemetry.update();
-            sleep(50);
+            sleep(66);
         }
         telemetry.log().clear();
 
         while (!isStopRequested() && !gamepad1.start) {
 
             String mode = manualMode ? "manual" : "autonomous";
-            String field = rightField ? "RIGHT" : "LEFT";
-            String team = blueTeam ? "BLUE" : "LEFT";
+            String field = rightField ? "right" : "left";
+            String team = blueTeam ? "blue" : "red";
 
-            telemetry.log().add("Gyro calibrated");
-            telemetry.log().add("Select mode");
-            telemetry.log().add("(A) for manual, (B) for autonomous: " + mode);
-            telemetry.log().add("(X) for BLUE tem, (Y) for RED team: " + team);
-            telemetry.log().add("(R bumper) for RIGHT field, (L bumper) for LEFT field: ", field);
+            telemetry.log().add("select mode");
+            telemetry.log().add("(a) for manual or (b) for autonomous: " + mode);
+            telemetry.log().add("(x) for blue tem or (y) for red team: " + team);
+            telemetry.log().add("(r bumper) for right field or (l bumper) for left field: ", field);
             telemetry.update();
 
             if (gamepad1.a) manualMode = true;
@@ -147,8 +147,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
                     double xInput = 0;
                     double yInput = 0;
 
-                    if (Math.abs(gamepad1.left_stick_x) > 0.15) xInput = gamepad1.left_stick_x;
-                    if (Math.abs(gamepad1.left_stick_y) > 0.15) yInput = -gamepad1.left_stick_y;
+                    if (Math.abs(gamepad1.left_stick_x) > 0.15) xInput = gamepad1.left_stick_x; //TODO
+                    if (Math.abs(gamepad1.left_stick_y) > 0.15) yInput = -gamepad1.left_stick_y; //TODO
 
                     leftDriveControl = yInput * driveDefaultSpeed;
                     rightDriveControl = yInput * driveDefaultSpeed;
@@ -165,7 +165,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
                 {
                     double liftInput = 0;
 
-                    if (Math.abs(gamepad1.right_stick_y) > 0.15) liftInput = gamepad1.right_stick_y;
+                    if (Math.abs(gamepad1.right_stick_y) > 0.15) liftInput = gamepad1.right_stick_y; //TODO
 
                     liftControl = liftInput * liftDefaultSpeed;
 
@@ -231,48 +231,59 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     // ************************** Helper Functions ***********************************************//
 
-    public void runAutonomous() {
+    private void runAutonomous() {
 
         //example
+        //TODO
 
-        moveStraight( 200 );
-        doTurn( 90 );
-        waitMillis( 555 );
+        moveStraight(200);
+        doTurn(90);
+        waitMillis(555);
 
-        moveStraight( 200 );
-        doTurn( -90 );
-        waitMillis( 555 );
+        moveStraight(200);
+        doTurn(-90);
+        waitMillis(555);
 
-        moveStraight( 400 );
-        doTurn( 180 );
-        waitMillis( 555 );
+        moveStraight(400);
+        doTurn(180);
+        waitMillis(555);
 
-        moveStraight( 200 );
-        doTurn( -90 );
-        waitMillis( 555 );
+        moveStraight(200);
+        doTurn(-90);
+        waitMillis(555);
 
-        turnToHeading( gameStartHeading );
+        turnToHeading(gameStartHeading);
 
         manualMode = false; // stop autonomous
     }
 
     // ************************** Helper Functions ***********************************************//
 
-    public void updateTelemetry() {
-        telemetry.addData("currHeading->", "{%.0fdeg}", (double) modernRoboticsI2cGyro.getHeading());
-        telemetry.addData("lastHeading->", "{%.0fdeg}", (double) headingControl);
-        telemetry.addData("gameStartHeading->", "{%.0fdeg}", gameStartHeading);
-        telemetry.addData("LeftDrive->", "{%.0f%%}", leftDriveControl * 100);
-        telemetry.addData("RightDrive->", "{%.0f%%}", rightDriveControl * 100);
-        telemetry.addData("Lift->", "{%.0f%%}", liftControl * 100);
-        telemetry.addData("LeftClaw->", "{%.0f%%}", leftClawControl * 100);
-        telemetry.addData("RightClaw->", "{%.0f%%}", rightClawControl * 100);
+    private void updateTelemetry() {
+
+        String mode = manualMode ? "manual" : "autonomous";
+        String field = rightField ? "right" : "left";
+        String team = blueTeam ? "blue" : "red";
+
+        telemetry.addData("left drive", "%.0f%%", leftDriveControl * 100);
+        telemetry.addData("right drive", "%.0f%%", rightDriveControl * 100);
+        telemetry.addData("lift", "%.0f%%", liftControl * 100);
+        telemetry.addData("left claw", "%.0f%%", leftClawControl * 100);
+        telemetry.addData("right claw", "%.0f%%", rightClawControl * 100);
+        telemetry.addData("crr heading", "%.0fdeg", (double) modernRoboticsI2cGyro.getHeading());
+        telemetry.addData("set heading", "%.0fdeg", (double) headingControl);
+        telemetry.addData("start heading", "%.0fdeg", gameStartHeading);
+        telemetry.addData("z value", "%.0fdeg", (double) modernRoboticsI2cGyro.getIntegratedZValue());
+        telemetry.log().add("mode" + mode);
+        telemetry.log().add("team" + team);
+        telemetry.log().add("field ", field);
+
         telemetry.update();
 
     }
 
 
-    public void turnToHeading(double newHeading) {
+    private void turnToHeading(double newHeading) {
 
         newHeading %= 360;
 
@@ -289,7 +300,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         doTurn(turnDeg);
     }
 
-    public void doTurn(double turnDeg) {
+    private void doTurn(double turnDeg) {
 
         turnDeg %= 360;
         if (turnDeg > 180) turnDeg = turnDeg - 360;
@@ -338,7 +349,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         headingControl = modernRoboticsI2cGyro.getHeading();
     }
 
-    public void moveStraight(double mmDistance) {
+    private void moveStraight(double mmDistance) {
 
         //time based: 50 cycles at 5 millis at 0.2 power does a 5mm move
         double totalSteps = mmDistance * 10;
@@ -346,12 +357,12 @@ public class Team_OpMode_V4 extends LinearOpMode {
         for (int i = 0; i < totalSteps; i++) {
 
             double error = 1;
-            if (i < totalSteps * 0.33) error = (totalSteps * 0.33 - i) / totalSteps;
-            if (i > totalSteps * 0.66) error = (totalSteps - i) / totalSteps;
-            error = Range.clip(Math.abs(error), 0, 0.66); // 2mm to 6mm ramp
+            if (i < totalSteps * 0.33) error = (totalSteps * 0.33 - i) / totalSteps; //TODO
+            if (i > totalSteps * 0.66) error = (totalSteps - i) / totalSteps; //TODO
+            error = Range.clip(Math.abs(error), 0, 0.66); // 2mm to 6mm ramp //TODO
 
-            leftDriveControl = 0.2 * (1 - error);
-            rightDriveControl = 0.2 * (1 - error);
+            leftDriveControl = 0.2 * (1 - error); //TODO
+            rightDriveControl = 0.2 * (1 - error); //TODO
             setDrives();
             waitMillis(5);
         }
@@ -368,10 +379,10 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         liftControl = Range.clip(liftControl, -0.66, 0.66); //TODO max max power
 
-        if (liftControl >= 0 && robot.topSwitch.getState() == false) { // false means switch is pressed
+        if (liftControl >= 0 && !robot.topSwitch.getState()) { // false means switch is pressed
             liftControl = 0;
         }
-        if (liftControl < 0 && robot.bottomSwitch.getState() == false) { // false means switch is pressed
+        if (liftControl < 0 && !robot.bottomSwitch.getState()) { // false means switch is pressed
             liftControl = 0;
         }
         if (liftControl < 0) {
@@ -391,7 +402,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
             double error = modernRoboticsI2cGyro.getHeading() - headingControl;
 
             if (error > 180) error = -360 + error; // convert to +/- 180
-            headingCorrection = error / 180; //TODO tune up thone ammount of correctin
+            headingCorrection = error / 180; //TODO tune up the amount of correction
         }
 
 
@@ -429,8 +440,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
             return;
         }
 
-        newBase = Range.clip(newBase, 0.05, 0.95);
-        newElbow = Range.clip(newElbow, 0.05, 0.95);
+        newBase = Range.clip(newBase, 0.05, 0.95); //TODO
+        newElbow = Range.clip(newElbow, 0.05, 0.95); //TODO
 
         double maxServoStep = 0.004; // 0.1 per servo and step
         double stepCount = 0;
@@ -448,8 +459,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
                 double baseControlStep = baseControl + i * (newBase - baseControl) / stepCount;
                 double elbowControlStep = elbowControl + i * (newElbow - elbowControl) / stepCount;
 
-                elbowControlStep = Range.clip(elbowControlStep, 0.05, 0.95);
-                baseControlStep = Range.clip(baseControlStep, 0.05, 0.95);
+                elbowControlStep = Range.clip(elbowControlStep, 0.05, 0.95); //TODO
+                baseControlStep = Range.clip(baseControlStep, 0.05, 0.95); //TODO
 
                 while (stepElapsedTime.milliseconds() < 3 * (i + 1)) {
                     idle();
@@ -467,7 +478,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     }
 
-    void waitMillis(double millis) {
+    private void waitMillis(double millis) {
         ElapsedTime runtimeWait = new ElapsedTime();
 
         runtimeWait.reset();
