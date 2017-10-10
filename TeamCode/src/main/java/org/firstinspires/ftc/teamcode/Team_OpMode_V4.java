@@ -194,7 +194,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
                     turn(-90);
                 }
 
-                // ********************************  control: TURN TO CRYPTO BOX
+                // ********************************  control: TURN FACING THE CRYPTO BOX
                 if (gamepad1.dpad_up) {
                     turnToHeading(gameStartHeading + 90);
                 }
@@ -262,6 +262,16 @@ public class Team_OpMode_V4 extends LinearOpMode {
                     leftClawControl = clawClosed[0];
                     rightClawControl = clawClosed[1];
                     setServos();
+                }
+                // ********************************  control: LOAD CUBE SEQUENCE
+                if (gamepad1.left_stick_x > 0.15) {
+                    // TODO
+
+                }
+                // ********************************  control: UNLOAD CUBE SEQUENCE
+                if (gamepad1.left_stick_x < -0.15) {
+                    //TODO
+
                 }
             }
 
@@ -386,27 +396,29 @@ public class Team_OpMode_V4 extends LinearOpMode {
         headingControl = robot.modernRoboticsI2cGyro.getHeading();
     }
 
-    private void move(double mmDistance) {
+    double maxVelocity = 333/1000; //333mm/sec
 
-        //time based: 50 cycles at 5 millis at 0.2 power does a 5mm move
-        double totalSteps = mmDistance * 10;
+    private void move(double distance) {
 
-        for (int i = 0; i < totalSteps; i++) {
+        double currentPos = 0;
+        double currentVelocity = 0;
+        double maxSteps = 99; // to avoid a runaway
+        double currentStep = 0;
+        double stepTime = 3;
 
-            double error = 1;
-            if (i < totalSteps * 0.33) error = (totalSteps * 0.33 - i) / totalSteps; //TODO
-            if (i > totalSteps * 0.66) error = (totalSteps - i) / totalSteps; //TODO
-            error = Range.clip(Math.abs(error), 0, 0.66); // 2mm to 6mm ramp //TODO
+        while(currentStep < maxSteps && currentPos >= distance ){
 
-            leftDriveControl = 0.2 * (1 - error); //TODO
-            rightDriveControl = 0.2 * (1 - error); //TODO
+            currentPos += currentVelocity * stepTime;
+            currentVelocity = stepVelocityByDampedSpring( distance, currentPos, currentVelocity, stepTime );
+
+            leftDriveControl = currentVelocity/maxVelocity * 0.33; //power to motors is proportional with the speed
+            rightDriveControl = currentVelocity/maxVelocity * 0.33;
+
             setDrives();
-            waitMillis(5);
+            waitMillis(stepTime);
         }
 
-        leftDriveControl = 0;
-        rightDriveControl = 0;
-        setDrives();
+        stopRobot();
         
         /*ValueAnimator valueAnimator = ValueAnimator.ofInt(initialValue, finalValue);
         valueAnimator.setDuration(750);
@@ -419,6 +431,21 @@ public class Team_OpMode_V4 extends LinearOpMode {
             }
         });
         valueAnimator.start();*/
+    }
+
+    double stepVelocityByDampedSpring( double targetPos, double currentPos, double currentVelocity, double stepTime )
+    {
+        double springConstant = 1 / 5; //5 ms typical step
+
+        double currentToTarget = targetPos - currentPos; //300, 300
+        double springForce = currentToTarget * springConstant; //15, 200
+
+        double dampingForce = -currentVelocity * 2 * Math.sqrt( springConstant ); //0, -66
+        double force = springForce + dampingForce; //155
+
+        double newVelocity = currentVelocity + force * stepTime; //75, 600
+
+        return Range.clip( newVelocity, maxVelocity / 10, maxVelocity );
     }
 
     private void stopRobot() {
