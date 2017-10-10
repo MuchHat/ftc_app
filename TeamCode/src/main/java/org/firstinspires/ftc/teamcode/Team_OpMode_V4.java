@@ -233,6 +233,27 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     public void runAutonomous() {
 
+        //example
+
+        moveStraight( 200 );
+        doTurn( 90 );
+        waitMillis( 555 );
+
+        moveStraight( 200 );
+        doTurn( -90 );
+        waitMillis( 555 );
+
+        moveStraight( 400 );
+        doTurn( 180 );
+        waitMillis( 555 );
+
+        moveStraight( 200 );
+        doTurn( -90 );
+        waitMillis( 555 );
+
+        turnToHeading( gameStartHeading );
+
+        manualMode = false; // stop autonomous
     }
 
     // ************************** Helper Functions ***********************************************//
