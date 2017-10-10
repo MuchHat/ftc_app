@@ -353,22 +353,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
         if (liftControl < 0 && robot.bottomSwitch.getState() == false) { // false means switch is pressed
             liftControl = 0;
         }
-        if (leftDriveControl >= 0) {
-            robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            robot.leftDrive.setPower(leftDriveControl);
-        }
-        if (leftDriveControl < 0) {
-            robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            robot.leftDrive.setPower(-leftDriveControl);
-        }
-        if (rightDriveControl >= 0) {
-            robot.rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            robot.rightDrive.setPower(rightDriveControl);
-        }
-        if (rightDriveControl < 0) {
-            robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            robot.rightDrive.setPower(-rightDriveControl);
-        }
         if (liftControl < 0) {
             robot.liftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
             robot.liftDrive.setPower(-liftControl);
@@ -377,6 +361,36 @@ public class Team_OpMode_V4 extends LinearOpMode {
             robot.liftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             robot.liftDrive.setPower(liftControl);
         }
+
+        // if gyro indicates drifting add same power to correct
+        // do not add if already doing a turn
+        double headingCorrection = 0;
+
+        if( leftDriveControl != rightDriveControl){
+            double error = modernRoboticsI2cGyro.getHeading() - headingControl;
+
+            if( error > 180 )error = -360 + error; // convert to +/- 180
+            headingCorrection = error / 180; //TODO tune up thone ammount of correctin
+        }
+
+
+        if (leftDriveControl >= 0) {
+            robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+            robot.leftDrive.setPower(leftDriveControl - headingCorrection);
+        }
+        if (leftDriveControl < 0) {
+            robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+            robot.leftDrive.setPower(-leftDriveControl-headingCorrection); // apply the correction the oposite way if going reverse //TODO
+        }
+        if (rightDriveControl >= 0) {
+            robot.rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
+            robot.rightDrive.setPower(rightDriveControl + headingCorrection);
+        }
+        if (rightDriveControl < 0) {
+            robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+            robot.rightDrive.setPower(-rightDriveControl+headingCorrection);
+        }
+
     }
 
     void setServos() {
