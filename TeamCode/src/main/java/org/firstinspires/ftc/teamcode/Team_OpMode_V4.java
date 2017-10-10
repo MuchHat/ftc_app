@@ -283,10 +283,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         doTurn(-90);
         waitMillis(555);
 
-        if (stopTime(30)) {
-            stopRobot();
-            stop(); //stop the opMode
-        }
+        checkAndStopAutonomous();
 
         moveStraight(400);
         doTurn(180);
@@ -302,7 +299,17 @@ public class Team_OpMode_V4 extends LinearOpMode {
         stop(); //stop the opMode
     }
 
-}
+    private void checkAndStopAutonomous() {
+
+        if (manualMode) {
+            return;
+        }
+
+        if (stopTime(30)) {
+            stopRobot();
+            stop(); //stop the opMode
+        }
+    }
 
     // ************************** MOVE HELPER FUNCTIONS  *****************************************//
 
