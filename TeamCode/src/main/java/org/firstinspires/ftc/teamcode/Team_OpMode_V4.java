@@ -37,13 +37,13 @@ import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-/**
- * This file illustrates the concept of driving a path based on time.
- */
+//********************************* OP CLASS*** **************************************************//
 
 @TeleOp(name = "Team V4", group = "Team")
 // @Disabled
 public class Team_OpMode_V4 extends LinearOpMode {
+
+    //********************************* HW VARIABLES *********************************************//
 
     public Team_Hardware_V2 robot = new Team_Hardware_V2();
 
@@ -51,6 +51,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
     private IntegratingGyroscope gyro;
 
     private ElapsedTime runtimeLoop = new ElapsedTime();
+
+    //********************************* MOVE STATE ***********************************************//
 
     private double leftDriveControl = 0;
     private double rightDriveControl = 0;
@@ -61,6 +63,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     private double baseControl = 0;
     private double elbowControl = 0;
+    private double gameStartHeading = 0;
 
     private Boolean armEnabled = false;
 
@@ -68,12 +71,14 @@ public class Team_OpMode_V4 extends LinearOpMode {
     private Boolean blueTeam = true;
     private Boolean rightField = true;
 
+    //********************************* CONSTANTS ************************************************//
+
     private double driveDefaultSpeed = 0.44; // TODO
     private double turnDefaultSpeed = 0.22; // TODO
     private double liftDefaultSpeed = 0.22; // TODO
     private double servoDefaultSpeed = 0.00033; // TODO
 
-    private double gameStartHeading = 0;
+    //********************************* PREDEF POS ***********************************************//
 
     private double clawOpen[] = {0.76, 0.44};
     private double clawClosed[] = {0.85, 0.34};
@@ -81,6 +86,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        //********************************* INIT LOOP ********************************************//
         robot.init(hardwareMap);
 
         modernRoboticsI2cGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
@@ -93,7 +99,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
         // Wait until the gyro calibration is complete
         runtimeLoop.reset();
         while (!isStopRequested() && modernRoboticsI2cGyro.isCalibrating()) {
-            telemetry.addData("calibrating gyro", "%s", Math.round(runtimeLoop.seconds()) % 2 == 0 ? "..  " : "  ..");
+            telemetry.addData("calibrating gyro", "%s",
+                    Math.round(runtimeLoop.seconds()) % 2 == 0 ? "..  " : "   ..");
             telemetry.update();
             sleep(66);
         }
@@ -109,6 +116,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
             telemetry.log().add("(a) for manual or (b) for autonomous: " + mode);
             telemetry.log().add("(x) for blue tem or (y) for red team: " + team);
             telemetry.log().add("(r bumper) for right field or (l bumper) for left field: ", field);
+            telemetry.log().add("press start to continue");
             telemetry.update();
 
             if (gamepad1.a) manualMode = true;
@@ -228,11 +236,11 @@ public class Team_OpMode_V4 extends LinearOpMode {
                 runAutonomous();
             }
 
-            //********************************* END LOOP *****************************************
+            //********************************* END LOOP *****************************************//
         }
     }
 
-    // ************************** Helper Functions ***********************************************//
+    // ************************** AUTO MODE ******************************************************//
 
     private void runAutonomous() {
 
@@ -260,31 +268,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         manualMode = false; // stop autonomous
     }
 
-    // ************************** Helper Functions ***********************************************//
-
-    private void updateTelemetry() {
-
-        String mode = manualMode ? "manual" : "autonomous";
-        String field = rightField ? "right" : "left";
-        String team = blueTeam ? "blue" : "red";
-
-        telemetry.addData("left drive", "%.0f%%", leftDriveControl * 100);
-        telemetry.addData("right drive", "%.0f%%", rightDriveControl * 100);
-        telemetry.addData("lift", "%.0f%%", liftControl * 100);
-        telemetry.addData("left claw", "%.0f%%", leftClawControl * 100);
-        telemetry.addData("right claw", "%.0f%%", rightClawControl * 100);
-        telemetry.addData("crr heading", "%.0fdeg", (double) modernRoboticsI2cGyro.getHeading());
-        telemetry.addData("set heading", "%.0fdeg", (double) headingControl);
-        telemetry.addData("start heading", "%.0fdeg", gameStartHeading);
-        telemetry.addData("z value", "%.0fdeg", (double) modernRoboticsI2cGyro.getIntegratedZValue());
-        telemetry.log().add("mode" + mode);
-        telemetry.log().add("team" + team);
-        telemetry.log().add("field ", field);
-
-        telemetry.update();
-
-    }
-
+    // ************************** MOVE HELPER FUNCTIONS  *****************************************//
 
     private void turnToHeading(double newHeading) {
 
@@ -419,6 +403,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     }
 
+    // ************************** HARDWARE SET FUNCTIONS *****************************************//
+
     void setDrives() {
 
         leftDriveControl = Range.clip(leftDriveControl, -0.66, 0.66); //TODO max max power
@@ -459,15 +445,17 @@ public class Team_OpMode_V4 extends LinearOpMode {
         }
         if (leftDriveControl < 0) {
             robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            robot.leftDrive.setPower(-leftDriveControl - headingCorrection); // apply the correction the oposite way if going reverse //TODO
+            robot.leftDrive.setPower(-leftDriveControl - headingCorrection);
+                // apply the correction the oposite way if going reverse //TODO
         }
         if (rightDriveControl >= 0) {
             robot.rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             robot.rightDrive.setPower(rightDriveControl + headingCorrection);
         }
         if (rightDriveControl < 0) {
-            robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE); // apply the correction the oposite way if going reverse //TODO
+            robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
             robot.rightDrive.setPower(-rightDriveControl + headingCorrection);
+                // apply the correction the oposite way if going reverse //TODO
         }
 
     }
@@ -481,6 +469,31 @@ public class Team_OpMode_V4 extends LinearOpMode {
         robot.rightClaw.setPosition(rightClawControl);
     }
 
+    // ************************** HELPER FUNCTIONS ***********************************************//
+
+    private void updateTelemetry() {
+
+        String mode = manualMode ? "manual" : "autonomous";
+        String field = rightField ? "right" : "left";
+        String team = blueTeam ? "blue" : "red";
+
+        telemetry.addData("left drive", "%.0f%%", leftDriveControl * 100);
+        telemetry.addData("right drive", "%.0f%%", rightDriveControl * 100);
+        telemetry.addData("lift", "%.0f%%", liftControl * 100);
+        telemetry.addData("left claw", "%.0f%%", leftClawControl * 100);
+        telemetry.addData("right claw", "%.0f%%", rightClawControl * 100);
+        telemetry.addData("crr heading", "%.0fdeg", (double) modernRoboticsI2cGyro.getHeading());
+        telemetry.addData("set heading", "%.0fdeg", (double) headingControl);
+        telemetry.addData("start heading", "%.0fdeg", gameStartHeading);
+        telemetry.addData("z value", "%.0fdeg", (double)modernRoboticsI2cGyro.getIntegratedZValue());
+        telemetry.addData("mode", mode);
+        telemetry.addData("team", team);
+        telemetry.addData("field", field);
+
+        telemetry.update();
+
+    }
+
     private void waitMillis(double millis) {
         ElapsedTime runtimeWait = new ElapsedTime();
 
@@ -490,5 +503,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
             idle();
         }
     }
+
+    // ************************** OP END *********************************************************//
 }
 

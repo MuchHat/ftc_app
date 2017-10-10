@@ -35,12 +35,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-/**
- * This is a robot hardware class NOT an opmode.
- */
+// ************************** ROBOT HW CLASS *****************************************************//
+
 public class Team_Hardware_V2 {
 
-    /* Public OpMode members. */
+    // ************************** ROBOT HW  ******************************************************//
+
     public DcMotor leftDrive = null;
     public DcMotor rightDrive = null;
     public DcMotor liftDrive = null;
@@ -54,22 +54,20 @@ public class Team_Hardware_V2 {
     public Servo base = null;
     public Servo elbow = null;
 
-    /* local OpMode members. */
     public HardwareMap hwMap = null;
     public ElapsedTime runtime = new ElapsedTime();
 
-    /* Constructor */
+
     public Team_Hardware_V2() {
 
     }
 
-    /* Initialize standard Hardware interfaces */
+    // ************************** INIT  **********************************************************//
+
     public void init(HardwareMap ahwMap) {
 
-        // Save reference to Hardware map
         hwMap = ahwMap;
 
-        //****** MOTORS *********
         leftDrive = hwMap.get(DcMotor.class, "Motor_Left");
         rightDrive = hwMap.get(DcMotor.class, "Motor_Right");
         liftDrive = hwMap.get(DcMotor.class, "Motor_Lift");
@@ -77,10 +75,12 @@ public class Team_Hardware_V2 {
         bottomSwitch = hwMap.get(DigitalChannel.class, "Switch_Bottom");
         base = hwMap.get(Servo.class, "Base");
         elbow = hwMap.get(Servo.class, "Elbow");
+        leftClaw = hwMap.get(Servo.class, "Claw_Left");
+        rightClaw = hwMap.get(Servo.class, "Claw_Right");
 
-        leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
-        liftDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        liftDrive.setDirection(DcMotor.Direction.FORWARD);
 
         leftDrive.setPower(0);
         rightDrive.setPower(0);
@@ -90,7 +90,7 @@ public class Team_Hardware_V2 {
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         liftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        leftClaw = hwMap.get(Servo.class, "Claw_Left");
-        rightClaw = hwMap.get(Servo.class, "Claw_Right");
     }
+
+    // ************************** ROBOT HW CLASS END  ********************************************//
 }

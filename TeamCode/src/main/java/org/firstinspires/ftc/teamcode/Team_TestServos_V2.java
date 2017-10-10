@@ -78,10 +78,10 @@ public class Team_TestServos_V2 extends LinearOpMode {
             leftClawControl = robot.leftClaw.getPosition();
             rightClawControl = robot.rightClaw.getPosition();
 
-            telemetry.addData("Base->", "{%.0f%% %.0fdeg}", baseControl * 100);
-            telemetry.addData("Elbow->", "{%.0f%% %.0fdeg}", elbowControl * 100 );
-            telemetry.addData("LeftClaw->", "{%.0f%% %.0fdeg}", leftClawControl * 100);
-            telemetry.addData("RightClaw->", "{%.0f%% %.0fdeg}", rightClawControl * 100);
+            telemetry.addData("base", "%.0f%%", baseControl * 100);
+            telemetry.addData("elbow", "%.0f%%", elbowControl * 100 );
+            telemetry.addData("left claw", "%.0f%%", leftClawControl * 100);
+            telemetry.addData("right claw", "%.0f%%", rightClawControl * 100);
             telemetry.update();
 
             // control: BASE
