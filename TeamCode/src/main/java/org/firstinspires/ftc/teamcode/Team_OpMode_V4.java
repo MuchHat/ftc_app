@@ -147,8 +147,10 @@ public class Team_OpMode_V4 extends LinearOpMode {
                     double xInput = 0;
                     double yInput = 0;
 
-                    if (Math.abs(gamepad1.left_stick_x) > 0.15) xInput = gamepad1.left_stick_x; //TODO
-                    if (Math.abs(gamepad1.left_stick_y) > 0.15) yInput = -gamepad1.left_stick_y; //TODO
+                    if (Math.abs(gamepad1.left_stick_x) > 0.15)
+                        xInput = gamepad1.left_stick_x; //TODO
+                    if (Math.abs(gamepad1.left_stick_y) > 0.15)
+                        yInput = -gamepad1.left_stick_y; //TODO
 
                     leftDriveControl = yInput * driveDefaultSpeed;
                     rightDriveControl = yInput * driveDefaultSpeed;
@@ -165,7 +167,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
                 {
                     double liftInput = 0;
 
-                    if (Math.abs(gamepad1.right_stick_y) > 0.15) liftInput = gamepad1.right_stick_y; //TODO
+                    if (Math.abs(gamepad1.right_stick_y) > 0.15)
+                        liftInput = gamepad1.right_stick_y; //TODO
 
                     liftControl = liftInput * liftDefaultSpeed;
 
@@ -372,6 +375,50 @@ public class Team_OpMode_V4 extends LinearOpMode {
         setDrives();
     }
 
+    void moveArm(double newBase, double newElbow) {
+
+        if (!armEnabled) {
+            return;
+        }
+
+        newBase = Range.clip(newBase, 0.05, 0.95); //TODO
+        newElbow = Range.clip(newElbow, 0.05, 0.95); //TODO
+
+        double maxServoStep = 0.004; // 0.1 per servo and step
+        double stepCount = 0;
+        stepCount = Math.max(stepCount, Math.abs(newElbow - elbowControl) / maxServoStep);
+        stepCount = Math.max(stepCount, Math.abs(newBase - baseControl) / maxServoStep);
+
+        if (stepCount > 0) {
+            // move the elbow first to avoid hitting the robot
+
+            ElapsedTime stepElapsedTime = new ElapsedTime();
+            stepElapsedTime.reset();
+
+            for (int i = 0; i < stepCount; i++) {
+
+                double baseControlStep = baseControl + i * (newBase - baseControl) / stepCount;
+                double elbowControlStep = elbowControl + i * (newElbow - elbowControl) / stepCount;
+
+                elbowControlStep = Range.clip(elbowControlStep, 0.05, 0.95); //TODO
+                baseControlStep = Range.clip(baseControlStep, 0.05, 0.95); //TODO
+
+                while (stepElapsedTime.milliseconds() < 3 * (i + 1)) {
+                    idle();
+                }
+                robot.elbow.setPosition(elbowControlStep);
+                robot.base.setPosition(baseControlStep);
+            }
+        }
+
+        robot.elbow.setPosition(newElbow);
+        robot.base.setPosition(newBase);
+
+        baseControl = newBase;
+        elbowControl = newElbow;
+
+    }
+
     void setDrives() {
 
         leftDriveControl = Range.clip(leftDriveControl, -0.66, 0.66); //TODO max max power
@@ -432,50 +479,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         robot.leftClaw.setPosition(leftClawControl);
         robot.rightClaw.setPosition(rightClawControl);
-    }
-
-    void moveArm(double newBase, double newElbow) {
-
-        if (!armEnabled) {
-            return;
-        }
-
-        newBase = Range.clip(newBase, 0.05, 0.95); //TODO
-        newElbow = Range.clip(newElbow, 0.05, 0.95); //TODO
-
-        double maxServoStep = 0.004; // 0.1 per servo and step
-        double stepCount = 0;
-        stepCount = Math.max(stepCount, Math.abs(newElbow - elbowControl) / maxServoStep);
-        stepCount = Math.max(stepCount, Math.abs(newBase - baseControl) / maxServoStep);
-
-        if (stepCount > 0) {
-            // move the elbow first to avoid hitting the robot
-
-            ElapsedTime stepElapsedTime = new ElapsedTime();
-            stepElapsedTime.reset();
-
-            for (int i = 0; i < stepCount; i++) {
-
-                double baseControlStep = baseControl + i * (newBase - baseControl) / stepCount;
-                double elbowControlStep = elbowControl + i * (newElbow - elbowControl) / stepCount;
-
-                elbowControlStep = Range.clip(elbowControlStep, 0.05, 0.95); //TODO
-                baseControlStep = Range.clip(baseControlStep, 0.05, 0.95); //TODO
-
-                while (stepElapsedTime.milliseconds() < 3 * (i + 1)) {
-                    idle();
-                }
-                robot.elbow.setPosition(elbowControlStep);
-                robot.base.setPosition(baseControlStep);
-            }
-        }
-
-        robot.elbow.setPosition(newElbow);
-        robot.base.setPosition(newBase);
-
-        baseControl = newBase;
-        elbowControl = newElbow;
-
     }
 
     private void waitMillis(double millis) {
