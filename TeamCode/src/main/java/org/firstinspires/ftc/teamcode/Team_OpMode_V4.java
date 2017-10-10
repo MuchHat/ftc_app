@@ -287,7 +287,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         while (error > 0.05 && iterations < 999) { //TODO
             double turnPower = 0.2; //TODO
 
-            turnPower *= ( 1 - error );
+            turnPower *= (1 - error);
             turnPower = Range.clip(turnPower, 0.05, 0.2); //TODO
 
             leftDriveControl = -turnPower * direction;
@@ -366,10 +366,10 @@ public class Team_OpMode_V4 extends LinearOpMode {
         // do not add if already doing a turn
         double headingCorrection = 0;
 
-        if( leftDriveControl != rightDriveControl){
+        if (leftDriveControl != rightDriveControl) {
             double error = modernRoboticsI2cGyro.getHeading() - headingControl;
 
-            if( error > 180 )error = -360 + error; // convert to +/- 180
+            if (error > 180) error = -360 + error; // convert to +/- 180
             headingCorrection = error / 180; //TODO tune up thone ammount of correctin
         }
 
@@ -380,7 +380,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         }
         if (leftDriveControl < 0) {
             robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            robot.leftDrive.setPower(-leftDriveControl-headingCorrection); // apply the correction the oposite way if going reverse //TODO
+            robot.leftDrive.setPower(-leftDriveControl - headingCorrection); // apply the correction the oposite way if going reverse //TODO
         }
         if (rightDriveControl >= 0) {
             robot.rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -388,7 +388,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         }
         if (rightDriveControl < 0) {
             robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            robot.rightDrive.setPower(-rightDriveControl+headingCorrection);
+            robot.rightDrive.setPower(-rightDriveControl + headingCorrection);
         }
 
     }
