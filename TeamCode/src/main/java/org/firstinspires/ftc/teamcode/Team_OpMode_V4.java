@@ -387,7 +387,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
             robot.rightDrive.setPower(rightDriveControl + headingCorrection);
         }
         if (rightDriveControl < 0) {
-            robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
+            robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE); // apply the correction the oposite way if going reverse //TODO
             robot.rightDrive.setPower(-rightDriveControl + headingCorrection);
         }
 
