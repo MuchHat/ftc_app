@@ -425,26 +425,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
         setDrives();
     }
 
-    // **************************  DRIVE SMOOTHING FUNCTION  *************************************//
-
-    double minVelocity = 0.08;
-    double maxVelocity = 0.88;
-
-    double velocityByDampedSpring(double targetPos, double currentPos, double currentVelocity, double stepTime) {
-
-        double springConstant = 0.003/targetPos; //full speed in 15 iterations
-
-        double currentToTarget = targetPos - currentPos;
-        double springForce = currentToTarget * springConstant;
-
-        double dampingForce = -currentVelocity * 2 * Math.sqrt(springConstant);
-        double force = springForce + dampingForce;
-
-        double newVelocity = currentVelocity + force * stepTime;
-
-        return Range.clip(newVelocity, minVelocity, maxVelocity);
-    }
-
     // ************************** ARM HELPER FUNCTIONS  *****************************************//
 
     void moveArm(double newBase, double newElbow) {
