@@ -46,7 +46,8 @@ public class Animator {
 
         currentPos = Math.abs( currentPos );
 
-        if( currentPos > distance || currentPos == 0 ){
+        if( currentPos >= distance || currentPos == 0 ){
+            lastSpeed = minSpeed;
             return minSpeed;
         }
         double newSpeed = lastSpeed;

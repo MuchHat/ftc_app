@@ -577,7 +577,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     private void waitMillis(double millis) {
 
-        millis = Range.clip( millis, 0.01, millis );
+        millis = Range.clip(millis, 0.01, millis);
         ElapsedTime runtimeWait = new ElapsedTime();
 
         runtimeWait.reset();
