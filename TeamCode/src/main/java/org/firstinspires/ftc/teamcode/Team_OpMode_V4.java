@@ -370,7 +370,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         double stepTime = 3;
 
         Animator turnAnimator = new Animator();
-        turnAnimator.init( distance );
+        turnAnimator.init(distance);
 
         while (currentStep < maxSteps && error > 3 && error <= prevError) {
 
@@ -380,7 +380,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
             rightDriveControl = -currentSpeed * direction * robotAngularMoveMillis;
 
             setDrives();
-            waitMillis(stepTime);
+            double millisToEndAtCurrentSpeed = distance / (currentSpeed * robotAngularMoveMillis);
+            waitMillis(Math.min(stepTime, millisToEndAtCurrentSpeed));
 
             prevError = error;
             double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
@@ -416,10 +417,11 @@ public class Team_OpMode_V4 extends LinearOpMode {
             rightDriveControl = currentSpeed * direction;
 
             setDrives();
-            waitMillis(stepTime);
+            double millisToEndAtCurrentSpeed = distance / (currentSpeed * robotLinearMoveMillis);
+            waitMillis(Math.min(stepTime, millisToEndAtCurrentSpeed));
 
             prevError = error;
-            error -= currentSpeed * stepTime * robotLinearMoveMillis;
+            error = Range.clip(error - currentSpeed * stepTime * robotLinearMoveMillis, 0, distance);
 
             currentStep++;
         }
@@ -574,11 +576,13 @@ public class Team_OpMode_V4 extends LinearOpMode {
     }
 
     private void waitMillis(double millis) {
+
+        millis = Range.clip( millis, 0.01, millis );
         ElapsedTime runtimeWait = new ElapsedTime();
 
         runtimeWait.reset();
 
-        while (runtimeWait.milliseconds() < millis) {
+        while (runtimeWait.nanoseconds() < millis * 1000 * 1000) {
             idle();
         }
     }
