@@ -349,6 +349,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     private void turn(double turnDeg) {
 
+        // turn into -180 to 180
         turnDeg %= 360;
         if (turnDeg > 180) turnDeg = turnDeg - 360;
         else if (turnDeg < -180) turnDeg = turnDeg + 360;
@@ -358,22 +359,23 @@ public class Team_OpMode_V4 extends LinearOpMode {
         double endHeading = startHeading + turnDeg;
         double direction = turnDeg > 0 ? 1.0 : -1.0;
 
-        double error = Math.abs(endHeading - startHeading) / 180;
-        error = Range.clip(error, 0.0, 0.66); // the bigger the error the more off
+        double distance = Math.abs(endHeading - startHeading);
+        double error = distance;
 
-        double iterations = 0;
+        double currentVelocity = 0;
+        double maxSteps = 666; // to avoid a runaway
+        double currentStep = 0;
+        double stepTime = 3;
 
-        while (error > 0.05 && iterations < 999) { //TODO
-            double turnPower = 0.2; //TODO
+        while(currentStep < maxSteps && error > 3 ){
 
-            turnPower *= (1 - error);
-            turnPower = Range.clip(turnPower, 0.05, 0.2); //TODO
+            currentVelocity = velocityByDampedSpring( distance, distance - error, currentVelocity, stepTime );
 
-            rightDriveControl = turnPower * direction;
-            leftDriveControl = -turnPower * direction;
+            leftDriveControl = currentVelocity; //power to motors is proportional with the speed
+            rightDriveControl = -currentVelocity;
+
             setDrives();
-
-            waitMillis(5); //TODO
+            waitMillis(stepTime);
 
             double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
 
@@ -383,20 +385,13 @@ public class Team_OpMode_V4 extends LinearOpMode {
             if (startHeading < 180 && crrHeading > 180 && direction < 0) {
                 crrHeading -= 360;
             }
-
-            error = Math.abs(endHeading - crrHeading) / 180;
-            error = Range.clip(error, 0.0, 0.66);
-
-            iterations++;
+            error = Math.abs(endHeading - crrHeading);
+            currentStep++;
         }
-        leftDriveControl = 0;
-        rightDriveControl = 0;
-        setDrives();
 
+        stopRobot();
         headingControl = robot.modernRoboticsI2cGyro.getHeading();
     }
-
-    double maxVelocity = 0.66; //666mm/sec
 
     private void move(double distance) {
 
@@ -406,32 +401,24 @@ public class Team_OpMode_V4 extends LinearOpMode {
         double currentStep = 0;
         double stepTime = 3;
 
-        while(currentStep < maxSteps && currentPos >= distance ){
+        while(currentStep < maxSteps && currentPos < distance ){
 
             currentPos += currentVelocity * stepTime;
             currentVelocity = velocityByDampedSpring( distance, currentPos, currentVelocity, stepTime );
 
-            leftDriveControl = currentVelocity/maxVelocity * 0.33; //power to motors is proportional with the speed
-            rightDriveControl = currentVelocity/maxVelocity * 0.33;
+            leftDriveControl = currentVelocity; //power to motors is proportional with the speed
+            rightDriveControl = currentVelocity;
 
             setDrives();
             waitMillis(stepTime);
+            currentStep++;
         }
 
         stopRobot();
-        
-        /*ValueAnimator valueAnimator = ValueAnimator.ofInt(initialValue, finalValue);
-        valueAnimator.setDuration(750);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                servoInt = Double.valueOf(valueAnimator.getAnimatedValue().toString());
-                servoInt /= max;
-                robot.turret.setPosition(servoInt);
-            }
-        });
-        valueAnimator.start();*/
     }
+
+    double minVelocity = 0.05;
+    double maxVelocity = 0.66;
 
     double velocityByDampedSpring( double targetPos, double currentPos, double currentVelocity, double stepTime )
     {
@@ -441,11 +428,11 @@ public class Team_OpMode_V4 extends LinearOpMode {
         double springForce = currentToTarget * springConstant;
 
         double dampingForce = -currentVelocity * 2 * Math.sqrt( springConstant );
-        double force = springForce + dampingForce; //155
+        double force = springForce + dampingForce;
 
         double newVelocity = currentVelocity + force * stepTime;
 
-        return Range.clip( newVelocity, maxVelocity / 10, maxVelocity );
+        return Range.clip( newVelocity, minVelocity, maxVelocity );
     }
 
     private void stopRobot() {
