@@ -341,7 +341,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
             double direction = newHeading > crrHeading ? 1.0 : -1.0;
 
             turnDeg = 360 - Math.abs(newHeading - crrHeading);
-            turnDeg *= direction;
+            turnDeg *= direction * -1.0;
         }
 
         turn(turnDeg);
@@ -349,43 +349,37 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     private void turn(double turnDeg) {
 
-        // turn into -180 to 180
-        turnDeg %= 360;
-        if (turnDeg > 180) turnDeg = turnDeg - 360;
-        else if (turnDeg < -180) turnDeg = turnDeg + 360;
-        turnDeg %= 180;
-
         double startHeading = robot.modernRoboticsI2cGyro.getHeading();
-        double endHeading = startHeading + turnDeg;
-        double direction = turnDeg > 0 ? 1.0 : -1.0;
+        double endHeading = (startHeading + turnDeg + 360) % 360;
 
-        double distance = Math.abs(endHeading - startHeading);
+        double direction = 1.0;
+        if (Math.abs(endHeading - startHeading) > 360 - Math.abs(endHeading - startHeading)) {
+            direction = -1;
+        }
+
+        double distance = Math.abs(Math.min(endHeading - endHeading, 360 - (endHeading - endHeading)));
         double error = distance;
+        double prevError = distance;
 
         double currentVelocity = 0;
         double maxSteps = 666; // to avoid a runaway
         double currentStep = 0;
         double stepTime = 3;
 
-        while(currentStep < maxSteps && error > 3 ){
+        while (currentStep < maxSteps && error > 3 && error <= prevError) {
 
-            currentVelocity = velocityByDampedSpring( distance, distance - error, currentVelocity, stepTime );
+            currentVelocity = velocityByDampedSpring(distance, distance - error, currentVelocity, stepTime);
 
-            leftDriveControl = currentVelocity; //power to motors is proportional with the speed
-            rightDriveControl = -currentVelocity;
+            leftDriveControl = currentVelocity * direction; //power to motors is proportional with the speed
+            rightDriveControl = -currentVelocity * direction;
 
             setDrives();
             waitMillis(stepTime);
 
+            prevError = error;
             double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
+            error = Math.abs(Math.min(endHeading - crrHeading, 360 - (endHeading - crrHeading)));
 
-            if (startHeading >= 180 && crrHeading <= 180 && direction > 0) {
-                crrHeading += 360;
-            }
-            if (startHeading < 180 && crrHeading > 180 && direction < 0) {
-                crrHeading -= 360;
-            }
-            error = Math.abs(endHeading - crrHeading);
             currentStep++;
         }
 
@@ -393,7 +387,13 @@ public class Team_OpMode_V4 extends LinearOpMode {
         headingControl = robot.modernRoboticsI2cGyro.getHeading();
     }
 
+    double speedAdjustement = 1.0;
+
     private void move(double distance) {
+
+        double error = Math.abs(distance);
+        double prevError = error;
+        double direction = distance > 0 ? 1.0 : -1.0;
 
         double currentPos = 0;
         double currentVelocity = 0;
@@ -401,38 +401,40 @@ public class Team_OpMode_V4 extends LinearOpMode {
         double currentStep = 0;
         double stepTime = 3;
 
-        while(currentStep < maxSteps && currentPos < distance ){
+        while (currentStep < maxSteps && error > 3 && Math.abs(error) <= Math.abs(prevError)) {
 
-            currentPos += currentVelocity * stepTime;
-            currentVelocity = velocityByDampedSpring( distance, currentPos, currentVelocity, stepTime );
+            currentVelocity = velocityByDampedSpring(distance, distance - error, currentVelocity, stepTime);
 
-            leftDriveControl = currentVelocity; //power to motors is proportional with the speed
-            rightDriveControl = currentVelocity;
+            leftDriveControl = currentVelocity * direction; //power to motors is proportional with the speed
+            rightDriveControl = currentVelocity * direction;
 
             setDrives();
             waitMillis(stepTime);
+
+            prevError = error;
+            error -= currentVelocity * stepTime * speedAdjustement;
+
             currentStep++;
         }
-
         stopRobot();
     }
 
     double minVelocity = 0.05;
-    double maxVelocity = 0.66;
+    double maxVelocity = 0.88;
 
-    double velocityByDampedSpring( double targetPos, double currentPos, double currentVelocity, double stepTime )
-    {
-        double springConstant = 6/100000; //full speed in 15 iterations
+    double velocityByDampedSpring(double targetPos, double currentPos, double currentVelocity, double stepTime) {
+
+        double springConstant = 6 / 100000; //full speed in 15 iterations
 
         double currentToTarget = targetPos - currentPos;
         double springForce = currentToTarget * springConstant;
 
-        double dampingForce = -currentVelocity * 2 * Math.sqrt( springConstant );
+        double dampingForce = -currentVelocity * 2 * Math.sqrt(springConstant);
         double force = springForce + dampingForce;
 
         double newVelocity = currentVelocity + force * stepTime;
 
-        return Range.clip( newVelocity, minVelocity, maxVelocity );
+        return Range.clip(newVelocity, minVelocity, maxVelocity);
     }
 
     private void stopRobot() {
