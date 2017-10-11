@@ -419,7 +419,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         stopRobot();
     }
 
-    double minVelocity = 0.05;
+    double minVelocity = 0.08;
     double maxVelocity = 0.88;
 
     double velocityByDampedSpring(double targetPos, double currentPos, double currentVelocity, double stepTime) {
