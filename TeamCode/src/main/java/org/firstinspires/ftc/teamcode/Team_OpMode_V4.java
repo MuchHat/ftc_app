@@ -328,7 +328,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         }
     }
 
-    // ************************** MOVE HELPER FUNCTIONS  *****************************************//
+    // ************************** DRIVING HELPER FUNCTIONS  **************************************//
 
     private void turnToHeading(double newHeading) {
 
@@ -419,6 +419,14 @@ public class Team_OpMode_V4 extends LinearOpMode {
         stopRobot();
     }
 
+    private void stopRobot() {
+        leftDriveControl = 0;
+        rightDriveControl = 0;
+        setDrives();
+    }
+
+    // **************************  DRIVE SMOOTHING FUNCTION  *************************************//
+
     double minVelocity = 0.08;
     double maxVelocity = 0.88;
 
@@ -437,11 +445,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         return Range.clip(newVelocity, minVelocity, maxVelocity);
     }
 
-    private void stopRobot() {
-        leftDriveControl = 0;
-        rightDriveControl = 0;
-        setDrives();
-    }
+    // ************************** ARM HELPER FUNCTIONS  *****************************************//
 
     void moveArm(double newBase, double newElbow) {
 
