@@ -424,7 +424,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     double velocityByDampedSpring(double targetPos, double currentPos, double currentVelocity, double stepTime) {
 
-        double springConstant = 6 / 100000; //full speed in 15 iterations
+        double springConstant = 0.003/targetPos; //full speed in 15 iterations
 
         double currentToTarget = targetPos - currentPos;
         double springForce = currentToTarget * springConstant;
