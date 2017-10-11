@@ -396,20 +396,20 @@ public class Team_OpMode_V4 extends LinearOpMode {
         headingControl = robot.modernRoboticsI2cGyro.getHeading();
     }
 
-    double maxVelocity = 333/1000; //333mm/sec
+    double maxVelocity = 0.66; //666mm/sec
 
     private void move(double distance) {
 
         double currentPos = 0;
         double currentVelocity = 0;
-        double maxSteps = 99; // to avoid a runaway
+        double maxSteps = 666; // to avoid a runaway
         double currentStep = 0;
         double stepTime = 3;
 
         while(currentStep < maxSteps && currentPos >= distance ){
 
             currentPos += currentVelocity * stepTime;
-            currentVelocity = stepVelocityByDampedSpring( distance, currentPos, currentVelocity, stepTime );
+            currentVelocity = velocityByDampedSpring( distance, currentPos, currentVelocity, stepTime );
 
             leftDriveControl = currentVelocity/maxVelocity * 0.33; //power to motors is proportional with the speed
             rightDriveControl = currentVelocity/maxVelocity * 0.33;
@@ -433,17 +433,17 @@ public class Team_OpMode_V4 extends LinearOpMode {
         valueAnimator.start();*/
     }
 
-    double stepVelocityByDampedSpring( double targetPos, double currentPos, double currentVelocity, double stepTime )
+    double velocityByDampedSpring( double targetPos, double currentPos, double currentVelocity, double stepTime )
     {
-        double springConstant = 1 / 5; //5 ms typical step
+        double springConstant = 6/100000; //full speed in 15 iterations
 
-        double currentToTarget = targetPos - currentPos; //300, 300
-        double springForce = currentToTarget * springConstant; //15, 200
+        double currentToTarget = targetPos - currentPos;
+        double springForce = currentToTarget * springConstant;
 
-        double dampingForce = -currentVelocity * 2 * Math.sqrt( springConstant ); //0, -66
+        double dampingForce = -currentVelocity * 2 * Math.sqrt( springConstant );
         double force = springForce + dampingForce; //155
 
-        double newVelocity = currentVelocity + force * stepTime; //75, 600
+        double newVelocity = currentVelocity + force * stepTime;
 
         return Range.clip( newVelocity, maxVelocity / 10, maxVelocity );
     }
