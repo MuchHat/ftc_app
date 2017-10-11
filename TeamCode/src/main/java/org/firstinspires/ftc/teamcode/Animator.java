@@ -14,59 +14,60 @@ public class Animator {
     public double minSpeed = 0.03;
     public double maxSpeed = 0.88;
 
-    double currentMaxSpeed = 0.88;
-    double currentRampUp = 666;
-    double currentRampDown = 888;
+    double actualMaxSpeed = 0.88;
+    double actualRampUp = 666;
+    double actualRampDown = 888;
 
     double distance = 0;
-    double lastPos = 0;
-
-    ElapsedTime runtime = null;
 
     double lastSpeed = 0;
 
-    double rampUpShape[] = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.0};
-    double rampDownShape[] = {1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1, 0.1};
+    double rampUpShape[] = {0.15, 0.33, 0.52, 0.66, 0.78, 0.88, 0.93, 0.97, 1.00, 1.00, 1.00};
+    double rampDownShape[] = {1.00, 0.90, 0.80, 0.60, 0.35, 0.25, 0.15, 0.08, 0.05, 0.05, 0.05};
     double shapeSteps = 10;
 
-    public void Animator(double aDistance) {
+    public void Animator(){
 
-        runtime = new ElapsedTime();
-        runtime.reset();
+    }
 
-        distance = aDistance;
-        lastPos = 0;
+    public void init(double aDistance) {
 
+        distance = Math.abs( aDistance );
         double ratio = 1.0;
 
         ratio = Range.clip(distance / (rampUp + rampDown), 0, 1);
-        currentMaxSpeed = maxSpeed * ratio;
-        currentRampUp = rampUp * ratio;
-        currentRampDown = rampDown * ratio;
+        
+        actualMaxSpeed = maxSpeed * ratio;
+        actualRampUp = rampUp * ratio;
+        actualRampDown = rampDown * ratio;
     }
 
     public double getSpeed(double currentPos) {
 
+        currentPos = Math.abs( currentPos );
+
+        if( currentPos > distance || currentPos == 0 ){
+            return minSpeed;
+        }
         double newSpeed = lastSpeed;
 
-        if (currentPos < currentRampUp) {
+        if (currentPos <= actualRampUp) {
             double ratio = Range.clip(currentPos / rampUp, 0, 1);
             double index = Range.clip(ratio * shapeSteps, 0, shapeSteps - 1);
 
-            newSpeed = maxSpeed * rampUpShape[(int) index];
+            newSpeed = Math.max( maxSpeed * rampUpShape[(int) index], lastSpeed );
             lastSpeed = newSpeed;
         }
-        if (currentPos > distance - currentRampUp) {
-            double ratio = Range.clip((currentRampUp - currentPos) / rampUp, 0, 1);
-            double index = Range.clip(ratio * shapeSteps, 0, shapeSteps - 1);
+        if (distance - currentPos <= actualRampDown) {
+            double ratio = Range.clip((distance - currentPos) / rampDown, 0, 1);
+            double index = shapeSteps - 1 - Range.clip(ratio * shapeSteps, 0, shapeSteps - 1);
 
-            newSpeed = maxSpeed * rampDownShape[(int) index];
+            newSpeed = Math.min( maxSpeed * rampDownShape[(int) index], lastSpeed );
             lastSpeed = newSpeed;
         }
 
         return Range.clip(newSpeed, minSpeed, maxSpeed);
     }
-
 }
 
 /*

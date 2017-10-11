@@ -51,24 +51,25 @@ public class Team_OpMode_V4 extends LinearOpMode {
     //********************************* HW VARIABLES *********************************************//
 
     public Team_Hardware_V2 robot = new Team_Hardware_V2();
+
     private ElapsedTime loopRuntime = new ElapsedTime();
     private ElapsedTime controlRuntime = new ElapsedTime();
-    private ElapsedTime totalRuntime = new ElapsedTime();
 
     //********************************* MOVE STATE ***********************************************//
 
+    private ElapsedTime totalRuntime = new ElapsedTime();
     private double leftDriveControl = 0;
     private double rightDriveControl = 0;
     private double headingControl = 0;
     private double liftControl = 0;
     private double leftClawControl = 0;
     private double rightClawControl = 0;
-
     private double baseControl = 0;
     private double elbowControl = 0;
     private double gameStartHeading = 0;
-
     private Boolean armEnabled = false;
+
+    //********************************* CONSTANTS ************************************************//
 
     private Boolean manualMode = true;
     private Boolean blueTeam = true;
@@ -80,11 +81,15 @@ public class Team_OpMode_V4 extends LinearOpMode {
     private double turnDefaultSpeed = 0.22; // TODO
     private double liftDefaultSpeed = 0.22; // TODO
     private double servoDefaultSpeed = 0.00033; // TODO
+    private double robotLinearMoveMillis = 1.0; // moves 1mm in 1ms at 1.0 power
+    private double robotAngularMoveMillis = 1.0; // moves 1deg in 1ms at 1.0 power
 
     //********************************* PREDEF POS ***********************************************//
 
     private double clawOpen[] = {0.76, 0.44};
     private double clawClosed[] = {0.85, 0.34};
+
+    // ************************** AUTO MODE ******************************************************//
 
     @Override
     public void runOpMode() {
@@ -285,8 +290,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
         }
     }
 
-    // ************************** AUTO MODE ******************************************************//
-
     private void runAutonomous() {
 
         //example
@@ -316,6 +319,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
         stop(); //stop the opMode
     }
 
+    // ************************** DRIVING HELPER FUNCTIONS  **************************************//
+
     private void checkAndStopAutonomous() {
 
         if (manualMode) {
@@ -327,8 +332,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
             stop(); //stop the opMode
         }
     }
-
-    // ************************** DRIVING HELPER FUNCTIONS  **************************************//
 
     private void turnToHeading(double newHeading) {
 
@@ -361,17 +364,20 @@ public class Team_OpMode_V4 extends LinearOpMode {
         double error = distance;
         double prevError = distance;
 
-        double currentVelocity = 0;
+        double currentSpeed = 0;
         double maxSteps = 666; // to avoid a runaway
         double currentStep = 0;
         double stepTime = 3;
 
+        Animator turnAnimator = new Animator();
+        turnAnimator.init( distance );
+
         while (currentStep < maxSteps && error > 3 && error <= prevError) {
 
-            currentVelocity = velocityByDampedSpring(distance, distance - error, currentVelocity, stepTime);
+            currentSpeed = turnAnimator.getSpeed(distance - error);
 
-            leftDriveControl = currentVelocity * direction; //power to motors is proportional with the speed
-            rightDriveControl = -currentVelocity * direction;
+            leftDriveControl = currentSpeed * direction * robotAngularMoveMillis; //power to motors is proportional with the speed
+            rightDriveControl = -currentSpeed * direction * robotAngularMoveMillis;
 
             setDrives();
             waitMillis(stepTime);
@@ -387,8 +393,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
         headingControl = robot.modernRoboticsI2cGyro.getHeading();
     }
 
-    double speedAdjustement = 1.0;
-
     private void move(double distance) {
 
         double error = Math.abs(distance);
@@ -396,23 +400,26 @@ public class Team_OpMode_V4 extends LinearOpMode {
         double direction = distance > 0 ? 1.0 : -1.0;
 
         double currentPos = 0;
-        double currentVelocity = 0;
+        double currentSpeed = 0;
         double maxSteps = 666; // to avoid a runaway
         double currentStep = 0;
         double stepTime = 3;
 
+        Animator moveAnimator = new Animator();
+        moveAnimator.init(Math.abs(distance));
+
         while (currentStep < maxSteps && error > 3 && Math.abs(error) <= Math.abs(prevError)) {
 
-            currentVelocity = velocityByDampedSpring(distance, distance - error, currentVelocity, stepTime);
+            currentSpeed = moveAnimator.getSpeed(distance - error);
 
-            leftDriveControl = currentVelocity * direction; //power to motors is proportional with the speed
-            rightDriveControl = currentVelocity * direction;
+            leftDriveControl = currentSpeed * direction; //power to motors is proportional with the speed
+            rightDriveControl = currentSpeed * direction;
 
             setDrives();
             waitMillis(stepTime);
 
             prevError = error;
-            error -= currentVelocity * stepTime * speedAdjustement;
+            error -= currentSpeed * stepTime * robotLinearMoveMillis;
 
             currentStep++;
         }
