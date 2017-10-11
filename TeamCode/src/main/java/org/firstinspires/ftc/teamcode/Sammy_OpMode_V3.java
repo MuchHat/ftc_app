@@ -212,30 +212,24 @@ public class Sammy_OpMode_V3 extends LinearOpMode {
             // control: CLAW PREDEF OPEN
             if (gamepad1.y) {
                 int i = 0;
-                while(i<50)
-                {
+                while (i < 40) {
                     leftControl = 0.1;
                     rightControl = 0.1;
                     setDrives();
                     i++;
-                    waitMillis(5);
+                    waitMillis(2);
                 }
             }
 
-            if (gamepad1.a){
-                leftControl = -0.1;
-                setDrives();
-                waitMillis(1);
-                rightControl = -0.1;
-                setDrives();
-                waitMillis(5);
-                rightControl = -0.3;
-                setDrives();
-                waitMillis(10);
-                rightControl = -0.5;
-                setDrives();
-                waitMillis(15);
-                rightControl = 0;
+            if (gamepad1.a) {
+                int i = 0;
+                while (i < 40) {
+                    leftControl = -0.1;
+                    rightControl = -0.1;
+                    setDrives();
+                    i++;
+                    waitMillis(2);
+                }
             }
         }
     }
