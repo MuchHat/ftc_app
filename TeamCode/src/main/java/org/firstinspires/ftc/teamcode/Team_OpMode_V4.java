@@ -354,6 +354,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         double startHeading = robot.modernRoboticsI2cGyro.getHeading();
         double endHeading = (startHeading + turnDeg + 360) % 360;
+        endHeading = Range.clip(endHeading, 0, 360);
 
         double direction = 1.0;
         if (Math.abs(endHeading - startHeading) > 360 - Math.abs(endHeading - startHeading)) {
@@ -372,7 +373,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         Animator turnAnimator = new Animator();
         turnAnimator.init(distance);
 
-        while (currentStep < maxSteps && error > 3 && error <= prevError) {
+        while (currentStep < maxSteps && error > 0 && error <= prevError) {
 
             currentSpeed = turnAnimator.getSpeed(distance - error);
 
@@ -380,7 +381,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
             rightDriveControl = -currentSpeed * direction * robotAngularMoveMillis;
 
             setDrives();
-            double millisToEndAtCurrentSpeed = distance / (currentSpeed * robotAngularMoveMillis);
+            double millisToEndAtCurrentSpeed = error / (currentSpeed * robotAngularMoveMillis);
             waitMillis(Math.min(stepTime, millisToEndAtCurrentSpeed));
 
             prevError = error;
@@ -400,7 +401,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
         double prevError = error;
         double direction = distance > 0 ? 1.0 : -1.0;
 
-        double currentPos = 0;
         double currentSpeed = 0;
         double maxSteps = 666; // to avoid a runaway
         double currentStep = 0;
@@ -417,7 +417,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
             rightDriveControl = currentSpeed * direction;
 
             setDrives();
-            double millisToEndAtCurrentSpeed = distance / (currentSpeed * robotLinearMoveMillis);
+            double millisToEndAtCurrentSpeed = error / (currentSpeed * robotLinearMoveMillis);
             waitMillis(Math.min(stepTime, millisToEndAtCurrentSpeed));
 
             prevError = error;
@@ -447,16 +447,14 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         double maxServoStep = 0.004; // 0.1 per servo and step
         double stepCount = 0;
+        double stepTime = 1;
         stepCount = Math.max(stepCount, Math.abs(newElbow - elbowControl) / maxServoStep);
         stepCount = Math.max(stepCount, Math.abs(newBase - baseControl) / maxServoStep);
 
         if (stepCount > 0) {
-            // move the elbow first to avoid hitting the robot
-
-            ElapsedTime stepElapsedTime = new ElapsedTime();
-            stepElapsedTime.reset();
 
             for (int i = 0; i < stepCount; i++) {
+                double wait = stepTime;
 
                 double baseControlStep = baseControl + i * (newBase - baseControl) / stepCount;
                 double elbowControlStep = elbowControl + i * (newElbow - elbowControl) / stepCount;
@@ -464,9 +462,14 @@ public class Team_OpMode_V4 extends LinearOpMode {
                 elbowControlStep = Range.clip(elbowControlStep, 0.05, 0.95); //TODO
                 baseControlStep = Range.clip(baseControlStep, 0.05, 0.95); //TODO
 
-                while (stepElapsedTime.milliseconds() < 3 * (i + 1)) {
-                    idle();
+                if( i < stepCount/3){
+                    wait *= Math.sqrt(Math.abs(stepCount/3 - i));
                 }
+                if( i > stepCount*2/3){
+                    wait *= Math.sqrt(Math.abs((i - stepCount*2/3)));
+                }
+
+                waitMillis(wait);
                 robot.elbow.setPosition(elbowControlStep);
                 robot.base.setPosition(baseControlStep);
             }

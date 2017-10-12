@@ -47,7 +47,7 @@ public class Animator {
 
         currentPos = Math.abs(currentPos);
 
-        if (currentPos >= distance || currentPos == 0) {
+        if (currentPos >= distance || currentPos <=3 ) {
             lastSpeed = minSpeed;
             return minSpeed;
         }
@@ -61,10 +61,10 @@ public class Animator {
             ratio = (distance - currentPos) / rampDown;
         }
 
-        newSpeed = actualMaxSpeed * ratio;
+        newSpeed = maxSpeed * ratio;
         lastSpeed = newSpeed;
 
-        return Range.clip(newSpeed, minSpeed, maxSpeed);
+        return Range.clip(newSpeed, minSpeed, actualMaxSpeed);
     }
 
     public double getSpeedShape(double currentPos) {
