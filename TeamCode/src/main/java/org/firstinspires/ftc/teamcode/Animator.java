@@ -14,88 +14,119 @@ public class Animator {
     public double minSpeed = 0.02;
     public double maxSpeed = 0.88;
 
-    double actualMaxSpeed = 0.88;
-    double actualRampUp = 666;
-    double actualRampDown = 888;
-
-    double distance = 0;
-
-    double lastSpeed = 0;
-
     double rampUpShape[] = {0.15, 0.33, 0.52, 0.66, 0.78, 0.88, 0.93, 0.97, 1.00, 1.00, 1.00};
     double rampDownShape[] = {1.00, 0.90, 0.80, 0.60, 0.35, 0.25, 0.15, 0.08, 0.05, 0.05, 0.05};
     double shapeSteps = 10;
+
+    double crrPos = 0;
+    double nextPos = 0;
+    double crrSpeed = 0;
+    double nextSpeed = 0;
+    double startPos = 0;
+    double endPos = 0;
+    double crrIteration = 0;
+    double maxIterations = 4444; // 4 sec timeout
+
+    boolean useLinear = true;
+    boolean useShapes = false;
+
+    double direction = 1.0;
+    double error = 0;
+    double ratio = 1.0;
+
+    double linearTravel = 1.0;
+    double stepTime = 1;
 
     public void Animator() {
 
     }
 
-    public void init(double aDistance, double aRampUp, double aRampDown) {
+    public void configRamp(double aRampUp, double aRampDown) {
 
-        distance = Math.abs(aDistance);
-        rampUp = aRampUp;
-        rampDown = aRampDown;
+        rampUp = Math.abs( aRampUp );
+        rampDown = Math.abs( aRampDown );
+    }
 
-        double ratio = 1.0;
+    public void configSpeed(double aMinSpeed, double aMaxSpeed, double aLinearTravel, double aStepTime) {
 
-        ratio = distance / (rampUp + rampDown);
+        minSpeed = Math.abs( aMinSpeed );
+        maxSpeed = Math.abs( aMaxSpeed );
+        linearTravel = Math.abs( aLinearTravel );
+        stepTime = Math.abs( aStepTime );
+    }
+
+    public void start(double aStartPos, double aEndPos) {
+
+        error = Math.abs(aEndPos - aStartPos);
+        direction = aEndPos > aStartPos ? 1.0 : -1.0;
+        startPos = aStartPos;
+        endPos = aEndPos;
+
+        ratio = 1.0;
+
+        ratio = error / (rampUp + rampDown);
         ratio = Range.clip(ratio, 0, 1);
 
-        actualMaxSpeed = maxSpeed * ratio;
-        actualRampUp = rampUp * ratio;
-        actualRampDown = rampDown * ratio;
+        crrPos = startPos;
+        nextPos = startPos;
+
+        crrSpeed = 0;
+        nextSpeed = 0;
     }
 
-    public double getSpeed(double currentPos) {
+    public void modeLinear() {
 
-        currentPos = Math.abs(currentPos);
-
-        if (currentPos >= distance || currentPos <=3 ) {
-            lastSpeed = minSpeed;
-            return minSpeed;
-        }
-        double newSpeed = lastSpeed;
-        double ratio = 1.0;
-
-        if (currentPos <= actualRampUp) {
-            ratio = currentPos / rampUp;
-        }
-        if (distance - currentPos <= actualRampDown) {
-            ratio = (distance - currentPos) / rampDown;
-        }
-
-        newSpeed = maxSpeed * ratio;
-        lastSpeed = newSpeed;
-
-        return Range.clip(newSpeed, minSpeed, actualMaxSpeed);
+        useLinear = true;
+        useShapes = false;
     }
 
-    public double getSpeedShape(double currentPos) {
+    public void modeShapes() {
 
-        currentPos = Math.abs(currentPos);
+        useLinear = false;
+        useShapes = true;
+    }
 
-        if (currentPos >= distance || currentPos == 0) {
-            lastSpeed = minSpeed;
-            return minSpeed;
+    public double getPos() {
+
+        return nextPos;
+    }
+
+    public double getSpeed() {
+
+        return nextSpeed;
+    }
+
+    public void advanceStepNoPos() {
+        double actualPos = crrPos + stepTime * nextPos * linearTravel;
+
+        advanceStep(actualPos);
+    }
+
+    public void advanceStep(double actualPos) {
+
+        error = Math.abs(endPos - actualPos);
+        crrPos = actualPos;
+
+        if (error <= 0 || crrIteration > maxIterations) {
+            nextPos = endPos;
+            nextSpeed = 0;
+            return;
         }
-        double newSpeed = lastSpeed;
 
-        if (currentPos <= actualRampUp) {
-            double ratio = Range.clip(currentPos / rampUp, 0, 1);
-            double index = Range.clip(ratio * shapeSteps, 0, shapeSteps - 1);
+        crrIteration++;
+        crrSpeed = nextSpeed;
+        nextSpeed = maxSpeed;
 
-            newSpeed = Math.max(maxSpeed * rampUpShape[(int) index], lastSpeed);
-            lastSpeed = newSpeed;
+        if (crrPos <= rampUp) {
+            nextSpeed = Math.abs(crrPos / rampUp);
         }
-        if (distance - currentPos <= actualRampDown) {
-            double ratio = Range.clip((distance - currentPos) / rampDown, 0, 1);
-            double index = shapeSteps - 1 - Range.clip(ratio * shapeSteps, 0, shapeSteps - 1);
-
-            newSpeed = Math.min(maxSpeed * rampDownShape[(int) index], lastSpeed);
-            lastSpeed = newSpeed;
+        if (endPos - crrPos <= rampDown) {
+            nextSpeed = Math.abs((endPos - crrPos) / rampDown);
         }
+        nextSpeed = Range.clip(nextSpeed, minSpeed, maxSpeed);
+        nextSpeed = Range.clip(nextSpeed, 0, error / ( stepTime * linearTravel ) );
 
-        return Range.clip(newSpeed, minSpeed, maxSpeed);
+        nextPos = crrPos + direction * nextSpeed * stepTime * linearTravel;
     }
 }
 

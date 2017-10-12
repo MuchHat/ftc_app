@@ -361,69 +361,56 @@ public class Team_OpMode_V4 extends LinearOpMode {
             direction = -1;
         }
 
-        double distance = Math.abs(Math.min(endHeading - endHeading, 360 - (endHeading - endHeading)));
-        double error = distance;
-        double prevError = distance;
-
-        double currentSpeed = 0;
-        double maxSteps = 666; // to avoid a runaway
-        double currentStep = 0;
-        double stepTime = 3;
+        double distance = Math.abs(Math.min(Math.abs(endHeading - startHeading), 360 - Math.abs(endHeading - startHeading)));
 
         Animator turnAnimator = new Animator();
-        turnAnimator.init(distance, 66, 88);
+        turnAnimator.configRamp(333, 444);
+        turnAnimator.configSpeed(0.04, 0.88, 0.1, 1);
+        turnAnimator.start(0, distance);
 
-        while (currentStep < maxSteps && error > 0 && error <= prevError) {
+        turnAnimator.advanceStep(0);
+        double nextSpeed = turnAnimator.getSpeed();
 
-            currentSpeed = turnAnimator.getSpeed(distance - error);
+        while (nextSpeed > 0) {
 
-            leftDriveControl = currentSpeed * direction * robotAngularMoveMillis; //power to motors is proportional with the speed
-            rightDriveControl = -currentSpeed * direction * robotAngularMoveMillis;
+            leftDriveControl = nextSpeed * direction; //power to motors is proportional with the speed
+            rightDriveControl = -nextSpeed * direction;
 
             setDrives();
-            double millisToEndAtCurrentSpeed = error / (currentSpeed * robotAngularMoveMillis);
-            waitMillis(Math.min(stepTime, millisToEndAtCurrentSpeed));
+            waitMillis(1);
 
-            prevError = error;
             double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
-            error = Math.abs(Math.min(endHeading - crrHeading, 360 - (endHeading - crrHeading)));
+            double crrDistance = Math.abs(Math.min(Math.abs(endHeading - crrHeading), 360 - Math.abs(endHeading - crrHeading)));
 
-            currentStep++;
+            turnAnimator.advanceStep(crrDistance);
+            nextSpeed = turnAnimator.getSpeed();
         }
-
         stopRobot();
         headingControl = robot.modernRoboticsI2cGyro.getHeading();
     }
 
     private void move(double distance) {
 
-        double error = Math.abs(distance);
-        double prevError = error;
         double direction = distance > 0 ? 1.0 : -1.0;
 
-        double currentSpeed = 0;
-        double maxSteps = 666; // to avoid a runaway
-        double currentStep = 0;
-        double stepTime = 3;
-
         Animator moveAnimator = new Animator();
-        moveAnimator.init(Math.abs(distance), 333, 444);
+        moveAnimator.configRamp(333, 444);
+        moveAnimator.configSpeed(0.04, 0.88, 1, 1);
+        moveAnimator.start(0, distance);
 
-        while (currentStep < maxSteps && error > 3 && Math.abs(error) <= Math.abs(prevError)) {
+        moveAnimator.advanceStepNoPos();
+        double nextSpeed = moveAnimator.getSpeed();
 
-            currentSpeed = moveAnimator.getSpeed(distance - error);
+        while (nextSpeed > 0) {
 
-            leftDriveControl = currentSpeed * direction; //power to motors is proportional with the speed
-            rightDriveControl = currentSpeed * direction;
+            leftDriveControl = nextSpeed * direction; //power to motors is proportional with the speed
+            rightDriveControl = nextSpeed * direction;
 
             setDrives();
-            double millisToEndAtCurrentSpeed = error / (currentSpeed * robotLinearMoveMillis);
-            waitMillis(Math.min(stepTime, millisToEndAtCurrentSpeed));
+            waitMillis(1);
 
-            prevError = error;
-            error = Range.clip(error - currentSpeed * stepTime * robotLinearMoveMillis, 0, distance);
-
-            currentStep++;
+            moveAnimator.advanceStepNoPos();
+            nextSpeed = moveAnimator.getSpeed();
         }
         stopRobot();
     }
@@ -442,53 +429,35 @@ public class Team_OpMode_V4 extends LinearOpMode {
             return;
         }
 
-        newBase = Range.clip(newBase, 0.05, 0.95); //TODO
-        newElbow = Range.clip(newElbow, 0.05, 0.95); //TODO
+        double directionBase = (newBase - baseControl) > 0 ? 1.0 : -1.0;
+        double directionElbow = (newElbow - elbowControl) > 0 ? 1.0 : -1.0;
 
-        double servoAngularStep = 0.004; // how much it moves in 1ms at full power
-        double stepTime = 1;
-        double currentStep = 0;
-        double maxSteps = 6666;
+        Animator baseAnimator = new Animator();
+        baseAnimator.configRamp(333, 444);
+        baseAnimator.configSpeed(0.04, 0.88, 0.01, 1);
+        baseAnimator.start(baseControl, newBase);
 
-        double directionBase = newBase > baseControl ? 1.0 : -1.0;
-        double distanceBase = Math.abs(newBase - baseControl);
-        double errorBase = distanceBase;
-        double prevErrorBase = errorBase;
+        Animator elbowAnimator = new Animator();
+        elbowAnimator.configRamp(333, 444);
+        elbowAnimator.configSpeed(0.04, 0.88, 0.01, 1);
+        elbowAnimator.start(elbowControl, newElbow);
 
-        double directionElbow = newElbow > elbowControl ? 1.0 : -1.0;
-        double distanceElbow = Math.abs(newElbow - elbowControl);
-        double errorElbow = distanceElbow;
-        double prevErrorElbow = errorElbow;
+        baseAnimator.advanceStepNoPos();
+        elbowAnimator.advanceStepNoPos();
+        double nextSpeedBase = baseAnimator.getSpeed();
+        double nextSpeedElbow = elbowAnimator.getSpeed();
 
-        Animator servoAnimatorBase = new Animator();
-        servoAnimatorBase.init(distanceBase, 0.2, 0.3);
+        while (nextSpeedBase > 0 || nextSpeedElbow > 0) {
 
-        Animator servoAnimatorElbow = new Animator();
-        servoAnimatorElbow.init(distanceElbow, 0.2, 0.3);
-
-        while (currentStep < maxSteps &&
-                errorBase > 0.02 && errorElbow > 0.02 &&
-                Math.abs(errorBase) <= Math.abs(prevErrorBase) &&
-                Math.abs(errorElbow) <= Math.abs(prevErrorElbow)) {
-
-            double currentSpeedBase = servoAnimatorBase.getSpeed(distanceBase - errorBase);
-            double currentSpeedElbow = servoAnimatorBase.getSpeed(distanceElbow - errorElbow);
-
-            double stepDistanceBase = currentSpeedBase * stepTime * directionBase * servoAngularStep;
-            double stepDistanceElbow = currentSpeedElbow * stepTime * directionElbow * servoAngularStep;
-
-            baseControl += stepDistanceBase;
-            elbowControl += stepDistanceElbow;
+            baseControl = baseAnimator.getPos();
+            elbowControl = elbowAnimator.getPos();
             setServos();
+            waitMillis(1);
 
-            waitMillis(stepTime);
-
-            prevErrorBase = errorBase;
-            prevErrorElbow = errorElbow;
-            errorBase -= Math.abs(stepDistanceBase);
-            errorElbow -= Math.abs(stepDistanceElbow);
-
-            currentStep++;
+            baseAnimator.advanceStepNoPos();
+            elbowAnimator.advanceStepNoPos();
+            nextSpeedBase = baseAnimator.getSpeed();
+            nextSpeedElbow = elbowAnimator.getSpeed();
         }
 
         robot.elbow.setPosition(newElbow);
@@ -502,8 +471,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     void setDrives() {
 
-        leftDriveControl = Range.clip(leftDriveControl, -0.66, 0.66); //TODO max max power
-        rightDriveControl = Range.clip(rightDriveControl, -0.66, 0.66); //TODO max max power
+        leftDriveControl = Range.clip(leftDriveControl, -0.88, 0.88); //TODO max max power
+        rightDriveControl = Range.clip(rightDriveControl, -0.88, 0.88); //TODO max max power
 
         liftControl = Range.clip(liftControl, -0.66, 0.66); //TODO max max power
 
