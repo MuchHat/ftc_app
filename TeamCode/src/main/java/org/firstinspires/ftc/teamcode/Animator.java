@@ -24,7 +24,7 @@ public class Animator {
     double startPos = 0;
     double endPos = 0;
     double crrIteration = 0;
-    double maxIterations = 4444; // 4 sec timeout
+    double maxIterations = 6666; // 6 sec timeout
     double distanceAbs = 0;
 
     boolean useLinear = true;
@@ -131,8 +131,8 @@ public class Animator {
         nextSpeedAbs = maxSpeedAbs;
         prevErrorAbs = errorAbs;
 
-        distanceAbs = Math.abs(distanceAbs - errorAbs);
         errorAbs = Math.abs(endPos - actualPos);
+        distanceAbs = Math.abs(distanceAbs - errorAbs);
 
         if (distanceAbs <= rampUpAbs) {
             nextSpeedAbs = Math.abs(distanceAbs / rampUpAbs);
