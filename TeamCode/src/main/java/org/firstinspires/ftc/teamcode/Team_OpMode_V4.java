@@ -407,7 +407,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         double stepTime = 3;
 
         Animator moveAnimator = new Animator();
-        moveAnimator.init(Math.abs(distance),333,444);
+        moveAnimator.init(Math.abs(distance), 333, 444);
 
         while (currentStep < maxSteps && error > 3 && Math.abs(error) <= Math.abs(prevError)) {
 
