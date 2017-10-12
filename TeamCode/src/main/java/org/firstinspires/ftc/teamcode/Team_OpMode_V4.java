@@ -319,19 +319,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         stop(); //stop the opMode
     }
 
-    // ************************** DRIVING HELPER FUNCTIONS  **************************************//
-
-    private void checkAndStopAutonomous() {
-
-        if (manualMode) {
-            return;
-        }
-
-        if (stopTime(30)) {
-            stopRobot();
-            stop(); //stop the opMode
-        }
-    }
+    // ************************** DRIVES HELPER FUNCTIONS  ***************************************//
 
     private void turnToHeading(double newHeading) {
 
@@ -422,13 +410,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         stopRobot();
     }
 
-    private void stopRobot() {
-        leftDriveControl = 0;
-        rightDriveControl = 0;
-        setDrives();
-    }
-
-    // ************************** ARM HELPER FUNCTIONS  *****************************************//
+    // ************************** ARM SERVOS HELPER FUNCTIONS  ************************************//
 
     void moveArm(double newBase, double newElbow) {
 
@@ -537,7 +519,43 @@ public class Team_OpMode_V4 extends LinearOpMode {
         robot.rightClaw.setPosition(rightClawControl);
     }
 
-    // ************************** HELPER FUNCTIONS ***********************************************//
+    // ************************** GENERAL MOVE HELPER FUNCTIONS  *********************************//
+
+    private void checkAndStopAutonomous() {
+
+        if (manualMode) {
+            return;
+        }
+
+        if (stopTime(30)) {
+            stopRobot();
+            stop(); //stop the opMode
+        }
+    }
+
+    private void stopRobot() {
+        leftDriveControl = 0;
+        rightDriveControl = 0;
+        setDrives();
+    }
+
+    private void waitMillis(double millis) {
+
+        millis = Range.clip(millis, 0.01, millis);
+        ElapsedTime runtimeWait = new ElapsedTime();
+
+        runtimeWait.reset();
+
+        while (runtimeWait.nanoseconds() < millis * 1000 * 1000) {
+            idle();
+        }
+    }
+
+    private boolean stopTime(double totalSeconds) {
+        return totalRuntime.seconds() > totalSeconds;
+    }
+
+    // ************************** TELEMETRY HELPER FUNCTIONS *************************************//
 
     private void updateTelemetry() {
 
@@ -562,22 +580,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
         telemetry.addData("total runtime", "%.0fs", totalRuntime.seconds());
 
         telemetry.update();
-    }
-
-    private void waitMillis(double millis) {
-
-        millis = Range.clip(millis, 0.01, millis);
-        ElapsedTime runtimeWait = new ElapsedTime();
-
-        runtimeWait.reset();
-
-        while (runtimeWait.nanoseconds() < millis * 1000 * 1000) {
-            idle();
-        }
-    }
-
-    private boolean stopTime(double totalSeconds) {
-        return totalRuntime.seconds() > totalSeconds;
     }
 
     // ************************** OP END *********************************************************//
