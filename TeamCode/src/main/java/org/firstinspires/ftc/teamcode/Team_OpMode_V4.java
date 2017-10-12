@@ -366,12 +366,12 @@ public class Team_OpMode_V4 extends LinearOpMode {
             inverted = -1.0;
         }
 
-        double distance = Math.min(diffAbs, diff360Abs);
+        double distanceAbs = Math.min(diffAbs, diff360Abs);
 
         Animator turnAnimator = new Animator();
         turnAnimator.configRamp(333, 444);
         turnAnimator.configSpeed(0.04, 0.88, 0.1, 1);
-        turnAnimator.start(0, distance * inverted * direction);
+        turnAnimator.start(0, distanceAbs * inverted * direction);
 
         turnAnimator.advanceStep(0);
         double nextSpeedAbs = turnAnimator.getSpeed();
