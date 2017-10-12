@@ -148,16 +148,22 @@ public class Animator {
         distanceAbs = Math.abs(distanceAbs - errorAbs);
 
         if (distanceAbs <= rampUpAbs) {
-            nextSpeedAbs = Math.abs(distanceAbs / rampUpAbs);
+            nextSpeedAbs = getS( Math.abs(distanceAbs / rampUpAbs) );
         }
         if (errorAbs <= rampDownAbs) {
-            nextSpeedAbs = Math.abs(rampDownAbs - errorAbs) / rampDownAbs;
+            nextSpeedAbs = getS( Math.abs(rampDownAbs - errorAbs) / rampDownAbs );
         }
         nextSpeedAbs = Range.clip(nextSpeedAbs, minSpeedAbs, maxSpeedAbs);
         nextSpeedAbs = Range.clip(nextSpeedAbs, 0, errorAbs / (stepTimeAbs * linearTravelAbs));
 
         crrPos = actualPos;
         nextPos = crrPos + direction * nextSpeedAbs * stepTimeAbs * linearTravelAbs;
+    }
+
+    double getS( double ratio ){
+
+
+        return ratio;
     }
 
     // ************************** END CLASS  *****************************************************//
