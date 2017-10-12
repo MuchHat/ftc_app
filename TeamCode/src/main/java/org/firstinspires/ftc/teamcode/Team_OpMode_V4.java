@@ -42,7 +42,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
-//********************************* OP CLASS*** **************************************************//
+//********************************* MAIN OP CLASS ************************************************//
 
 @TeleOp(name = "Team V4", group = "Team")
 // @Disabled
@@ -55,7 +55,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
     private ElapsedTime loopRuntime = new ElapsedTime();
     private ElapsedTime controlRuntime = new ElapsedTime();
 
-    //********************************* MOVE STATE ***********************************************//
+    //********************************* MOVE STATES **********************************************//
 
     private ElapsedTime totalRuntime = new ElapsedTime();
     private double leftDriveControl = 0;
