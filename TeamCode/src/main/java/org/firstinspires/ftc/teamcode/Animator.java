@@ -55,10 +55,10 @@ public class Animator {
         double ratio = 1.0;
 
         if (currentPos <= actualRampUp) {
-            ratio = currentPos / rampUp;
+            ratio = Math.sqrt(currentPos / rampUp); //ramp up fast non-linear
         }
         if (distance - currentPos <= actualRampDown) {
-            ratio = (distance - currentPos) / rampDown;
+            ratio = (distance - currentPos) / rampDown * (distance - currentPos) / rampDown; //slow down slow non linear
         }
 
         newSpeed = maxSpeed * ratio;

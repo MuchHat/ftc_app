@@ -463,10 +463,10 @@ public class Team_OpMode_V4 extends LinearOpMode {
                 baseControlStep = Range.clip(baseControlStep, 0.05, 0.95); //TODO
 
                 if( i < stepCount/3){
-                    wait *= Math.sqrt(Math.abs(stepCount/3 - i));
+                    wait *= Math.sqrt(Math.abs(stepCount/3 - i)); //speed up fast non linear
                 }
                 if( i > stepCount*2/3){
-                    wait *= Math.sqrt(Math.abs((i - stepCount*2/3)));
+                    wait *= Math.abs((i - stepCount*2/3)) * Math.abs((i - stepCount*2/3)); //slow down slow non linear
                 }
 
                 waitMillis(wait);
