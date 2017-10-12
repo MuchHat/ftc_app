@@ -9,19 +9,18 @@ import com.qualcomm.robotcore.util.Range;
 
 public class Animator {
 
-    public double rampUp = 666; // distance to get from 0 to 1
-    public double rampDown = 888; //distnace to get from 1 to 0
-    public double minSpeed = 0.02;
-    public double maxSpeed = 0.88;
+    public double rampUpAbs = 666; // distance to get from 0 to 1
+    public double rampDownAbs = 888; //distnace to get from 1 to 0
+    public double minSpeedAbs = 0.02;
+    public double maxSpeedAbs = 0.88;
 
     double rampUpShape[] = {0.15, 0.33, 0.52, 0.66, 0.78, 0.88, 0.93, 0.97, 1.00, 1.00, 1.00};
     double rampDownShape[] = {1.00, 0.90, 0.80, 0.60, 0.35, 0.25, 0.15, 0.08, 0.05, 0.05, 0.05};
     double shapeSteps = 10;
 
-    double crrPos = 0;
     double nextPos = 0;
-    double crrSpeed = 0;
-    double nextSpeed = 0;
+    double crrSpeedAbs = 0;
+    double nextSpeedAbs = 0;
     double startPos = 0;
     double endPos = 0;
     double crrIteration = 0;
@@ -31,11 +30,11 @@ public class Animator {
     boolean useShapes = false;
 
     double direction = 1.0;
-    double error = 0;
-    double ratio = 1.0;
+    double errorAbs = 0;
+    double ratioAbs = 1.0;
 
-    double linearTravel = 1.0;
-    double stepTime = 1;
+    double linearTravelAbs = 1.0;
+    double stepTimeAbs = 1;
 
     public void Animator() {
 
@@ -43,35 +42,34 @@ public class Animator {
 
     public void configRamp(double aRampUp, double aRampDown) {
 
-        rampUp = Math.abs(aRampUp);
-        rampDown = Math.abs(aRampDown);
+        rampUpAbs = Math.abs(aRampUp);
+        rampDownAbs = Math.abs(aRampDown);
     }
 
     public void configSpeed(double aMinSpeed, double aMaxSpeed, double aLinearTravel, double aStepTime) {
 
-        minSpeed = Math.abs(aMinSpeed);
-        maxSpeed = Math.abs(aMaxSpeed);
-        linearTravel = Math.abs(aLinearTravel);
-        stepTime = Math.abs(aStepTime);
+        minSpeedAbs = Math.abs(aMinSpeed);
+        maxSpeedAbs = Math.abs(aMaxSpeed);
+        linearTravelAbs = Math.abs(aLinearTravel);
+        stepTimeAbs = Math.abs(aStepTime);
     }
 
     public void start(double aStartPos, double aEndPos) {
 
-        error = Math.abs(aEndPos - aStartPos);
+        errorAbs = Math.abs(aEndPos - aStartPos);
         direction = aEndPos > aStartPos ? 1.0 : -1.0;
         startPos = aStartPos;
         endPos = aEndPos;
 
-        ratio = 1.0;
+        ratioAbs = 1.0;
 
-        ratio = error / (rampUp + rampDown);
-        ratio = Range.clip(ratio, 0, 1);
+        ratioAbs = errorAbs / (rampUpAbs + rampDownAbs);
+        ratioAbs = Range.clip(ratioAbs, 0, 1);
 
-        crrPos = startPos;
         nextPos = startPos;
 
-        crrSpeed = 0;
-        nextSpeed = 0;
+        crrSpeedAbs = 0;
+        nextSpeedAbs = 0;
     }
 
     public void modeLinear() {
@@ -93,7 +91,7 @@ public class Animator {
 
     public double getSpeed() {
 
-        return nextSpeed;
+        return nextSpeedAbs;
     }
 
     public void advanceStepNoPos() {
@@ -104,31 +102,31 @@ public class Animator {
 
     public void advanceStep(double actualPos) {
 
-        error = (endPos - actualPos) * direction;
-        crrPos = actualPos;
-
-        if (error <= 0 || crrIteration > maxIterations) {
+        if ((direction > 0 && actualPos >= endPos) ||
+                (direction < 0 && actualPos <= endPos) ||
+                (crrIteration > maxIterations)) {
             nextPos = endPos;
-            nextSpeed = 0;
+            nextSpeedAbs = 0;
             return;
         }
 
         crrIteration++;
-        crrSpeed = nextSpeed;
-        nextSpeed = maxSpeed;
+        crrSpeedAbs = nextSpeedAbs;
+        nextSpeedAbs = maxSpeedAbs;
 
-        double distance = Math.abs(endPos - startPos) - error;
+        double distanceAbs = Math.abs(endPos - startPos) - errorAbs;
+        errorAbs = Math.abs(endPos - actualPos);
 
-        if (distance <= rampUp) {
-            nextSpeed = Math.abs(distance / rampUp);
+        if (distanceAbs <= rampUpAbs) {
+            nextSpeedAbs = Math.abs(distanceAbs / rampUpAbs);
         }
-        if (endPos - distance <= rampDown) {
-            nextSpeed = Math.abs((endPos - distance) / rampDown);
+        if (errorAbs <= rampDownAbs) {
+            nextSpeedAbs = Math.abs(rampDownAbs - errorAbs) / rampDownAbs;
         }
-        nextSpeed = Range.clip(nextSpeed, minSpeed, maxSpeed);
-        nextSpeed = Range.clip(nextSpeed, 0, error / (stepTime * linearTravel));
+        nextSpeedAbs = Range.clip(nextSpeedAbs, minSpeedAbs, maxSpeedAbs);
+        nextSpeedAbs = Range.clip(nextSpeedAbs, 0, errorAbs / (stepTimeAbs * linearTravelAbs));
 
-        nextPos = crrPos + direction * nextSpeed * stepTime * linearTravel;
+        nextPos = actualPos + direction * nextSpeedAbs * stepTimeAbs * linearTravelAbs;
     }
 }
 
