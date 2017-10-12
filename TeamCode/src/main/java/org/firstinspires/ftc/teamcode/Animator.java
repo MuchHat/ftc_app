@@ -25,6 +25,7 @@ public class Animator {
     double endPos = 0;
     double crrIteration = 0;
     double maxIterations = 4444; // 4 sec timeout
+    double distanceAbs = 0;
 
     boolean useLinear = true;
     boolean useShapes = false;
@@ -61,9 +62,11 @@ public class Animator {
 
         errorAbs = Math.abs(aEndPos - aStartPos);
         prevErrorAbs = errorAbs;
+        distanceAbs = errorAbs;
         direction = aEndPos > aStartPos ? 1.0 : -1.0;
         startPos = aStartPos;
         endPos = aEndPos;
+        toleranceAbs = Math.min(toleranceAbs, distanceAbs / 10);
 
         ratioAbs = 1.0;
 
@@ -109,9 +112,13 @@ public class Animator {
         if ((direction > 0 && actualPos >= endPos) ||
                 (direction < 0 && actualPos <= endPos) ||
                 (crrIteration > maxIterations) ||
-                (errorAbs > prevErrorAbs && errorAbs < 2 * toleranceAbs)) {
+                (errorAbs < toleranceAbs) ||
+                ((errorAbs > prevErrorAbs + toleranceAbs) && (errorAbs < 2 * toleranceAbs))) {
             nextPos = endPos;
             nextSpeedAbs = 0;
+            prevErrorAbs = errorAbs;
+            errorAbs = 0;
+            distanceAbs = 0;
             return;
         }
 
@@ -120,7 +127,7 @@ public class Animator {
         nextSpeedAbs = maxSpeedAbs;
         prevErrorAbs = errorAbs;
 
-        double distanceAbs = Math.abs(endPos - startPos) - errorAbs;
+        distanceAbs = Math.abs(distanceAbs - errorAbs);
         errorAbs = Math.abs(endPos - actualPos);
 
         if (distanceAbs <= rampUpAbs) {

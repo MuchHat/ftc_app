@@ -357,33 +357,40 @@ public class Team_OpMode_V4 extends LinearOpMode {
         endHeading = Range.clip(endHeading, 0, 360);
 
         double direction = 1.0;
-        if (Math.abs(endHeading - startHeading) > 360 - Math.abs(endHeading - startHeading)) {
-            direction = -1;
+        double inverted = 1.0;
+        double diffAbs = Math.abs(endHeading - startHeading);
+        double diff360Abs = 360 - diffAbs;
+        direction = endHeading > startHeading ? 1.0 : -1.0;
+        if (diff360Abs < diffAbs) {
+            direction *= -1;
+            inverted = -1.0;
         }
 
-        double distance = Math.abs(Math.min(Math.abs(endHeading - startHeading), 360 - Math.abs(endHeading - startHeading)));
+        double distance = Math.min(diffAbs, diff360Abs);
 
         Animator turnAnimator = new Animator();
         turnAnimator.configRamp(333, 444);
         turnAnimator.configSpeed(0.04, 0.88, 0.1, 1);
-        turnAnimator.start(0, distance);
+        turnAnimator.start(0, distance * inverted * direction);
 
         turnAnimator.advanceStep(0);
-        double nextSpeed = turnAnimator.getSpeed();
+        double nextSpeedAbs = turnAnimator.getSpeed();
 
-        while (nextSpeed > 0) {
+        while (nextSpeedAbs > 0) {
 
-            leftDriveControl = nextSpeed * direction; //power to motors is proportional with the speed
-            rightDriveControl = -nextSpeed * direction;
+            leftDriveControl = nextSpeedAbs * direction; //power to motors is proportional with the speed
+            rightDriveControl = -nextSpeedAbs * direction;
 
             setDrives();
             waitMillis(1);
 
             double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
-            double crrDistance = Math.abs(Math.min(Math.abs(endHeading - crrHeading), 360 - Math.abs(endHeading - crrHeading)));
+            double crrDiffAbs = Math.abs(endHeading - crrHeading);
+            double crrDiff360Abs = 360 - diffAbs;
+            double crrDistance = Math.min(crrDiffAbs, crrDiff360Abs) * inverted * direction;
 
             turnAnimator.advanceStep(crrDistance);
-            nextSpeed = turnAnimator.getSpeed();
+            nextSpeedAbs = turnAnimator.getSpeed();
         }
         stopRobot();
         headingControl = robot.modernRoboticsI2cGyro.getHeading();
@@ -396,7 +403,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         Animator moveAnimator = new Animator();
         moveAnimator.configRamp(333, 444);
         moveAnimator.configSpeed(0.04, 0.88, 1, 1);
-        moveAnimator.start(0, distance);
+        moveAnimator.start(0, Math.abs(distance));
 
         moveAnimator.advanceStepNoPos();
         double nextSpeed = moveAnimator.getSpeed();
@@ -428,9 +435,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
         if (!armEnabled) {
             return;
         }
-
-        double directionBase = (newBase - baseControl) > 0 ? 1.0 : -1.0;
-        double directionElbow = (newElbow - elbowControl) > 0 ? 1.0 : -1.0;
 
         Animator baseAnimator = new Animator();
         baseAnimator.configRamp(333, 444);
