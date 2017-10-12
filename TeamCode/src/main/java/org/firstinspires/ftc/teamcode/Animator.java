@@ -31,6 +31,8 @@ public class Animator {
 
     double direction = 1.0;
     double errorAbs = 0;
+    double prevErrorAbs = 0;
+    double toleranceAbs = 0;
     double ratioAbs = 1.0;
 
     double linearTravelAbs = 1.0;
@@ -44,6 +46,7 @@ public class Animator {
 
         rampUpAbs = Math.abs(aRampUp);
         rampDownAbs = Math.abs(aRampDown);
+        toleranceAbs = rampUpAbs / 10;
     }
 
     public void configSpeed(double aMinSpeed, double aMaxSpeed, double aLinearTravel, double aStepTime) {
@@ -57,6 +60,7 @@ public class Animator {
     public void start(double aStartPos, double aEndPos) {
 
         errorAbs = Math.abs(aEndPos - aStartPos);
+        prevErrorAbs = errorAbs;
         direction = aEndPos > aStartPos ? 1.0 : -1.0;
         startPos = aStartPos;
         endPos = aEndPos;
@@ -104,7 +108,8 @@ public class Animator {
 
         if ((direction > 0 && actualPos >= endPos) ||
                 (direction < 0 && actualPos <= endPos) ||
-                (crrIteration > maxIterations)) {
+                (crrIteration > maxIterations) ||
+                (errorAbs > prevErrorAbs && errorAbs < 2 * toleranceAbs)) {
             nextPos = endPos;
             nextSpeedAbs = 0;
             return;
@@ -113,6 +118,7 @@ public class Animator {
         crrIteration++;
         crrSpeedAbs = nextSpeedAbs;
         nextSpeedAbs = maxSpeedAbs;
+        prevErrorAbs = errorAbs;
 
         double distanceAbs = Math.abs(endPos - startPos) - errorAbs;
         errorAbs = Math.abs(endPos - actualPos);
