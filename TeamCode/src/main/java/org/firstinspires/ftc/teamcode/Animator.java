@@ -43,16 +43,16 @@ public class Animator {
 
     public void configRamp(double aRampUp, double aRampDown) {
 
-        rampUp = Math.abs( aRampUp );
-        rampDown = Math.abs( aRampDown );
+        rampUp = Math.abs(aRampUp);
+        rampDown = Math.abs(aRampDown);
     }
 
     public void configSpeed(double aMinSpeed, double aMaxSpeed, double aLinearTravel, double aStepTime) {
 
-        minSpeed = Math.abs( aMinSpeed );
-        maxSpeed = Math.abs( aMaxSpeed );
-        linearTravel = Math.abs( aLinearTravel );
-        stepTime = Math.abs( aStepTime );
+        minSpeed = Math.abs(aMinSpeed);
+        maxSpeed = Math.abs(aMaxSpeed);
+        linearTravel = Math.abs(aLinearTravel);
+        stepTime = Math.abs(aStepTime);
     }
 
     public void start(double aStartPos, double aEndPos) {
@@ -97,14 +97,14 @@ public class Animator {
     }
 
     public void advanceStepNoPos() {
-        double actualPos = crrPos + stepTime * nextPos * linearTravel;
+        double actualPos = nextPos;
 
         advanceStep(actualPos);
     }
 
     public void advanceStep(double actualPos) {
 
-        error = Math.abs(endPos - actualPos);
+        error = (endPos - actualPos) * direction;
         crrPos = actualPos;
 
         if (error <= 0 || crrIteration > maxIterations) {
@@ -117,14 +117,16 @@ public class Animator {
         crrSpeed = nextSpeed;
         nextSpeed = maxSpeed;
 
-        if (crrPos <= rampUp) {
-            nextSpeed = Math.abs(crrPos / rampUp);
+        double distance = Math.abs(endPos - startPos) - error;
+
+        if (distance <= rampUp) {
+            nextSpeed = Math.abs(distance / rampUp);
         }
-        if (endPos - crrPos <= rampDown) {
-            nextSpeed = Math.abs((endPos - crrPos) / rampDown);
+        if (endPos - distance <= rampDown) {
+            nextSpeed = Math.abs((endPos - distance) / rampDown);
         }
         nextSpeed = Range.clip(nextSpeed, minSpeed, maxSpeed);
-        nextSpeed = Range.clip(nextSpeed, 0, error / ( stepTime * linearTravel ) );
+        nextSpeed = Range.clip(nextSpeed, 0, error / (stepTime * linearTravel));
 
         nextPos = crrPos + direction * nextSpeed * stepTime * linearTravel;
     }

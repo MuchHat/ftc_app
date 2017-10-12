@@ -460,11 +460,9 @@ public class Team_OpMode_V4 extends LinearOpMode {
             nextSpeedElbow = elbowAnimator.getSpeed();
         }
 
-        robot.elbow.setPosition(newElbow);
-        robot.base.setPosition(newBase);
-
         baseControl = newBase;
         elbowControl = newElbow;
+        setServos();
     }
 
     // ************************** HARDWARE SET FUNCTIONS *****************************************//
