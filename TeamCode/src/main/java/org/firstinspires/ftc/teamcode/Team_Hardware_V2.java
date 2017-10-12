@@ -43,7 +43,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Team_Hardware_V2 {
 
-    // ************************** ROBOT HW  ******************************************************//
+    // ************************** ROBOT HW VARIABLES *********************************************//
 
     public DcMotor leftDrive = null;
     public DcMotor rightDrive = null;
@@ -68,11 +68,13 @@ public class Team_Hardware_V2 {
     public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     public IntegratingGyroscope gyro;
 
+    // ************************** HW CONSTRUCTOR  ************************************************//
+
     public Team_Hardware_V2() {
 
     }
 
-    // ************************** INIT  **********************************************************//
+    // ************************** HW INIT  *******************************************************//
 
     public void init(HardwareMap ahwMap) {
 

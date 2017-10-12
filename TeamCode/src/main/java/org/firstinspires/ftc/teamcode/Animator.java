@@ -3,11 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-/**
- * Created by MuchHat on 2017-10-11.
- */
+// ************************** ANIMATOR HELPER CLASS **********************************************//
 
 public class Animator {
+
+    // ************************** VARIABLES *******************************************************//
 
     public double rampUpAbs = 666; // distance to get from 0 to 1
     public double rampDownAbs = 888; //distnace to get from 1 to 0
@@ -43,6 +43,8 @@ public class Animator {
 
     }
 
+    // ************************** INIT AND CONFIG  ***********************************************//
+
     public void configRamp(double aRampUp, double aRampDown) {
 
         rampUpAbs = Math.abs(aRampUp);
@@ -57,6 +59,8 @@ public class Animator {
         linearTravelAbs = Math.abs(aLinearTravel);
         stepTimeAbs = Math.abs(aStepTime);
     }
+
+    // ************************** EXECUTION  *****************************************************//
 
     public void start(double aStartPos, double aEndPos) {
 
@@ -141,8 +145,11 @@ public class Animator {
 
         nextPos = actualPos + direction * nextSpeedAbs * stepTimeAbs * linearTravelAbs;
     }
+
+    // ************************** END CLASS  *****************************************************//
 }
 
+// ************************** OLD ****************************************************************//
 /*
     double velocityByDampedSpring(double targetPos, double currentPos, double currentVelocity, double stepTime) {
 
@@ -159,3 +166,5 @@ public class Animator {
         return Range.clip(newVelocity, minVelocity, maxVelocity);
     }
  */
+
+// ************************** END OLD ************************************************************//

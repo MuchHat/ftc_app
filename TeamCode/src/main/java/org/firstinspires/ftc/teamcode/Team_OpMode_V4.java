@@ -81,20 +81,18 @@ public class Team_OpMode_V4 extends LinearOpMode {
     private double turnDefaultSpeed = 0.22; // TODO
     private double liftDefaultSpeed = 0.22; // TODO
     private double servoDefaultSpeed = 0.00033; // TODO
-    private double robotLinearMoveMillis = 1.0; // moves 1mm in 1ms at 1.0 power
-    private double robotAngularMoveMillis = 1.0; // moves 1deg in 1ms at 1.0 power
 
-    //********************************* PREDEF POS ***********************************************//
+    //********************************* PREDEFINED POS *******************************************//
 
     private double clawOpen[] = {0.76, 0.44};
     private double clawClosed[] = {0.85, 0.34};
 
-    // ************************** AUTO MODE ******************************************************//
+    // ************************** MAIN LOOP ******************************************************//
 
     @Override
     public void runOpMode() {
 
-        //********************************* INIT LOOP ********************************************//
+        //********************************* MAIN LOOP INIT ***************************************//
         robot.init(hardwareMap);
 
         telemetry.log().add("calibrating gyro ... do not move");
@@ -146,18 +144,18 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            //********************************* START LOOP *****************************************
+            //********************************* CONTROL LOOP *************************************//
 
             double crrLoopTime = loopRuntime.nanoseconds() / 1000000; // covert to millis
             loopRuntime.reset();
 
             updateTelemetry();
 
-            //********************************* MANUAL MODE *****************************************
+            //********************************* MANUAL MODE **************************************//
 
             if (manualMode) {
 
-                // ***************************** control: DRIVES
+                // ***************************** control: DRIVES  ********************************//
                 {
                     double xInput = 0;
                     double yInput = 0;
@@ -178,7 +176,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
                     if (xInput != 0) headingControl = robot.modernRoboticsI2cGyro.getHeading();
                 }
 
-                // ********************************  control: LIFT
+                // ********************************  control: LIFT  ******************************//
                 {
                     double liftInput = 0;
 
@@ -189,7 +187,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
                     setDrives();
                 }
 
-                // ********************************  control: TURNS 90
+                // ********************************  control: TURNS 90  **************************//
                 if (gamepad1.dpad_right) {
                     turn(90);
                 }
@@ -199,31 +197,31 @@ public class Team_OpMode_V4 extends LinearOpMode {
                     turn(-90);
                 }
 
-                // ********************************  control: TURN FACING THE CRYPTO BOX
+                // ********************************  control: TURN FACING THE CRYPTO BOX  ********//
                 if (gamepad1.dpad_up) {
                     turnToHeading(gameStartHeading + 90);
                 }
 
-                // ********************************  control: TURNS 180
+                // ********************************  control: TURNS 180  *************************//
                 if (gamepad1.dpad_down) {
                     turn(180);
                 }
 
-                // ********************************  control: SMALL STEP FORWARD
+                // ********************************  control: SMALL STEP FORWARD  ****************//
                 if (gamepad1.y) {
                     double step = 10;
 
                     move(step);
                 }
 
-                // ********************************  control: SMALL STEP REVERSE
+                // ********************************  control: SMALL STEP REVERSE  ****************//
                 if (gamepad1.a) {
                     double step = 10;
 
                     move(-step);
                 }
 
-                // ********************************  control: SMALL STEP LEFT
+                // ********************************  control: SMALL STEP LEFT  *******************//
                 if (gamepad1.x) {
                     double step = 10;
 
@@ -233,7 +231,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
                     move(step);
                 }
 
-                // ********************************  control: SMALL STEP RIGHT
+                // ********************************  control: SMALL STEP RIGHT  ******************//
                 if (gamepad1.b) {
                     double step = 10;
 
@@ -243,44 +241,44 @@ public class Team_OpMode_V4 extends LinearOpMode {
                     move(step);
                 }
 
-                // ********************************  control: CLAW OPEN
+                // ********************************  control: CLAW OPEN  *************************//
                 if (gamepad1.left_trigger != 0) {
                     leftClawControl -= gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
                     rightClawControl += gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
                     setServos();
                 }
 
-                // ********************************  control: CLAW CLOSE
+                // ********************************  control: CLAW CLOSE  ************************//
                 if (gamepad1.right_trigger != 0) {
                     leftClawControl += gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
                     rightClawControl -= gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
                     setServos();
                 }
-                // ********************************  control: CLAW PREDEF OPEN
+                // ********************************  control: CLAW PREDEF OPEN  ******************//
                 if (gamepad1.left_bumper) {
                     leftClawControl = clawOpen[0];
                     rightClawControl = clawOpen[1];
                     setServos();
                 }
-                // ********************************  control: CLAW PREDEF CLOSE
+                // ********************************  control: CLAW PREDEF CLOSE  *****************//
                 if (gamepad1.right_bumper) {
                     leftClawControl = clawClosed[0];
                     rightClawControl = clawClosed[1];
                     setServos();
                 }
-                // ********************************  control: LOAD CUBE SEQUENCE
+                // ********************************  control: LOAD CUBE SEQUENCE  ****************//
                 if (gamepad1.left_stick_x > 0.15) {
                     // TODO
 
                 }
-                // ********************************  control: UNLOAD CUBE SEQUENCE
+                // ********************************  control: UNLOAD CUBE SEQUENCE  **************//
                 if (gamepad1.left_stick_x < -0.15) {
                     //TODO
 
                 }
             }
 
-            //********************************* AUTO MODE *****************************************
+            //********************************* AUTO MODE ****************************************//
 
             if (!manualMode) {
                 runAutonomous();
@@ -289,6 +287,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
             //********************************* END LOOP *****************************************//
         }
     }
+
+    //********************************* AUTO MODE HELPER FUNCTION ********************************//
 
     private void runAutonomous() {
 
@@ -319,7 +319,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         stop(); //stop the opMode
     }
 
-    // ************************** DRIVES HELPER FUNCTIONS  ***************************************//
+    // ************************** MANUAL DRIVE HELPER FUNCTIONS  *********************************//
 
     private void turnToHeading(double newHeading) {
 
@@ -410,7 +410,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         stopRobot();
     }
 
-    // ************************** ARM SERVOS HELPER FUNCTIONS  ************************************//
+    // ************************** ARM  DRIVE SERVOS HELPER FUNCTIONS  ****************************//
 
     void moveArm(double newBase, double newElbow) {
 

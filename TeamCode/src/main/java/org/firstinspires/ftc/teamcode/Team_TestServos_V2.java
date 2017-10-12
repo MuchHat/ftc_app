@@ -37,13 +37,13 @@ import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-/**
- * This file illustrates the concept of driving a path based on time.
- */
+// ************************** OP FOR TESTING THE SERVOS ******************************************//
 
 @TeleOp(name = "Test Servos V2", group = "Team")
 // @Disabled
 public class Team_TestServos_V2 extends LinearOpMode {
+
+    // ************************** VARIABLES ******************************************************//
 
     public Team_Hardware_V2 robot = new Team_Hardware_V2();
     public ElapsedTime runtimeLoop = new ElapsedTime();
@@ -55,6 +55,8 @@ public class Team_TestServos_V2 extends LinearOpMode {
 
     ElapsedTime timer = new ElapsedTime();
     double servoDefaultSpeed = 0.00033; // 0.33 servo angle per sec
+
+    // ************************** OP LOOP ********************************************************//
 
     @Override
     public void runOpMode() {
@@ -136,6 +138,8 @@ public class Team_TestServos_V2 extends LinearOpMode {
         }
     }
 
+    // ************************** HARDWARE HELPER ************************************************//
+
     public void setServos() {
 
         robot.elbow.setPosition(elbowControl);
@@ -143,5 +147,7 @@ public class Team_TestServos_V2 extends LinearOpMode {
         robot.leftClaw.setPosition(leftClawControl);
         robot.rightClaw.setPosition(rightClawControl);
     }
+
+    // ************************** END OP *********************************************************//
 }
 
