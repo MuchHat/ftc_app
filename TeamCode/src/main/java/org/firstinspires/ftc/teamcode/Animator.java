@@ -11,7 +11,7 @@ public class Animator {
 
     public double rampUp = 666; // distance to get from 0 to 1
     public double rampDown = 888; //distnace to get from 1 to 0
-    public double minSpeed = 0.03;
+    public double minSpeed = 0.02;
     public double maxSpeed = 0.88;
 
     double actualMaxSpeed = 0.88;
@@ -30,9 +30,12 @@ public class Animator {
 
     }
 
-    public void init(double aDistance) {
+    public void init(double aDistance, double aRampUp, double aRampDown) {
 
         distance = Math.abs(aDistance);
+        rampUp = aRampUp;
+        rampDown = aRampDown;
+
         double ratio = 1.0;
 
         ratio = distance / (rampUp + rampDown);
@@ -55,10 +58,10 @@ public class Animator {
         double ratio = 1.0;
 
         if (currentPos <= actualRampUp) {
-            ratio = Math.sqrt(currentPos / rampUp); //ramp up fast non-linear
+            ratio = currentPos / rampUp;
         }
         if (distance - currentPos <= actualRampDown) {
-            ratio = (distance - currentPos) / rampDown * (distance - currentPos) / rampDown; //slow down slow non linear
+            ratio = (distance - currentPos) / rampDown;
         }
 
         newSpeed = maxSpeed * ratio;

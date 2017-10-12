@@ -371,7 +371,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         double stepTime = 3;
 
         Animator turnAnimator = new Animator();
-        turnAnimator.init(distance);
+        turnAnimator.init(distance, 66, 88);
 
         while (currentStep < maxSteps && error > 0 && error <= prevError) {
 
@@ -407,7 +407,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         double stepTime = 3;
 
         Animator moveAnimator = new Animator();
-        moveAnimator.init(Math.abs(distance));
+        moveAnimator.init(Math.abs(distance),333,444);
 
         while (currentStep < maxSteps && error > 3 && Math.abs(error) <= Math.abs(prevError)) {
 
@@ -445,34 +445,50 @@ public class Team_OpMode_V4 extends LinearOpMode {
         newBase = Range.clip(newBase, 0.05, 0.95); //TODO
         newElbow = Range.clip(newElbow, 0.05, 0.95); //TODO
 
-        double maxServoStep = 0.004; // 0.1 per servo and step
-        double stepCount = 0;
+        double servoAngularStep = 0.004; // how much it moves in 1ms at full power
         double stepTime = 1;
-        stepCount = Math.max(stepCount, Math.abs(newElbow - elbowControl) / maxServoStep);
-        stepCount = Math.max(stepCount, Math.abs(newBase - baseControl) / maxServoStep);
+        double currentStep = 0;
+        double maxSteps = 6666;
 
-        if (stepCount > 0) {
+        double directionBase = newBase > baseControl ? 1.0 : -1.0;
+        double distanceBase = Math.abs(newBase - baseControl);
+        double errorBase = distanceBase;
+        double prevErrorBase = errorBase;
 
-            for (int i = 0; i < stepCount; i++) {
-                double wait = stepTime;
+        double directionElbow = newElbow > elbowControl ? 1.0 : -1.0;
+        double distanceElbow = Math.abs(newElbow - elbowControl);
+        double errorElbow = distanceElbow;
+        double prevErrorElbow = errorElbow;
 
-                double baseControlStep = baseControl + i * (newBase - baseControl) / stepCount;
-                double elbowControlStep = elbowControl + i * (newElbow - elbowControl) / stepCount;
+        Animator servoAnimatorBase = new Animator();
+        servoAnimatorBase.init(distanceBase, 0.2, 0.3);
 
-                elbowControlStep = Range.clip(elbowControlStep, 0.05, 0.95); //TODO
-                baseControlStep = Range.clip(baseControlStep, 0.05, 0.95); //TODO
+        Animator servoAnimatorElbow = new Animator();
+        servoAnimatorElbow.init(distanceElbow, 0.2, 0.3);
 
-                if( i < stepCount/3){
-                    wait *= Math.sqrt(Math.abs(stepCount/3 - i)); //speed up fast non linear
-                }
-                if( i > stepCount*2/3){
-                    wait *= Math.abs((i - stepCount*2/3)) * Math.abs((i - stepCount*2/3)); //slow down slow non linear
-                }
+        while (currentStep < maxSteps &&
+                errorBase > 0.02 && errorElbow > 0.02 &&
+                Math.abs(errorBase) <= Math.abs(prevErrorBase) &&
+                Math.abs(errorElbow) <= Math.abs(prevErrorElbow)) {
 
-                waitMillis(wait);
-                robot.elbow.setPosition(elbowControlStep);
-                robot.base.setPosition(baseControlStep);
-            }
+            double currentSpeedBase = servoAnimatorBase.getSpeed(distanceBase - errorBase);
+            double currentSpeedElbow = servoAnimatorBase.getSpeed(distanceElbow - errorElbow);
+
+            double stepDistanceBase = currentSpeedBase * stepTime * directionBase * servoAngularStep;
+            double stepDistanceElbow = currentSpeedElbow * stepTime * directionElbow * servoAngularStep;
+
+            baseControl += stepDistanceBase;
+            elbowControl += stepDistanceElbow;
+            setServos();
+
+            waitMillis(stepTime);
+
+            prevErrorBase = errorBase;
+            prevErrorElbow = errorElbow;
+            errorBase -= Math.abs(stepDistanceBase);
+            errorElbow -= Math.abs(stepDistanceElbow);
+
+            currentStep++;
         }
 
         robot.elbow.setPosition(newElbow);
@@ -480,7 +496,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         baseControl = newBase;
         elbowControl = newElbow;
-
     }
 
     // ************************** HARDWARE SET FUNCTIONS *****************************************//
