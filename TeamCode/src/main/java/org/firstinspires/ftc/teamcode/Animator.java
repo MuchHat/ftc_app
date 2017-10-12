@@ -23,6 +23,7 @@ public class Animator {
     double nextSpeedAbs = 0;
     double startPos = 0;
     double endPos = 0;
+    double crrPos = 0;
     double crrIteration = 0;
     double maxIterations = 6666; // 6 sec timeout
     double distanceAbs = 0;
@@ -39,8 +40,11 @@ public class Animator {
     double linearTravelAbs = 1.0;
     double stepTimeAbs = 1;
 
+    ElapsedTime animatorRuntime = null;
+
     public void Animator() {
 
+        animatorRuntime = new ElapsedTime();
     }
 
     // ************************** INIT AND CONFIG  ***********************************************//
@@ -78,9 +82,12 @@ public class Animator {
         ratioAbs = Range.clip(ratioAbs, 0, 1);
 
         nextPos = startPos;
+        crrPos = startPos;
 
         crrSpeedAbs = 0;
         nextSpeedAbs = 0;
+
+        animatorRuntime.reset();
     }
 
     public void modeLinear() {
@@ -97,21 +104,27 @@ public class Animator {
 
     public double getPos() {
 
+        animatorRuntime.reset();
         return nextPos;
     }
 
     public double getSpeed() {
 
+        animatorRuntime.reset();
         return nextSpeedAbs;
     }
 
     public void advanceStepNoPos() {
-        double actualPos = nextPos;
 
+        double actualStepTime = animatorRuntime.nanoseconds() / (1000 * 1000);
+        double actualPos = crrPos + direction * nextSpeedAbs * actualStepTime * linearTravelAbs;
+        animatorRuntime.reset();
         advanceStep(actualPos);
     }
 
     public void advanceStep(double actualPos) {
+
+        animatorRuntime.reset();
 
         if ((direction > 0 && actualPos >= endPos) ||
                 (direction < 0 && actualPos <= endPos) ||
@@ -143,7 +156,8 @@ public class Animator {
         nextSpeedAbs = Range.clip(nextSpeedAbs, minSpeedAbs, maxSpeedAbs);
         nextSpeedAbs = Range.clip(nextSpeedAbs, 0, errorAbs / (stepTimeAbs * linearTravelAbs));
 
-        nextPos = actualPos + direction * nextSpeedAbs * stepTimeAbs * linearTravelAbs;
+        crrPos = actualPos;
+        nextPos = crrPos + direction * nextSpeedAbs * stepTimeAbs * linearTravelAbs;
     }
 
     // ************************** END CLASS  *****************************************************//

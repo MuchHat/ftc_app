@@ -327,13 +327,13 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
         double turnDeg = newHeading - crrHeading;
+        double diffAbs = Math.abs(newHeading - crrHeading);
+        double diff360Abs = 360 - diffAbs;
+        double direction = newHeading > crrHeading ? 1.0 : -1.0;
+        double inverted = diffAbs < diff360Abs ? 1.0 : -1.0;
 
-        if (Math.abs(newHeading - crrHeading) > 360 - Math.abs(newHeading - crrHeading)) {
-            double direction = newHeading > crrHeading ? 1.0 : -1.0;
-
-            turnDeg = 360 - Math.abs(newHeading - crrHeading);
-            turnDeg *= direction * -1.0;
-        }
+        turnDeg = inverted > 0 ? diffAbs : diff360Abs;
+        turnDeg *= direction * inverted;
 
         turn(turnDeg);
     }
@@ -344,16 +344,10 @@ public class Team_OpMode_V4 extends LinearOpMode {
         double endHeading = (startHeading + turnDeg + 360) % 360;
         endHeading = Range.clip(endHeading, 0, 360);
 
-        double direction = 1.0;
-        double inverted = 1.0;
-        double diffAbs = Math.abs(endHeading - startHeading);
+        double diffAbs = Math.abs(endHeading - startHeading) % 360;
         double diff360Abs = 360 - diffAbs;
-        direction = endHeading > startHeading ? 1.0 : -1.0;
-        if (diff360Abs < diffAbs) {
-            direction *= -1;
-            inverted = -1.0;
-        }
-
+        double direction = turnDeg >= 0 ? 1.0 : -1.0;
+        double inverted = diffAbs < diff360Abs ? 1.0 : -1.0;
         double distanceAbs = Math.min(diffAbs, diff360Abs);
 
         Animator turnAnimator = new Animator();
@@ -373,11 +367,11 @@ public class Team_OpMode_V4 extends LinearOpMode {
             waitMillis(1);
 
             double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
-            double crrDiffAbs = Math.abs(endHeading - crrHeading);
+            double crrDiffAbs = Math.abs(endHeading - crrHeading) % 360;
             double crrDiff360Abs = 360 - diffAbs;
-            double crrDistance = Math.min(crrDiffAbs, crrDiff360Abs) * inverted * direction;
+            double crrDistanceAbs = Math.min(crrDiffAbs, crrDiff360Abs);
 
-            turnAnimator.advanceStep(crrDistance);
+            turnAnimator.advanceStep(crrDistanceAbs * inverted * direction);
             nextSpeedAbs = turnAnimator.getSpeed();
         }
         stopRobot();
