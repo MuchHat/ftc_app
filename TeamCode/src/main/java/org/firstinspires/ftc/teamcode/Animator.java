@@ -142,11 +142,11 @@ public class Animator {
         nextPos = crrPos + direction * nextSpeedAbs * stepTimeAbs * linearTravelAbs;
     }
 
-    double jerk = 1.355;
-    double div = ((1 - Math.cos(Math.pow(0.5, jerk) * Math.PI)) / 2) / 2;
-    boolean useS = true;
-
     double getS(double ratio) {
+
+        double jerk = 1.355;
+        double div = ((1 - Math.cos(Math.pow(0.5, jerk) * Math.PI)) / 2) / 2;
+        boolean useS = true;
 
         double s = ratio;
 
