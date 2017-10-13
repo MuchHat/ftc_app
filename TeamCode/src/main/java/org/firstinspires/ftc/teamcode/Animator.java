@@ -28,9 +28,6 @@ public class Animator {
     double maxIterations = 6666; // 6 sec timeout
     double distanceAbs = 0;
 
-    boolean useLinear = true;
-    boolean useShapes = false;
-
     double direction = 1.0;
     double errorAbs = 0;
     double prevErrorAbs = 0;
@@ -90,18 +87,6 @@ public class Animator {
         animatorRuntime.reset();
     }
 
-    public void modeLinear() {
-
-        useLinear = true;
-        useShapes = false;
-    }
-
-    public void modeShapes() {
-
-        useLinear = false;
-        useShapes = true;
-    }
-
     public double getPos() {
 
         animatorRuntime.reset();
@@ -148,10 +133,12 @@ public class Animator {
         distanceAbs = Math.abs(distanceAbs - errorAbs);
 
         if (distanceAbs <= rampUpAbs) {
-            nextSpeedAbs = getS(Math.abs(distanceAbs / rampUpAbs));
+            double rampPos = (distanceAbs / rampUpAbs) / ratioAbs;
+            nextSpeedAbs = getS(rampPos) * ratioAbs * maxSpeedAbs;
         }
         if (errorAbs <= rampDownAbs) {
-            nextSpeedAbs = 1-getS(Math.abs(rampDownAbs - errorAbs) / rampDownAbs);
+            double rampPos = (errorAbs / rampDownAbs) / ratioAbs;
+            nextSpeedAbs = getS(rampPos) * ratioAbs * maxSpeedAbs;
         }
         nextSpeedAbs = Range.clip(nextSpeedAbs, minSpeedAbs, maxSpeedAbs);
         nextSpeedAbs = Range.clip(nextSpeedAbs, 0, errorAbs / (stepTimeAbs * linearTravelAbs));
@@ -163,12 +150,14 @@ public class Animator {
     double getS(double ratio) {
 
         if (ratio <= 0.5) {
-            return Range.clip((ratio + ratio * ratio * ratio * 700) / 200,0,1);
+            double halfCos = ((1-Math.cos(ratio*ratio*Math.PI))/2)/0.146446609406726/2;
+            return Range.clip(halfCos,0,0.5);
         }
 
         double one_ratio = 1 - ratio;
+        double halfCos = ((1-Math.cos(one_ratio*one_ratio*Math.PI))/2)/0.146446609406726/2;
 
-        return Range.clip(1 - (one_ratio + one_ratio * one_ratio * one_ratio * 700) / 200,0,1);
+        return Range.clip(1 - halfCos,0.5,1);
     }
 
     // ************************** END CLASS  *****************************************************//
