@@ -148,20 +148,19 @@ public class Animator {
     }
 
     double jerk = 1.355;
-    double div = ((1-Math.cos(Math.pow(0.5,jerk)*Math.PI))/2)/2;
+    double div = ((1 - Math.cos(Math.pow(0.5, jerk) * Math.PI)) / 2) / 2;
     boolean useS = true;
 
     double getS(double ratio) {
 
         double s = ratio;
 
-        ratio = Range.clip( ratio, 0, 1 );
+        ratio = Range.clip(ratio, 0, 1);
         if (useS && ratio <= 0.5) {
-            s = ((1-Math.cos(Math.pow(ratio,jerk)*Math.PI))/2)/div/2;
+            s = ((1 - Math.cos(Math.pow(ratio, jerk) * Math.PI)) / 2) / div / 2;
             s = Range.clip(s, 0, 0.5);
-        }
-        else if( useS && ratio > 0.5 ){
-            s = 1-(((1-Math.cos(Math.pow(1-ratio,jerk)*Math.PI))/2)/div/2);
+        } else if (useS && ratio > 0.5) {
+            s = 1 - (((1 - Math.cos(Math.pow(1 - ratio, jerk) * Math.PI)) / 2) / div / 2);
             s = Range.clip(s, 0.5, 1);
         }
 
