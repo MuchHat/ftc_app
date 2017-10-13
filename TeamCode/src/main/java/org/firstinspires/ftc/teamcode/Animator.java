@@ -165,7 +165,7 @@ public class Animator {
             s = Range.clip(s, 0.5, 1);
         }
 
-        return Range.clip(s, 0.5, 1);
+        return Range.clip(s, 0, 1);
     }
 
     // ************************** END CLASS  *****************************************************//
