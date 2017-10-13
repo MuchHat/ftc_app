@@ -147,17 +147,25 @@ public class Animator {
         nextPos = crrPos + direction * nextSpeedAbs * stepTimeAbs * linearTravelAbs;
     }
 
+    double jerk = 1.355;
+    double div = ((1-Math.cos(Math.pow(0.5,jerk)*Math.PI))/2)/2;
+    boolean useS = true;
+
     double getS(double ratio) {
 
-        if (ratio <= 0.5) {
-            double halfCos = ((1 - Math.cos(ratio * ratio * Math.PI)) / 2) / 0.146446609406726 / 2;
-            return Range.clip(halfCos, 0, 0.5);
+        double s = ratio;
+
+        ratio = Range.clip( ratio, 0, 1 );
+        if (useS && ratio <= 0.5) {
+            s = ((1-Math.cos(Math.pow(ratio,jerk)*Math.PI))/2)/div/2;
+            s = Range.clip(s, 0, 0.5);
+        }
+        else if( useS && ratio > 0.5 ){
+            s = 1-(((1-Math.cos(Math.pow(1-ratio,jerk)*Math.PI))/2)/div/2);
+            s = Range.clip(s, 0.5, 1);
         }
 
-        double one_ratio = 1 - ratio;
-        double halfCos = ((1 - Math.cos(one_ratio * one_ratio * Math.PI)) / 2) / 0.146446609406726 / 2;
-
-        return Range.clip(1 - halfCos, 0.5, 1);
+        return Range.clip(s, 0.5, 1);
     }
 
     // ************************** END CLASS  *****************************************************//
