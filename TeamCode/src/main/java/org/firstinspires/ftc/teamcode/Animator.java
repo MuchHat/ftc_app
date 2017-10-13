@@ -30,7 +30,6 @@ public class Animator {
 
     double direction = 1.0;
     double errorAbs = 0;
-    double prevErrorAbs = 0;
     double toleranceAbs = 0;
     double ratioAbs = 1.0;
 
@@ -65,18 +64,17 @@ public class Animator {
 
     public void start(double aStartPos, double aEndPos) {
 
-        errorAbs = Math.abs(aEndPos - aStartPos);
-        prevErrorAbs = errorAbs;
-        distanceAbs = errorAbs;
+        distanceAbs = Math.abs(aEndPos - aStartPos);
+        toleranceAbs = distanceAbs * 0.05;
+        errorAbs = distanceAbs;
         direction = aEndPos > aStartPos ? 1.0 : -1.0;
         startPos = aStartPos;
         endPos = aEndPos;
-        toleranceAbs = Math.min(toleranceAbs, distanceAbs / 10);
 
         ratioAbs = 1.0;
 
         ratioAbs = errorAbs / (rampUpAbs + rampDownAbs);
-        ratioAbs = Range.clip(ratioAbs, 0, 1);
+        ratioAbs = Range.clip(ratioAbs, 0.001, 1);
 
         nextPos = startPos;
         crrPos = startPos;
@@ -111,14 +109,15 @@ public class Animator {
 
         animatorRuntime.reset();
 
-        if ((direction > 0 && actualPos >= endPos) ||
-                (direction < 0 && actualPos <= endPos) ||
-                (crrIteration > maxIterations) ||
-                (errorAbs < toleranceAbs) ||
-                ((errorAbs > prevErrorAbs + toleranceAbs) && (errorAbs < 2 * toleranceAbs))) {
+        if (direction >= 0) actualPos = Range.clip(actualPos, startPos, endPos);
+        if (direction < 0) actualPos = Range.clip(actualPos, endPos, startPos);
+
+        errorAbs = Math.abs(endPos - actualPos);
+        distanceAbs = Math.abs(endPos - startPos) - errorAbs;
+
+        if (errorAbs <= toleranceAbs) {
             nextPos = endPos;
             nextSpeedAbs = 0;
-            prevErrorAbs = errorAbs;
             errorAbs = 0;
             distanceAbs = 0;
             return;
@@ -127,10 +126,6 @@ public class Animator {
         crrIteration++;
         crrSpeedAbs = nextSpeedAbs;
         nextSpeedAbs = maxSpeedAbs * ratioAbs;
-        prevErrorAbs = errorAbs;
-
-        errorAbs = Math.abs(endPos - actualPos);
-        distanceAbs = Math.abs(endPos - startPos) - errorAbs;
 
         if (distanceAbs <= rampUpAbs) {
             double rampPos = (distanceAbs / rampUpAbs) / ratioAbs;
