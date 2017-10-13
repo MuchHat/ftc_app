@@ -126,11 +126,11 @@ public class Animator {
 
         crrIteration++;
         crrSpeedAbs = nextSpeedAbs;
-        nextSpeedAbs = maxSpeedAbs;
+        nextSpeedAbs = maxSpeedAbs * ratioAbs;
         prevErrorAbs = errorAbs;
 
         errorAbs = Math.abs(endPos - actualPos);
-        distanceAbs = Math.abs(distanceAbs - errorAbs);
+        distanceAbs = Math.abs(endPos - startPos) - errorAbs;
 
         if (distanceAbs <= rampUpAbs) {
             double rampPos = (distanceAbs / rampUpAbs) / ratioAbs;
@@ -150,14 +150,14 @@ public class Animator {
     double getS(double ratio) {
 
         if (ratio <= 0.5) {
-            double halfCos = ((1-Math.cos(ratio*ratio*Math.PI))/2)/0.146446609406726/2;
-            return Range.clip(halfCos,0,0.5);
+            double halfCos = ((1 - Math.cos(ratio * ratio * Math.PI)) / 2) / 0.146446609406726 / 2;
+            return Range.clip(halfCos, 0, 0.5);
         }
 
         double one_ratio = 1 - ratio;
-        double halfCos = ((1-Math.cos(one_ratio*one_ratio*Math.PI))/2)/0.146446609406726/2;
+        double halfCos = ((1 - Math.cos(one_ratio * one_ratio * Math.PI)) / 2) / 0.146446609406726 / 2;
 
-        return Range.clip(1 - halfCos,0.5,1);
+        return Range.clip(1 - halfCos, 0.5, 1);
     }
 
     // ************************** END CLASS  *****************************************************//
