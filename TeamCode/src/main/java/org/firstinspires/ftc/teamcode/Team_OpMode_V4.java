@@ -52,12 +52,14 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     public Team_Hardware_V2 robot = new Team_Hardware_V2();
 
-    private ElapsedTime loopRuntime = new ElapsedTime();
-    private ElapsedTime controlRuntime = new ElapsedTime();
+    ElapsedTime loopRuntime = null;
+    ElapsedTime controlRuntime = null;
+    ElapsedTime totalRuntime = null;
+    ElapsedTime runtimeWait = null;
 
     //********************************* MOVE STATES **********************************************//
 
-    private ElapsedTime totalRuntime = new ElapsedTime();
+
     private double leftDriveControl = 0;
     private double rightDriveControl = 0;
     private double headingControl = 0;
@@ -95,19 +97,19 @@ public class Team_OpMode_V4 extends LinearOpMode {
         //********************************* MAIN LOOP INIT ***************************************//
         robot.init(hardwareMap);
 
+        controlRuntime = new ElapsedTime();
+        controlRuntime.reset();
+
         telemetry.log().add("calibrating gyro ... do not move");
         telemetry.update();
-        sleep(444);
         robot.modernRoboticsI2cGyro.calibrate();
 
         // Wait until the gyro calibration is complete
-        controlRuntime.reset();
         while (!isStopRequested() && robot.modernRoboticsI2cGyro.isCalibrating()) {
             telemetry.addData("calibrating gyro", "%s", Math.round(controlRuntime.seconds()));
             telemetry.update();
             sleep(66);
         }
-        controlRuntime.reset();
 
         while (!isStopRequested() && !gamepad1.start) {
 
@@ -135,12 +137,16 @@ public class Team_OpMode_V4 extends LinearOpMode {
         setDrives();
         setServos();
 
-        updateTelemetry();
-
         waitForStart();
-        loopRuntime.reset();
-        totalRuntime.reset();
-        controlRuntime.reset();
+
+        loopRuntime = new ElapsedTime();
+        totalRuntime = new ElapsedTime();
+        runtimeWait = new ElapsedTime();
+
+        //controlRuntime.reset();
+        //loopRuntime.reset();
+        //totalRuntime.reset();
+        //controlRuntime.reset();
 
         while (opModeIsActive()) {
 
@@ -454,7 +460,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         liftControl = Range.clip(liftControl, -0.66, 0.66); //TODO max max power
 
- //       if (liftControl >= 0 && !robot.topSwitch.getState()) { // false means switch is pressed
+        //       if (liftControl >= 0 && !robot.topSwitch.getState()) { // false means switch is pressed
 //           liftControl = 0;
 //        }
 //        if (liftControl < 0 && !robot.bottomSwitch.getState()) { // false means switch is pressed
@@ -536,7 +542,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
     private void waitMillis(double millis) {
 
         millis = Range.clip(millis, 0.01, millis);
-        ElapsedTime runtimeWait = new ElapsedTime();
 
         runtimeWait.reset();
 
@@ -571,7 +576,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
         telemetry.addData("mode", mode);
         telemetry.addData("team", team);
         telemetry.addData("field", field);
-        telemetry.addData("total runtime", "%.0fs", totalRuntime.seconds());
+        //telemetry.addData("total runtime", "%.0fs", totalRuntime.seconds());
 
         telemetry.update();
     }
