@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -42,7 +43,7 @@ import static android.R.attr.delay;
  */
 
 @TeleOp(name = "Team V1", group = "Team")
-// @Disabled
+@Disabled
 public class Team_OpMode_V1 extends LinearOpMode {
 
     public Gigi_Hardware_V2 robot = new Gigi_Hardware_V2();

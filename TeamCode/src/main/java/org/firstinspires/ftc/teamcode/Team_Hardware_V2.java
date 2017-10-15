@@ -52,10 +52,10 @@ public class Team_Hardware_V2 {
     public Servo leftClaw = null;
     public Servo rightClaw = null;
 
-    public DigitalChannel topSwitch = null;
-    public DigitalChannel bottomSwitch = null;
+//    public DigitalChannel topSwitch = null;
+//    public DigitalChannel bottomSwitch = null;
 
-    public ColorSensor colorSensor = null;
+//    public ColorSensor colorSensor = null;
 //    public OpticalDistanceSensor distanceSensorLeft = null;
 //    public OpticalDistanceSensor distanceSensorRight = null;
 
@@ -84,8 +84,8 @@ public class Team_Hardware_V2 {
         rightDrive = hwMap.get(DcMotor.class, "Motor_Right");
         liftDrive = hwMap.get(DcMotor.class, "Motor_Lift");
 
-        topSwitch = hwMap.get(DigitalChannel.class, "Switch_Top");
-        bottomSwitch = hwMap.get(DigitalChannel.class, "Switch_Bottom");
+//        topSwitch = hwMap.get(DigitalChannel.class, "Switch_Top");
+//       bottomSwitch = hwMap.get(DigitalChannel.class, "Switch_Bottom");
 
         base = hwMap.get(Servo.class, "Base");
         elbow = hwMap.get(Servo.class, "Elbow");
@@ -93,16 +93,16 @@ public class Team_Hardware_V2 {
         leftClaw = hwMap.get(Servo.class, "Claw_Left");
         rightClaw = hwMap.get(Servo.class, "Claw_Right");
 
-        colorSensor = hwMap.get(ColorSensor.class, "Color_Sensor");
+//        colorSensor = hwMap.get(ColorSensor.class, "Color_Sensor");
 //        distanceSensorLeft = hwMap.get(OpticalDistanceSensor.class, "Distance_Sensor_Left");
- //       distanceSensorRight = hwMap.get(OpticalDistanceSensor.class, "Distance_Sensor_Right");
+//       distanceSensorRight = hwMap.get(OpticalDistanceSensor.class, "Distance_Sensor_Right");
 
         modernRoboticsI2cGyro = hwMap.get(ModernRoboticsI2cGyro.class, "Gyro");
         gyro = modernRoboticsI2cGyro;
 
-        colorSensor.enableLed(false);
+//       colorSensor.enableLed(false);
 //        distanceSensorLeft.enableLed(false);
- //       distanceSensorRight.enableLed(false);
+//       distanceSensorRight.enableLed(false);
 
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);

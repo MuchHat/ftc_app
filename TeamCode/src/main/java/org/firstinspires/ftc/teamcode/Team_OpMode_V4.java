@@ -454,12 +454,12 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         liftControl = Range.clip(liftControl, -0.66, 0.66); //TODO max max power
 
-        if (liftControl >= 0 && !robot.topSwitch.getState()) { // false means switch is pressed
-            liftControl = 0;
-        }
-        if (liftControl < 0 && !robot.bottomSwitch.getState()) { // false means switch is pressed
-            liftControl = 0;
-        }
+ //       if (liftControl >= 0 && !robot.topSwitch.getState()) { // false means switch is pressed
+//           liftControl = 0;
+//        }
+//        if (liftControl < 0 && !robot.bottomSwitch.getState()) { // false means switch is pressed
+//            liftControl = 0;
+//        }
         if (liftControl < 0) {
             robot.liftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
             robot.liftDrive.setPower(-liftControl);

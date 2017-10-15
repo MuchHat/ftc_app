@@ -14,10 +14,6 @@ public class Animator {
     public double minSpeedAbs = 0.02;
     public double maxSpeedAbs = 0.88;
 
-    double rampUpShape[] = {0.15, 0.33, 0.52, 0.66, 0.78, 0.88, 0.93, 0.97, 1.00, 1.00, 1.00};
-    double rampDownShape[] = {1.00, 0.90, 0.80, 0.60, 0.35, 0.25, 0.15, 0.08, 0.05, 0.05, 0.05};
-    double shapeSteps = 10;
-
     double nextPos = 0;
     double crrSpeedAbs = 0;
     double nextSpeedAbs = 0;

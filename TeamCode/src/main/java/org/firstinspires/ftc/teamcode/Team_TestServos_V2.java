@@ -96,7 +96,7 @@ public class Team_TestServos_V2 extends LinearOpMode {
             leftClawControl = robot.leftClaw.getPosition();
             rightClawControl = robot.rightClaw.getPosition();
 
-            robot.colorSensor.enableLed( true );
+//            robot.colorSensor.enableLed( true );
 //            robot.distanceSensorLeft.enableLed( true );
 //            robot.distanceSensorRight.enableLed( true );
 
@@ -105,11 +105,11 @@ public class Team_TestServos_V2 extends LinearOpMode {
             telemetry.addData("left claw", "%.0f%%", leftClawControl * 100);
             telemetry.addData("right claw", "%.0f%%", rightClawControl * 100);
 
-            telemetry.addData("color sensor red", "%.2f%%", (double)robot.colorSensor.red());
-            telemetry.addData("color sensor green", "%.2f%%", (double)robot.colorSensor.green());
-            telemetry.addData("color sensor blue", "%.2%%", (double)robot.colorSensor.blue());
- //           telemetry.addData("distance sensor left", "%.2f%%", (double)robot.distanceSensorLeft.getLightDetected());
- //           telemetry.addData("distance sensor right", "%.2f%%", (double)robot.distanceSensorRight.getLightDetected());
+//           telemetry.addData("color sensor red", "%.2f%%", (double)robot.colorSensor.red());
+//           telemetry.addData("color sensor green", "%.2f%%", (double)robot.colorSensor.green());
+//           telemetry.addData("color sensor blue", "%.2%%", (double)robot.colorSensor.blue());
+//           telemetry.addData("distance sensor left", "%.2f%%", (double)robot.distanceSensorLeft.getLightDetected());
+//           telemetry.addData("distance sensor right", "%.2f%%", (double)robot.distanceSensorRight.getLightDetected());
 
             telemetry.addData("crr heading", "%.2fdeg", (double) robot.modernRoboticsI2cGyro.getHeading());
 
