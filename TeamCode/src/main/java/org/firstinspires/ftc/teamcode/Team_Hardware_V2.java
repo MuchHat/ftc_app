@@ -64,7 +64,7 @@ public class Team_Hardware_V2 {
 
     public HardwareMap hwMap = null;
     public ElapsedTime runtime = new ElapsedTime();
-
+    
     public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     public IntegratingGyroscope gyro;
 
