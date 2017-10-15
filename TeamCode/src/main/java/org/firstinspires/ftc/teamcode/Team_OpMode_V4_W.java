@@ -176,6 +176,8 @@ public class Team_OpMode_V4_W extends LinearOpMode {
                         xInput = gamepad1.right_stick_x; //TODO
                     if (Math.abs(gamepad1.right_stick_y) > 0.15)
                         yInput = -gamepad1.right_stick_y; //TODO
+                    if (Math.abs(gamepad1.left_stick_x) > 0.15)
+                        xInput = gamepad1.left_stick_x; //TODO
 
                     leftDriveControl = yInput * driveDefaultSpeed;
                     rightDriveControl = yInput * driveDefaultSpeed;
@@ -277,16 +279,6 @@ public class Team_OpMode_V4_W extends LinearOpMode {
                     leftClawControl = clawClosed[0];
                     rightClawControl = clawClosed[1];
                     setServos();
-                }
-                // ********************************  control: LOAD CUBE SEQUENCE  ****************//
-                if (gamepad1.left_stick_x > 0.15) {
-                    // TODO
-
-                }
-                // ********************************  control: UNLOAD CUBE SEQUENCE  **************//
-                if (gamepad1.left_stick_x < -0.15) {
-                    //TODO
-
                 }
             }
 
