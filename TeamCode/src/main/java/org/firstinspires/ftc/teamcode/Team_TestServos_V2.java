@@ -48,8 +48,8 @@ public class Team_TestServos_V2 extends LinearOpMode {
     public Team_Hardware_V2 robot = new Team_Hardware_V2();
     public ElapsedTime runtimeLoop = new ElapsedTime();
     //Declare arm atuff
-    public double baseControl = 0.5;
-    public double elbowControl = 0.5;
+    public double baseControl = 0;
+    public double elbowControl = 0.17;
     public double leftClawControl = 0.5;
     public double rightClawControl = 0.5;
 
@@ -126,12 +126,12 @@ public class Team_TestServos_V2 extends LinearOpMode {
                 setServos();
             }
             // control: LEFT CLAW
-            if (gamepad1.left_trigger != 0) {
+            if (gamepad1.left_stick_x != 0) {
                 leftClawControl += gamepad1.left_stick_x * servoDefaultSpeed * crrLoopTime;
                 setServos();
             }
             // control: RIGHT CLAW
-            if (gamepad1.right_trigger != 0) {
+            if (gamepad1.right_stick_x != 0) {
                 rightClawControl += gamepad1.right_stick_x * servoDefaultSpeed * crrLoopTime;
                 setServos();
             }

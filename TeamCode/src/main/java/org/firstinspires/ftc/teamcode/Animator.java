@@ -60,6 +60,8 @@ public class Animator {
 
     public void start(double aStartPos, double aEndPos) {
 
+        animatorRuntime = new ElapsedTime();
+
         distanceAbs = Math.abs(aEndPos - aStartPos);
         toleranceAbs = distanceAbs * 0.05;
         errorAbs = distanceAbs;
@@ -105,8 +107,8 @@ public class Animator {
 
         animatorRuntime.reset();
 
-        if (direction >= 0) actualPos = Range.clip(actualPos, startPos, endPos);
-        if (direction < 0) actualPos = Range.clip(actualPos, endPos, startPos);
+        //if (direction >= 0) actualPos = Range.clip(actualPos, startPos, endPos);
+        //if (direction < 0) actualPos = Range.clip(actualPos, endPos, startPos);
 
         errorAbs = Math.abs(endPos - actualPos);
         distanceAbs = Math.abs(endPos - startPos) - errorAbs;
