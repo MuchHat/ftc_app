@@ -506,11 +506,11 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     void setServos() {
 
-        double minLeftClaw = Math.min(Math.min( clasZero[0], clawClosed[0]),clawOpen[0]);
-        double maxLeftClaw = Math.max(Math.max( clasZero[0], clawClosed[0]),clawOpen[0]);
+        double minLeftClaw = Math.min(Math.min(clasZero[0], clawClosed[0]), clawOpen[0]);
+        double maxLeftClaw = Math.max(Math.max(clasZero[0], clawClosed[0]), clawOpen[0]);
 
-        double minRightClaw = Math.min(Math.min( clasZero[1], clawClosed[1]),clawOpen[1]);
-        double maxRightClaw = Math.max(Math.max( clasZero[1], clawClosed[1]),clawOpen[1]);
+        double minRightClaw = Math.min(Math.min(clasZero[1], clawClosed[1]), clawOpen[1]);
+        double maxRightClaw = Math.max(Math.max(clasZero[1], clawClosed[1]), clawOpen[1]);
 
         leftClawControl = Range.clip(leftClawControl, minLeftClaw, maxLeftClaw);
         rightClawControl = Range.clip(rightClawControl, minRightClaw, maxRightClaw);
@@ -518,8 +518,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
         robot.leftClaw.setPosition(leftClawControl);
         robot.rightClaw.setPosition(rightClawControl);
 
-        if(armEnabled){
-             robot.leftClaw.setPosition(leftClawControl);
+        if (armEnabled) {
+            robot.leftClaw.setPosition(leftClawControl);
             robot.rightClaw.setPosition(rightClawControl);
         }
     }
