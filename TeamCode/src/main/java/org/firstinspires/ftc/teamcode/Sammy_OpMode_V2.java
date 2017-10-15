@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -40,7 +41,7 @@ import org.firstinspires.ftc.robotcontroller.external.samples.BasicOpMode_Iterat
  */
 
 @TeleOp(name = "Sammy V2", group = "Sammy")
-// @Disabled
+@Disabled
 public class Sammy_OpMode_V2 extends BasicOpMode_Iterative {
 
     public Gigi_Hardware_V2 robot = new Gigi_Hardware_V2();

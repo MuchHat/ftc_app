@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -40,7 +41,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name = "Gigi V8", group = "Gigi")
-// @Disabled
+@Disabled
 public class Gigi_OpMode_V8 extends LinearOpMode {
 
     public Gigi_Hardware_V2 robot = new Gigi_Hardware_V2();

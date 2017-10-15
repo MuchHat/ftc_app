@@ -29,13 +29,9 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -45,9 +41,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Team V4", group = "Team")
-@Disabled
-public class Team_OpMode_V4 extends LinearOpMode {
+@TeleOp(name = "Team V4 W", group = "Team")
+// @Disabled
+public class Team_OpMode_V4_W extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
 
@@ -180,6 +176,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
                         xInput = gamepad1.right_stick_x; //TODO
                     if (Math.abs(gamepad1.right_stick_y) > 0.15)
                         yInput = -gamepad1.right_stick_y; //TODO
+                    if (Math.abs(gamepad1.left_stick_x) > 0.15)
+                        xInput = gamepad1.left_stick_x; //TODO
 
                     leftDriveControl = yInput * driveDefaultSpeed;
                     rightDriveControl = yInput * driveDefaultSpeed;
@@ -281,16 +279,6 @@ public class Team_OpMode_V4 extends LinearOpMode {
                     leftClawControl = clawClosed[0];
                     rightClawControl = clawClosed[1];
                     setServos();
-                }
-                // ********************************  control: LOAD CUBE SEQUENCE  ****************//
-                if (gamepad1.left_stick_x > 0.15) {
-                    // TODO
-
-                }
-                // ********************************  control: UNLOAD CUBE SEQUENCE  **************//
-                if (gamepad1.left_stick_x < -0.15) {
-                    //TODO
-
                 }
             }
 
