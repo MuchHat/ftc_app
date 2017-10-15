@@ -391,7 +391,7 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         Animator moveAnimator = new Animator();
         moveAnimator.configRamp(333, 444);
-        moveAnimator.configSpeed(0.1, 0.88, 0.1, 5);
+        moveAnimator.configSpeed(0.1, 0.88, 0.2, 5);
         moveAnimator.start(0, Math.abs(distance));
 
         moveAnimator.advanceStepNoPos();
