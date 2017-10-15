@@ -86,9 +86,9 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
     //********************************* PREDEFINED POS *******************************************//
 
-    double clawOpen[] = {0.76, 0.44};
-    double clawClosed[] = {0.85, 0.34};
-    double clasZero[] = {0.0, 1.0};
+    double clawOpen[] = {0.82, 0.18};
+    double clawClosed[] = {0.93, 0.12};
+    double clasZero[] = {0.22, 0.75};
 
     // ************************** MAIN LOOP ******************************************************//
 
@@ -105,12 +105,11 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         controlRuntime.reset();
 
-        telemetry.log().add("calibrating gyro ... do not move");
-        telemetry.update();
         robot.modernRoboticsI2cGyro.calibrate();
 
         // Wait until the gyro calibration is complete
         while (!isStopRequested() && robot.modernRoboticsI2cGyro.isCalibrating()) {
+            telemetry.addData("calibrating gyro", "... do NOT move");
             telemetry.addData("calibrating gyro", "%s", Math.round(controlRuntime.seconds()));
             telemetry.update();
             sleep(66);
@@ -122,11 +121,11 @@ public class Team_OpMode_V4 extends LinearOpMode {
             String field = rightField ? "right" : "left";
             String team = blueTeam ? "blue" : "red";
 
-            telemetry.addData("1 ", "select mode");
-            telemetry.addData("2 ", "(a) for manual or (b) for autonomous: " + mode);
-            telemetry.addData("3 ", "(x) for blue tem or (y) for red team: " + team);
-            telemetry.addData("4 ", "(r bumper) for right field or (l bumper) for left field: ", field);
-            telemetry.addData("5 ", "press start to continue");
+            telemetry.addData("1 ", "press START to continue");
+            telemetry.addData("2 ", "select MODE");
+            telemetry.addData("3 ", "(a) for manual or (b) for autonomous: " + mode);
+            telemetry.addData("4 ", "(x) for blue tem or (y) for red team: " + team);
+            telemetry.addData("5 ", "(r bumper) for right field or (l bumper) for left field: ", field);
             telemetry.update();
 
             if (gamepad1.a) manualMode = true;
@@ -141,18 +140,22 @@ public class Team_OpMode_V4 extends LinearOpMode {
 
         telemetry.clear();
         telemetry.update();
-        telemetry.addData("->", "waiting for start");
+        telemetry.addData("driver", "CLICK  >>> to START");
         telemetry.update();
-
-        setDrives();
-        setServos();
 
         waitForStart();
 
-        //controlRuntime.reset();
-        //loopRuntime.reset();
-        //totalRuntime.reset();
-        //controlRuntime.reset();
+        armEnabled = false;
+        leftDriveControl = 0;
+        rightDriveControl = 0;
+        leftClawControl = clasZero[0];
+        rightClawControl = clasZero[1];
+        baseControl = 6;
+        elbowControl = 34;
+        setDrives();
+        setServos();
+        robot.base.setPosition(baseControl);
+        robot.elbow.setPosition(elbowControl);
 
         while (opModeIsActive()) {
 
@@ -472,15 +475,20 @@ public class Team_OpMode_V4 extends LinearOpMode {
         double headingCorrection = 0;
 
         if (leftDriveControl == rightDriveControl) {
-            double error = headingControl - robot.modernRoboticsI2cGyro.getHeading();
+            double headingCrr = robot.modernRoboticsI2cGyro.getHeading();
+            double error = headingControl - headingCrr;
             double driveDirection = leftDriveControl > 0 ? 1.0 : -1.0;
 
-            if (error > 180) error = -360 + error; // convert to +/- 180
-            if (error < -180) error = -360 + error; // convert to +/- 180
-            error %= 180;
+            if (headingControl > 180 && headingCrr <= 180 && headingControl - headingCrr > 180) {
+                headingCrr += 360;
+            }
+            if (headingControl <= 180 && headingCrr > 180 && headingCrr - headingControl > 180) {
+                headingCrr -= 360;
+            }
+            error = headingCrr - headingControl;
             error = Range.clip(error, -45, 45); // if completely off trim down
 
-            headingCorrection = error / 45 * 0.33; //TODO tune up the amount of correction
+            headingCorrection = error / 45 * 0.11; //TODO tune up the amount of correction
             headingCorrection *= driveDirection; // apply correction the other way when running in reverse
 
             if (leftDriveControl == 0) headingCorrection = 0;
@@ -519,8 +527,8 @@ public class Team_OpMode_V4 extends LinearOpMode {
         robot.rightClaw.setPosition(rightClawControl);
 
         if (armEnabled) {
-            robot.leftClaw.setPosition(leftClawControl);
-            robot.rightClaw.setPosition(rightClawControl);
+            robot.base.setPosition(baseControl);
+            robot.elbow.setPosition(elbowControl);
         }
     }
 
