@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -40,7 +41,7 @@ import com.qualcomm.robotcore.util.Range;
 // ************************** OP FOR TESTING THE SERVOS ******************************************//
 
 @TeleOp(name = "Test Servos V2", group = "Team")
-// @Disabled
+@Disabled
 public class Team_TestServos_V2 extends LinearOpMode {
 
     // ************************** VARIABLES ******************************************************//

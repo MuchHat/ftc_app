@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -45,7 +46,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 //********************************* MAIN OP CLASS ************************************************//
 
 @TeleOp(name = "Team V4", group = "Team")
-// @Disabled
+@Disabled
 public class Team_OpMode_V4 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
