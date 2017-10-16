@@ -18,7 +18,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
 
-    Team_Hardware_V2 robot = new Team_Hardware_V2();
+    Team_Hardware_V3 robot = new Team_Hardware_V3();
     double driveDefaultSpeed = 0.44; // TODO
 
     //********************************* MOVE STATES **********************************************//
