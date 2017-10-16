@@ -19,12 +19,13 @@ public class Team_OpMode_V6 extends LinearOpMode {
     //********************************* HW VARIABLES *********************************************//
 
     Team_Hardware_V2 robot = new Team_Hardware_V2();
-
-    private ElapsedTime totalRuntime = null;
+    double driveDefaultSpeed = 0.44; // TODO
 
     //********************************* MOVE STATES **********************************************//
-
-
+    double turnDefaultSpeed = 0.22;
+    double servoDefaultSpeed = 0.00033;
+    double clawOpen[] = {0.75, 0.20};
+    private ElapsedTime totalRuntime = null;
     private double leftDriveControl = 0;
     private double rightDriveControl = 0;
     private double headingControl = 0;
@@ -32,26 +33,19 @@ public class Team_OpMode_V6 extends LinearOpMode {
     private double leftClawControl = 0;
     private double rightClawControl = 0;
     private double baseControl = 0;
+
+    //********************************* CONSTANTS ************************************************//
     private double elbowControl = 0;
     private double gameStartHeading = 0;
     private Boolean armEnabled = false;
-    private Boolean loaded = false;
 
     //********************************* CONSTANTS ************************************************//
-
+    private Boolean loaded = false;
     private Boolean manualMode = true;
     private Boolean blueTeam = true;
-    private Boolean rightField = true;
-
-    //********************************* CONSTANTS ************************************************//
-
-    double driveDefaultSpeed = 0.44; // TODO
-    double turnDefaultSpeed = 0.22;
-    double servoDefaultSpeed = 0.00033;
 
     //********************************* PREDEFINED POS *******************************************//
-
-    double clawOpen[] = {0.75, 0.20};
+    private Boolean rightField = true;
     private double clawClosed[] = {0.95, 0.10};
     private double clawZero[] = {0.22, 0.75};
 
@@ -98,6 +92,9 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
             if (gamepad1.x) blueTeam = true;
             if (gamepad1.y) blueTeam = false;
+
+            if (blueTeam) robot.colorBeacon.blue();
+            if (!blueTeam) robot.colorBeacon.red();
 
             if (gamepad1.right_bumper) rightField = true;
             if (gamepad1.left_bumper) rightField = false;
@@ -324,7 +321,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
         while (crrError > 5) {
 
             leftDriveControl = -0.15 * direction; //power to motors is proportional with the speed
-            rightDriveControl = 0.15* direction;
+            rightDriveControl = 0.15 * direction;
 
             setDrives();
             waitMillis(1);
