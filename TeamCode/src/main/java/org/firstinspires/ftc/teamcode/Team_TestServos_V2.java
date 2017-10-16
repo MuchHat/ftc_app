@@ -46,14 +46,13 @@ public class Team_TestServos_V2 extends LinearOpMode {
 
     // ************************** VARIABLES ******************************************************//
 
-    public Team_Hardware_V2 robot = new Team_Hardware_V2();
+    public Team_Hardware_V3 robot = new Team_Hardware_V3();
     public ElapsedTime runtimeLoop = new ElapsedTime();
     //Declare arm atuff
     public double baseControl = 0;
     public double elbowControl = 0.17;
     public double leftClawControl = 0.5;
     public double rightClawControl = 0.5;
-
     ElapsedTime timer = new ElapsedTime();
     double servoDefaultSpeed = 0.00033; // 0.33 servo angle per sec
 
