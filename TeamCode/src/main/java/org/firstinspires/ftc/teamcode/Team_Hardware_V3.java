@@ -30,18 +30,15 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // ************************** ROBOT HW CLASS *****************************************************//
 
-public class Team_Hardware_V2 {
+public class Team_Hardware_V3 {
 
     // ************************** ROBOT HW VARIABLES *********************************************//
 
@@ -64,14 +61,14 @@ public class Team_Hardware_V2 {
 
     public HardwareMap hwMap = null;
     public ElapsedTime runtime = new ElapsedTime();
-    
+
     public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     public IntegratingGyroscope gyro;
     public MRIColorBeacon colorBeacon;
 
     // ************************** HW CONSTRUCTOR  ************************************************//
 
-    public Team_Hardware_V2() {
+    public Team_Hardware_V3() {
 
     }
 

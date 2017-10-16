@@ -12,13 +12,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Team V5", group = "Team")
+@TeleOp(name = "Team V6", group = "Team")
 // @Disabled
-public class Team_OpMode_V5 extends LinearOpMode {
+public class Team_OpMode_V6 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
 
-    Team_Hardware_V3 robot = new Team_Hardware_V3();
+    Team_Hardware_V2 robot = new Team_Hardware_V2();
 
     private ElapsedTime totalRuntime = null;
 
@@ -96,19 +96,11 @@ public class Team_OpMode_V5 extends LinearOpMode {
             if (gamepad1.a) manualMode = true;
             if (gamepad1.b) manualMode = false;
 
-            if (gamepad1.x) {
-                blueTeam = true;
-                robot.colorBeacon.blue();
-            }
-            if (gamepad1.y) {
-                blueTeam = false;
-                robot.colorBeacon.red();
-            }
+            if (gamepad1.x) blueTeam = true;
+            if (gamepad1.y) blueTeam = false;
 
             if (gamepad1.right_bumper) rightField = true;
             if (gamepad1.left_bumper) rightField = false;
-
-
         }
 
         telemetry.clear();
