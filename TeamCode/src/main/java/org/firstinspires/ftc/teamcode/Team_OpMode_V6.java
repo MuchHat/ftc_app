@@ -318,10 +318,20 @@ public class Team_OpMode_V6 extends LinearOpMode {
         double startHeading = robot.modernRoboticsI2cGyro.getHeading();
         double endHeading = startHeading + turnDeg;
 
-        while (crrError > 5) {
+        double rampDown = 15; //ramp down the last 15 deg
+        double maxPower = 0.44;
+        double minPower = 0.10;
 
-            leftDriveControl = -0.15 * direction; //power to motors is proportional with the speed
-            rightDriveControl = 0.15 * direction;
+        while (crrError > 3) {
+
+            double crrPower = maxPower;
+
+            if( crrError < rampDown){
+                crrPower = minPower + crrError/(maxPower-minPower);
+            }
+
+            leftDriveControl = -crrPower * direction; //power to motors is proportional with the speed
+            rightDriveControl = crrPower * direction;
 
             setDrives();
             waitMillis(1);
