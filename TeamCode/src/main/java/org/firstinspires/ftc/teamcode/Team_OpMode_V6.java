@@ -353,25 +353,28 @@ public class Team_OpMode_V6 extends LinearOpMode {
     private void move(double distance) {
 
         double direction = distance > 0 ? 1.0 : -1.0;
+        double crrError = distance * direction;
 
-        Animator moveAnimator = new Animator();
-        moveAnimator.configRamp(333, 444);
-        moveAnimator.configSpeed(0.1, 0.88, 0.2, 5);
-        moveAnimator.start(0, Math.abs(distance));
+        double rampDown = 8; //ramp down the last 8 mm
+        double maxPower = 0.44;
+        double minPower = 0.10;
+        double linearMove = 0.01; //TODO moves 0.01 for each ms at max power
 
-        moveAnimator.advanceStepNoPos();
-        double nextSpeed = moveAnimator.getSpeed();
+        while (crrError > 3) {
 
-        while (nextSpeed > 0) {
+            double crrPower = maxPower;
 
-            leftDriveControl = nextSpeed * direction; //power to motors is proportional with the speed
-            rightDriveControl = nextSpeed * direction;
+            if( crrError < rampDown){
+                crrPower = minPower + crrError/(maxPower-minPower);
+            }
+
+            leftDriveControl = crrPower * direction; //power to motors is proportional with the speed
+            rightDriveControl = crrPower * direction;
 
             setDrives();
-            sleep(5);
+            waitMillis(1);
 
-            moveAnimator.advanceStepNoPos();
-            nextSpeed = moveAnimator.getSpeed();
+            crrError -= crrPower * linearMove;
         }
         stopRobot();
     }
