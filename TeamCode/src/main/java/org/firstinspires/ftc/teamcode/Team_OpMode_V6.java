@@ -326,8 +326,8 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
             double crrPower = maxPower;
 
-            if( crrError < rampDown){
-                crrPower = minPower + crrError/(maxPower-minPower);
+            if (crrError < rampDown) {
+                crrPower = minPower + crrError / (maxPower - minPower);
             }
 
             leftDriveControl = -crrPower * direction; //power to motors is proportional with the speed
@@ -364,8 +364,8 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
             double crrPower = maxPower;
 
-            if( crrError < rampDown){
-                crrPower = minPower + crrError/(maxPower-minPower);
+            if (crrError < rampDown) {
+                crrPower = minPower + crrError / (maxPower - minPower);
             }
 
             leftDriveControl = crrPower * direction; //power to motors is proportional with the speed
