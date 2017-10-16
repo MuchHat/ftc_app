@@ -129,6 +129,9 @@ public class Team_OpMode_V6 extends LinearOpMode {
             updateTelemetry();
 
             //********************************* MANUAL MODE **************************************//
+            //              BOTH GAME PADS ARE MAPPED THE SAME AT THIS TIME                       //
+            //            IF THE SAME COMMAND IS GIVEN ON BOTH GAME PAD 1 WINS                    //
+            //********************************* MANUAL MODE **************************************//
 
             if (manualMode) {
 
@@ -136,6 +139,11 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 {
                     double xInput = 0;
                     double yInput = 0;
+
+                    if (Math.abs(gamepad2.left_stick_y) > 0.15)
+                        yInput = -gamepad2.left_stick_y;
+                    if (Math.abs(gamepad2.left_stick_x) > 0.15)
+                        xInput = gamepad2.left_stick_x;
 
                     if (Math.abs(gamepad1.left_stick_y) > 0.15)
                         yInput = -gamepad1.left_stick_y;
@@ -157,6 +165,9 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 {
                     double liftInput = 0;
 
+                    if (Math.abs(gamepad2.right_stick_y) > 0.15)
+                        liftInput = gamepad2.right_stick_y;
+
                     if (Math.abs(gamepad1.right_stick_y) > 0.15)
                         liftInput = gamepad1.right_stick_y;
 
@@ -166,41 +177,48 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 }
 
                 // ********************************  control: TURNS 90  **************************//
-                if (gamepad1.dpad_right) {
+                if (gamepad1.dpad_right ||
+                        gamepad2.dpad_right) {
                     turn(-80);
                 }
 
                 // ********************************  control: TURNS -90
-                if (gamepad1.dpad_left) {
+                if (gamepad1.dpad_left ||
+                        gamepad2.dpad_left) {
                     turn(80);
                 }
 
                 // ********************************  control: TURN FACING THE CRYPTO BOX  ********//
-                if (gamepad1.dpad_up) {
+                if (gamepad1.dpad_up ||
+                        gamepad2.dpad_up) {
                     turnToHeading(gameStartHeading + 90);
                 }
 
                 // ********************************  control: TURNS 180  *************************//
-                if (gamepad1.dpad_down) {
+                if (gamepad1.dpad_down ||
+                        gamepad2.dpad_down) {
                     turn(180);
                 }
 
                 // ********************************  control: SMALL STEP FORWARD  ****************//
-                if (gamepad1.y) {
+                if (gamepad1.y ||
+                        gamepad2.y) {
                     double step = 10;
 
                     move(step);
                 }
 
                 // ********************************  control: SMALL STEP REVERSE  ****************//
-                if (gamepad1.a) {
+                if (gamepad1.a ||
+                        gamepad2.a) {
                     double step = 10;
 
                     move(-step);
                 }
 
                 // ********************************  control: SMALL STEP LEFT  *******************//
-                if (gamepad1.x) {
+                if (gamepad1.x ||
+                        gamepad2.x) {
                     double step = 10;
 
                     turn(-45);
@@ -210,7 +228,8 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 }
 
                 // ********************************  control: SMALL STEP RIGHT  ******************//
-                if (gamepad1.b) {
+                if (gamepad1.b ||
+                        gamepad2.b) {
                     double step = 10;
 
                     turn(45);
@@ -220,6 +239,11 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 }
 
                 // ********************************  control: CLAW OPEN  *************************//
+                if (gamepad2.left_trigger != 0) {
+                    leftClawControl -= gamepad2.left_trigger * servoDefaultSpeed * crrLoopTime;
+                    rightClawControl += gamepad2.left_trigger * servoDefaultSpeed * crrLoopTime;
+                    setServos();
+                }
                 if (gamepad1.left_trigger != 0) {
                     leftClawControl -= gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
                     rightClawControl += gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
@@ -227,19 +251,26 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 }
 
                 // ********************************  control: CLAW CLOSE  ************************//
+                if (gamepad2.right_trigger != 0) {
+                    leftClawControl += gamepad2.right_trigger * servoDefaultSpeed * crrLoopTime;
+                    rightClawControl -= gamepad2.right_trigger * servoDefaultSpeed * crrLoopTime;
+                    setServos();
+                }
                 if (gamepad1.right_trigger != 0) {
                     leftClawControl += gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
                     rightClawControl -= gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
                     setServos();
                 }
                 // ********************************  control: CLAW PREDEF OPEN  ******************//
-                if (gamepad1.left_bumper) {
+                if (gamepad1.left_bumper ||
+                        gamepad2.left_bumper) {
                     leftClawControl = clawOpen[0];
                     rightClawControl = clawOpen[1];
                     setServos();
                 }
                 // ********************************  control: CLAW PREDEF CLOSE  *****************//
-                if (gamepad1.right_bumper) {
+                if (gamepad1.right_bumper ||
+                        gamepad2.right_bumper) {
                     leftClawControl = clawClosed[0];
                     rightClawControl = clawClosed[1];
                     setServos();
