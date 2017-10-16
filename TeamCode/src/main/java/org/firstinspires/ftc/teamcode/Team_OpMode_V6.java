@@ -137,7 +137,6 @@ public class Team_OpMode_V6 extends LinearOpMode {
                     double xInput = 0;
                     double yInput = 0;
 
-                    //TODO
                     if (Math.abs(gamepad1.left_stick_y) > 0.15)
                         yInput = -gamepad1.left_stick_y;
                     if (Math.abs(gamepad1.left_stick_x) > 0.15)
@@ -158,7 +157,6 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 {
                     double liftInput = 0;
 
-                    //TODO
                     if (Math.abs(gamepad1.right_stick_y) > 0.15)
                         liftInput = gamepad1.right_stick_y;
 
