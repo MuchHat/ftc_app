@@ -443,7 +443,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
             s = Range.clip(s, 0.5, 1);
         }
 
-        return Range.clip(s, 0, 1);
+        return Range.clip(s, 0.01, 1);
     }
 
 
@@ -456,6 +456,10 @@ public class Team_OpMode_V6 extends LinearOpMode {
         }
 
         double stepSize = 0.01;
+        double stepsAccel = 22;
+        double stepsBrake = 33;
+        double stepTime = 5;
+        double maxStepTime = 66;
 
         double baseStart = baseControl;
         double elbowStart = elbowControl;
@@ -476,7 +480,17 @@ public class Team_OpMode_V6 extends LinearOpMode {
             elbowControl = elbowCrr;
             setServos();
 
-            waitMillis(11); //TODO
+            double crrStepTime = stepTime;
+            if (i < stepsAccel) {
+                double ratio = getS((stepsAccel - i) / stepsAccel);
+                crrStepTime = stepTime * 1 / ratio;
+            }
+            if (stepCount - i < stepsBrake) {
+                double ratio = getS((stepCount - i - stepsBrake) / stepsBrake);
+                crrStepTime = stepTime * 1 / ratio;
+            }
+            crrStepTime = Range.clip( crrStepTime, 1, maxStepTime );
+            waitMillis(crrStepTime);
         }
 
         baseControl = newBase;
