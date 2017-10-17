@@ -46,15 +46,16 @@ public class Team_TestServos_V2 extends LinearOpMode {
 
     // ************************** VARIABLES ******************************************************//
 
-    public Team_Hardware_V3 robot = new Team_Hardware_V3();
-    public ElapsedTime runtimeLoop = new ElapsedTime();
-    //Declare arm atuff
-    public double baseControl = 0;
-    public double elbowControl = 0.17;
-    public double leftClawControl = 0.5;
-    public double rightClawControl = 0.5;
-    ElapsedTime timer = new ElapsedTime();
-    double servoDefaultSpeed = 0.00033; // 0.33 servo angle per sec
+    private Team_Hardware_V3 robot = new Team_Hardware_V3();
+
+    private ElapsedTime runtimeLoop = new ElapsedTime();
+    private ElapsedTime timer = new ElapsedTime();
+
+    private double baseControl = 0;
+    private double elbowControl = 0.17;
+    private double leftClawControl = 0.5;
+    private double rightClawControl = 0.5;
+    private double servoDefaultSpeed = 0.00033; // 0.33 servo angle per sec
 
     // ************************** OP LOOP ********************************************************//
 
@@ -101,7 +102,7 @@ public class Team_TestServos_V2 extends LinearOpMode {
 //            robot.distanceSensorRight.enableLed( true );
 
             telemetry.addData("base", "%.0f%%", baseControl * 100);
-            telemetry.addData("elbow", "%.0f%%", elbowControl * 100 );
+            telemetry.addData("elbow", "%.0f%%", elbowControl * 100);
             telemetry.addData("left claw", "%.0f%%", leftClawControl * 100);
             telemetry.addData("right claw", "%.0f%%", rightClawControl * 100);
 
@@ -140,7 +141,7 @@ public class Team_TestServos_V2 extends LinearOpMode {
 
     // ************************** HARDWARE HELPER ************************************************//
 
-    public void setServos() {
+    private void setServos() {
 
         robot.elbow.setPosition(elbowControl);
         robot.base.setPosition(baseControl);

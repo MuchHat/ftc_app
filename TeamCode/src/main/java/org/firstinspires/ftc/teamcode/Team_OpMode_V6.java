@@ -17,15 +17,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 public class Team_OpMode_V6 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
-
-    Team_Hardware_V3 robot = new Team_Hardware_V3();
-    double driveDefaultSpeed = 0.44; // TODO
+    private Team_Hardware_V3 robot = new Team_Hardware_V3();
 
     //********************************* MOVE STATES **********************************************//
-    double turnDefaultSpeed = 0.22;
-    double servoDefaultSpeed = 0.00033;
-    double clawOpen[] = {0.75, 0.20};
     private ElapsedTime totalRuntime = null;
+
+    //********************************* MOVE STATES **********************************************//
     private double leftDriveControl = 0;
     private double rightDriveControl = 0;
     private double headingControl = 0;
@@ -33,21 +30,23 @@ public class Team_OpMode_V6 extends LinearOpMode {
     private double leftClawControl = 0;
     private double rightClawControl = 0;
     private double baseControl = 0;
-
-    //********************************* CONSTANTS ************************************************//
     private double elbowControl = 0;
     private double gameStartHeading = 0;
-    private Boolean armEnabled = false;
 
     //********************************* CONSTANTS ************************************************//
-    private Boolean loaded = false;
     private Boolean manualMode = true;
     private Boolean blueTeam = true;
+    private Boolean rightField = true;
+    private Boolean armEnabled = false;
+    private Boolean loaded = false;
 
     //********************************* PREDEFINED POS *******************************************//
-    private Boolean rightField = true;
     private double clawClosed[] = {0.95, 0.10};
     private double clawZero[] = {0.22, 0.75};
+    private double clawOpen[] = {0.75, 0.20};
+    private double driveDefaultSpeed = 0.44;
+    private double turnDefaultSpeed = 0.22;
+    private double servoDefaultSpeed = 0.00033;
 
     // ************************** MAIN LOOP ******************************************************//
 
@@ -442,7 +441,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
     // ************************** HARDWARE SET FUNCTIONS *****************************************//
 
-    void setDrives() {
+    private void  setDrives() {
 
         leftDriveControl = Range.clip(leftDriveControl, -0.88, 0.88);
         rightDriveControl = Range.clip(rightDriveControl, -0.88, 0.88);
@@ -506,7 +505,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
         }
     }
 
-    void setServos() {
+    private void setServos() {
 
         double minLeftClaw = Math.min(Math.min(clawZero[0], clawClosed[0]), clawOpen[0]);
         double maxLeftClaw = Math.max(Math.max(clawZero[0], clawClosed[0]), clawOpen[0]);
