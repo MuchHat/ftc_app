@@ -341,24 +341,24 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
     private void turn(double turnDeg) {
 
+        double breakDistance = 15; // ramp down the last 15 deg
+        double maxPower = 0.44;
+        double minPower = 0.10;
+
         double direction = turnDeg > 0 ? 1.0 : -1.0;
         double crrError = turnDeg * direction;
         double startHeading = robot.modernRoboticsI2cGyro.getHeading();
         double endHeading = startHeading + turnDeg;
 
-        double rampDown = 15; //ramp down the last 15 deg
-        double maxPower = 0.44;
-        double minPower = 0.10;
-
         while (crrError > 3) {
 
             double crrPower = maxPower;
 
-            if (crrError < rampDown) {
+            if (crrError < breakDistance) {
                 crrPower = minPower + crrError / (maxPower - minPower);
             }
 
-            leftDriveControl = -crrPower * direction; //power to motors is proportional with the speed
+            leftDriveControl = -crrPower * direction;
             rightDriveControl = crrPower * direction;
 
             setDrives();
@@ -380,19 +380,20 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
     private void move(double distance) {
 
-        double direction = distance > 0 ? 1.0 : -1.0;
-        double crrError = distance * direction;
+        double movePerMs = 0.01; // how much it moves in 1ms at max power
+        double breakDistance = 22; //ramp down the last 22 mm
 
-        double rampDown = 8; //ramp down the last 8 mm
         double maxPower = 0.44;
         double minPower = 0.10;
-        double linearMove = 0.01; //TODO moves 0.01 for each ms at max power
+
+        double direction = distance > 0 ? 1.0 : -1.0;
+        double crrError = distance * direction;
 
         while (crrError > 3) {
 
             double crrPower = maxPower;
 
-            if (crrError < rampDown) {
+            if (crrError < breakDistance) {
                 crrPower = minPower + crrError / (maxPower - minPower);
             }
 
@@ -402,7 +403,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
             setDrives();
             waitMillis(1);
 
-            crrError -= crrPower * linearMove;
+            crrError -= crrPower * movePerMs;
         }
         stopRobot();
     }
@@ -415,12 +416,15 @@ public class Team_OpMode_V6 extends LinearOpMode {
             return;
         }
 
+        double stepSize = 0.01;
+
         double baseStart = baseControl;
         double elbowStart = elbowControl;
 
-        double stepSize = 0.01;
         double stepCount = Math.abs(baseStart - newBase) / stepSize;
         stepCount = Math.max(Math.abs(elbowStart - newElbow) / stepSize, stepCount);
+        stepCount = Range.clip(stepCount, 0, 333); //should not be more than 1000 steps = 62secs
+
         double elbowStepSize = (newElbow - baseStart) / stepCount;
         double baseStepSize = (newBase - elbowStart) / stepCount;
 
@@ -432,6 +436,8 @@ public class Team_OpMode_V6 extends LinearOpMode {
             baseControl = baseCrr;
             elbowControl = elbowCrr;
             setServos();
+
+            waitMillis(11); //TODO
         }
 
         baseControl = newBase;
@@ -441,7 +447,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
     // ************************** HARDWARE SET FUNCTIONS *****************************************//
 
-    private void  setDrives() {
+    private void setDrives() {
 
         leftDriveControl = Range.clip(leftDriveControl, -0.88, 0.88);
         rightDriveControl = Range.clip(rightDriveControl, -0.88, 0.88);
