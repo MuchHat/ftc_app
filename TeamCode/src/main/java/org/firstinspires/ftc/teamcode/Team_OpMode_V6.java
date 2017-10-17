@@ -327,13 +327,12 @@ public class Team_OpMode_V6 extends LinearOpMode {
         newHeading %= 360;
 
         double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
-        double turnDeg;
         double diffAbs = Math.abs(newHeading - crrHeading);
         double diff360Abs = 360 - diffAbs;
         double direction = newHeading > crrHeading ? 1.0 : -1.0;
-        double inverted = diffAbs < diff360Abs ? 1.0 : -1.0;
+        double inverted = diffAbs > diff360Abs ? 1.0 : -1.0;
 
-        turnDeg = inverted > 0 ? diffAbs : diff360Abs;
+        double turnDeg = inverted > 0 ? diffAbs : diff360Abs;
         turnDeg *= direction * inverted;
 
         turn(turnDeg);
@@ -355,7 +354,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
             double crrPower = maxPower;
 
             if (crrError < breakDistance) {
-                crrPower = minPower + crrError / (maxPower - minPower);
+                crrPower = minPower + (crrError / breakDistance) * (maxPower - minPower);
             }
 
             leftDriveControl = -crrPower * direction;
@@ -394,7 +393,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
             double crrPower = maxPower;
 
             if (crrError < breakDistance) {
-                crrPower = minPower + crrError / (maxPower - minPower);
+                crrPower = minPower + (crrError / breakDistance) * (maxPower - minPower);
             }
 
             leftDriveControl = crrPower * direction; //power to motors is proportional with the speed
