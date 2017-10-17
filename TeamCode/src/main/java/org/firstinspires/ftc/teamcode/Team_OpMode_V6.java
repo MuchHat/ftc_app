@@ -381,9 +381,10 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
         double mmMs = 0.01; // how many mm it moves in 1ms at max power
         double brakeDistance = 22; //ramp down the last 22 mm
+        double accelDistance = 11; //accelerate to max ovr 11 mm
 
-        double maxPower = 0.44;
-        double minPower = 0.10;
+        double maxPower = 0.66;
+        double minPower = 0.11;
 
         double direction = distance > 0 ? 1.0 : -1.0;
         double crrError = distance * direction;
@@ -391,18 +392,27 @@ public class Team_OpMode_V6 extends LinearOpMode {
         while (crrError > 3) {
 
             double crrPower = maxPower;
+            double crrDistance = distance * direction - crrError;
+
+            if (crrDistance < accelDistance) {
+                crrPower = minPower + getS(crrDistance / accelDistance) * (maxPower - minPower);
+            }
 
             if (crrError < brakeDistance) {
-                crrPower = minPower + (crrError / brakeDistance) * (maxPower - minPower);
+                crrPower = minPower + getS(crrError / brakeDistance) * (maxPower - minPower);
             }
+
+            crrPower = Range.clip(crrPower, minPower, maxPower);
 
             leftDriveControl = crrPower * direction; //power to motors is proportional with the speed
             rightDriveControl = crrPower * direction;
 
             setDrives();
-            waitMillis(1);
 
-            crrError -= crrPower * mmMs;
+            double stepMs = 1;
+            waitMillis(stepMs);
+
+            crrError -= crrPower * mmMs * stepMs;
         }
         stopRobot();
     }
@@ -441,7 +451,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
         double stepCount = Math.abs(baseStart - newBase) / stepSize;
         stepCount = Math.max(Math.abs(elbowStart - newElbow) / stepSize, stepCount);
-        stepCount = Range.clip(stepCount, 0, 333); //should not be more than 1000 steps = 62secs
+        stepCount = Range.clip(stepCount, 0, 333); //should not be more than 100 steps
 
         double elbowStepSize = (newElbow - baseStart) / stepCount;
         double baseStepSize = (newBase - elbowStart) / stepCount;
