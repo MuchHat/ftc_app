@@ -407,6 +407,25 @@ public class Team_OpMode_V6 extends LinearOpMode {
         stopRobot();
     }
 
+    double getS(double ratio) {
+
+        double jerk = 1.355;
+        double div = ((1 - Math.cos(Math.pow(0.5, jerk) * Math.PI)) / 2) / 2;
+        ratio = Range.clip(ratio, 0, 1);
+        double s = ratio;
+
+        if (ratio <= 0.5) {
+            s = ((1 - Math.cos(Math.pow(ratio, jerk) * Math.PI)) / 2) / div / 2;
+            s = Range.clip(s, 0, 0.5);
+        } else if (ratio > 0.5) {
+            s = 1 - (((1 - Math.cos(Math.pow(1 - ratio, jerk) * Math.PI)) / 2) / div / 2);
+            s = Range.clip(s, 0.5, 1);
+        }
+
+        return Range.clip(s, 0, 1);
+    }
+
+
     // ************************** ARM  DRIVE SERVOS HELPER FUNCTIONS  ****************************//
 
     private void moveArm(double newBase, double newElbow) {
