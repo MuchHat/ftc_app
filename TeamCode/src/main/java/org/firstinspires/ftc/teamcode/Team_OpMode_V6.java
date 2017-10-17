@@ -340,7 +340,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
     private void turn(double turnDeg) {
 
-        double breakDistance = 15; // ramp down the last 15 deg
+        double brakeDistance = 15; // ramp down the last 15 deg
         double maxPower = 0.44;
         double minPower = 0.10;
 
@@ -353,8 +353,8 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
             double crrPower = maxPower;
 
-            if (crrError < breakDistance) {
-                crrPower = minPower + (crrError / breakDistance) * (maxPower - minPower);
+            if (crrError < brakeDistance) {
+                crrPower = minPower + (crrError / brakeDistance) * (maxPower - minPower);
             }
 
             leftDriveControl = -crrPower * direction;
@@ -379,8 +379,8 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
     private void move(double distance) {
 
-        double movePerMs = 0.01; // how much it moves in 1ms at max power
-        double breakDistance = 22; //ramp down the last 22 mm
+        double mmMs = 0.01; // how many mm it moves in 1ms at max power
+        double brakeDistance = 22; //ramp down the last 22 mm
 
         double maxPower = 0.44;
         double minPower = 0.10;
@@ -392,8 +392,8 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
             double crrPower = maxPower;
 
-            if (crrError < breakDistance) {
-                crrPower = minPower + (crrError / breakDistance) * (maxPower - minPower);
+            if (crrError < brakeDistance) {
+                crrPower = minPower + (crrError / brakeDistance) * (maxPower - minPower);
             }
 
             leftDriveControl = crrPower * direction; //power to motors is proportional with the speed
@@ -402,7 +402,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
             setDrives();
             waitMillis(1);
 
-            crrError -= crrPower * movePerMs;
+            crrError -= crrPower * mmMs;
         }
         stopRobot();
     }
