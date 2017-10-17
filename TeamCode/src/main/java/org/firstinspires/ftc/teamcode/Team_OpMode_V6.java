@@ -340,28 +340,39 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
     private void turn(double turnDeg) {
 
+        double accelDistance = 11; // accelerate to max over 11 deg
         double brakeDistance = 15; // ramp down the last 15 deg
+
+        double minPower = 0.11;
         double maxPower = 0.44;
-        double minPower = 0.10;
+
+        double startHeading = robot.modernRoboticsI2cGyro.getHeading();
+        double endHeading = startHeading + turnDeg;
 
         double direction = turnDeg > 0 ? 1.0 : -1.0;
         double crrError = turnDeg * direction;
-        double startHeading = robot.modernRoboticsI2cGyro.getHeading();
-        double endHeading = startHeading + turnDeg;
 
         while (crrError > 3) {
 
             double crrPower = maxPower;
+            double crrDistance = turnDeg * direction - crrError;
 
-            if (crrError < brakeDistance) {
-                crrPower = minPower + (crrError / brakeDistance) * (maxPower - minPower);
+            if (crrDistance < accelDistance) {
+                crrPower = minPower + getS(crrDistance / accelDistance) * (maxPower - minPower);
             }
+            if (crrError < brakeDistance) {
+                crrPower = minPower + getS(crrError / brakeDistance) * (maxPower - minPower);
+            }
+
+            crrPower = Range.clip(crrPower, minPower, maxPower);
 
             leftDriveControl = -crrPower * direction;
             rightDriveControl = crrPower * direction;
 
             setDrives();
-            waitMillis(1);
+
+            double stepMillis = 1;
+            waitMillis(stepMillis);
 
             double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
 
@@ -379,12 +390,12 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
     private void move(double distance) {
 
-        double mmMs = 0.01; // how many mm it moves in 1ms at max power
+        double mmMillis = 0.01; // how many mm it moves in 1ms at max power
+        double accelDistance = 11; //accelerate to max over 11 mm
         double brakeDistance = 22; //ramp down the last 22 mm
-        double accelDistance = 11; //accelerate to max ovr 11 mm
 
-        double maxPower = 0.66;
         double minPower = 0.11;
+        double maxPower = 0.44;
 
         double direction = distance > 0 ? 1.0 : -1.0;
         double crrError = distance * direction;
@@ -409,10 +420,10 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
             setDrives();
 
-            double stepMs = 1;
-            waitMillis(stepMs);
+            double stepMillis = 1;
+            waitMillis(stepMillis);
 
-            crrError -= crrPower * mmMs * stepMs;
+            crrError -= crrPower * mmMillis * stepMillis;
         }
         stopRobot();
     }
