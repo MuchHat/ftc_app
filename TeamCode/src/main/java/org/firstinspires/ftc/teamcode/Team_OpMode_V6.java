@@ -458,8 +458,8 @@ public class Team_OpMode_V6 extends LinearOpMode {
         double stepSize = 0.01;
         double stepsAccel = 22;
         double stepsBrake = 33;
-        double stepTime = 5;
-        double maxStepTime = 66;
+        double stepTime = 0.6;
+        double maxStepTime = 6;
 
         double baseStart = baseControl;
         double elbowStart = elbowControl;
