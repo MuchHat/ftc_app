@@ -515,11 +515,11 @@ public class Team_OpMode_V6 extends LinearOpMode {
 //        }
         if (liftControl < 0) {
             robot.liftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            robot.liftDrive.setPower(-liftControl);
+            robot.liftDrive.setPower(Math.abs(liftControl));
         }
         if (liftControl >= 0) {
             robot.liftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            robot.liftDrive.setPower(liftControl);
+            robot.liftDrive.setPower(Math.abs(liftControl));
         }
 
         // if gyro indicates drifting add same power to correct
