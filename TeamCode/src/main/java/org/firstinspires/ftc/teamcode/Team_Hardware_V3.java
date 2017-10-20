@@ -44,6 +44,8 @@ public class Team_Hardware_V3 {
 
     public DcMotor leftDrive = null;
     public DcMotor rightDrive = null;
+    public DcMotor rightDriveBack = null;
+    public DcMotor leftDriveBack = null;
     public DcMotor liftDrive = null;
 
     public Servo leftClaw = null;
@@ -80,6 +82,8 @@ public class Team_Hardware_V3 {
 
         leftDrive = hwMap.get(DcMotor.class, "Motor_Left");
         rightDrive = hwMap.get(DcMotor.class, "Motor_Right");
+        leftDriveBack = hwMap.get(DcMotor.class, "Motor_Left_Back");
+        rightDriveBack = hwMap.get(DcMotor.class, "Motor_Right_Back");
         liftDrive = hwMap.get(DcMotor.class, "Motor_Lift");
 
 //        topSwitch = hwMap.get(DigitalChannel.class, "Switch_Top");

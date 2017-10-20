@@ -549,18 +549,29 @@ public class Team_OpMode_V6 extends LinearOpMode {
         if (leftDriveControl >= 0) {
             robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
             robot.leftDrive.setPower(Math.abs(leftDriveControl) - headingCorrection);
-        }
+
+            robot.leftDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
+            robot.leftDriveBack.setPower(Math.abs(leftDriveControl) - headingCorrection);        }
         if (leftDriveControl < 0) {
             robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             robot.leftDrive.setPower(Math.abs(leftDriveControl) - headingCorrection);
+
+            robot.leftDriveBack.setDirection(DcMotorSimple.Direction.FORWARD);
+            robot.leftDriveBack.setPower(Math.abs(leftDriveControl) - headingCorrection);
         }
         if (rightDriveControl >= 0) {
             robot.rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             robot.rightDrive.setPower(Math.abs(rightDriveControl) + headingCorrection);
+
+            robot.rightDriveBack.setDirection(DcMotorSimple.Direction.FORWARD);
+            robot.rightDriveBack.setPower(Math.abs(rightDriveControl) + headingCorrection);
         }
         if (rightDriveControl < 0) {
             robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
             robot.rightDrive.setPower(Math.abs(rightDriveControl) + headingCorrection);
+
+            robot.rightDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
+            robot.rightDriveBack.setPower(Math.abs(rightDriveControl) + headingCorrection);
         }
     }
 
