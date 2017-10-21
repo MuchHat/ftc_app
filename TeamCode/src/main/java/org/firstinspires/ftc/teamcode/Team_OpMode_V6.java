@@ -170,7 +170,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
                     if (Math.abs(gamepad1.right_stick_y) > 0.15)
                         liftInput = gamepad1.right_stick_y;
 
-                    double liftDefaultSpeed = 0.66;
+                    double liftDefaultSpeed = 0.88;
                     liftControl = liftInput * liftDefaultSpeed;
                     setDrives();
                 }
@@ -178,13 +178,13 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 // ********************************  control: TURNS 90  **************************//
                 if (gamepad1.dpad_right ||
                         gamepad2.dpad_right) {
-                    turn(-80);
+                    turn(gameStartHeading);
                 }
 
                 // ********************************  control: TURNS -90
                 if (gamepad1.dpad_left ||
                         gamepad2.dpad_left) {
-                    turn(80);
+                    turn(gameStartHeading+180);
                 }
 
                 // ********************************  control: TURN FACING THE CRYPTO BOX  ********//
@@ -196,7 +196,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 // ********************************  control: TURNS 180  *************************//
                 if (gamepad1.dpad_down ||
                         gamepad2.dpad_down) {
-                    turn(180);
+                    turn(gameStartHeading - 90);
                 }
 
                 // ********************************  control: SMALL STEP FORWARD  ****************//
@@ -218,7 +218,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 // ********************************  control: SMALL STEP LEFT  *******************//
                 if (gamepad1.x ||
                         gamepad2.x) {
-                    double step = 10;
+                    double step = 5;
 
                     turn(-45);
                     move(-1.5 * step);
@@ -229,7 +229,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 // ********************************  control: SMALL STEP RIGHT  ******************//
                 if (gamepad1.b ||
                         gamepad2.b) {
-                    double step = 10;
+                    double step = 5;
 
                     turn(45);
                     move(-1.5 * step);
