@@ -139,15 +139,19 @@ public class Team_OpMode_V6 extends LinearOpMode {
                     double xInput = 0;
                     double yInput = 0;
 
-                    if (Math.abs(gamepad2.left_stick_y) > 0.15)
+                    if (Math.abs(gamepad2.left_stick_y) > 0.15) {
                         yInput = -gamepad2.left_stick_y;
-                    if (Math.abs(gamepad2.left_stick_x) > 0.15)
+                    }
+                    if (Math.abs(gamepad2.left_stick_x) > 0.15) {
                         xInput = gamepad2.left_stick_x;
+                    }
 
-                    if (Math.abs(gamepad1.left_stick_y) > 0.15)
+                    if (Math.abs(gamepad1.left_stick_y) > 0.15) {
                         yInput = -gamepad1.left_stick_y;
-                    if (Math.abs(gamepad1.left_stick_x) > 0.15)
+                    }
+                    if (Math.abs(gamepad1.left_stick_x) > 0.15) {
                         xInput = gamepad1.left_stick_x;
+                    }
 
                     leftDriveControl = yInput * driveDefaultSpeed;
                     rightDriveControl = yInput * driveDefaultSpeed;
@@ -164,11 +168,13 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 {
                     double liftInput = 0;
 
-                    if (Math.abs(gamepad2.right_stick_y) > 0.15)
+                    if (Math.abs(gamepad2.right_stick_y) > 0.15) {
                         liftInput = gamepad2.right_stick_y;
+                    }
 
-                    if (Math.abs(gamepad1.right_stick_y) > 0.15)
+                    if (Math.abs(gamepad1.right_stick_y) > 0.15) {
                         liftInput = gamepad1.right_stick_y;
+                    }
 
                     double liftDefaultSpeed = 0.88;
                     liftControl = liftInput * liftDefaultSpeed;
@@ -184,7 +190,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 // ********************************  control: TURNS -90
                 if (gamepad1.dpad_left ||
                         gamepad2.dpad_left) {
-                    turn(gameStartHeading+180);
+                    turn(gameStartHeading + 180);
                 }
 
                 // ********************************  control: TURN FACING THE CRYPTO BOX  ********//
@@ -489,7 +495,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 double ratio = getS((stepCount - i - stepsBrake) / stepsBrake);
                 crrStepTime = stepTime * 1 / ratio;
             }
-            crrStepTime = Range.clip( crrStepTime, 1, maxStepTime );
+            crrStepTime = Range.clip(crrStepTime, 1, maxStepTime);
             waitMillis(crrStepTime);
         }
 
@@ -551,7 +557,8 @@ public class Team_OpMode_V6 extends LinearOpMode {
             robot.leftDrive.setPower(Math.abs(leftDriveControl) - headingCorrection);
 
             robot.leftDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
-            robot.leftDriveBack.setPower(Math.abs(leftDriveControl) - headingCorrection);        }
+            robot.leftDriveBack.setPower(Math.abs(leftDriveControl) - headingCorrection);
+        }
         if (leftDriveControl < 0) {
             robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             robot.leftDrive.setPower(Math.abs(leftDriveControl) - headingCorrection);
