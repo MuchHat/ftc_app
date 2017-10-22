@@ -42,11 +42,11 @@ public class Team_OpMode_V5_W extends LinearOpMode {
     private Boolean armEnabled = false;
 
     //********************************* PREDEFINED POS *******************************************//
-    private double clawClosed[] = {0.95, 0.10};
-    private double clawZero[] = {0.22, 0.75};
-    private double clawOpen[] = {0.75, 0.20};
-    private double driveDefaultSpeed = 0.44;
-    private double turnDefaultSpeed = 0.22;
+    private double clawClosed[] = {0.95, 0.00};
+    private double clawZero[] = {0.00, 1.00};
+    private double clawOpen[] = {0.60, 0.25};
+    private double driveDefaultSpeed = 0.22;
+    private double turnDefaultSpeed = 0.11;
     private double servoDefaultSpeed = 0.00033;
 
     // ************************** MAIN LOOP ******************************************************//
@@ -93,8 +93,8 @@ public class Team_OpMode_V5_W extends LinearOpMode {
             if (gamepad1.x) blueTeam = true;
             if (gamepad1.y) blueTeam = false;
 
-            if (blueTeam) robot.colorBeacon.blue();
-            if (!blueTeam) robot.colorBeacon.red();
+            /*if (blueTeam) robot.colorBeacon.blue();
+            if (!blueTeam) robot.colorBeacon.red();*/
 
             if (gamepad1.right_bumper) rightField = true;
             if (gamepad1.left_bumper) rightField = false;
