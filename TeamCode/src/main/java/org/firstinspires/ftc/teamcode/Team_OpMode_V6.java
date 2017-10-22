@@ -43,9 +43,9 @@ public class Team_OpMode_V6 extends LinearOpMode {
     //********************************* PREDEFINED POS *******************************************//
     private double clawClosed[] = {0.95, 0.10};
     private double clawZero[] = {0.22, 0.75};
-    private double clawOpen[] = {0.75, 0.20};
-    private double driveDefaultSpeed = 0.44;
-    private double turnDefaultSpeed = 0.22;
+    private double clawOpen[] = {0.60, 0.40};
+    private double driveDefaultSpeed = 0.33;
+    private double turnDefaultSpeed = 0.16;
     private double servoDefaultSpeed = 0.00033;
 
     // ************************** MAIN LOOP ******************************************************//
@@ -63,7 +63,6 @@ public class Team_OpMode_V6 extends LinearOpMode {
         controlRuntime.reset();
 
         robot.modernRoboticsI2cGyro.calibrate();
-
         // Wait until the gyro calibration is complete
         while (!isStopRequested() && robot.modernRoboticsI2cGyro.isCalibrating()) {
             telemetry.addData("calibrating gyro", "... do NOT move");
@@ -92,8 +91,8 @@ public class Team_OpMode_V6 extends LinearOpMode {
             if (gamepad1.x) blueTeam = true;
             if (gamepad1.y) blueTeam = false;
 
-            if (blueTeam) robot.colorBeacon.blue();
-            if (!blueTeam) robot.colorBeacon.red();
+            /*if (blueTeam) robot.colorBeacon.blue();
+            if (!blueTeam) robot.colorBeacon.red();*/
 
             if (gamepad1.right_bumper) rightField = true;
             if (gamepad1.left_bumper) rightField = false;
@@ -176,7 +175,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
                         liftInput = gamepad1.right_stick_y;
                     }
 
-                    double liftDefaultSpeed = 0.88;
+                    double liftDefaultSpeed = 1.5;
                     liftControl = liftInput * liftDefaultSpeed;
                     setDrives();
                 }
@@ -396,7 +395,7 @@ public class Team_OpMode_V6 extends LinearOpMode {
 
     private void move(double distance) {
 
-        double mmMillis = 0.01; // how many mm it moves in 1ms at max power
+        double mmMillis = 0.2; // how many mm it moves in 1ms at max power
         double accelDistance = 11; //accelerate to max over 11 mm
         double brakeDistance = 22; //ramp down the last 22 mm
 

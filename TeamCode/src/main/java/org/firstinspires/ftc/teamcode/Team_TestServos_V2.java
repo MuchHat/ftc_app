@@ -41,7 +41,6 @@ import com.qualcomm.robotcore.util.Range;
 // ************************** OP FOR TESTING THE SERVOS ******************************************//
 
 @TeleOp(name = "Test Servos V2", group = "Team")
-@Disabled
 public class Team_TestServos_V2 extends LinearOpMode {
 
     // ************************** VARIABLES ******************************************************//

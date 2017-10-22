@@ -66,7 +66,7 @@ public class Team_Hardware_V3 {
 
     public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     public IntegratingGyroscope gyro;
-    public MRIColorBeacon colorBeacon;
+    //public MRIColorBeacon colorBeacon;
 
     // ************************** HW CONSTRUCTOR  ************************************************//
 
@@ -102,7 +102,7 @@ public class Team_Hardware_V3 {
         modernRoboticsI2cGyro = hwMap.get(ModernRoboticsI2cGyro.class, "Gyro");
         gyro = modernRoboticsI2cGyro;
 
-        colorBeacon = hwMap.get(MRIColorBeacon.class, "Beacon");
+        //colorBeacon = hwMap.get(MRIColorBeacon.class, "Beacon");
 
 //       colorSensor.enableLed(false);
 //        distanceSensorLeft.enableLed(false);
@@ -110,15 +110,15 @@ public class Team_Hardware_V3 {
 
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        liftDrive.setDirection(DcMotor.Direction.FORWARD);
+        //      liftDrive.setDirection(DcMotor.Direction.FORWARD);
 
         leftDrive.setPower(0);
         rightDrive.setPower(0);
-        liftDrive.setPower(0);
+        //    liftDrive.setPower(0);
 
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        liftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //  liftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
     }
 
