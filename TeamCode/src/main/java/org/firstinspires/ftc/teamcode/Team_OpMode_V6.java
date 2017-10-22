@@ -183,25 +183,25 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 // ********************************  control: TURNS 90  **************************//
                 if (gamepad1.dpad_right ||
                         gamepad2.dpad_right) {
-                    turn(gameStartHeading);
+                    turn(90);
                 }
 
                 // ********************************  control: TURNS -90
                 if (gamepad1.dpad_left ||
                         gamepad2.dpad_left) {
-                    turn(gameStartHeading + 180);
+                    turn(-90);
                 }
 
                 // ********************************  control: TURN FACING THE CRYPTO BOX  ********//
                 if (gamepad1.dpad_up ||
                         gamepad2.dpad_up) {
-                    turnToHeading(gameStartHeading + 90);
+                    turnToHeading(0);
                 }
 
                 // ********************************  control: TURNS 180  *************************//
                 if (gamepad1.dpad_down ||
                         gamepad2.dpad_down) {
-                    turn(gameStartHeading - 90);
+                    turn(180);
                 }
 
                 // ********************************  control: SMALL STEP FORWARD  ****************//
@@ -223,10 +223,10 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 // ********************************  control: SMALL STEP LEFT  *******************//
                 if (gamepad1.x ||
                         gamepad2.x) {
-                    double step = 5;
+                    double step = 1;
 
-                    turn(-45);
-                    move(-1.5 * step);
+                    turn(-15);
+                    move(-4 * step);
                     turn(45);
                     move(step);
                 }
@@ -234,11 +234,11 @@ public class Team_OpMode_V6 extends LinearOpMode {
                 // ********************************  control: SMALL STEP RIGHT  ******************//
                 if (gamepad1.b ||
                         gamepad2.b) {
-                    double step = 5;
+                    double step = 1;
 
-                    turn(45);
-                    move(-1.5 * step);
-                    turn(-45);
+                    turn(15);
+                    move(-4 * step);
+                    turn(-15);
                     move(step);
                 }
 
