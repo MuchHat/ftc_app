@@ -32,6 +32,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -52,8 +53,8 @@ public class Team_Hardware_V3 {
     public Servo leftClaw = null;
     public Servo rightClaw = null;
 
-//    public DigitalChannel topSwitch = null;
-//    public DigitalChannel bottomSwitch = null;
+    public DigitalChannel topSwitch = null;
+    public DigitalChannel bottomSwitch = null;
 
     public ColorSensor colorSensor = null;
 
@@ -85,8 +86,8 @@ public class Team_Hardware_V3 {
         rightDriveBack = hwMap.get(DcMotor.class, "Motor_Right_Back");
         liftDrive = hwMap.get(DcMotor.class, "Motor_Lift");
 
-//        topSwitch = hwMap.get(DigitalChannel.class, "Switch_Top");
-//       bottomSwitch = hwMap.get(DigitalChannel.class, "Switch_Bottom");
+        topSwitch = hwMap.get(DigitalChannel.class, "Switch_Top");
+        bottomSwitch = hwMap.get(DigitalChannel.class, "Switch_Bottom");
 
         base = hwMap.get(Servo.class, "Base");
         elbow = hwMap.get(Servo.class, "Elbow");

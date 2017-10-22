@@ -51,7 +51,7 @@ public class Team_TestServos_V2 extends LinearOpMode {
     private ElapsedTime runtimeLoop = new ElapsedTime();
     private ElapsedTime timer = new ElapsedTime();
 
-    private double baseControl = 0;
+    private double baseControl = 0.5;
     private double elbowControl = 0.0;
     private double leftClawControl = 0.5;
     private double rightClawControl = 0.5;
@@ -109,6 +109,8 @@ public class Team_TestServos_V2 extends LinearOpMode {
             telemetry.addData("color sensor green", "%.2f", (double) robot.colorSensor.green());
             telemetry.addData("color sensor blue", "%.2f", (double) robot.colorSensor.blue());
             telemetry.addData("color sensor alpha", "%.2f", (double) robot.colorSensor.alpha());
+            telemetry.addData("switch top", "%.2f", robot.topSwitch.getState() ? 1.0 : 0.0);
+            telemetry.addData("switch bottom", "%.2f", robot.bottomSwitch.getState() ? 1.0 : 0.0);
 
             telemetry.addData("crr heading", "%.2fdeg", (double) robot.modernRoboticsI2cGyro.getHeading());
 
