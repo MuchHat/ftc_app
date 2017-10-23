@@ -148,8 +148,8 @@ public class Jewel_Auto_v8 extends LinearOpMode {
                 move(1);
                 waitMillis(555);
 
-                double crrBase = armFindJewel[foundPos][0];
-                double crrElbow = armFindJewel[foundPos][1];
+                double crrBase = armKnock[foundPos][0];
+                double crrElbow = armKnock[foundPos][1];
                 moveArm(crrBase, crrElbow);
                 waitMillis(555);
 

@@ -124,24 +124,47 @@ public class Safe_Auto_V8 extends LinearOpMode {
 
             // drive based on distances from vuforia
             int stepsCount = 8;
-            double stepsLinear[] = {10, -5, 5, 5, 5, 5, 5, 5};
+            double stepsLinear[] = {0, 0, 5, 5, 5, 5, 5, 5};
             double stepsTurns[] = {0, 0, 90, 0, 0, 0, -90, 0};
+            double stepsLift[] = {0, 0.5, 90, 0, 0, 0, -90, 0};
+            double stepsClaw[] = {1, 0, 0, 0, 0, -1, 0, 0};
 
             for (int i = 0; i < stepsCount; i++) {
 
-                waitMillis(333);
+                waitMillis(222);
 
                 if (i % 2 == 0) robot.colorBeacon.teal();
                 else if (i % 2 == 1) robot.colorBeacon.purple();
 
-                move(stepsLinear[i]);
+                if (stepsLinear[i] != 0) {
+                    move(stepsLinear[i]);
+                }
                 if (stepsTurns[i] != 0) {
                     turn((int) stepsTurns[i]);
                 }
+                if (stepsLift[i] != 0) {
+                    liftControl = stepsLift[i];
+                    setDrives();
+                    waitMillis(11); //TODO
+                    liftControl = 0;
+                    setDrives();
+                }
+                if (stepsClaw[i] != 0) {
+                    if (stepsClaw[i] > 0) {
+                        leftClawControl = clawOpen[0];
+                        rightClawControl = clawOpen[1];
+                        setServos();
+                    }
+                    if (stepsClaw[i] < 0) {
+                        leftClawControl = clawClosed[0];
+                        rightClawControl = clawClosed[1];
+                        setServos();
+                    }
+                }
             }
 
-            stopRobot();
             robot.colorBeacon.green();
+            stopRobot();
 
             stop(); //stop the opMode
 
