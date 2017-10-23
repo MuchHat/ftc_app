@@ -105,33 +105,49 @@ public class Safe_Auto_V8 extends LinearOpMode {
 
         while (opModeIsActive() && loaded) {
 
-            //********************************* CONTROL LOOP *************************************//
 
             double crrLoopTime = loopRuntime.nanoseconds() / 1000000; // covert to millis
             loopRuntime.reset();
-
             updateTelemetry();
+
+            //********************************* AUTO MOVE TO THE SAFE ZONE ***********************//
+
             robot.colorBeacon.yellow();
 
-            //TODO move to safe zone
-
-            // load vuforia, turn green if found
-            waitMillis(2222);
+            // load vuforia, turn green if marker found
+            waitMillis(555);
             robot.colorBeacon.green();
 
             // turn yellow if not found
-            waitMillis(2222);
+            waitMillis(555);
             robot.colorBeacon.yellow();
 
             // drive based on distances from vuforia
-            //...
-            //...
+            int stepsCount = 8;
+            double stepsLinear[] = {5, 5, 5, 5, 5, 5, 5, 5};
+            double stepsTurns[] = {0, 0, 90, 0, 0, 0, -90, 0};
+
+            for (int i = 0; i < stepsCount; i++) {
+
+                waitMillis(333);
+
+                if (i % 2 == 0) robot.colorBeacon.teal();
+                else if (i % 2 == 1) robot.colorBeacon.purple();
+
+                move(stepsLinear[i]);
+                if (stepsTurns[i] != 0) {
+                    turn((int) stepsTurns[i]);
+                }
+            }
 
             stopRobot();
+            robot.colorBeacon.green();
+
             stop(); //stop the opMode
 
             //********************************* END LOOP *****************************************//
         }
+
     }
 
     // ************************** SCAN HELPER FUNCTION  ******************************************//
