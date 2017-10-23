@@ -124,7 +124,7 @@ public class Safe_Auto_V8 extends LinearOpMode {
 
             // drive based on distances from vuforia
             int stepsCount = 8;
-            double stepsLinear[] = {5, 5, 5, 5, 5, 5, 5, 5};
+            double stepsLinear[] = {10, -5, 5, 5, 5, 5, 5, 5};
             double stepsTurns[] = {0, 0, 90, 0, 0, 0, -90, 0};
 
             for (int i = 0; i < stepsCount; i++) {
