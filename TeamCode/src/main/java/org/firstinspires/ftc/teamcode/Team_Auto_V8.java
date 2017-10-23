@@ -142,6 +142,12 @@ public class Team_Auto_V8 extends LinearOpMode {
         }
     }
 
+    // ************************** SCAN HELPER FUNCTION  ******************************************//
+
+    private void scan(){
+
+    }
+
     // ************************** MANUAL DRIVE HELPER FUNCTIONS  *********************************//
 
     private void turnToHeading(double newHeading) {
