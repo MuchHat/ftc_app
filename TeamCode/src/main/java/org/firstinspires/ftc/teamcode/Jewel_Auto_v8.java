@@ -115,11 +115,11 @@ public class Jewel_Auto_v8 extends LinearOpMode {
 
             // first find the right color jewel
 
-            double armFindJewel[][] = {{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}};
-            double armKnock[][] = {{0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}, {0, 0}};
+            double armFindJewel[][] = {{0, 0}, {0, 0}};
+            double armKnock[][] = {{0, 0}, {0, 0}};
             double armExtended[] = {0, 0};
 
-            int findPositions = 6;
+            int findPositions = 2;
             moveArm(armExtended[0], armExtended[1]);
 
             for (int i = 0; i < findPositions; i++) {
@@ -128,12 +128,12 @@ public class Jewel_Auto_v8 extends LinearOpMode {
                 double crrElbow = armFindJewel[i][1];
 
                 moveArm(crrBase, crrElbow);
-                waitMillis( 555 );
+                waitMillis(555);
 
                 if (foundJewel()) {
                     foundPos = i;
                     moveArm(armExtended[0], armExtended[1]);
-                    waitMillis( 555 );
+                    waitMillis(555);
                     break;
                 }
             }
@@ -144,21 +144,21 @@ public class Jewel_Auto_v8 extends LinearOpMode {
                 //TODO add logic to account for fw/rev and team color
 
                 move(1);
-                waitMillis( 555 );
+                waitMillis(555);
 
                 double crrBase = armFindJewel[foundPos][0];
                 double crrElbow = armFindJewel[foundPos][1];
                 moveArm(crrBase, crrElbow);
-                waitMillis( 555 );
+                waitMillis(555);
 
                 move(-1);
-                waitMillis( 555 );
+                waitMillis(555);
 
                 move(1);
-                waitMillis( 555 );
+                waitMillis(555);
 
                 moveArm(armPosZero[0], armPosZero[1]);
-                waitMillis( 555 );
+                waitMillis(555);
             }
 
             robot.colorBeacon.green();
