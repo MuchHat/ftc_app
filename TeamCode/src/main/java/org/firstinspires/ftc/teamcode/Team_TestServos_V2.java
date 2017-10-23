@@ -41,21 +41,22 @@ import com.qualcomm.robotcore.util.Range;
 // ************************** OP FOR TESTING THE SERVOS ******************************************//
 
 @TeleOp(name = "Test Servos V2", group = "Team")
-@Disabled
+//@Disabled
 public class Team_TestServos_V2 extends LinearOpMode {
 
     // ************************** VARIABLES ******************************************************//
 
-    public Team_Hardware_V2 robot = new Team_Hardware_V2();
-    public ElapsedTime runtimeLoop = new ElapsedTime();
-    //Declare arm atuff
-    public double baseControl = 0;
-    public double elbowControl = 0.17;
-    public double leftClawControl = 0.5;
-    public double rightClawControl = 0.5;
+    private Team_Hardware_V3 robot = new Team_Hardware_V3();
 
-    ElapsedTime timer = new ElapsedTime();
-    double servoDefaultSpeed = 0.00033; // 0.33 servo angle per sec
+    private ElapsedTime runtimeLoop = new ElapsedTime();
+    private ElapsedTime timer = new ElapsedTime();
+
+    private double baseControl = 0.5;
+    private double elbowControl = 0.0;
+    private double leftClawControl = 0.5;
+    private double rightClawControl = 0.5;
+    private double servoDefaultSpeed = 0.000066 * 2; // 0.33 servo angle per sec
+
 
     // ************************** OP LOOP ********************************************************//
 
@@ -97,20 +98,19 @@ public class Team_TestServos_V2 extends LinearOpMode {
             leftClawControl = robot.leftClaw.getPosition();
             rightClawControl = robot.rightClaw.getPosition();
 
-//            robot.colorSensor.enableLed( true );
-//            robot.distanceSensorLeft.enableLed( true );
-//            robot.distanceSensorRight.enableLed( true );
+            robot.colorSensor.enableLed(true);
 
             telemetry.addData("base", "%.0f%%", baseControl * 100);
-            telemetry.addData("elbow", "%.0f%%", elbowControl * 100 );
+            telemetry.addData("elbow", "%.0f%%", elbowControl * 100);
             telemetry.addData("left claw", "%.0f%%", leftClawControl * 100);
             telemetry.addData("right claw", "%.0f%%", rightClawControl * 100);
 
-//           telemetry.addData("color sensor red", "%.2f%%", (double)robot.colorSensor.red());
-//           telemetry.addData("color sensor green", "%.2f%%", (double)robot.colorSensor.green());
-//           telemetry.addData("color sensor blue", "%.2%%", (double)robot.colorSensor.blue());
-//           telemetry.addData("distance sensor left", "%.2f%%", (double)robot.distanceSensorLeft.getLightDetected());
-//           telemetry.addData("distance sensor right", "%.2f%%", (double)robot.distanceSensorRight.getLightDetected());
+            telemetry.addData("color sensor red", "%.2f", (double) robot.colorSensor.red());
+            telemetry.addData("color sensor green", "%.2f", (double) robot.colorSensor.green());
+            telemetry.addData("color sensor blue", "%.2f", (double) robot.colorSensor.blue());
+            telemetry.addData("color sensor alpha", "%.2f", (double) robot.colorSensor.alpha());
+            telemetry.addData("switch top", "%.2f", robot.topSwitch.getState() ? 1.0 : 0.0);
+            telemetry.addData("switch bottom", "%.2f", robot.bottomSwitch.getState() ? 1.0 : 0.0);
 
             telemetry.addData("crr heading", "%.2fdeg", (double) robot.modernRoboticsI2cGyro.getHeading());
 
@@ -136,12 +136,26 @@ public class Team_TestServos_V2 extends LinearOpMode {
                 rightClawControl += gamepad1.right_stick_x * servoDefaultSpeed * crrLoopTime;
                 setServos();
             }
+            // control: A
+            if (gamepad1.a) {
+                robot.colorBeacon.blue();
+            }
+            // control: A
+            if (gamepad1.b) {
+                robot.colorBeacon.red();
+            }
+            if (robot.colorSensor.blue() > 0 && robot.colorSensor.blue() > robot.colorSensor.red()) {
+                robot.colorBeacon.blue();
+            }
+            if (robot.colorSensor.red() > 0 && robot.colorSensor.red() > robot.colorSensor.blue()) {
+                robot.colorBeacon.red();
+            }
         }
     }
 
     // ************************** HARDWARE HELPER ************************************************//
 
-    public void setServos() {
+    private void setServos() {
 
         robot.elbow.setPosition(elbowControl);
         robot.base.setPosition(baseControl);

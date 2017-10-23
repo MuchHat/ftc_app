@@ -35,29 +35,28 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // ************************** ROBOT HW CLASS *****************************************************//
 
-public class Team_Hardware_V2 {
+public class Team_Hardware_V3 {
 
     // ************************** ROBOT HW VARIABLES *********************************************//
 
     public DcMotor leftDrive = null;
     public DcMotor rightDrive = null;
+    public DcMotor rightDriveBack = null;
+    public DcMotor leftDriveBack = null;
     public DcMotor liftDrive = null;
 
     public Servo leftClaw = null;
     public Servo rightClaw = null;
 
-//    public DigitalChannel topSwitch = null;
-//    public DigitalChannel bottomSwitch = null;
+    public DigitalChannel topSwitch = null;
+    public DigitalChannel bottomSwitch = null;
 
-//    public ColorSensor colorSensor = null;
-//    public OpticalDistanceSensor distanceSensorLeft = null;
-//    public OpticalDistanceSensor distanceSensorRight = null;
+    public ColorSensor colorSensor = null;
 
     public Servo base = null;
     public Servo elbow = null;
@@ -67,10 +66,11 @@ public class Team_Hardware_V2 {
 
     public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     public IntegratingGyroscope gyro;
+    public MRIColorBeacon colorBeacon;
 
     // ************************** HW CONSTRUCTOR  ************************************************//
 
-    public Team_Hardware_V2() {
+    public Team_Hardware_V3() {
 
     }
 
@@ -82,10 +82,12 @@ public class Team_Hardware_V2 {
 
         leftDrive = hwMap.get(DcMotor.class, "Motor_Left");
         rightDrive = hwMap.get(DcMotor.class, "Motor_Right");
+        leftDriveBack = hwMap.get(DcMotor.class, "Motor_Left_Back");
+        rightDriveBack = hwMap.get(DcMotor.class, "Motor_Right_Back");
         liftDrive = hwMap.get(DcMotor.class, "Motor_Lift");
 
-//        topSwitch = hwMap.get(DigitalChannel.class, "Switch_Top");
-//       bottomSwitch = hwMap.get(DigitalChannel.class, "Switch_Bottom");
+        topSwitch = hwMap.get(DigitalChannel.class, "Switch_Top");
+        bottomSwitch = hwMap.get(DigitalChannel.class, "Switch_Bottom");
 
         base = hwMap.get(Servo.class, "Base");
         elbow = hwMap.get(Servo.class, "Elbow");
@@ -93,16 +95,15 @@ public class Team_Hardware_V2 {
         leftClaw = hwMap.get(Servo.class, "Claw_Left");
         rightClaw = hwMap.get(Servo.class, "Claw_Right");
 
-//        colorSensor = hwMap.get(ColorSensor.class, "Color_Sensor");
-//        distanceSensorLeft = hwMap.get(OpticalDistanceSensor.class, "Distance_Sensor_Left");
-//       distanceSensorRight = hwMap.get(OpticalDistanceSensor.class, "Distance_Sensor_Right");
+        colorSensor = hwMap.get(ColorSensor.class, "Color_Sensor");
 
         modernRoboticsI2cGyro = hwMap.get(ModernRoboticsI2cGyro.class, "Gyro");
         gyro = modernRoboticsI2cGyro;
 
-//       colorSensor.enableLed(false);
-//        distanceSensorLeft.enableLed(false);
-//       distanceSensorRight.enableLed(false);
+        colorBeacon = new MRIColorBeacon();
+        colorBeacon.init(hwMap, "Beacon");
+
+        colorSensor.enableLed(false);
 
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);

@@ -1,32 +1,3 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -41,51 +12,41 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Team V4 W", group = "Team")
+@TeleOp(name = "Team V6", group = "Team")
 // @Disabled
-public class Team_OpMode_V4_W extends LinearOpMode {
+public class Team_OpMode_V6 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
-
-    Team_Hardware_V2 robot = new Team_Hardware_V2();
-
-    ElapsedTime loopRuntime = null;
-    ElapsedTime controlRuntime = null;
-    ElapsedTime totalRuntime = null;
-    ElapsedTime runtimeWait = null;
+    private Team_Hardware_V3 robot = new Team_Hardware_V3();
 
     //********************************* MOVE STATES **********************************************//
+    private ElapsedTime totalRuntime = null;
 
-
-    double leftDriveControl = 0;
-    double rightDriveControl = 0;
-    double headingControl = 0;
-    double liftControl = 0;
-    double leftClawControl = 0;
-    double rightClawControl = 0;
-    double baseControl = 0;
-    double elbowControl = 0;
-    double gameStartHeading = 0;
-    Boolean armEnabled = false;
-
-    //********************************* CONSTANTS ************************************************//
-
-    Boolean manualMode = true;
-    Boolean blueTeam = true;
-    Boolean rightField = true;
+    //********************************* MOVE STATES **********************************************//
+    private double leftDriveControl = 0;
+    private double rightDriveControl = 0;
+    private double headingControl = 0;
+    private double liftControl = 0;
+    private double leftClawControl = 0;
+    private double rightClawControl = 0;
+    private double baseControl = 0;
+    private double elbowControl = 0;
+    private double gameStartHeading = 0;
 
     //********************************* CONSTANTS ************************************************//
-
-    double driveDefaultSpeed = 0.44; // TODO
-    double turnDefaultSpeed = 0.22; // TODO
-    double liftDefaultSpeed = 0.66; // TODO
-    double servoDefaultSpeed = 0.00033; // TODO
+    private Boolean manualMode = true;
+    private Boolean blueTeam = true;
+    private Boolean rightField = true;
+    private Boolean armEnabled = false;
+    private Boolean loaded = false;
 
     //********************************* PREDEFINED POS *******************************************//
-
-    double clawOpen[] = {0.82, 0.18};
-    double clawClosed[] = {0.93, 0.12};
-    double clasZero[] = {0.22, 0.75};
+    private double clawClosed[] = {0.95, 0.10};
+    private double clawZero[] = {0.22, 0.75};
+    private double clawOpen[] = {0.60, 0.40};
+    private double driveDefaultSpeed = 0.33;
+    private double turnDefaultSpeed = 0.16;
+    private double servoDefaultSpeed = 0.00033;
 
     // ************************** MAIN LOOP ******************************************************//
 
@@ -95,19 +56,18 @@ public class Team_OpMode_V4_W extends LinearOpMode {
         //********************************* MAIN LOOP INIT ***************************************//
         robot.init(hardwareMap);
 
-        controlRuntime = new ElapsedTime();
-        loopRuntime = new ElapsedTime();
+        ElapsedTime controlRuntime = new ElapsedTime();
+        ElapsedTime loopRuntime = new ElapsedTime();
         totalRuntime = new ElapsedTime();
-        runtimeWait = new ElapsedTime();
 
         controlRuntime.reset();
 
         robot.modernRoboticsI2cGyro.calibrate();
-
         // Wait until the gyro calibration is complete
         while (!isStopRequested() && robot.modernRoboticsI2cGyro.isCalibrating()) {
             telemetry.addData("calibrating gyro", "... do NOT move");
             telemetry.addData("calibrating gyro", "%s", Math.round(controlRuntime.seconds()));
+            loaded = true;
             telemetry.update();
             sleep(66);
         }
@@ -131,6 +91,9 @@ public class Team_OpMode_V4_W extends LinearOpMode {
             if (gamepad1.x) blueTeam = true;
             if (gamepad1.y) blueTeam = false;
 
+            /*if (blueTeam) robot.colorBeacon.blue();
+            if (!blueTeam) robot.colorBeacon.red();*/
+
             if (gamepad1.right_bumper) rightField = true;
             if (gamepad1.left_bumper) rightField = false;
         }
@@ -145,8 +108,8 @@ public class Team_OpMode_V4_W extends LinearOpMode {
         armEnabled = false;
         leftDriveControl = 0;
         rightDriveControl = 0;
-        leftClawControl = clasZero[0];
-        rightClawControl = clasZero[1];
+        leftClawControl = clawZero[0];
+        rightClawControl = clawZero[1];
         baseControl = 6;
         elbowControl = 34;
         setDrives();
@@ -154,7 +117,7 @@ public class Team_OpMode_V4_W extends LinearOpMode {
         robot.base.setPosition(baseControl);
         robot.elbow.setPosition(elbowControl);
 
-        while (opModeIsActive()) {
+        while (opModeIsActive() && loaded) {
 
             //********************************* CONTROL LOOP *************************************//
 
@@ -164,6 +127,9 @@ public class Team_OpMode_V4_W extends LinearOpMode {
             updateTelemetry();
 
             //********************************* MANUAL MODE **************************************//
+            //              BOTH GAME PADS ARE MAPPED THE SAME AT THIS TIME                       //
+            //            IF THE SAME COMMAND IS GIVEN ON BOTH GAME PAD 1 WINS                    //
+            //********************************* MANUAL MODE **************************************//
 
             if (manualMode) {
 
@@ -172,12 +138,19 @@ public class Team_OpMode_V4_W extends LinearOpMode {
                     double xInput = 0;
                     double yInput = 0;
 
-                    if (Math.abs(gamepad1.right_stick_x) > 0.15)
-                        xInput = gamepad1.right_stick_x; //TODO
-                    if (Math.abs(gamepad1.right_stick_y) > 0.15)
-                        yInput = -gamepad1.right_stick_y; //TODO
-                    if (Math.abs(gamepad1.left_stick_x) > 0.15)
-                        xInput = gamepad1.left_stick_x; //TODO
+                    if (Math.abs(gamepad2.left_stick_y) > 0.15) {
+                        yInput = -gamepad2.left_stick_y;
+                    }
+                    if (Math.abs(gamepad2.left_stick_x) > 0.15) {
+                        xInput = gamepad2.left_stick_x;
+                    }
+
+                    if (Math.abs(gamepad1.left_stick_y) > 0.15) {
+                        yInput = -gamepad1.left_stick_y;
+                    }
+                    if (Math.abs(gamepad1.left_stick_x) > 0.15) {
+                        xInput = gamepad1.left_stick_x;
+                    }
 
                     leftDriveControl = yInput * driveDefaultSpeed;
                     rightDriveControl = yInput * driveDefaultSpeed;
@@ -194,68 +167,87 @@ public class Team_OpMode_V4_W extends LinearOpMode {
                 {
                     double liftInput = 0;
 
-                    if (Math.abs(gamepad1.left_stick_y) > 0.15)
-                        liftInput = gamepad1.left_stick_y; //TODO
+                    if (Math.abs(gamepad2.right_stick_y) > 0.15) {
+                        liftInput = gamepad2.right_stick_y;
+                    }
 
+                    if (Math.abs(gamepad1.right_stick_y) > 0.15) {
+                        liftInput = gamepad1.right_stick_y;
+                    }
+
+                    double liftDefaultSpeed = 1.5;
                     liftControl = liftInput * liftDefaultSpeed;
                     setDrives();
                 }
 
                 // ********************************  control: TURNS 90  **************************//
-                if (gamepad1.dpad_right) {
+                if (gamepad1.dpad_right ||
+                        gamepad2.dpad_right) {
                     turn(90);
                 }
 
                 // ********************************  control: TURNS -90
-                if (gamepad1.dpad_left) {
+                if (gamepad1.dpad_left ||
+                        gamepad2.dpad_left) {
                     turn(-90);
                 }
 
                 // ********************************  control: TURN FACING THE CRYPTO BOX  ********//
-                if (gamepad1.dpad_up) {
-                    turnToHeading(gameStartHeading + 90);
+                if (gamepad1.dpad_up ||
+                        gamepad2.dpad_up) {
+                    turnToHeading(0);
                 }
 
                 // ********************************  control: TURNS 180  *************************//
-                if (gamepad1.dpad_down) {
+                if (gamepad1.dpad_down ||
+                        gamepad2.dpad_down) {
                     turn(180);
                 }
 
                 // ********************************  control: SMALL STEP FORWARD  ****************//
-                if (gamepad1.y) {
+                if (gamepad1.y ||
+                        gamepad2.y) {
                     double step = 10;
 
                     move(step);
                 }
 
                 // ********************************  control: SMALL STEP REVERSE  ****************//
-                if (gamepad1.a) {
+                if (gamepad1.a ||
+                        gamepad2.a) {
                     double step = 10;
 
                     move(-step);
                 }
 
                 // ********************************  control: SMALL STEP LEFT  *******************//
-                if (gamepad1.x) {
-                    double step = 10;
+                if (gamepad1.x ||
+                        gamepad2.x) {
+                    double step = 1;
 
-                    turn(-45);
-                    move(-1.5 * step);
+                    turn(-15);
+                    move(-4 * step);
                     turn(45);
                     move(step);
                 }
 
                 // ********************************  control: SMALL STEP RIGHT  ******************//
-                if (gamepad1.b) {
-                    double step = 10;
+                if (gamepad1.b ||
+                        gamepad2.b) {
+                    double step = 1;
 
-                    turn(45);
-                    move(-1.5 * step);
-                    turn(-45);
+                    turn(15);
+                    move(-4 * step);
+                    turn(-15);
                     move(step);
                 }
 
                 // ********************************  control: CLAW OPEN  *************************//
+                if (gamepad2.left_trigger != 0) {
+                    leftClawControl -= gamepad2.left_trigger * servoDefaultSpeed * crrLoopTime;
+                    rightClawControl += gamepad2.left_trigger * servoDefaultSpeed * crrLoopTime;
+                    setServos();
+                }
                 if (gamepad1.left_trigger != 0) {
                     leftClawControl -= gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
                     rightClawControl += gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
@@ -263,19 +255,26 @@ public class Team_OpMode_V4_W extends LinearOpMode {
                 }
 
                 // ********************************  control: CLAW CLOSE  ************************//
+                if (gamepad2.right_trigger != 0) {
+                    leftClawControl += gamepad2.right_trigger * servoDefaultSpeed * crrLoopTime;
+                    rightClawControl -= gamepad2.right_trigger * servoDefaultSpeed * crrLoopTime;
+                    setServos();
+                }
                 if (gamepad1.right_trigger != 0) {
                     leftClawControl += gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
                     rightClawControl -= gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
                     setServos();
                 }
                 // ********************************  control: CLAW PREDEF OPEN  ******************//
-                if (gamepad1.left_bumper) {
+                if (gamepad1.left_bumper ||
+                        gamepad2.left_bumper) {
                     leftClawControl = clawOpen[0];
                     rightClawControl = clawOpen[1];
                     setServos();
                 }
                 // ********************************  control: CLAW PREDEF CLOSE  *****************//
-                if (gamepad1.right_bumper) {
+                if (gamepad1.right_bumper ||
+                        gamepad2.right_bumper) {
                     leftClawControl = clawClosed[0];
                     rightClawControl = clawClosed[1];
                     setServos();
@@ -294,11 +293,8 @@ public class Team_OpMode_V4_W extends LinearOpMode {
 
     //********************************* AUTO MODE HELPER FUNCTION ********************************//
 
-    void runAutonomous() {
-
-        //example
+    private void runAutonomous() {
         //TODO
-
         //deployed position
         moveArm(75, 75);
 
@@ -331,37 +327,57 @@ public class Team_OpMode_V4_W extends LinearOpMode {
 
     // ************************** MANUAL DRIVE HELPER FUNCTIONS  *********************************//
 
-    void turnToHeading(double newHeading) {
+    private void turnToHeading(double newHeading) {
 
         newHeading %= 360;
 
         double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
-        double turnDeg = newHeading - crrHeading;
         double diffAbs = Math.abs(newHeading - crrHeading);
         double diff360Abs = 360 - diffAbs;
         double direction = newHeading > crrHeading ? 1.0 : -1.0;
-        double inverted = diffAbs < diff360Abs ? 1.0 : -1.0;
+        double inverted = diffAbs > diff360Abs ? 1.0 : -1.0;
 
-        turnDeg = inverted > 0 ? diffAbs : diff360Abs;
+        double turnDeg = inverted > 0 ? diffAbs : diff360Abs;
         turnDeg *= direction * inverted;
 
         turn(turnDeg);
     }
 
-    void turn(double turnDeg) {
+    private void turn(double turnDeg) {
 
-        double direction = turnDeg > 0 ? 1.0 : -1.0;
-        double crrError = turnDeg * direction;
+        double accelDistance = 11; // accelerate to max over 11 deg
+        double brakeDistance = 15; // ramp down the last 15 deg
+
+        double minPower = 0.11;
+        double maxPower = 0.44;
+
         double startHeading = robot.modernRoboticsI2cGyro.getHeading();
         double endHeading = startHeading + turnDeg;
 
-        while (crrError > 5) {
+        double direction = turnDeg > 0 ? 1.0 : -1.0;
+        double crrError = turnDeg * direction;
 
-            leftDriveControl = -0.2 * direction; //power to motors is proportional with the speed
-            rightDriveControl = 0.2 * direction;
+        while (crrError > 3) {
+
+            double crrPower = maxPower;
+            double crrDistance = turnDeg * direction - crrError;
+
+            if (crrDistance < accelDistance) {
+                crrPower = minPower + getS(crrDistance / accelDistance) * (maxPower - minPower);
+            }
+            if (crrError < brakeDistance) {
+                crrPower = minPower + getS(crrError / brakeDistance) * (maxPower - minPower);
+            }
+
+            crrPower = Range.clip(crrPower, minPower, maxPower);
+
+            leftDriveControl = -crrPower * direction;
+            rightDriveControl = crrPower * direction;
 
             setDrives();
-            waitMillis(5);
+
+            double stepMillis = 1;
+            waitMillis(stepMillis);
 
             double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
 
@@ -379,44 +395,84 @@ public class Team_OpMode_V4_W extends LinearOpMode {
 
     private void move(double distance) {
 
+        double mmMillis = 0.2; // how many mm it moves in 1ms at max power
+        double accelDistance = 11; //accelerate to max over 11 mm
+        double brakeDistance = 22; //ramp down the last 22 mm
+
+        double minPower = 0.11;
+        double maxPower = 0.44;
+
         double direction = distance > 0 ? 1.0 : -1.0;
+        double crrError = distance * direction;
 
-        Animator moveAnimator = new Animator();
-        moveAnimator.configRamp(333, 444);
-        moveAnimator.configSpeed(0.1, 0.88, 0.2, 5);
-        moveAnimator.start(0, Math.abs(distance));
+        while (crrError > 3) {
 
-        moveAnimator.advanceStepNoPos();
-        double nextSpeed = moveAnimator.getSpeed();
+            double crrPower = maxPower;
+            double crrDistance = distance * direction - crrError;
 
-        while (nextSpeed > 0) {
+            if (crrDistance < accelDistance) {
+                crrPower = minPower + getS(crrDistance / accelDistance) * (maxPower - minPower);
+            }
 
-            leftDriveControl = nextSpeed * direction; //power to motors is proportional with the speed
-            rightDriveControl = nextSpeed * direction;
+            if (crrError < brakeDistance) {
+                crrPower = minPower + getS(crrError / brakeDistance) * (maxPower - minPower);
+            }
+
+            crrPower = Range.clip(crrPower, minPower, maxPower);
+
+            leftDriveControl = crrPower * direction; //power to motors is proportional with the speed
+            rightDriveControl = crrPower * direction;
 
             setDrives();
-            sleep(5);
 
-            moveAnimator.advanceStepNoPos();
-            nextSpeed = moveAnimator.getSpeed();
+            double stepMillis = 1;
+            waitMillis(stepMillis);
+
+            crrError -= crrPower * mmMillis * stepMillis;
         }
         stopRobot();
     }
 
+    double getS(double ratio) {
+
+        double jerk = 1.355;
+        double div = ((1 - Math.cos(Math.pow(0.5, jerk) * Math.PI)) / 2) / 2;
+        ratio = Range.clip(ratio, 0, 1);
+        double s = ratio;
+
+        if (ratio <= 0.5) {
+            s = ((1 - Math.cos(Math.pow(ratio, jerk) * Math.PI)) / 2) / div / 2;
+            s = Range.clip(s, 0, 0.5);
+        } else if (ratio > 0.5) {
+            s = 1 - (((1 - Math.cos(Math.pow(1 - ratio, jerk) * Math.PI)) / 2) / div / 2);
+            s = Range.clip(s, 0.5, 1);
+        }
+
+        return Range.clip(s, 0.01, 1);
+    }
+
+
     // ************************** ARM  DRIVE SERVOS HELPER FUNCTIONS  ****************************//
 
-    void moveArm(double newBase, double newElbow) {
+    private void moveArm(double newBase, double newElbow) {
 
         if (!armEnabled) {
             return;
         }
 
+        double stepSize = 0.01;
+        double stepsAccel = 22;
+        double stepsBrake = 33;
+        double stepTime = 0.6;
+        double maxStepTime = 6;
+
         double baseStart = baseControl;
         double elbowStart = elbowControl;
 
-        double stepSize = 0.01;
         double stepCount = Math.abs(baseStart - newBase) / stepSize;
         stepCount = Math.max(Math.abs(elbowStart - newElbow) / stepSize, stepCount);
+        stepCount = Range.clip(stepCount, 0, 333); //should not be more than 100 steps
+
         double elbowStepSize = (newElbow - baseStart) / stepCount;
         double baseStepSize = (newBase - elbowStart) / stepCount;
 
@@ -428,6 +484,18 @@ public class Team_OpMode_V4_W extends LinearOpMode {
             baseControl = baseCrr;
             elbowControl = elbowCrr;
             setServos();
+
+            double crrStepTime = stepTime;
+            if (i < stepsAccel) {
+                double ratio = getS((stepsAccel - i) / stepsAccel);
+                crrStepTime = stepTime * 1 / ratio;
+            }
+            if (stepCount - i < stepsBrake) {
+                double ratio = getS((stepCount - i - stepsBrake) / stepsBrake);
+                crrStepTime = stepTime * 1 / ratio;
+            }
+            crrStepTime = Range.clip(crrStepTime, 1, maxStepTime);
+            waitMillis(crrStepTime);
         }
 
         baseControl = newBase;
@@ -437,12 +505,12 @@ public class Team_OpMode_V4_W extends LinearOpMode {
 
     // ************************** HARDWARE SET FUNCTIONS *****************************************//
 
-    void setDrives() {
+    private void setDrives() {
 
-        leftDriveControl = Range.clip(leftDriveControl, -0.88, 0.88); //TODO max max power
-        rightDriveControl = Range.clip(rightDriveControl, -0.88, 0.88); //TODO max max power
+        leftDriveControl = Range.clip(leftDriveControl, -0.88, 0.88);
+        rightDriveControl = Range.clip(rightDriveControl, -0.88, 0.88);
 
-        liftControl = Range.clip(liftControl, -0.66, 0.66); //TODO max max power
+        liftControl = Range.clip(liftControl, -0.66, 0.66);
 
 //       if (liftControl >= 0 && !robot.topSwitch.getState()) { // false means switch is pressed
 //           liftControl = 0;
@@ -452,11 +520,11 @@ public class Team_OpMode_V4_W extends LinearOpMode {
 //        }
         if (liftControl < 0) {
             robot.liftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            robot.liftDrive.setPower(-liftControl);
+            robot.liftDrive.setPower(Math.abs(liftControl));
         }
         if (liftControl >= 0) {
             robot.liftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            robot.liftDrive.setPower(liftControl);
+            robot.liftDrive.setPower(Math.abs(liftControl));
         }
 
         // if gyro indicates drifting add same power to correct
@@ -465,7 +533,7 @@ public class Team_OpMode_V4_W extends LinearOpMode {
 
         if (leftDriveControl == rightDriveControl) {
             double headingCrr = robot.modernRoboticsI2cGyro.getHeading();
-            double error = headingControl - headingCrr;
+            double error;
             double driveDirection = leftDriveControl > 0 ? 1.0 : -1.0;
 
             if (headingControl > 180 && headingCrr <= 180 && headingControl - headingCrr > 180) {
@@ -477,7 +545,7 @@ public class Team_OpMode_V4_W extends LinearOpMode {
             error = headingCrr - headingControl;
             error = Range.clip(error, -45, 45); // if completely off trim down
 
-            headingCorrection = error / 45 * 0.11; //TODO tune up the amount of correction
+            headingCorrection = error / 45 * 0.05; //TODO tune up the amount of correction
             headingCorrection *= driveDirection; // apply correction the other way when running in reverse
 
             if (leftDriveControl == 0) headingCorrection = 0;
@@ -486,28 +554,40 @@ public class Team_OpMode_V4_W extends LinearOpMode {
         if (leftDriveControl >= 0) {
             robot.leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
             robot.leftDrive.setPower(Math.abs(leftDriveControl) - headingCorrection);
+
+            robot.leftDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
+            robot.leftDriveBack.setPower(Math.abs(leftDriveControl) - headingCorrection);
         }
         if (leftDriveControl < 0) {
             robot.leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             robot.leftDrive.setPower(Math.abs(leftDriveControl) - headingCorrection);
+
+            robot.leftDriveBack.setDirection(DcMotorSimple.Direction.FORWARD);
+            robot.leftDriveBack.setPower(Math.abs(leftDriveControl) - headingCorrection);
         }
         if (rightDriveControl >= 0) {
             robot.rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             robot.rightDrive.setPower(Math.abs(rightDriveControl) + headingCorrection);
+
+            robot.rightDriveBack.setDirection(DcMotorSimple.Direction.FORWARD);
+            robot.rightDriveBack.setPower(Math.abs(rightDriveControl) + headingCorrection);
         }
         if (rightDriveControl < 0) {
             robot.rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
             robot.rightDrive.setPower(Math.abs(rightDriveControl) + headingCorrection);
+
+            robot.rightDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
+            robot.rightDriveBack.setPower(Math.abs(rightDriveControl) + headingCorrection);
         }
     }
 
-    void setServos() {
+    private void setServos() {
 
-        double minLeftClaw = Math.min(Math.min(clasZero[0], clawClosed[0]), clawOpen[0]);
-        double maxLeftClaw = Math.max(Math.max(clasZero[0], clawClosed[0]), clawOpen[0]);
+        double minLeftClaw = Math.min(Math.min(clawZero[0], clawClosed[0]), clawOpen[0]);
+        double maxLeftClaw = Math.max(Math.max(clawZero[0], clawClosed[0]), clawOpen[0]);
 
-        double minRightClaw = Math.min(Math.min(clasZero[1], clawClosed[1]), clawOpen[1]);
-        double maxRightClaw = Math.max(Math.max(clasZero[1], clawClosed[1]), clawOpen[1]);
+        double minRightClaw = Math.min(Math.min(clawZero[1], clawClosed[1]), clawOpen[1]);
+        double maxRightClaw = Math.max(Math.max(clawZero[1], clawClosed[1]), clawOpen[1]);
 
         leftClawControl = Range.clip(leftClawControl, minLeftClaw, maxLeftClaw);
         rightClawControl = Range.clip(rightClawControl, minRightClaw, maxRightClaw);
@@ -523,7 +603,7 @@ public class Team_OpMode_V4_W extends LinearOpMode {
 
     // ************************** GENERAL MOVE HELPER FUNCTIONS  *********************************//
 
-    void checkAndStopAutonomous() {
+    private void checkAndStopAutonomous() {
 
         if (manualMode) {
             return;
@@ -535,13 +615,13 @@ public class Team_OpMode_V4_W extends LinearOpMode {
         }
     }
 
-    void stopRobot() {
+    private void stopRobot() {
         leftDriveControl = 0;
         rightDriveControl = 0;
         setDrives();
     }
 
-    void waitMillis(double millis) {
+    private void waitMillis(double millis) {
 
         sleep((long) millis);
 //        millis = Range.clip(millis, 0.01, millis);
@@ -549,6 +629,7 @@ public class Team_OpMode_V4_W extends LinearOpMode {
 //        while (runtimeWait.nanoseconds() < millis * 1000 * 1000) {
 //            idle();
 //        }
+
     }
 
     private boolean stopTime(double totalSeconds) {

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -12,19 +13,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Team V5", group = "Team")
-// @Disabled
-public class Team_OpMode_V5 extends LinearOpMode {
+@TeleOp(name = "Team V5 W", group = "Team")
+@Disabled
+public class Team_OpMode_V5_W extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
+    private Team_Hardware_V3 robot = new Team_Hardware_V3();
 
-    Team_Hardware_V2 robot = new Team_Hardware_V2();
-
+    //********************************* MOVE STATES **********************************************//
     private ElapsedTime totalRuntime = null;
 
     //********************************* MOVE STATES **********************************************//
-
-
     private double leftDriveControl = 0;
     private double rightDriveControl = 0;
     private double headingControl = 0;
@@ -34,26 +33,21 @@ public class Team_OpMode_V5 extends LinearOpMode {
     private double baseControl = 0;
     private double elbowControl = 0;
     private double gameStartHeading = 0;
-    private Boolean armEnabled = false;
-    private Boolean loaded = false;
 
     //********************************* CONSTANTS ************************************************//
-
+    private Boolean loaded = false;
     private Boolean manualMode = true;
     private Boolean blueTeam = true;
     private Boolean rightField = true;
-
-    //********************************* CONSTANTS ************************************************//
-
-    double driveDefaultSpeed = 0.44; // TODO
-    double turnDefaultSpeed = 0.22;
-    double servoDefaultSpeed = 0.00033;
+    private Boolean armEnabled = false;
 
     //********************************* PREDEFINED POS *******************************************//
-
-    double clawOpen[] = {0.75, 0.20};
-    private double clawClosed[] = {0.95, 0.10};
-    private double clawZero[] = {0.22, 0.75};
+    private double clawClosed[] = {0.95, 0.00};
+    private double clawZero[] = {0.00, 1.00};
+    private double clawOpen[] = {0.60, 0.25};
+    private double driveDefaultSpeed = 0.22;
+    private double turnDefaultSpeed = 0.11;
+    private double servoDefaultSpeed = 0.00033;
 
     // ************************** MAIN LOOP ******************************************************//
 
@@ -99,6 +93,9 @@ public class Team_OpMode_V5 extends LinearOpMode {
             if (gamepad1.x) blueTeam = true;
             if (gamepad1.y) blueTeam = false;
 
+            /*if (blueTeam) robot.colorBeacon.blue();
+            if (!blueTeam) robot.colorBeacon.red();*/
+
             if (gamepad1.right_bumper) rightField = true;
             if (gamepad1.left_bumper) rightField = false;
         }
@@ -132,6 +129,9 @@ public class Team_OpMode_V5 extends LinearOpMode {
             updateTelemetry();
 
             //********************************* MANUAL MODE **************************************//
+            //              BOTH GAME PADS ARE MAPPED THE SAME AT THIS TIME                       //
+            //            IF THE SAME COMMAND IS GIVEN ON BOTH GAME PAD 1 WINS                    //
+            //********************************* MANUAL MODE **************************************//
 
             if (manualMode) {
 
@@ -140,7 +140,11 @@ public class Team_OpMode_V5 extends LinearOpMode {
                     double xInput = 0;
                     double yInput = 0;
 
-                    //TODO
+                    if (Math.abs(gamepad2.left_stick_y) > 0.15)
+                        yInput = -gamepad2.left_stick_y;
+                    if (Math.abs(gamepad2.left_stick_x) > 0.15)
+                        xInput = gamepad2.left_stick_x;
+
                     if (Math.abs(gamepad1.left_stick_y) > 0.15)
                         yInput = -gamepad1.left_stick_y;
                     if (Math.abs(gamepad1.left_stick_x) > 0.15)
@@ -161,7 +165,9 @@ public class Team_OpMode_V5 extends LinearOpMode {
                 {
                     double liftInput = 0;
 
-                    //TODO
+                    if (Math.abs(gamepad2.right_stick_y) > 0.15)
+                        liftInput = gamepad2.right_stick_y;
+
                     if (Math.abs(gamepad1.right_stick_y) > 0.15)
                         liftInput = gamepad1.right_stick_y;
 
@@ -171,41 +177,48 @@ public class Team_OpMode_V5 extends LinearOpMode {
                 }
 
                 // ********************************  control: TURNS 90  **************************//
-                if (gamepad1.dpad_right) {
+                if (gamepad1.dpad_right ||
+                        gamepad2.dpad_right) {
                     turn(-80);
                 }
 
                 // ********************************  control: TURNS -90
-                if (gamepad1.dpad_left) {
+                if (gamepad1.dpad_left ||
+                        gamepad2.dpad_left) {
                     turn(80);
                 }
 
                 // ********************************  control: TURN FACING THE CRYPTO BOX  ********//
-                if (gamepad1.dpad_up) {
+                if (gamepad1.dpad_up ||
+                        gamepad2.dpad_up) {
                     turnToHeading(gameStartHeading + 90);
                 }
 
                 // ********************************  control: TURNS 180  *************************//
-                if (gamepad1.dpad_down) {
+                if (gamepad1.dpad_down ||
+                        gamepad2.dpad_down) {
                     turn(180);
                 }
 
                 // ********************************  control: SMALL STEP FORWARD  ****************//
-                if (gamepad1.y) {
+                if (gamepad1.y ||
+                        gamepad2.y) {
                     double step = 10;
 
                     move(step);
                 }
 
                 // ********************************  control: SMALL STEP REVERSE  ****************//
-                if (gamepad1.a) {
+                if (gamepad1.a ||
+                        gamepad2.a) {
                     double step = 10;
 
                     move(-step);
                 }
 
                 // ********************************  control: SMALL STEP LEFT  *******************//
-                if (gamepad1.x) {
+                if (gamepad1.x ||
+                        gamepad2.x) {
                     double step = 10;
 
                     turn(-45);
@@ -215,7 +228,8 @@ public class Team_OpMode_V5 extends LinearOpMode {
                 }
 
                 // ********************************  control: SMALL STEP RIGHT  ******************//
-                if (gamepad1.b) {
+                if (gamepad1.b ||
+                        gamepad2.b) {
                     double step = 10;
 
                     turn(45);
@@ -225,6 +239,11 @@ public class Team_OpMode_V5 extends LinearOpMode {
                 }
 
                 // ********************************  control: CLAW OPEN  *************************//
+                if (gamepad2.left_trigger != 0) {
+                    leftClawControl -= gamepad2.left_trigger * servoDefaultSpeed * crrLoopTime;
+                    rightClawControl += gamepad2.left_trigger * servoDefaultSpeed * crrLoopTime;
+                    setServos();
+                }
                 if (gamepad1.left_trigger != 0) {
                     leftClawControl -= gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
                     rightClawControl += gamepad1.left_trigger * servoDefaultSpeed * crrLoopTime;
@@ -232,19 +251,26 @@ public class Team_OpMode_V5 extends LinearOpMode {
                 }
 
                 // ********************************  control: CLAW CLOSE  ************************//
+                if (gamepad2.right_trigger != 0) {
+                    leftClawControl += gamepad2.right_trigger * servoDefaultSpeed * crrLoopTime;
+                    rightClawControl -= gamepad2.right_trigger * servoDefaultSpeed * crrLoopTime;
+                    setServos();
+                }
                 if (gamepad1.right_trigger != 0) {
                     leftClawControl += gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
                     rightClawControl -= gamepad1.right_trigger * servoDefaultSpeed * crrLoopTime;
                     setServos();
                 }
                 // ********************************  control: CLAW PREDEF OPEN  ******************//
-                if (gamepad1.left_bumper) {
+                if (gamepad1.left_bumper ||
+                        gamepad2.left_bumper) {
                     leftClawControl = clawOpen[0];
                     rightClawControl = clawOpen[1];
                     setServos();
                 }
                 // ********************************  control: CLAW PREDEF CLOSE  *****************//
-                if (gamepad1.right_bumper) {
+                if (gamepad1.right_bumper ||
+                        gamepad2.right_bumper) {
                     leftClawControl = clawClosed[0];
                     rightClawControl = clawClosed[1];
                     setServos();
@@ -321,10 +347,20 @@ public class Team_OpMode_V5 extends LinearOpMode {
         double startHeading = robot.modernRoboticsI2cGyro.getHeading();
         double endHeading = startHeading + turnDeg;
 
-        while (crrError > 5) {
+        double rampDown = 15; //ramp down the last 15 deg
+        double maxPower = 0.44;
+        double minPower = 0.10;
 
-            leftDriveControl = -0.15 * direction; //power to motors is proportional with the speed
-            rightDriveControl = 0.15* direction;
+        while (crrError > 3) {
+
+            double crrPower = maxPower;
+
+            if (crrError < rampDown) {
+                crrPower = minPower + crrError / (maxPower - minPower);
+            }
+
+            leftDriveControl = -crrPower * direction; //power to motors is proportional with the speed
+            rightDriveControl = crrPower * direction;
 
             setDrives();
             waitMillis(1);
@@ -346,25 +382,28 @@ public class Team_OpMode_V5 extends LinearOpMode {
     private void move(double distance) {
 
         double direction = distance > 0 ? 1.0 : -1.0;
+        double crrError = distance * direction;
 
-        Animator moveAnimator = new Animator();
-        moveAnimator.configRamp(333, 444);
-        moveAnimator.configSpeed(0.1, 0.88, 0.2, 5);
-        moveAnimator.start(0, Math.abs(distance));
+        double rampDown = 8; //ramp down the last 8 mm
+        double maxPower = 0.44;
+        double minPower = 0.10;
+        double linearMove = 0.01; //TODO moves 0.01 for each ms at max power
 
-        moveAnimator.advanceStepNoPos();
-        double nextSpeed = moveAnimator.getSpeed();
+        while (crrError > 3) {
 
-        while (nextSpeed > 0) {
+            double crrPower = maxPower;
 
-            leftDriveControl = nextSpeed * direction; //power to motors is proportional with the speed
-            rightDriveControl = nextSpeed * direction;
+            if (crrError < rampDown) {
+                crrPower = minPower + crrError / (maxPower - minPower);
+            }
+
+            leftDriveControl = crrPower * direction; //power to motors is proportional with the speed
+            rightDriveControl = crrPower * direction;
 
             setDrives();
-            sleep(5);
+            waitMillis(1);
 
-            moveAnimator.advanceStepNoPos();
-            nextSpeed = moveAnimator.getSpeed();
+            crrError -= crrPower * linearMove;
         }
         stopRobot();
     }
@@ -403,7 +442,7 @@ public class Team_OpMode_V5 extends LinearOpMode {
 
     // ************************** HARDWARE SET FUNCTIONS *****************************************//
 
-    void setDrives() {
+    private void setDrives() {
 
         leftDriveControl = Range.clip(leftDriveControl, -0.88, 0.88);
         rightDriveControl = Range.clip(rightDriveControl, -0.88, 0.88);
@@ -467,7 +506,7 @@ public class Team_OpMode_V5 extends LinearOpMode {
         }
     }
 
-    void setServos() {
+    private void setServos() {
 
         double minLeftClaw = Math.min(Math.min(clawZero[0], clawClosed[0]), clawOpen[0]);
         double maxLeftClaw = Math.max(Math.max(clawZero[0], clawClosed[0]), clawOpen[0]);
@@ -515,6 +554,7 @@ public class Team_OpMode_V5 extends LinearOpMode {
 //        while (runtimeWait.nanoseconds() < millis * 1000 * 1000) {
 //            idle();
 //        }
+
     }
 
     private boolean stopTime(double totalSeconds) {
