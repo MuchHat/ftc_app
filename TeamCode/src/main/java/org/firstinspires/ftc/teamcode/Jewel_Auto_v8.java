@@ -121,6 +121,8 @@ public class Jewel_Auto_v8 extends LinearOpMode {
 
             int findPositions = 2;
             moveArm(armExtended[0], armExtended[1]);
+            robot.colorBeacon.purple();
+            waitMillis(555);
 
             for (int i = 0; i < findPositions; i++) {
 
@@ -159,9 +161,13 @@ public class Jewel_Auto_v8 extends LinearOpMode {
 
                 moveArm(armPosZero[0], armPosZero[1]);
                 waitMillis(555);
+
+                robot.colorBeacon.green();
+
+            } else if (!foundBlue || !foundRed){
+                robot.colorBeacon.yellow();
             }
 
-            robot.colorBeacon.green();
             stopRobot();
             stop(); //stop the opMode
 

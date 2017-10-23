@@ -55,6 +55,7 @@ public class Safe_Auto_V8 extends LinearOpMode {
     private double driveDefaultSpeed = 0.33;
     private double turnDefaultSpeed = 0.16;
     private double servoDefaultSpeed = 0.00033;
+    private double armPosZero[] = {0, 0};
 
     // ************************** MAIN LOOP ******************************************************//
 
@@ -71,6 +72,8 @@ public class Safe_Auto_V8 extends LinearOpMode {
         controlRuntime.reset();
         if (blueTeam) robot.colorBeacon.blue();
         if (!blueTeam) robot.colorBeacon.red();
+
+        moveArm(armPosZero[0], armPosZero[1]);
 
         robot.modernRoboticsI2cGyro.calibrate();
         // Wait until the gyro calibration is complete
@@ -108,12 +111,21 @@ public class Safe_Auto_V8 extends LinearOpMode {
             loopRuntime.reset();
 
             updateTelemetry();
+            robot.colorBeacon.yellow();
 
             //TODO move to safe zone
 
-            // load vuforia
+            // load vuforia, turn green if found
+            waitMillis(2222);
+            robot.colorBeacon.green();
+
+            // turn yellow if not found
+            waitMillis(2222);
+            robot.colorBeacon.yellow();
 
             // drive based on distances from vuforia
+            //...
+            //...
 
             stopRobot();
             stop(); //stop the opMode
@@ -124,7 +136,7 @@ public class Safe_Auto_V8 extends LinearOpMode {
 
     // ************************** SCAN HELPER FUNCTION  ******************************************//
 
-    private void scan(){
+    private void scan() {
 
     }
 
