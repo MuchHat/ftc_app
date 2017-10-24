@@ -143,8 +143,12 @@ public class Team_TestVuforia_V1 extends LinearOpMode {
                     double rY = rot.secondAngle;
                     double rZ = rot.thirdAngle;
 
+                    // should be the direct distance
+                    double mag = trans.magnitude();
+
                     telemetry.addData("pose t", "{%.2f, %.2f, %.2f}", tX, tY, tZ);
                     telemetry.addData("pose r", "{%.2f, %.2f, %.2f}", rX, rY, rZ);
+                    telemetry.addData("mag", "{%.2f}", mag);
                 }
             } else {
                 telemetry.addData("vuMark", "not visible");
