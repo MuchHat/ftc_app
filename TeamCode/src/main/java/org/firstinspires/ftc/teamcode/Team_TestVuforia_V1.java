@@ -120,8 +120,7 @@ public class Team_TestVuforia_V1 extends LinearOpMode {
                 /* Found an instance of the template. In the actual game, you will probably
                  * loop until this condition occurs, then move on to act accordingly depending
                  * on which VuMark was visible. */
-                telemetry.addData("vu mark", "%s visible", vuMark);
-
+                telemetry.addData("vuMark", "%s visible", vuMark);
                 robot.colorBeacon.green();
 
                 /* For fun, we also exhibit the navigational pose */
@@ -144,25 +143,21 @@ public class Team_TestVuforia_V1 extends LinearOpMode {
                     double rY = rot.secondAngle;
                     double rZ = rot.thirdAngle;
 
-                    telemetry.addData("pose", "tX %.2f", tX);
-                    telemetry.addData("pose", "tY %.2f", tY);
-                    telemetry.addData("pose", "tZ %.2f", tZ);
-                    telemetry.addData("pose", "rX %.2f", rX);
-                    telemetry.addData("pose", "rY %.2f", rY);
-                    telemetry.addData("pose", "rZ %.2f", rZ);
+                    telemetry.addData("pose t", "{%.2f, %.2f, %.2f}", tX, tY, tZ);
+                    telemetry.addData("pose r", "{%.2f, %.2f, %.2f}", rX, rY, rZ);
                 }
             } else {
-                telemetry.addData("vu mark", "not visible");
+                telemetry.addData("vuMark", "not visible");
                 robot.colorBeacon.yellow();
             }
             telemetry.update();
         }
     }
+    // ************************** END OP *********************************************************//
 
     String format(OpenGLMatrix transformationMatrix) {
         return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
-}
-
-// ************************** END OP *********************************************************//
+    }
+    // ************************** END CLASS *******************************************************//
 }
 
