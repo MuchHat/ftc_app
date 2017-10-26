@@ -83,29 +83,31 @@ public class Safe_Auto_V8 extends LinearOpMode {
             robot.colorBeacon.yellow();
 
             // load vuforia, turn green if marker found
-            waitMillis(555);
+            waitMillis(333);
             robot.colorBeacon.green();
 
             // turn yellow if not found
-            waitMillis(555);
+            waitMillis(333);
             robot.colorBeacon.yellow();
 
             // drive based on distances from vuforia
             int stepsCount = 8;
-            double stepsLinear[] = {0, 0, 5, 5, 5, 5, 5, 5};
+            double stepsMove[] = {0, 0, 66, 0, 66, 66, 66, 0};
+            double stepsSide[] = {0, 0, 0, 33, 0, 0, 0, 0};
             double stepsTurns[] = {0, 0, 90, 0, 0, 0, -90, 0};
             double stepsLift[] = {0, 11, 0, 0, 0, 0, -11, 0};
             double stepsClaw[] = {1, 0, 0, 0, 0, -1, 0, 0};
 
+            waitMillis(333);
             for (int i = 0; i < stepsCount; i++) {
 
-                waitMillis(222);
+                robot.colorBeacon.teal();
 
-                if (i % 2 == 0) robot.colorBeacon.teal();
-                else if (i % 2 == 1) robot.colorBeacon.purple();
-
-                if (stepsLinear[i] != 0) {
-                    robot.move(stepsLinear[i]);
+                if (stepsMove[i] != 0) {
+                    robot.move(stepsMove[i]);
+                }
+                if (stepsSide[i] != 0) {
+                    robot.moveSide(stepsSide[i]);
                 }
                 if (stepsTurns[i] != 0) {
                     robot.turn((int) stepsTurns[i]);
@@ -121,6 +123,8 @@ public class Safe_Auto_V8 extends LinearOpMode {
                         robot.closeClaw();
                     }
                 }
+                robot.colorBeacon.off();
+                waitMillis(222);
             }
 
             robot.colorBeacon.green();

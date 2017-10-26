@@ -237,36 +237,38 @@ public class Team_Hardware_V3 {
         headingControl = modernRoboticsI2cGyro.getHeading();
     }
 
-    void openClaw(){
+    void openClaw() {
         leftClawControl = clawOpen[0];
         rightClawControl = clawOpen[1];
         setServos();
     }
 
-    void closeClaw(){
+    void closeClaw() {
         leftClawControl = clawClosed[0];
         rightClawControl = clawClosed[1];
         setServos();
     }
 
-    void moveLift(double distance){
+    void moveLift(double distance) {
         double mmMillis = 0.3;
-        double stepTime = distance/mmMillis;
+        double stepTime = Math.abs(distance) / mmMillis;
         double liftDefaultPower = 0.88;
 
         liftControl = liftDefaultPower;
         setDrives();
+
         waitMillis(stepTime);
+
         liftControl = 0;
         setDrives();
     }
 
-    void move(double distance){
+    void move(double distance) {
 
         moveLinear(distance, 1.0, 1.0, 1.0, 1.0);
     }
 
-    void moveSide( double distance){
+    void moveSide(double distance) {
 
         moveLinear(distance, 1.0, -1.0, -1.0, 1.0);
     }
