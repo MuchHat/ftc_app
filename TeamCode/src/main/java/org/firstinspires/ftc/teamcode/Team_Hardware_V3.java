@@ -75,6 +75,8 @@ public class Team_Hardware_V3 {
     //********************************* MOVE STATES **********************************************//
     double leftDriveControl = 0;
     double rightDriveControl = 0;
+    double leftDriveControlBack = 0;
+    double rightDriveControlBack = 0;
     double headingControl = 0;
     double liftControl = 0;
     double leftClawControl = 0;
@@ -145,6 +147,8 @@ public class Team_Hardware_V3 {
 
         leftDriveControl = 0;
         rightDriveControl = 0;
+        leftDriveControlBack = 0;
+        rightDriveControlBack = 0;
         leftClawControl = clawZero[0];
         rightClawControl = clawZero[1];
         baseControl = 0;
@@ -205,12 +209,14 @@ public class Team_Hardware_V3 {
 
             leftDriveControl = -crrPower * direction;
             rightDriveControl = crrPower * direction;
+            leftDriveControlBack = leftDriveControl;
+            rightDriveControlBack = rightDriveControl;
 
             setDrives();
 
             double stepMillis = 1;
             waitMillis(stepMillis);
-            if( Math.abs(crrError) < 17 ){
+            if (Math.abs(crrError) < 17) {
                 stopRobot();
                 waitMillis(stepMillis);
             }
@@ -231,7 +237,41 @@ public class Team_Hardware_V3 {
         headingControl = modernRoboticsI2cGyro.getHeading();
     }
 
-    void move(double distance) {
+    void openClaw(){
+        leftClawControl = clawOpen[0];
+        rightClawControl = clawOpen[1];
+        setServos();
+    }
+
+    void closeClaw(){
+        leftClawControl = clawClosed[0];
+        rightClawControl = clawClosed[1];
+        setServos();
+    }
+
+    void moveLift(double distance){
+        double mmMillis = 3;
+        double stepTime = distance/mmMillis;
+        double liftDefaultPower = 0.88;
+
+        liftControl = liftDefaultPower;
+        setDrives();
+        waitMillis(stepTime);
+        liftControl = 0;
+        setDrives();
+    }
+
+    void move(double distance){
+
+        moveLinear(distance, 1.0, 1.0, 1.0, 1.0);
+    }
+
+    void moveSide( double distance){
+
+        moveLinear(distance, 1.0, -1.0, -1.0, 1.0);
+    }
+
+    void moveLinear(double distance, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
 
         double mmMillis = 19; // how many mm it moves in 1ms at max power
         double accelDistance = 11; //accelerate to max over 11 mm
@@ -258,13 +298,15 @@ public class Team_Hardware_V3 {
 
             crrPower = Range.clip(crrPower, minPower, maxPower);
 
-            leftDriveControl = crrPower * direction; //power to motors is proportional with the speed
-            rightDriveControl = crrPower * direction;
+            leftDriveControl = crrPower * direction * dirFrontLeft; //power to motors is proportional with the speed
+            rightDriveControl = crrPower * direction * dirFrontRight;
+            leftDriveControlBack = crrPower * direction * dirBackLeft;
+            rightDriveControlBack = crrPower * direction * dirBackRight;
 
             setDrives();
 
             double stepMillis = 1;
-            stepMillis = Math.min( stepMillis, Math.abs(crrError / ( crrPower * mmMillis ) ) );
+            stepMillis = Math.min(stepMillis, Math.abs(crrError / (crrPower * mmMillis)));
             waitMillis(stepMillis);
 
             crrError -= crrPower * mmMillis * stepMillis;
@@ -346,10 +388,12 @@ public class Team_Hardware_V3 {
 
     void setDrives() {
 
-        leftDriveControl = Range.clip(leftDriveControl, -0.88, 0.88);
-        rightDriveControl = Range.clip(rightDriveControl, -0.88, 0.88);
+        leftDriveControl = Range.clip(leftDriveControl, -1, 1);
+        rightDriveControl = Range.clip(rightDriveControl, -1, 1);
+        leftDriveControlBack = Range.clip(leftDriveControlBack, -1, 1);
+        rightDriveControlBack = Range.clip(rightDriveControlBack, -1, 1);
 
-        liftControl = Range.clip(liftControl, -0.66, 0.66);
+        liftControl = Range.clip(liftControl, -1, 1);
 
         if (liftControl >= 0 && topSwitch.getState()) { // true means switch is pressed
             liftControl = 0;
@@ -370,7 +414,9 @@ public class Team_Hardware_V3 {
         // do not add if already doing a turn
         double headingCorrection = 0;
 
-        if (leftDriveControl == rightDriveControl) {
+        if (leftDriveControl == rightDriveControl &&
+                leftDriveControl == rightDriveControlBack &&
+                leftDriveControl == leftDriveControlBack) {
             double headingCrr = modernRoboticsI2cGyro.getHeading();
             double error;
             double driveDirection = leftDriveControl > 0 ? 1.0 : -1.0;
@@ -393,30 +439,34 @@ public class Team_Hardware_V3 {
         if (leftDriveControl >= 0) {
             leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
             leftDrive.setPower(Math.abs(leftDriveControl) - headingCorrection);
-
-            leftDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
-            leftDriveBack.setPower(Math.abs(leftDriveControl) - headingCorrection);
         }
         if (leftDriveControl < 0) {
             leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             leftDrive.setPower(Math.abs(leftDriveControl) - headingCorrection);
-
-            leftDriveBack.setDirection(DcMotorSimple.Direction.FORWARD);
-            leftDriveBack.setPower(Math.abs(leftDriveControl) - headingCorrection);
         }
         if (rightDriveControl >= 0) {
             rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
             rightDrive.setPower(Math.abs(rightDriveControl) + headingCorrection);
-
-            rightDriveBack.setDirection(DcMotorSimple.Direction.FORWARD);
-            rightDriveBack.setPower(Math.abs(rightDriveControl) + headingCorrection);
         }
         if (rightDriveControl < 0) {
             rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
             rightDrive.setPower(Math.abs(rightDriveControl) + headingCorrection);
-
+        }
+        if (leftDriveControlBack >= 0) {
+            leftDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
+            leftDriveBack.setPower(Math.abs(leftDriveControlBack) - headingCorrection);
+        }
+        if (leftDriveControlBack < 0) {
+            leftDriveBack.setDirection(DcMotorSimple.Direction.FORWARD);
+            leftDriveBack.setPower(Math.abs(leftDriveControlBack) - headingCorrection);
+        }
+        if (rightDriveControlBack >= 0) {
+            rightDriveBack.setDirection(DcMotorSimple.Direction.FORWARD);
+            rightDriveBack.setPower(Math.abs(rightDriveControlBack) + headingCorrection);
+        }
+        if (rightDriveControlBack < 0) {
             rightDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
-            rightDriveBack.setPower(Math.abs(rightDriveControl) + headingCorrection);
+            rightDriveBack.setPower(Math.abs(rightDriveControlBack) + headingCorrection);
         }
     }
 
@@ -444,6 +494,9 @@ public class Team_Hardware_V3 {
     void stopRobot() {
         leftDriveControl = 0;
         rightDriveControl = 0;
+        leftDriveControlBack = 0;
+        rightDriveControlBack = 0;
+
         setDrives();
     }
 

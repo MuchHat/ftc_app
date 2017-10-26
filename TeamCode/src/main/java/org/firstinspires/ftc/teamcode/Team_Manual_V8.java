@@ -120,6 +120,9 @@ public class Team_Manual_V8 extends LinearOpMode {
                 robot.leftDriveControl += xInput * robot.turnDefaultSpeed;
                 robot.rightDriveControl -= xInput * robot.turnDefaultSpeed;
 
+                robot.leftDriveControlBack = robot.leftDriveControl;
+                robot.rightDriveControlBack = robot.rightDriveControl;
+
                 robot.setDrives();
 
                 if (xInput != 0) robot.headingControl = robot.modernRoboticsI2cGyro.getHeading();
@@ -185,23 +188,17 @@ public class Team_Manual_V8 extends LinearOpMode {
             // ********************************  control: SMALL STEP LEFT  *******************//
             if (gamepad1.x ||
                     gamepad2.x) {
-                double step = 1;
+                double step = 11;
 
-                robot.turn(-15);
-                robot.move(-4 * step);
-                robot.turn(45);
-                robot.move(step);
+                robot.moveSide(step);
             }
 
             // ********************************  control: SMALL STEP RIGHT  ******************//
             if (gamepad1.b ||
                     gamepad2.b) {
-                double step = 1;
+                double step = -11;
 
-                robot.turn(15);
-                robot.move(-4 * step);
-                robot.turn(-15);
-                robot.move(step);
+                robot.moveSide(step);
             }
 
             // ********************************  control: CLAW OPEN  *************************//
@@ -230,16 +227,12 @@ public class Team_Manual_V8 extends LinearOpMode {
             // ********************************  control: CLAW PREDEF OPEN  ******************//
             if (gamepad1.left_bumper ||
                     gamepad2.left_bumper) {
-                robot.leftClawControl = robot.clawOpen[0];
-                robot.rightClawControl = robot.clawOpen[1];
-                robot.setServos();
+                robot.openClaw();
             }
             // ********************************  control: CLAW PREDEF CLOSE  *****************//
             if (gamepad1.right_bumper ||
                     gamepad2.right_bumper) {
-                robot.leftClawControl = robot.clawClosed[0];
-                robot.rightClawControl = robot.clawClosed[1];
-                robot.setServos();
+                robot.closeClaw();
             }
 
             //********************************* END LOOP *****************************************//

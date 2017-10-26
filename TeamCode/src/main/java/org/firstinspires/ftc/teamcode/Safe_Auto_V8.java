@@ -94,7 +94,7 @@ public class Safe_Auto_V8 extends LinearOpMode {
             int stepsCount = 8;
             double stepsLinear[] = {0, 0, 5, 5, 5, 5, 5, 5};
             double stepsTurns[] = {0, 0, 90, 0, 0, 0, -90, 0};
-            double stepsLift[] = {0, 0.5, 90, 0, 0, 0, -90, 0};
+            double stepsLift[] = {0, 11, 0, 0, 0, 0, -11, 0};
             double stepsClaw[] = {1, 0, 0, 0, 0, -1, 0, 0};
 
             for (int i = 0; i < stepsCount; i++) {
@@ -111,22 +111,14 @@ public class Safe_Auto_V8 extends LinearOpMode {
                     robot.turn((int) stepsTurns[i]);
                 }
                 if (stepsLift[i] != 0) {
-                    robot.liftControl = stepsLift[i];
-                    robot.setDrives();
-                    waitMillis(11); //TODO
-                    robot.liftControl = 0;
-                    robot.setDrives();
+                    robot.moveLift(stepsLift[i]);
                 }
                 if (stepsClaw[i] != 0) {
                     if (stepsClaw[i] > 0) {
-                        robot.leftClawControl = robot.clawOpen[0];
-                        robot.rightClawControl = robot.clawOpen[1];
-                        robot.setServos();
+                        robot.openClaw();
                     }
                     if (stepsClaw[i] < 0) {
-                        robot.leftClawControl = robot.clawClosed[0];
-                        robot.rightClawControl = robot.clawClosed[1];
-                        robot.setServos();
+                        robot.closeClaw();
                     }
                 }
             }
