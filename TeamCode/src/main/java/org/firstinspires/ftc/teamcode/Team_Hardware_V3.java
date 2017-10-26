@@ -250,7 +250,7 @@ public class Team_Hardware_V3 {
     }
 
     void moveLift(double distance){
-        double mmMillis = 3;
+        double mmMillis = 0.3;
         double stepTime = distance/mmMillis;
         double liftDefaultPower = 0.88;
 
