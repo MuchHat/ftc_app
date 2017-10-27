@@ -25,7 +25,7 @@ Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufoywxzibq+y
 public class Safe_Auto_V9 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
-    private Team_Hardware_V3 robot = new Team_Hardware_V3();
+    private Team_Hardware_V9 robot = new Team_Hardware_V9();
 
     //********************************* MOVE STATES **********************************************//
     private ElapsedTime totalRuntime = null;

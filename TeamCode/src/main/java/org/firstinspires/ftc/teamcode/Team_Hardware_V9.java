@@ -44,7 +44,7 @@ import static android.os.SystemClock.sleep;
 
 // ************************** ROBOT HW CLASS *****************************************************//
 
-public class Team_Hardware_V3 {
+public class Team_Hardware_V9 {
 
     // ************************** ROBOT HW VARIABLES *********************************************//
 
@@ -98,7 +98,7 @@ public class Team_Hardware_V3 {
 
     // ************************** HW CONSTRUCTOR  ************************************************//
 
-    public Team_Hardware_V3() {
+    public Team_Hardware_V9() {
 
     }
 

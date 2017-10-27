@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -22,12 +20,12 @@ Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufoywxzibq+y
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Manual V8", group = "Team")
+@TeleOp(name = "Team Manual V9", group = "Team")
 // @Disabled
-public class Team_Manual_V8 extends LinearOpMode {
+public class Team_Manual_V9 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
-    private Team_Hardware_V3 robot = new Team_Hardware_V3();
+    private Team_Hardware_V9 robot = new Team_Hardware_V9();
 
     //********************************* MOVE STATES **********************************************//
     private ElapsedTime totalRuntime = null;

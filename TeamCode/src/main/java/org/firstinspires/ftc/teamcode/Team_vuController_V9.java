@@ -33,29 +33,16 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-
 // ************************** OP FOR TESTING THE SERVOS ******************************************//
 
-@TeleOp(name = "Test VuController V1", group = "Team")
+@TeleOp(name = "Test VuController V9", group = "Team")
 //@Disabled
-public class Team_vuController_V1 extends LinearOpMode {
+public class Team_vuController_V9 extends LinearOpMode {
 
     // ************************** VARIABLES ******************************************************//
 
     Vu vu = new Vu();
-    private Team_Hardware_V3 robot = new Team_Hardware_V3();
+    private Team_Hardware_V9 robot = new Team_Hardware_V9();
     private ElapsedTime runtimeLoop = new ElapsedTime();
     private ElapsedTime timer = new ElapsedTime();
     // ************************** OP LOOP ********************************************************//

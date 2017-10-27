@@ -29,24 +29,19 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 // ************************** OP FOR TESTING THE SERVOS ******************************************//
 
-@TeleOp(name = "Test Servos V2", group = "Team")
+@TeleOp(name = "Test Servos V9", group = "Team")
 //@Disabled
-public class Team_TestServos_V2 extends LinearOpMode {
+public class Team_TestServos_V9 extends LinearOpMode {
 
     // ************************** VARIABLES ******************************************************//
 
-    private Team_Hardware_V3 robot = new Team_Hardware_V3();
+    private Team_Hardware_V9 robot = new Team_Hardware_V9();
 
     private ElapsedTime runtimeLoop = new ElapsedTime();
     private ElapsedTime timer = new ElapsedTime();
