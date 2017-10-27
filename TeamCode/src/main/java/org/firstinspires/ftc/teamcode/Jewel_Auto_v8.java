@@ -85,14 +85,14 @@ public class Jewel_Auto_v8 extends LinearOpMode {
 
             // first find the right color jewel
 
-            double armFindJewelB[] = {0.66, 0.70, 0.70, 0.70};
-            double armFindJewelE[] = {0.15, 0.30, 0.40, 0.45};
+            double armFindJewelB[] = {0.63, 0.67, 0.77, 0.85};
+            double armFindJewelE[] = {0.73, 0.77, 0.88, 0.98};
 
-            double armKnockB[] = {0.68, 0.65, 0.65, 0.60};
-            double armKnockE[] = {0.30, 0.30, 0.40, 0.40};
+            double armKnockB[] = {0.85, 0.85, 0.85, 0.85};
+            double armKnockE[] = {0.98, 0.98, 0.98, 0.98};
 
-            double armExtendedB = 0.68;
-            double armExtendedE = 0.30;
+            double armExtendedB = 0.59;
+            double armExtendedE = 0.67;
 
             int findPositions = 4;
             robot.moveArm(armExtendedB, armExtendedE);
@@ -125,35 +125,33 @@ public class Jewel_Auto_v8 extends LinearOpMode {
             if (foundBlue || foundRed) {
 
                 //TODO add logic to account for fw/rev and team color
-                boolean knockFirst = true; //knowck the ball in front or the other one
+                boolean knockFirst = true; //knock the ball in front or the other one
                 if (blueTeam && foundBlue) knockFirst = false;
                 if (!blueTeam && foundRed) knockFirst = false;
+                if (blueTeam && !foundBlue) knockFirst = true;
+                if (!blueTeam && !foundRed) knockFirst = true;
 
-                if (!knockFirst) { // move to between the balls
-                    robot.move(11);
-                    waitMillis(222);
-                }
+                robot.move(20);
+
                 double crrBase = armKnockB[foundPos];
                 double crrElbow = armKnockE[foundPos];
                 robot.moveArm(crrBase, crrElbow);
                 waitMillis(222);
 
-                if (knockFirst) { // if knowcking the ball first right in front move backwards
-                    robot.move(-55);
-                    waitMillis(222);
-                    robot.move(55);
+                if (!knockFirst) { // move to between the balls
+                    robot.move(40);
                     waitMillis(222);
                 }
-                if (!knockFirst) { // else move forward
-                    robot.move(55);
-                    waitMillis(222);
-                    robot.move(-55);
+
+                if (knockFirst) {
+                    robot.move(-40);
                     waitMillis(222);
                 }
 
                 robot.moveArm(armExtendedB, armExtendedE);
                 robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
                 waitMillis(222);
+
 
                 robot.colorBeacon.green();
 
