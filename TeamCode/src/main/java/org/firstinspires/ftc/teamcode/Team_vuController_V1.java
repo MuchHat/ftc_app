@@ -92,17 +92,22 @@ public class Team_vuController_V1 extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            boolean targetSeen = vu.targetSeen();
+            String targetSeenString = "NO";
+            if(targetSeen)targetSeenString = "YES";
+
+            telemetry.addData("vuMark", "target seen %s", targetSeenString);
             if (vu.targetSeen()) {
+                String targetVisibleString = "NO";
+                if(vu.targetVisible())targetVisibleString = "YES";
 
-                /* Found an instance of the template. In the actual game, you will probably
-                 * loop until this condition occurs, then move on to act accordingly depending
-                 * on which VuMark was visible. */
-                telemetry.addData("vuMark", "%d visible", vu.getLastTargetSeenNo());
-                telemetry.addData("pose t", "{%.2f, %.2f }", vu.getX(), vu.getY());
+                telemetry.addData("vuMark", "target vidible now", targetVisibleString);
+                telemetry.addData("vuMark", "target no", vu.getLastTargetSeenNo());
+                telemetry.addData("vuMark", "{%.2f, %.2f}", vu.getX(), vu.getY());
 
-                robot.colorBeacon.green();
+                if( vu.targetVisible() ) robot.colorBeacon.green();
+                else robot.colorBeacon.teal();
             } else {
-                telemetry.addData("vuMark", "not yet visible");
                 robot.colorBeacon.yellow();
             }
             telemetry.update();
