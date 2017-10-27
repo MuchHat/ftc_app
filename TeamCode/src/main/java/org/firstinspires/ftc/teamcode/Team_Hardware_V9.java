@@ -302,7 +302,7 @@ public class Team_Hardware_V9 {
         leftDistanceControl = distance * dirFrontLeft;
         rightDistanceControl = distance * dirFrontRight;
         leftDistanceControlBack = distance * dirBackLeft;
-        rightPowerControlBack = distance * dirFrontRight;
+        rightPowerControlBack = distance * dirBackRight;
 
         setDrives();
         stopRobot();
