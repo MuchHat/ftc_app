@@ -15,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Created by gigela on 10/27/2017.
  */
 
-public class vuController {
+public class Vu {
 
     VuforiaLocalizer vuforia;
     VuforiaTrackables relicTrackables;
