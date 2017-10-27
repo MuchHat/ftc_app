@@ -216,9 +216,9 @@ public class Team_Hardware_V3 {
 
             double stepMillis = 1;
             waitMillis(stepMillis);
-            if (Math.abs(crrError) < 17) {
+            if (Math.abs(crrError) < 30) {
                 stopRobot();
-                waitMillis(stepMillis);
+                waitMillis(2*stepMillis);
             }
 
             double crrHeading = modernRoboticsI2cGyro.getHeading();
@@ -270,12 +270,23 @@ public class Team_Hardware_V3 {
 
     void moveSide(double distance) {
 
-        moveLinear(distance, 1.0, -1.0, -1.0, 1.0);
+        leftDriveControl = -0.44;
+        rightDriveControl = -0.44;
+        leftDriveControlBack = 0.44;
+        rightDriveControlBack = 0.44;
+        setDrives();
+        waitMillis(50);
+        leftDriveControl = 0;
+        rightDriveControl = 0;
+        leftDriveControlBack = 0;
+        rightDriveControlBack = 0;
+        setDrives();
+        //moveLinear(distance, 1.0, 1.0, -1.0, -1.0);
     }
 
     void moveLinear(double distance, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
 
-        double mmMillis = 19; // how many mm it moves in 1ms at max power
+        double mmMillis = 5; // how many mm it moves in 1ms at max power
         double accelDistance = 11; //accelerate to max over 11 mm
         double brakeDistance = 22; //ramp down the last 22 mm
 

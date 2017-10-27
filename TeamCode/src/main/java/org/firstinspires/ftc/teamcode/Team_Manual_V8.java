@@ -22,7 +22,7 @@ Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufoywxzibq+y
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Manual V7", group = "Team")
+@TeleOp(name = "Manual V8", group = "Team")
 // @Disabled
 public class Team_Manual_V8 extends LinearOpMode {
 

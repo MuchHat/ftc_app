@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.UserManager;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -37,7 +39,6 @@ public class Safe_Auto_V8 extends LinearOpMode {
     private Boolean loaded = false;
 
     // ************************** MAIN LOOP ******************************************************//
-
     @Override
     public void runOpMode() {
 
@@ -91,37 +92,32 @@ public class Safe_Auto_V8 extends LinearOpMode {
             robot.colorBeacon.yellow();
 
             // drive based on distances from vuforia
-            int stepsCount = 8;
-            double stepsMove[] = {0, 0, 66, 0, 66, 66, 66, 0};
-            double stepsSide[] = {0, 0, 0, 33, 0, 0, 0, 0};
-            double stepsTurns[] = {0, 0, 90, 0, 0, 0, -90, 0};
-            double stepsLift[] = {0, 11, 0, 0, 0, 0, -11, 0};
-            double stepsClaw[] = {1, 0, 0, 0, 0, -1, 0, 0};
+            double stepsMove[]= {0, 0,  575,0, 0,  0,  15,  0};
+            double stepsSide[]= {0, 0,  0,  0,  0,  0,  0,  0};
+            double stepsTurns[]={0, 0,  0,  0,  85, 0,  0,  0};
+            double stepsLift[]= {0, 0,  0,  0,  0,  0,  0,  0};
+            double clawLeft[]=  {0, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0};
+            double clawRight[]= {1, 0.55, 0.55, 0.55, 0.55, 0.55, 0.55, 1};
 
             waitMillis(333);
-            for (int i = 0; i < stepsCount; i++) {
+            for (int i = 0; i < stepsMove.length; i++) {
 
                 robot.colorBeacon.teal();
+
+                robot.leftClaw.setPosition(clawLeft[i]);
+                robot.rightClaw.setPosition(clawRight[i]);
 
                 if (stepsMove[i] != 0) {
                     robot.move(stepsMove[i]);
                 }
-                if (stepsSide[i] != 0) {
+                /*if (stepsSide[i] != 0) {
                     robot.moveSide(stepsSide[i]);
-                }
+                }*/
                 if (stepsTurns[i] != 0) {
                     robot.turn((int) stepsTurns[i]);
                 }
                 if (stepsLift[i] != 0) {
                     robot.moveLift(stepsLift[i]);
-                }
-                if (stepsClaw[i] != 0) {
-                    if (stepsClaw[i] > 0) {
-                        robot.openClaw();
-                    }
-                    if (stepsClaw[i] < 0) {
-                        robot.closeClaw();
-                    }
                 }
                 robot.colorBeacon.off();
                 waitMillis(222);
