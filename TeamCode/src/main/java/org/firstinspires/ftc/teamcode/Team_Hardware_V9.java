@@ -280,58 +280,31 @@ public class Team_Hardware_V9 {
 
     void moveLinear(double distance, double power, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
 
-        double brakeDistance = 22; //ramp down the last 22 mm
+        double distanceLowSpeed = 22;
+        double distanceHighSpeed = 333;
 
-        double minPower = 0.11;
-        double maxPower = 0.99;
+        double lowSpeedPower = 0.11;
+        double highSpeedPower = 0.66;
 
-        power = Range.clip(power, minPower, maxPower);
+        double ratio = 1.0;
 
-        double direction = distance > 0 ? 1.0 : -1.0;
+        ratio = Math.abs( distance )/ (distanceHighSpeed - distanceLowSpeed);
+        ratio = Range.clip( ratio, 0, 1 );
 
-        double firstSegmentPower = power;
-        double secondSegmentPower = minPower;
+        double crrPower = lowSpeedPower + ratio * (highSpeedPower - highSpeedPower);
+        crrPower = Range.clip(crrPower, lowSpeedPower, highSpeedPower);
 
-        double firstSegment = distance;
-        double secondSegment = 0;
+        leftPowerControl = crrPower;
+        rightPowerControl = crrPower;
+        leftPowerControlBack = crrPower;
+        rightPowerControlBack = crrPower;
 
-        while (direction * distance > brakeDistance && power > minPower) {
-
-            firstSegment = distance - brakeDistance * direction;
-            secondSegment = brakeDistance * direction;
-        }
-
-        leftPowerControl = firstSegmentPower;
-        rightPowerControl = firstSegmentPower;
-        leftPowerControlBack = firstSegmentPower;
-        rightPowerControlBack = firstSegmentPower;
-
-        leftDistanceControl = firstSegment;
-        rightDistanceControl = firstSegment;
-        leftDistanceControlBack = firstSegment;
-        rightPowerControlBack = firstSegmentPower;
+        leftDistanceControl = distance * dirFrontLeft;
+        rightDistanceControl = distance * dirFrontRight;
+        leftDistanceControlBack = distance * dirBackLeft;
+        rightPowerControlBack = distance * dirFrontRight;
 
         setDrives();
-
-        if (secondSegment != 0) {
-
-            leftPowerControl = secondSegmentPower;
-            rightPowerControl = secondSegmentPower;
-            leftPowerControlBack = secondSegmentPower;
-            rightPowerControlBack = secondSegmentPower;
-
-            leftDistanceControl = secondSegment;
-            rightDistanceControl = secondSegment;
-            leftDistanceControlBack = secondSegment;
-            rightPowerControlBack = secondSegment;
-
-            setDrives();
-
-            leftPowerControl = 0;
-            rightPowerControl = 0;
-            leftPowerControlBack = 0;
-            rightPowerControlBack = 0;
-        }
         stopRobot();
     }
 
