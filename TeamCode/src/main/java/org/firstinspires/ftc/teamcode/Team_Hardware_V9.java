@@ -364,8 +364,8 @@ public class Team_Hardware_V9 {
         double stepSize = 0.004;
         double stepsAccel = 11;
         double stepsBrake = 22;
-        double defaultTime = 6;
-        double minStepTime = 6;
+        double defaultTime = 2;
+        double minStepTime = 2;
         double maxStepTime = 6;
 
         double baseStart = baseControl;
@@ -525,6 +525,12 @@ public class Team_Hardware_V9 {
 
             if (leftPowerControl == 0) headingCorrection = 0;
         }
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (leftPowerControl >= 0) {
             leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
