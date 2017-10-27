@@ -92,19 +92,18 @@ public class Team_vuController_V1 extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            boolean targetSeen = vu.targetSeen();
-            String targetSeenString = "NO";
-            if(targetSeen)targetSeenString = "YES";
+            String targetSeenString = "seen: NO";
+            if(vu.targetSeen())targetSeenString = "seen: YES";
 
-            telemetry.addData("vuMark", "target seen %s", targetSeenString);
+            String targetVisibleString = "visible now: NO";
+            if(vu.targetVisible())targetVisibleString = "visible now: YES";
+
+            telemetry.addData("vuMark", "target %s", targetSeenString);
+            telemetry.addData("vuMark", "target %s", targetVisibleString);
+            telemetry.addData("vuMark", "target no", vu.getLastTargetSeenNo());
+            telemetry.addData("vuMark", "target X=%.2f Y=%.2f", vu.getX(), vu.getY());
+
             if (vu.targetSeen()) {
-                String targetVisibleString = "NO";
-                if(vu.targetVisible())targetVisibleString = "YES";
-
-                telemetry.addData("vuMark", "target vidible now", targetVisibleString);
-                telemetry.addData("vuMark", "target no", vu.getLastTargetSeenNo());
-                telemetry.addData("vuMark", "{%.2f, %.2f}", vu.getX(), vu.getY());
-
                 if( vu.targetVisible() ) robot.colorBeacon.green();
                 else robot.colorBeacon.teal();
             } else {
@@ -115,9 +114,6 @@ public class Team_vuController_V1 extends LinearOpMode {
     }
     // ************************** END OP *********************************************************//
 
-    String format(OpenGLMatrix transformationMatrix) {
-        return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
-    }
     // ************************** END CLASS *******************************************************//
 }
 
