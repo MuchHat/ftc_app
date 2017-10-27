@@ -100,8 +100,9 @@ public class Safe_Auto_V9 extends LinearOpMode {
 
                 robot.colorBeacon.teal();
 
-                robot.leftClaw.setPosition(clawLeft[i]);
-                robot.rightClaw.setPosition(clawRight[i]);
+                robot.leftClawControl = clawLeft[i];
+                robot.rightClawControl = clawRight[i];
+                robot.setServos();
 
                 if (stepsMove[i] != 0) {
                     robot.move(stepsMove[i]);
@@ -151,8 +152,8 @@ public class Safe_Auto_V9 extends LinearOpMode {
         String field = rightField ? "right" : "left";
         String team = blueTeam ? "blue" : "red";
 
-        telemetry.addData("left drive", "%.0f%%", robot.leftDriveControl * 100);
-        telemetry.addData("right drive", "%.0f%%", robot.rightDriveControl * 100);
+        telemetry.addData("left drive", "%.0f%%", robot.leftPowerControl * 100);
+        telemetry.addData("right drive", "%.0f%%", robot.rightPowerControl * 100);
         telemetry.addData("lift", "%.0f%%", robot.liftControl * 100);
         telemetry.addData("left claw", "%.0f%%", robot.leftClawControl * 100);
         telemetry.addData("right claw", "%.0f%%", robot.rightClawControl * 100);

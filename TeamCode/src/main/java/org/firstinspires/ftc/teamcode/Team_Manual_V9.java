@@ -112,14 +112,14 @@ public class Team_Manual_V9 extends LinearOpMode {
                     xInput = gamepad1.left_stick_x;
                 }
 
-                robot.leftDriveControl = yInput * robot.driveDefaultSpeed;
-                robot.rightDriveControl = yInput * robot.driveDefaultSpeed;
+                robot.leftPowerControl = yInput * robot.driveDefaultSpeed;
+                robot.rightPowerControl = yInput * robot.driveDefaultSpeed;
 
-                robot.leftDriveControl += xInput * robot.turnDefaultSpeed;
-                robot.rightDriveControl -= xInput * robot.turnDefaultSpeed;
+                robot.leftPowerControl += xInput * robot.turnDefaultSpeed;
+                robot.rightPowerControl -= xInput * robot.turnDefaultSpeed;
 
-                robot.leftDriveControlBack = robot.leftDriveControl;
-                robot.rightDriveControlBack = robot.rightDriveControl;
+                robot.leftPowerControlBack = robot.leftPowerControl;
+                robot.rightPowerControlBack = robot.rightPowerControl;
 
                 robot.setDrives();
 
@@ -258,8 +258,8 @@ public class Team_Manual_V9 extends LinearOpMode {
 
         String team = blueTeam ? "blue" : "red";
 
-        telemetry.addData("left drive", "%.0f%%", robot.leftDriveControl * 100);
-        telemetry.addData("right drive", "%.0f%%", robot.rightDriveControl * 100);
+        telemetry.addData("left drive", "%.0f%%", robot.leftPowerControl * 100);
+        telemetry.addData("right drive", "%.0f%%", robot.rightPowerControl * 100);
         telemetry.addData("lift", "%.0f%%", robot.liftControl * 100);
         telemetry.addData("left claw", "%.0f%%", robot.leftClawControl * 100);
         telemetry.addData("right claw", "%.0f%%", robot.rightClawControl * 100);

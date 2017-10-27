@@ -35,9 +35,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 // ************************** OP FOR TESTING THE SERVOS ******************************************//
 
-@TeleOp(name = "Test Servos V9", group = "Team")
+@TeleOp(name = "Test V9", group = "Team")
 //@Disabled
-public class Team_TestServos_V9 extends LinearOpMode {
+public class Team_Test_V9 extends LinearOpMode {
 
     // ************************** VARIABLES ******************************************************//
 
@@ -50,7 +50,10 @@ public class Team_TestServos_V9 extends LinearOpMode {
     private double elbowControl = 0.0;
     private double leftClawControl = 0.5;
     private double rightClawControl = 0.5;
+    private double driveDistanceControl = 0;
+    private double driveDefaultDistanceSpeed = 333; //distance at full stick
     private double servoDefaultSpeed = 0.000066 * 2; // 0.33 servo angle per sec
+    private double totalDistance = 0;
 
 
     // ************************** OP LOOP ********************************************************//
@@ -76,10 +79,8 @@ public class Team_TestServos_V9 extends LinearOpMode {
         runtimeLoop.reset();
         telemetry.log().clear();
 
-        robot.base.setPosition(baseControl);
-        robot.elbow.setPosition(elbowControl);
-        robot.leftClaw.setPosition(leftClawControl);
-        robot.rightClaw.setPosition(rightClawControl);
+        robot.moveArmPosZero();
+        robot.stopRobot();
 
         waitForStart();
 
@@ -88,13 +89,9 @@ public class Team_TestServos_V9 extends LinearOpMode {
             double crrLoopTime = runtimeLoop.nanoseconds() / 1000000; // covert to millis
             runtimeLoop.reset();
 
-            baseControl = robot.base.getPosition();
-            elbowControl = robot.elbow.getPosition();
-            leftClawControl = robot.leftClaw.getPosition();
-            rightClawControl = robot.rightClaw.getPosition();
-
             robot.colorSensor.enableLed(true);
 
+            telemetry.addData("total distance", "%.0f%%", totalDistance);
             telemetry.addData("base", "%.0f%%", baseControl * 100);
             telemetry.addData("elbow", "%.0f%%", elbowControl * 100);
             telemetry.addData("left claw", "%.0f%%", leftClawControl * 100);
@@ -104,6 +101,7 @@ public class Team_TestServos_V9 extends LinearOpMode {
             telemetry.addData("color sensor green", "%.2f", (double) robot.colorSensor.green());
             telemetry.addData("color sensor blue", "%.2f", (double) robot.colorSensor.blue());
             telemetry.addData("color sensor alpha", "%.2f", (double) robot.colorSensor.alpha());
+
             telemetry.addData("switch top", "%.2f", robot.topSwitch.getState() ? 1.0 : 0.0);
             telemetry.addData("switch bottom", "%.2f", robot.bottomSwitch.getState() ? 1.0 : 0.0);
 
@@ -113,30 +111,50 @@ public class Team_TestServos_V9 extends LinearOpMode {
 
             // control: BASE
             if (gamepad1.left_stick_y != 0) {
-                baseControl += gamepad1.left_stick_y * servoDefaultSpeed * crrLoopTime;
-                setServos();
+                robot.baseControl += gamepad1.left_stick_y * servoDefaultSpeed * crrLoopTime;
+                robot.setServos();
             }
             // control: ELBOW
             if (gamepad1.right_stick_y != 0) {
-                elbowControl += gamepad1.right_stick_y * servoDefaultSpeed * crrLoopTime;
-                setServos();
+                robot.elbowControl += gamepad1.right_stick_y * servoDefaultSpeed * crrLoopTime;
+                robot.setServos();
             }
             // control: LEFT CLAW
             if (gamepad1.left_stick_x != 0) {
-                leftClawControl += gamepad1.left_stick_x * servoDefaultSpeed * crrLoopTime;
-                setServos();
+                robot.leftClawControl += gamepad1.left_stick_x * servoDefaultSpeed * crrLoopTime;
+                robot.setServos();
             }
             // control: RIGHT CLAW
             if (gamepad1.right_stick_x != 0) {
-                rightClawControl += gamepad1.right_stick_x * servoDefaultSpeed * crrLoopTime;
-                setServos();
+                robot.rightClawControl += gamepad1.right_stick_x * servoDefaultSpeed * crrLoopTime;
+                robot.setServos();
+            }
+            // control: RIGHT_TRIGGER
+            if (gamepad1.right_trigger != 0) {
+                driveDistanceControl = gamepad1.right_trigger * driveDefaultDistanceSpeed;
+                robot.move(driveDistanceControl);
+                totalDistance += driveDistanceControl;
+            }
+            // control: LEFT_TRIGGER
+            if (gamepad1.left_trigger != 0) {
+                driveDistanceControl = -gamepad1.left_trigger * driveDefaultDistanceSpeed;
+                robot.move(driveDistanceControl);
+                totalDistance += driveDistanceControl;
             }
             // control: A
             if (gamepad1.a) {
+                totalDistance = 0;
+            }
+            // control: B
+            if (gamepad1.b) {
+                totalDistance = 0;
+            }
+            // control: X
+            if (gamepad1.x) {
                 robot.colorBeacon.blue();
             }
-            // control: A
-            if (gamepad1.b) {
+            // control: Y
+            if (gamepad1.y) {
                 robot.colorBeacon.red();
             }
             if (robot.colorSensor.blue() > 0 && robot.colorSensor.blue() > robot.colorSensor.red()) {
@@ -146,16 +164,6 @@ public class Team_TestServos_V9 extends LinearOpMode {
                 robot.colorBeacon.red();
             }
         }
-    }
-
-    // ************************** HARDWARE HELPER ************************************************//
-
-    private void setServos() {
-
-        robot.elbow.setPosition(elbowControl);
-        robot.base.setPosition(baseControl);
-        robot.leftClaw.setPosition(leftClawControl);
-        robot.rightClaw.setPosition(rightClawControl);
     }
 
     // ************************** END OP *********************************************************//

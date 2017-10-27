@@ -51,7 +51,7 @@ public class Jewel_Auto_v9 extends LinearOpMode {
         if (blueTeam) robot.colorBeacon.blue();
         if (!blueTeam) robot.colorBeacon.red();
 
-        robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
+        robot.moveArmPosZero();
 
         robot.modernRoboticsI2cGyro.calibrate();
         // Wait until the gyro calibration is complete
@@ -122,7 +122,6 @@ public class Jewel_Auto_v9 extends LinearOpMode {
             // move the jewel
             if (foundBlue || foundRed) {
 
-                //TODO add logic to account for fw/rev and team color
                 boolean knockFirst = true; //knock the ball in front or the other one
                 if (blueTeam && foundBlue) knockFirst = false;
                 if (!blueTeam && foundRed) knockFirst = false;
@@ -207,8 +206,8 @@ public class Jewel_Auto_v9 extends LinearOpMode {
         String field = rightField ? "right" : "left";
         String team = blueTeam ? "blue" : "red";
 
-        telemetry.addData("left drive", "%.0f%%", robot.leftDriveControl * 100);
-        telemetry.addData("right drive", "%.0f%%", robot.rightDriveControl * 100);
+        telemetry.addData("left drive power", "%.0f%%", robot.leftPowerControl * 100);
+        telemetry.addData("right drive power", "%.0f%%", robot.rightPowerControl * 100);
         telemetry.addData("base", "%.0f%%", robot.baseControl * 100);
         telemetry.addData("elbow", "%.0f%%", robot.elbowControl * 100);
         telemetry.addData("lift", "%.0f%%", robot.liftControl * 100);
