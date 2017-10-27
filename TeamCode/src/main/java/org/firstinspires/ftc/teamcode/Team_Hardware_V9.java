@@ -288,10 +288,10 @@ public class Team_Hardware_V9 {
 
         double ratio = 1.0;
 
-        ratio = Math.abs( distance )/ (distanceHighSpeed - distanceLowSpeed);
-        ratio = Range.clip( ratio, 0, 1 );
+        ratio = Math.abs(distance) / Math.abs((distanceHighSpeed - distanceLowSpeed));
+        ratio = Range.clip(ratio, 0, 1);
 
-        double crrPower = lowSpeedPower + ratio * (highSpeedPower - highSpeedPower);
+        double crrPower = lowSpeedPower + ratio * (highSpeedPower - lowSpeedPower);
         crrPower = Range.clip(crrPower, lowSpeedPower, highSpeedPower);
 
         leftPowerControl = crrPower;
