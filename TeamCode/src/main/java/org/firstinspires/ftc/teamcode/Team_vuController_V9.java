@@ -88,7 +88,7 @@ public class Team_vuController_V9 extends LinearOpMode {
             telemetry.addData("vuMark", "target %s", targetSeenString);
             telemetry.addData("vuMark", "target %s", targetVisibleString);
             telemetry.addData("vuMark", "target no", vu.getLastTargetSeenNo());
-            telemetry.addData("vuMark", "target X=%.2f Y=%.2f", vu.getX(), vu.getY());
+            telemetry.addData("vuMark", "target {%.2f %.2f}", vu.getX(), vu.getY());
 
             if (vu.targetSeen()) {
                 if( vu.targetVisible() ) robot.colorBeacon.green();
