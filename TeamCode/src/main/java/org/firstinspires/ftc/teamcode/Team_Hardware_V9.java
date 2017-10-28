@@ -271,24 +271,28 @@ public class Team_Hardware_V9 {
         moveLinear(distance, movePower, 1.0, 1.0, 1.0, 1.0);
     }
 
-    void moveSide(double distance) {
+    void moveSide(double distanceMM) {
 
-        double sideMovePower = 0.44;
+        double moveSidePower = 0.44;
 
-        moveLinear(distance, sideMovePower, 1.0, -1.0, -1.0, 1.0);
+        moveLinear(distanceMM, moveSidePower, 1.0, -1.0, -1.0, 1.0);
     }
 
-    void moveLinear(double distance, double power, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
+    void moveLinear(double distanceMM, double power, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
 
-        double distanceLowSpeed = 22;
-        double distanceHighSpeed = 333;
+        double distanceLowSpeedMM = 22;
+        double distanceHighSpeedMM = 333;
 
         double lowSpeedPower = 0.11;
         double highSpeedPower = 0.66;
 
         double ratio = 1.0;
 
-        ratio = Math.abs(distance) / Math.abs((distanceHighSpeed - distanceLowSpeed));
+        //convert from mm to tics
+        double revolutions = distanceMM / ((2.54 * 4) * Math.PI); //a 4 inch wheel
+        double distancePulses = revolutions * (7 * 60); // 420 tics per revolution
+
+        ratio = Math.abs(distanceMM) / Math.abs((distanceHighSpeedMM - distanceLowSpeedMM));
         ratio = Range.clip(ratio, 0, 1);
 
         double crrPower = lowSpeedPower + ratio * (highSpeedPower - lowSpeedPower);
@@ -299,10 +303,10 @@ public class Team_Hardware_V9 {
         leftPowerControlBack = crrPower;
         rightPowerControlBack = crrPower;
 
-        leftDistanceControl = distance * dirFrontLeft;
-        rightDistanceControl = distance * dirFrontRight;
-        leftDistanceControlBack = distance * dirBackLeft;
-        rightPowerControlBack = distance * dirBackRight;
+        leftDistanceControl = distancePulses * dirFrontLeft;
+        rightDistanceControl = distancePulses * dirFrontRight;
+        leftDistanceControlBack = distancePulses * dirBackLeft;
+        rightPowerControlBack = distancePulses * dirBackRight;
 
         setDrives();
         stopRobot();

@@ -150,8 +150,7 @@ public class Auto_Safe_V9 extends LinearOpMode {
             return;
         }
 
-        double tolerance = 222; //in mmm
-        double vuToMM = 0.3; //0.3 units in vuFoforia are a mm
+        double tolerance = 222; //in vu units
 
         boolean useX = false;
         boolean useY = false;
@@ -169,7 +168,7 @@ public class Auto_Safe_V9 extends LinearOpMode {
         if (useY) positionActual = vu.getY();
 
         double dir = positionDesired > positionActual ? 1.0 : -1.0;
-        double err = (positionDesired - positionActual) * vuToMM;
+        double err = positionDesired - positionActual;
 
         if (err * dir > tolerance) {
             // the diff is too big, vuforia is probably not working
@@ -186,7 +185,7 @@ public class Auto_Safe_V9 extends LinearOpMode {
             if (useX) positionActual = vu.getX();
             if (useY) positionActual = vu.getY();
 
-            err = (positionDesired - positionActual) * vuToMM;
+            err = positionDesired - positionActual;
             attempts++;
 
             waitMillis(111);
