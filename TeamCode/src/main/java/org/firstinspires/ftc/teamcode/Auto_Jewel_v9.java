@@ -83,14 +83,14 @@ public class Auto_Jewel_v9 extends LinearOpMode {
 
             // first find the right color jewel
 
-            double armFindJewelB[] = {0.63, 0.67, 0.77, 0.85};
-            double armFindJewelE[] = {0.73, 0.77, 0.88, 0.98};
+            double armFindJewelB[] = {0.19, 0.14, 0.12, 0.10};
+            double armFindJewelE[] = {0.64, 0.69, 0.76, 0.81};
 
-            double armKnockB[] = {0.85, 0.85, 0.85, 0.85};
-            double armKnockE[] = {0.98, 0.98, 0.98, 0.98};
+            double armKnockB[] = {0, 0, 0, 0};
+            double armKnockE[] = {0.92, 0.92, 0.92, 0.92};
 
-            double armExtendedB = 0.59;
-            double armExtendedE = 0.67;
+            double armExtendedB = 0.13;
+            double armExtendedE = 0.65;
 
             int findPositions = 4;
             robot.moveArm(armExtendedB, armExtendedE);
@@ -128,7 +128,7 @@ public class Auto_Jewel_v9 extends LinearOpMode {
                 if (blueTeam && !foundBlue) knockFirst = true;
                 if (!blueTeam && !foundRed) knockFirst = true;
 
-                robot.move(20);
+                //robot.move(20);
 
                 double crrBase = armKnockB[foundPos];
                 double crrElbow = armKnockE[foundPos];
@@ -136,12 +136,12 @@ public class Auto_Jewel_v9 extends LinearOpMode {
                 waitMillis(222);
 
                 if (!knockFirst) { // move to between the balls
-                    robot.move(40);
+                    //robot.move(40);
                     waitMillis(222);
                 }
 
                 if (knockFirst) {
-                    robot.move(-40);
+                    //robot.move(-40);
                     waitMillis(222);
                 }
 
