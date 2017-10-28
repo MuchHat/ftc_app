@@ -35,9 +35,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 // ************************** OP FOR TESTING THE SERVOS ******************************************//
 
-@TeleOp(name = "Test VuController V9", group = "Team")
+@TeleOp(name = "Vu V9", group = "Team")
 //@Disabled
-public class Team_vuController_V9 extends LinearOpMode {
+public class Test_Vu_V9 extends LinearOpMode {
 
     // ************************** VARIABLES ******************************************************//
 

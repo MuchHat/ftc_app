@@ -20,23 +20,23 @@ Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufoywxzibq+y
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Safe Auto V9", group = "Team")
+@TeleOp(name = "Auto Jewel V9", group = "Team")
 // @Disabled
-public class Safe_Auto_V9 extends LinearOpMode {
+public class Auto_Jewel_v9 extends LinearOpMode {
 
+    boolean foundBlue = false;
+    boolean foundRed = false;
+    int foundPos = 0;
     //********************************* HW VARIABLES *********************************************//
     private Team_Hardware_V9 robot = new Team_Hardware_V9();
-
     //********************************* MOVE STATES **********************************************//
     private ElapsedTime totalRuntime = null;
 
+    //********************************* CONSTANTS ************************************************//
     private Boolean blueTeam = true;
     private Boolean rightField = true;
     private Boolean loaded = false;
 
-    private Vu vu = new Vu();
-
-    // ************************** MAIN LOOP ******************************************************//
     @Override
     public void runOpMode() {
 
@@ -51,7 +51,7 @@ public class Safe_Auto_V9 extends LinearOpMode {
         if (blueTeam) robot.colorBeacon.blue();
         if (!blueTeam) robot.colorBeacon.red();
 
-        robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
+        robot.moveArmPosZero();
 
         robot.modernRoboticsI2cGyro.calibrate();
         // Wait until the gyro calibration is complete
@@ -70,128 +70,119 @@ public class Safe_Auto_V9 extends LinearOpMode {
 
         waitForStart();
 
-        vu.init(hardwareMap);
-
         while (opModeIsActive() && loaded) {
 
+            //********************************* CONTROL LOOP *************************************//
 
             double crrLoopTime = loopRuntime.nanoseconds() / 1000000; // covert to millis
             loopRuntime.reset();
+
             updateTelemetry();
 
-            //********************************* AUTO MOVE TO THE SAFE ZONE ***********************//
-
             robot.colorBeacon.yellow();
 
-            // load vuforia, turn green if marker found
-            waitMillis(333);
-            robot.colorBeacon.green();
+            // first find the right color jewel
 
-            // turn yellow if not found
-            waitMillis(333);
-            robot.colorBeacon.yellow();
+            double armFindJewelB[] = {0.63, 0.67, 0.77, 0.85};
+            double armFindJewelE[] = {0.73, 0.77, 0.88, 0.98};
 
-            // drive based on distances from vuforia
-            double stepsMove[] = {0, 0, 575, 0, 0, 0, 15, 0};
-            double stepsSide[] = {0, 0, 0, 0, 0, 0, 0, 0};
-            double stepsTurns[] = {0, 0, 0, 0, 85, 0, 0, 0};
+            double armKnockB[] = {0.85, 0.85, 0.85, 0.85};
+            double armKnockE[] = {0.98, 0.98, 0.98, 0.98};
 
-            double vuPositionX[] = {0, 0, 0, 0, 0, 0, 0, 0}; //adjust based on vuforia if available
-            double vuPositionY[] = {0, 0, 0, 0, 0, 0, 0, 0}; //adjust based on vuforia if available
-            double vuMoveSide[] = {0, 0, 0, 0, 0, 0, 0, 0}; //adjust based on vuforia if available
+            double armExtendedB = 0.59;
+            double armExtendedE = 0.67;
 
-            double stepsLift[] = {0, 0, 0, 0, 0, 0, 0, 0};
-            double clawLeft[] = {0, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0};
-            double clawRight[] = {1, 0.55, 0.55, 0.55, 0.55, 0.55, 0.55, 1};
+            int findPositions = 4;
+            robot.moveArm(armExtendedB, armExtendedE);
+            waitMillis(222);
 
-            waitMillis(333);
-            for (int i = 0; i < stepsMove.length; i++) {
+            for (int i = 0; i < findPositions; i++) {
 
-                robot.colorBeacon.teal();
+                double crrBase = armFindJewelB[i];
+                double crrElbow = armFindJewelE[i];
 
-                robot.leftClawControl = clawLeft[i];
-                robot.rightClawControl = clawRight[i];
-                robot.setServos();
+                robot.moveArm(crrBase, crrElbow);
+                waitMillis(111);
 
-                if (stepsMove[i] != 0) {
-                    robot.move(stepsMove[i]);
+                if (foundJewel()) {
+                    foundPos = i;
+                    robot.moveArm(armExtendedB, armExtendedE);
+                    waitMillis(222);
+                    break;
                 }
-                /*if (stepsSide[i] != 0) {
-                    robot.moveSide(stepsSide[i]);
-                }*/
-                if (stepsTurns[i] != 0) {
-                    robot.turn((int) stepsTurns[i]);
-                }
-                if (stepsLift[i] != 0) {
-                    robot.moveLift(stepsLift[i]);
-                }
-                if ((vuPositionX[i] != 0 || vuPositionY[i] != 0) && vu.targetSeen()) {
+            }
+            for (int i = 0; i < 3; i++) {
 
-                    vuAdjust(vuPositionX[i], vuPositionY[i], vuMoveSide[i]);
-                }
-
+                waitMillis(111);
                 robot.colorBeacon.off();
-                waitMillis(222);
+                waitMillis(111);
+                robot.colorBeacon.yellow();
             }
 
-            robot.colorBeacon.green();
-            robot.stopRobot();
+            // move the jewel
+            if (foundBlue || foundRed) {
 
+                boolean knockFirst = true; //knock the ball in front or the other one
+                if (blueTeam && foundBlue) knockFirst = false;
+                if (!blueTeam && foundRed) knockFirst = false;
+                if (blueTeam && !foundBlue) knockFirst = true;
+                if (!blueTeam && !foundRed) knockFirst = true;
+
+                robot.move(20);
+
+                double crrBase = armKnockB[foundPos];
+                double crrElbow = armKnockE[foundPos];
+                robot.moveArm(crrBase, crrElbow);
+                waitMillis(222);
+
+                if (!knockFirst) { // move to between the balls
+                    robot.move(40);
+                    waitMillis(222);
+                }
+
+                if (knockFirst) {
+                    robot.move(-40);
+                    waitMillis(222);
+                }
+
+                robot.moveArm(armExtendedB, armExtendedE);
+                robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
+                waitMillis(222);
+
+
+                robot.colorBeacon.green();
+
+            } else if (!foundBlue || !foundRed) {
+                robot.colorBeacon.yellow();
+            }
+
+            robot.stopRobot();
             stop(); //stop the opMode
 
             //********************************* END LOOP *****************************************//
         }
     }
 
-    void vuAdjust(double positionDesiredX, double positionDesiredY, double moveSide) {
+    boolean foundJewel() {
 
-        if (!vu.targetSeen()) {
-            // vuforia not working
-            return;
+        if (robot.colorSensor.red() > robot.colorSensor.blue()) {
+            foundRed = true;
+            foundBlue = false;
+            robot.colorBeacon.red();
+            return true;
+        }
+        if (robot.colorSensor.blue() > robot.colorSensor.red()) {
+            foundBlue = true;
+            foundRed = false;
+            robot.colorBeacon.blue();
+            return true;
         }
 
-        double tolerance = 222; //in mmm
-        double vuToMM = 0.3; //0.3 units in vuFoforia are a mm
-
-        boolean useX = false;
-        boolean useY = false;
-
-        //use only one X or Y, the one matching the current orientation of the robot
-        if (positionDesiredX != 0) useX = true;
-        else if (positionDesiredY != 0) useY = true;
-
-        double positionDesired = 0;
-        if (useX) positionDesired = positionDesiredX;
-        if (useY) positionDesired = positionDesiredY;
-
-        double positionActual = 0;
-        if (useX) positionActual = vu.getX();
-        if (useY) positionActual = vu.getY();
-
-        double dir = positionDesired > positionActual ? 1.0 : -1.0;
-        double err = (positionDesired - positionActual) * vuToMM;
-
-        if (err * dir > tolerance) {
-            // the diff is too big, vuforia is probably not working
-            return;
-        }
-
-        int attempts = 0;
-        while (err * dir > 0 && attempts < 6) {
-            double step = 4; //move 4 mm at a time
-
-            if (moveSide > 0) robot.moveSide(step * dir);
-            else robot.move(step * dir);
-
-            if (useX) positionActual = vu.getX();
-            if (useY) positionActual = vu.getY();
-
-            err = (positionDesired - positionActual) * vuToMM;
-            attempts++;
-
-            waitMillis(111);
-        }
+        return false;
     }
+
+
+    // ************************** GENERAL MOVE HELPER FUNCTIONS  *********************************//
 
     private void waitMillis(double millis) {
 
@@ -215,8 +206,10 @@ public class Safe_Auto_V9 extends LinearOpMode {
         String field = rightField ? "right" : "left";
         String team = blueTeam ? "blue" : "red";
 
-        telemetry.addData("left drive", "%.0f%%", robot.leftPowerControl * 100);
-        telemetry.addData("right drive", "%.0f%%", robot.rightPowerControl * 100);
+        telemetry.addData("left drive power", "%.0f%%", robot.leftPowerControl * 100);
+        telemetry.addData("right drive power", "%.0f%%", robot.rightPowerControl * 100);
+        telemetry.addData("base", "%.0f%%", robot.baseControl * 100);
+        telemetry.addData("elbow", "%.0f%%", robot.elbowControl * 100);
         telemetry.addData("lift", "%.0f%%", robot.liftControl * 100);
         telemetry.addData("left claw", "%.0f%%", robot.leftClawControl * 100);
         telemetry.addData("right claw", "%.0f%%", robot.rightClawControl * 100);
@@ -235,3 +228,4 @@ public class Safe_Auto_V9 extends LinearOpMode {
 
     // ************************** OP END *********************************************************//
 }
+

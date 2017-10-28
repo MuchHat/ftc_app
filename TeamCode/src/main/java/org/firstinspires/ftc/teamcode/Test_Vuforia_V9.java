@@ -50,7 +50,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @TeleOp(name = "Test Vuforia V9", group = "Team")
 //@Disabled
-public class Team_TestVuforia_V9 extends LinearOpMode {
+public class Test_Vuforia_V9 extends LinearOpMode {
 
     // ************************** VARIABLES ******************************************************//
 

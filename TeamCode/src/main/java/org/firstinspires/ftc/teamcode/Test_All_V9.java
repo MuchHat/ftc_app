@@ -35,9 +35,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 // ************************** OP FOR TESTING THE SERVOS ******************************************//
 
-@TeleOp(name = "Test V9", group = "Team")
+@TeleOp(name = "Test All V9", group = "Team")
 //@Disabled
-public class Team_Test_V9 extends LinearOpMode {
+public class Test_All_V9 extends LinearOpMode {
 
     // ************************** VARIABLES ******************************************************//
 
