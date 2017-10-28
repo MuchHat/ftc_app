@@ -92,10 +92,10 @@ public class Test_All_V9 extends LinearOpMode {
             robot.colorSensor.enableLed(true);
 
             telemetry.addData("total distance", "%.0f%%", totalDistance);
-            telemetry.addData("base", "%.0f%%", baseControl * 100);
-            telemetry.addData("elbow", "%.0f%%", elbowControl * 100);
-            telemetry.addData("left claw", "%.0f%%", leftClawControl * 100);
-            telemetry.addData("right claw", "%.0f%%", rightClawControl * 100);
+            telemetry.addData("base", "%.0f%%", robot.base.getPosition()  * 100);
+            telemetry.addData("elbow", "%.0f%%", robot.elbow.getPosition() * 100);
+            telemetry.addData("left claw", "%.0f%%", robot.leftClaw.getPosition() * 100);
+            telemetry.addData("right claw", "%.0f%%", robot.rightClaw.getPosition() * 100);
 
             telemetry.addData("color sensor red", "%.2f", (double) robot.colorSensor.red());
             telemetry.addData("color sensor green", "%.2f", (double) robot.colorSensor.green());

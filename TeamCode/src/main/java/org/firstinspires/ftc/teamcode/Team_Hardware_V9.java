@@ -78,20 +78,20 @@ public class Team_Hardware_V9 {
     double clawClosed[] = {0.95, 0.10};
     double clawZero[] = {0.22, 0.75};
     double clawOpen[] = {0.60, 0.40};
-    double driveDefaultSpeed = 0.33;
-    double armPosZero[] = {0, 0};
+    double driveDefaultSpeed = 3.30;
+    double armPosZero[] = {1, 0};
     // ************************** MAIN LOOP ******************************************************//
     double turnDefaultSpeed = 0.16;
     double servoDefaultSpeed = 0.00033;
-    private DcMotor leftDrive = null;
-    private DcMotor rightDrive = null;
-    private DcMotor rightDriveBack = null;
-    private DcMotor leftDriveBack = null;
-    private DcMotor liftDrive = null;
-    private Servo leftClaw = null;
-    private Servo rightClaw = null;
-    private Servo base = null;
-    private Servo elbow = null;
+    public DcMotor leftDrive = null;
+    public DcMotor rightDrive = null;
+    public DcMotor rightDriveBack = null;
+    public DcMotor leftDriveBack = null;
+    public DcMotor liftDrive = null;
+    public Servo leftClaw = null;
+    public Servo rightClaw = null;
+    public Servo base = null;
+    public Servo elbow = null;
 
     // ************************** HW CONSTRUCTOR  ************************************************//
 
@@ -273,9 +273,10 @@ public class Team_Hardware_V9 {
 
     void moveSide(double distanceMM) {
 
-        double moveSidePower = 0.44;
+        return;
+        /*double moveSidePower = 0.44;
 
-        moveLinear(distanceMM, moveSidePower, 1.0, -1.0, -1.0, 1.0);
+        moveLinear(distanceMM, moveSidePower, 1.0, -1.0, -1.0, 1.0);*/
     }
 
     void moveLinear(double distanceMM, double power, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {

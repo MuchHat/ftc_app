@@ -24,7 +24,7 @@ public class Vu {
     boolean targetWasVisible = false;
     double lastX = 0;
     double lastY = 0;
-    double lastTargetSeenNo = 0;
+    int lastTargetSeenNo = 0;
     HardwareMap hardwareMap = null;
 
     void vuController() {
@@ -109,7 +109,7 @@ public class Vu {
         return lastY;
     }
 
-    double getLastTargetSeenNo(){
+    int getLastTargetSeenNo(){
 
         return lastTargetSeenNo;
     }
