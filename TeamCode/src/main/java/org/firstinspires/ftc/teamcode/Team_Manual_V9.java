@@ -126,6 +126,26 @@ public class Team_Manual_V9 extends LinearOpMode {
                 if (xInput != 0) robot.headingControl = robot.modernRoboticsI2cGyro.getHeading();
             }
 
+            // ***************************** control: SIDE  ********************************//
+            {
+                double sideInput = 0;
+
+                if (Math.abs(gamepad2.right_stick_x) > 0.06) {
+                    sideInput = gamepad2.right_stick_x;
+                }
+                if (Math.abs(gamepad2.right_stick_x) > 0.06) {
+                    sideInput = gamepad2.right_stick_x;
+                }
+
+                robot.leftPowerControl = sideInput * robot.driveDefaultSpeed;
+                robot.rightPowerControl = -sideInput * robot.driveDefaultSpeed;
+
+                robot.leftPowerControlBack = -sideInput * robot.driveDefaultSpeed;
+                robot.rightPowerControlBack = sideInput * robot.driveDefaultSpeed;
+
+                robot.setDrives();
+            }
+
             // ********************************  control: LIFT  ******************************//
             {
                 double liftInput = 0;

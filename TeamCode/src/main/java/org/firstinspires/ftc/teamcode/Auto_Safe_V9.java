@@ -116,9 +116,9 @@ public class Auto_Safe_V9 extends LinearOpMode {
                 if (stepsMove[i] != 0) {
                     robot.move(stepsMove[i]);
                 }
-                /*if (stepsSide[i] != 0) {
+                if (stepsSide[i] != 0) {
                     robot.moveSide(stepsSide[i]);
-                }*/
+                }
                 if (stepsTurns[i] != 0) {
                     robot.turn((int) stepsTurns[i]);
                 }
