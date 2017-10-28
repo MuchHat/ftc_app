@@ -14,7 +14,12 @@ https://github.com/ftctechnh/ftc_app/wiki/Identifying-Vuforia-VuMarks
 
 Vuforia key
 
-Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufoywxzibq+y5BGBa2cChKWAcUkKaD9/ak5lwCm9Wp3Osk9omsMR0YYoxt4TuPktrflK4HuTH8cOAQA8YDuOs/SO/cgOmWbQZtRXN/lFkUwGZA9eiV5D8730BG2SBLPR4A9rcFs0Fp/yPgcm4Zsh5Kv2Ct8XjJXmXk5mAjERZ5B6hKQzf/4wd9tSQ6BeQLvsgd5nI0Pj+K1NHI4EyHdFyxCPu91AMcCsXCLjkABfYt11Zhxu1uYaFF/AcN3eBHRwprVpDEBBXOMnD4BRCj0xxYYPWWO6g4gcjqBPgBos5nCDk43KipEeX22z
+Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufo
+ywxzibq+y5BGBa2cChKWAcUkKaD9/ak5lwCm9Wp3Osk9omsMR0YYoxt4TuPktrflK4HuTH
+8cOAQA8YDuOs/SO/cgOmWbQZtRXN/lFkUwGZA9eiV5D8730BG2SBLPR4A9rcFs0Fp/yPgc
+m4Zsh5Kv2Ct8XjJXmXk5mAjERZ5B6hKQzf/4wd9tSQ6BeQLvsgd5nI0Pj+K1NHI4EyHdFy
+xCPu91AMcCsXCLjkABfYt11Zhxu1uYaFF/AcN3eBHRwprVpDEBBXOMnD4BRCj0xxYYPWWO6
+g4gcjqBPgBos5nCDk43KipEeX22z
 
  */
 
@@ -91,7 +96,11 @@ public class Auto_Safe_V9 extends LinearOpMode {
             waitMillis(333);
             robot.colorBeacon.yellow();
 
-            // drive based on distances from vuforia
+            int errDis = 50; // 1 left 2 center 3 right
+
+            int[] xValues = {540, 465, 450}; // Desired value for left, right, and middle column
+            int desiredX = xValues[vu.getLastTargetSeenNo()+1];
+
             double stepsMove[] = {0, 0, 575, 0, 0, 0, 15, 0};
             double stepsSide[] = {0, 0, 0, 0, 0, 0, 0, 0};
             double stepsTurns[] = {0, 0, 0, 0, 85, 0, 0, 0};
@@ -105,15 +114,32 @@ public class Auto_Safe_V9 extends LinearOpMode {
             double clawRight[] = {1, 0.55, 0.55, 0.55, 0.55, 0.55, 0.55, 1};
 
             waitMillis(333);
-            for (int i = 0; i < stepsMove.length; i++) {
+            robot.move(50);
+                double vuX = vu.getX();
+                while(vuX < desiredX)
+                {
+                    vuX = vu.getX();
+                    if(desiredX - vuX < 100)
+                    {
+                        robot.move(2);
+                        waitMillis(5);
+                    }
+                    else
+                    {
+                        robot.move(7);
+                        waitMillis(5);
+                    }
+                    robot.colorBeacon.red();
+                }
+                robot.colorBeacon.blue();
 
-                robot.colorBeacon.teal();
+                if(vu.getX()-desiredX > errDis)
+                {
+                    robot.move(-2);
+                }
 
-                robot.leftClawControl = clawLeft[i];
-                robot.rightClawControl = clawRight[i];
-                robot.setServos();
-
-                if (stepsMove[i] != 0) {
+                robot.turn(90);
+                /*if (stepsMove[i] != 0) {
                     robot.move(stepsMove[i]);
                 }
                 if (stepsSide[i] != 0) {
@@ -124,17 +150,12 @@ public class Auto_Safe_V9 extends LinearOpMode {
                 }
                 if (stepsLift[i] != 0) {
                     robot.moveLift(stepsLift[i]);
-                }
-                if ((vuPositionX[i] != 0 || vuPositionY[i] != 0) && vu.targetSeen()) {
+                }*/
+                /*if ((vuPositionX[i] != 0 || vuPositionY[i] != 0) && vu.targetSeen()) {
 
                     vuAdjust(vuPositionX[i], vuPositionY[i], vuMoveSide[i]);
-                }
+                }*/
 
-                robot.colorBeacon.off();
-                waitMillis(222);
-            }
-
-            robot.colorBeacon.green();
             robot.stopRobot();
 
             stop(); //stop the opMode
@@ -224,7 +245,8 @@ public class Auto_Safe_V9 extends LinearOpMode {
         telemetry.addData("set heading", "%.2fdeg", (double) robot.headingControl);
         telemetry.addData("start heading", "%.2fdeg", robot.gameStartHeading);
         telemetry.addData("z angle", "%.2fdeg",
-                (double) robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
+                (double) robot.gyro.getAngularOrientation(AxesReference.INTRINSIC,
+                        AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         telemetry.addData("team", team);
         telemetry.addData("field", field);
         //telemetry.addData("total runtime", "%.0fs", totalRuntime.seconds());
