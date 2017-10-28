@@ -27,8 +27,10 @@ public class Auto_Jewel_v9 extends LinearOpMode {
     boolean foundBlue = false;
     boolean foundRed = false;
     int foundPos = 0;
+
     //********************************* HW VARIABLES *********************************************//
     private Team_Hardware_V9 robot = new Team_Hardware_V9();
+
     //********************************* MOVE STATES **********************************************//
     private ElapsedTime totalRuntime = null;
 
@@ -42,8 +44,9 @@ public class Auto_Jewel_v9 extends LinearOpMode {
 
         //********************************* MAIN LOOP INIT ***************************************//
         robot.init(hardwareMap);
+        robot.colorSensor.enableLed(true);
 
-        ElapsedTime controlRuntime = new ElapsedTime();
+        ElapsedTime controlRuntime = new ElapsedTime();s
         ElapsedTime loopRuntime = new ElapsedTime();
         totalRuntime = new ElapsedTime();
 
@@ -86,8 +89,8 @@ public class Auto_Jewel_v9 extends LinearOpMode {
             double armFindJewelB[] = {0.19, 0.14, 0.12, 0.10};
             double armFindJewelE[] = {0.64, 0.69, 0.76, 0.81};
 
-            double armKnockB[] = {0, 0, 0, 0};
-            double armKnockE[] = {0.92, 0.92, 0.92, 0.92};
+            //double armKnockB[] = {0, 0, 0, 0};
+            //double armKnockE[] = {0.92, 0.92, 0.92, 0.92};
 
             double armExtendedB = 0.13;
             double armExtendedE = 0.65;
@@ -130,19 +133,19 @@ public class Auto_Jewel_v9 extends LinearOpMode {
 
                 //robot.move(20);
 
-                double crrBase = armKnockB[foundPos];
-                double crrElbow = armKnockE[foundPos];
-                robot.moveArm(crrBase, crrElbow);
+                //double crrBase = armKnockB[foundPos];
+                //double crrElbow = armKnockE[foundPos];
+                //robot.moveArm(crrBase, crrElbow);
                 waitMillis(222);
 
                 if (!knockFirst) { // move to between the balls
                     //robot.move(40);
-                    waitMillis(222);
+                    waitMillis(400);
                 }
 
                 if (knockFirst) {
                     //robot.move(-40);
-                    waitMillis(222);
+                    waitMillis(400);
                 }
 
                 robot.moveArm(armExtendedB, armExtendedE);
