@@ -78,10 +78,10 @@ public class Team_Hardware_V9 {
     double clawClosed[] = {0.95, 0.10};
     double clawZero[] = {0.22, 0.75};
     double clawOpen[] = {0.60, 0.40};
-    double driveDefaultSpeed = 33.00;
     double armPosZero[] = {1, 0};
     // ************************** MAIN LOOP ******************************************************//
-    double turnDefaultSpeed = 16.00;
+    double driveDefaultSpeed = 1.0;
+    double turnDefaultSpeed = 0.5;
     double servoDefaultSpeed = 0.00033;
     public DcMotor leftDrive = null;
     public DcMotor rightDrive = null;
@@ -132,6 +132,8 @@ public class Team_Hardware_V9 {
 
         leftDrive.setDirection(DcMotor.Direction.FORWARD);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveBack.setDirection(DcMotor.Direction.FORWARD);
+        rightDriveBack.setDirection(DcMotor.Direction.FORWARD);
         liftDrive.setDirection(DcMotor.Direction.FORWARD);
 
         leftDrive.setPower(0);
@@ -154,7 +156,7 @@ public class Team_Hardware_V9 {
         rightClawControl = clawZero[1];
         baseControl = armPosZero[0];
         elbowControl = armPosZero[1];
-        setDrives();
+        setDrivesByPower();
         setServos();
     }
 
@@ -213,7 +215,7 @@ public class Team_Hardware_V9 {
             leftPowerControlBack = leftPowerControl;
             rightPowerControlBack = rightPowerControl;
 
-            setDrives();
+            setDrivesByPower();
 
             double stepMillis = 1;
             waitMillis(stepMillis);
@@ -256,12 +258,12 @@ public class Team_Hardware_V9 {
         double liftDefaultPower = 0.88;
 
         liftControl = liftDefaultPower;
-        setDrives();
+        setDrivesByPower();
 
         waitMillis(stepTime);
 
         liftControl = 0;
-        setDrives();
+        setDrivesByPower();
     }
 
     void move(double distance) {
@@ -273,10 +275,9 @@ public class Team_Hardware_V9 {
 
     void moveSide(double distanceMM) {
 
-        return;
-        /*double moveSidePower = 0.44;
+        double moveSidePower = 0.44;
 
-        moveLinear(distanceMM, moveSidePower, 1.0, -1.0, -1.0, 1.0);*/
+        moveLinear(distanceMM, moveSidePower, 1.0, -1.0, -1.0, 1.0);
     }
 
     void moveLinear(double distanceMM, double power, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
@@ -284,13 +285,13 @@ public class Team_Hardware_V9 {
         double distanceLowSpeedMM = 22;
         double distanceHighSpeedMM = 333;
 
-        double lowSpeedPower = 0.11;
-        double highSpeedPower = 0.66;
+        double lowSpeedPower = 0.33;
+        double highSpeedPower = 1.0;
 
         double ratio = 1.0;
 
         //convert from mm to tics
-        double revolutions = distanceMM / ((2.54 * 4) * Math.PI); //a 4 inch wheel
+        double revolutions = distanceMM / ((25.4 * 4) * Math.PI); //a 4 inch wheel
         double distancePulses = revolutions * (7 * 60); // 420 tics per revolution
 
         ratio = Math.abs(distanceMM) / Math.abs((distanceHighSpeedMM - distanceLowSpeedMM));
@@ -307,9 +308,9 @@ public class Team_Hardware_V9 {
         leftDistanceControl = distancePulses * dirFrontLeft;
         rightDistanceControl = distancePulses * dirFrontRight;
         leftDistanceControlBack = distancePulses * dirBackLeft;
-        rightPowerControlBack = distancePulses * dirBackRight;
+        rightDistanceControlBack = distancePulses * dirBackRight;
 
-        setDrives();
+        setDrivesByDistance();
         stopRobot();
     }
 
@@ -339,11 +340,11 @@ public class Team_Hardware_V9 {
 
     void moveArm(double newBase, double newElbow) {
 
-        double stepSize = 0.004;
+        double stepSize = 0.006;
         double stepsAccel = 11;
         double stepsBrake = 22;
-        double defaultTime = 2;
-        double minStepTime = 2;
+        double defaultTime = 3;
+        double minStepTime = 3;
         double maxStepTime = 6;
 
         double baseStart = baseControl;
@@ -351,7 +352,7 @@ public class Team_Hardware_V9 {
 
         double stepCount = Math.abs(baseStart - newBase) / stepSize;
         stepCount = Math.max(Math.abs(elbowStart - newElbow) / stepSize, stepCount);
-        stepCount = Range.clip(stepCount, 11, 333); //should not be more than 999 steps
+        stepCount = Range.clip(stepCount, 66, 666); //should not be more than 999 steps
 
         double elbowStepSize = (newElbow - baseStart) / stepCount;
         double baseStepSize = (newBase - elbowStart) / stepCount;
@@ -388,42 +389,18 @@ public class Team_Hardware_V9 {
 
     // ************************** HARDWARE SET FUNCTIONS *****************************************//
 
-    void setDrives() {
-
-        if (leftDistanceControl == 0 &&
-                leftDistanceControlBack == 0 &&
-                rightDistanceControl == 0 &&
-                rightDistanceControlBack == 0) {
-            setDrivesByPower();
-        } else {
-            setDrivesByDistance();
-        }
-    }
-
     void setDrivesByDistance() {
-
-        if (leftPowerControl == 0 &&
-                rightPowerControl == 0 &&
-                leftPowerControlBack == 0 &&
-                rightPowerControlBack == 0) {
-            stopRobot();
-            return;
-        }
-        //leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //leftDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //rightDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + (int) leftDistanceControl);
-        rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + (int) rightDistanceControl);
-        leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() + (int) leftDistanceControlBack);
-        rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + (int) rightDistanceControlBack);
 
         // Turn On RUN_TO_POSITION
         leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftDriveBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightDriveBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - (int) leftDistanceControl);
+        rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + (int) rightDistanceControl);
+        leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() - (int) leftDistanceControlBack);
+        rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + (int) rightDistanceControlBack);
 
         // reset the timeout time and start motion.
         ElapsedTime runTime = new ElapsedTime();
@@ -436,15 +413,26 @@ public class Team_Hardware_V9 {
         leftDriveBack.setPower(Math.abs(leftPowerControlBack));
         rightDriveBack.setPower(Math.abs(rightPowerControlBack));
 
-        while ((runtime.seconds() < timeOutSec) &&
-                (leftDrive.isBusy() && rightDrive.isBusy() && leftDrive.isBusy() && leftDrive.isBusy())) {
-            waitMillis(1);
+        while (runtime.seconds() < timeOutSec) {
+            boolean stillRunning = leftDrive.isBusy() ||
+                    rightDrive.isBusy() ||
+                    leftDriveBack.isBusy() ||
+                    leftDriveBack.isBusy();
+            if (!stillRunning) {
+                waitMillis(66);
+                boolean stillRunning2ndCheck = leftDrive.isBusy() ||
+                        rightDrive.isBusy() ||
+                        leftDriveBack.isBusy() ||
+                        leftDriveBack.isBusy();
+                if (!stillRunning2ndCheck) break;
+            }
+            waitMillis(33);
         }
 
-        //leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //leftDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //rightDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -504,11 +492,11 @@ public class Team_Hardware_V9 {
             if (leftPowerControl == 0) headingCorrection = 0;
         }
 
-        //leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //liftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        liftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (leftPowerControl >= 0) {
             leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -576,7 +564,10 @@ public class Team_Hardware_V9 {
         leftPowerControlBack = 0;
         rightPowerControlBack = 0;
 
-        setDrives();
+        rightDrive.setPower(0);
+        leftDrive.setPower(0);
+        rightDriveBack.setPower(0);
+        leftDriveBack.setPower(0);
     }
 
     void waitMillis(double millis) {

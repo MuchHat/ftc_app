@@ -97,6 +97,7 @@ public class Team_Manual_V9 extends LinearOpMode {
             {
                 double xInput = 0;
                 double yInput = 0;
+
                 robot.leftDistanceControl = 0;
                 robot.rightDistanceControl = 0;
                 robot.leftDistanceControlBack = 0;
@@ -116,29 +117,30 @@ public class Team_Manual_V9 extends LinearOpMode {
                     xInput = gamepad1.left_stick_x;
                 }
 
-                robot.leftPowerControl = yInput;// * robot.driveDefaultSpeed;
-                robot.rightPowerControl = yInput;// * robot.driveDefaultSpeed;
+                robot.leftPowerControl = yInput * robot.driveDefaultSpeed;
+                robot.rightPowerControl = yInput * robot.driveDefaultSpeed;
 
-                robot.leftPowerControl += xInput;// * robot.turnDefaultSpeed;
-                robot.rightPowerControl -= xInput;// * robot.turnDefaultSpeed;
+                robot.leftPowerControl += xInput * robot.turnDefaultSpeed;
+                robot.rightPowerControl -= xInput * robot.turnDefaultSpeed;
 
                 robot.leftPowerControlBack = robot.leftPowerControl;
                 robot.rightPowerControlBack = robot.rightPowerControl;
 
-                robot.setDrives();
+                robot.setDrivesByPower();
 
                 if (xInput != 0) robot.headingControl = robot.modernRoboticsI2cGyro.getHeading();
             }
 
-            // ***************************** control: SIDE  ********************************//
-            {
+            // ***************************** control: SIDE  ********************************//*/
+            if ((Math.abs(gamepad2.right_stick_x) > 0.06) ||
+                    (Math.abs(gamepad1.right_stick_x) > 0.06)) {
                 double sideInput = 0;
 
                 if (Math.abs(gamepad2.right_stick_x) > 0.06) {
                     sideInput = gamepad2.right_stick_x;
                 }
-                if (Math.abs(gamepad2.right_stick_x) > 0.06) {
-                    sideInput = gamepad2.right_stick_x;
+                if (Math.abs(gamepad1.right_stick_x) > 0.06) {
+                    sideInput = gamepad1.right_stick_x;
                 }
 
                 robot.leftPowerControl = sideInput * robot.driveDefaultSpeed;
@@ -147,7 +149,7 @@ public class Team_Manual_V9 extends LinearOpMode {
                 robot.leftPowerControlBack = -sideInput * robot.driveDefaultSpeed;
                 robot.rightPowerControlBack = sideInput * robot.driveDefaultSpeed;
 
-                robot.setDrives();
+                robot.setDrivesByPower();
             }
 
             // ********************************  control: LIFT  ******************************//
@@ -164,7 +166,7 @@ public class Team_Manual_V9 extends LinearOpMode {
 
                 double liftDefaultSpeed = 1.5;
                 robot.liftControl = liftInput * liftDefaultSpeed;
-                robot.setDrives();
+                robot.setDrivesByPower();
             }
 
             // ********************************  control: TURNS 90  **************************//
@@ -282,8 +284,11 @@ public class Team_Manual_V9 extends LinearOpMode {
 
         String team = blueTeam ? "blue" : "red";
 
-        telemetry.addData("left drive", "%.0f%%", robot.leftPowerControl * 100);
-        telemetry.addData("right drive", "%.0f%%", robot.rightPowerControl * 100);
+        telemetry.addData("left drive power", "%.2f", robot.leftPowerControl);
+        telemetry.addData("right drive power", "%.2f", robot.rightPowerControl);
+        telemetry.addData("left drive back power", "%.2f", robot.leftPowerControlBack);
+        telemetry.addData("right drive back power", "%.2f", robot.rightPowerControlBack);
+
         telemetry.addData("lift", "%.0f%%", robot.liftControl * 100);
         telemetry.addData("left claw", "%.0f%%", robot.leftClawControl * 100);
         telemetry.addData("right claw", "%.0f%%", robot.rightClawControl * 100);

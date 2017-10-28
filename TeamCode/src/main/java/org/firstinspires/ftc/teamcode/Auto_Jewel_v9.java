@@ -46,7 +46,7 @@ public class Auto_Jewel_v9 extends LinearOpMode {
         robot.init(hardwareMap);
         robot.colorSensor.enableLed(true);
 
-        ElapsedTime controlRuntime = new ElapsedTime();s
+        ElapsedTime controlRuntime = new ElapsedTime();
         ElapsedTime loopRuntime = new ElapsedTime();
         totalRuntime = new ElapsedTime();
 

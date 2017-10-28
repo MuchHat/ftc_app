@@ -51,7 +51,7 @@ public class Test_All_V9 extends LinearOpMode {
     private double leftClawControl = 0.5;
     private double rightClawControl = 0.5;
     private double driveDistanceControl = 0;
-    private double driveDefaultDistanceSpeed = 333; //distance at full stick
+    private double driveDistanceForOnePointZero = 1000; //distance at full stick
     private double servoDefaultSpeed = 0.000066 * 2; // 0.33 servo angle per sec
     private double totalDistance = 0;
 
@@ -91,7 +91,12 @@ public class Test_All_V9 extends LinearOpMode {
 
             robot.colorSensor.enableLed(true);
 
-            telemetry.addData("total distance", "%.0f%%", totalDistance);
+            telemetry.addData("total distance", "%.0f", totalDistance);
+            telemetry.addData("left drive pos", "%.0f", robot.leftDrive.getCurrentPosition());
+            telemetry.addData("right drive pos", "%.0f", robot.rightDrive.getCurrentPosition());
+            telemetry.addData("left drive back pos", "%.0f", robot.leftDriveBack.getCurrentPosition());
+            telemetry.addData("right drive back pos", "%.0f", robot.rightDriveBack.getCurrentPosition());
+
             telemetry.addData("base", "%.0f%%", robot.base.getPosition()  * 100);
             telemetry.addData("elbow", "%.0f%%", robot.elbow.getPosition() * 100);
             telemetry.addData("left claw", "%.0f%%", robot.leftClaw.getPosition() * 100);
@@ -130,14 +135,14 @@ public class Test_All_V9 extends LinearOpMode {
                 robot.setServos();
             }
             // control: RIGHT_TRIGGER
-            if (gamepad1.right_trigger != 0) {
-                driveDistanceControl = gamepad1.right_trigger * driveDefaultDistanceSpeed;
+            if (Math.abs(gamepad1.right_trigger) >0.33) {
+                driveDistanceControl = gamepad1.right_trigger * driveDistanceForOnePointZero;
                 robot.move(driveDistanceControl);
                 totalDistance += driveDistanceControl;
             }
             // control: LEFT_TRIGGER
-            if (gamepad1.left_trigger != 0) {
-                driveDistanceControl = -gamepad1.left_trigger * driveDefaultDistanceSpeed;
+            if (Math.abs(gamepad1.left_trigger) >0.33) {
+                driveDistanceControl = -gamepad1.left_trigger * driveDistanceForOnePointZero;
                 robot.move(driveDistanceControl);
                 totalDistance += driveDistanceControl;
             }
