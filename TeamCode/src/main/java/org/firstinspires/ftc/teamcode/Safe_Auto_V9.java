@@ -34,6 +34,8 @@ public class Safe_Auto_V9 extends LinearOpMode {
     private Boolean rightField = true;
     private Boolean loaded = false;
 
+    private Vu vu = new Vu();
+
     // ************************** MAIN LOOP ******************************************************//
     @Override
     public void runOpMode() {
@@ -68,6 +70,8 @@ public class Safe_Auto_V9 extends LinearOpMode {
 
         waitForStart();
 
+        vu.init(hardwareMap);
+
         while (opModeIsActive() && loaded) {
 
 
@@ -88,12 +92,17 @@ public class Safe_Auto_V9 extends LinearOpMode {
             robot.colorBeacon.yellow();
 
             // drive based on distances from vuforia
-            double stepsMove[]= {0, 0,  575,0, 0,  0,  15,  0};
-            double stepsSide[]= {0, 0,  0,  0,  0,  0,  0,  0};
-            double stepsTurns[]={0, 0,  0,  0,  85, 0,  0,  0};
-            double stepsLift[]= {0, 0,  0,  0,  0,  0,  0,  0};
-            double clawLeft[]=  {0, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0};
-            double clawRight[]= {1, 0.55, 0.55, 0.55, 0.55, 0.55, 0.55, 1};
+            double stepsMove[] = {0, 0, 575, 0, 0, 0, 15, 0};
+            double stepsSide[] = {0, 0, 0, 0, 0, 0, 0, 0};
+            double stepsTurns[] = {0, 0, 0, 0, 85, 0, 0, 0};
+
+            double vuPositionX[] = {0, 0, 0, 0, 0, 0, 0, 0}; //adjust based on vuforia if available
+            double vuPositionY[] = {0, 0, 0, 0, 0, 0, 0, 0}; //adjust based on vuforia if available
+            double vuMoveSide[] = {0, 0, 0, 0, 0, 0, 0, 0}; //adjust based on vuforia if available
+
+            double stepsLift[] = {0, 0, 0, 0, 0, 0, 0, 0};
+            double clawLeft[] = {0, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0};
+            double clawRight[] = {1, 0.55, 0.55, 0.55, 0.55, 0.55, 0.55, 1};
 
             waitMillis(333);
             for (int i = 0; i < stepsMove.length; i++) {
@@ -116,6 +125,11 @@ public class Safe_Auto_V9 extends LinearOpMode {
                 if (stepsLift[i] != 0) {
                     robot.moveLift(stepsLift[i]);
                 }
+                if ((vuPositionX[i] != 0 || vuPositionY[i] != 0) && vu.targetSeen()) {
+
+                    vuAdjust(vuPositionX[i], vuPositionY[i], vuMoveSide[i]);
+                }
+
                 robot.colorBeacon.off();
                 waitMillis(222);
             }
@@ -127,7 +141,56 @@ public class Safe_Auto_V9 extends LinearOpMode {
 
             //********************************* END LOOP *****************************************//
         }
+    }
 
+    void vuAdjust(double positionDesiredX, double positionDesiredY, double moveSide) {
+
+        if (!vu.targetSeen()) {
+            // vuforia not working
+            return;
+        }
+
+        double tolerance = 222; //in mmm
+        double vuToMM = 0.3; //0.3 units in vuFoforia are a mm
+
+        boolean useX = false;
+        boolean useY = false;
+
+        //use only one X or Y, the one matching the current orientation of the robot
+        if (positionDesiredX != 0) useX = true;
+        else if (positionDesiredY != 0) useY = true;
+
+        double positionDesired = 0;
+        if (useX) positionDesired = positionDesiredX;
+        if (useY) positionDesired = positionDesiredY;
+
+        double positionActual = 0;
+        if (useX) positionActual = vu.getX();
+        if (useY) positionActual = vu.getY();
+
+        double dir = positionDesired > positionActual ? 1.0 : -1.0;
+        double err = (positionDesired - positionActual) * vuToMM;
+
+        if (err * dir > tolerance) {
+            // the diff is too big, vuforia is probably not working
+            return;
+        }
+
+        int attempts = 0;
+        while (err * dir > 0 && attempts < 6) {
+            double step = 4; //move 4 mm at a time
+
+            if (moveSide > 0) robot.moveSide(step * dir);
+            else robot.move(step * dir);
+
+            if (useX) positionActual = vu.getX();
+            if (useY) positionActual = vu.getY();
+
+            err = (positionDesired - positionActual) * vuToMM;
+            attempts++;
+
+            waitMillis(111);
+        }
     }
 
     private void waitMillis(double millis) {
