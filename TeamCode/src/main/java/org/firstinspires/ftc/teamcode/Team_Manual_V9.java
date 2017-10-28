@@ -97,6 +97,10 @@ public class Team_Manual_V9 extends LinearOpMode {
             {
                 double xInput = 0;
                 double yInput = 0;
+                robot.leftDistanceControl = 0;
+                robot.rightDistanceControl = 0;
+                robot.leftDistanceControlBack = 0;
+                robot.rightDistanceControlBack = 0;
 
                 if (Math.abs(gamepad2.left_stick_y) > 0.06) {
                     yInput = -gamepad2.left_stick_y;
@@ -112,11 +116,11 @@ public class Team_Manual_V9 extends LinearOpMode {
                     xInput = gamepad1.left_stick_x;
                 }
 
-                robot.leftPowerControl = yInput * robot.driveDefaultSpeed;
-                robot.rightPowerControl = yInput * robot.driveDefaultSpeed;
+                robot.leftPowerControl = yInput;// * robot.driveDefaultSpeed;
+                robot.rightPowerControl = yInput;// * robot.driveDefaultSpeed;
 
-                robot.leftPowerControl += xInput * robot.turnDefaultSpeed;
-                robot.rightPowerControl -= xInput * robot.turnDefaultSpeed;
+                robot.leftPowerControl += xInput;// * robot.turnDefaultSpeed;
+                robot.rightPowerControl -= xInput;// * robot.turnDefaultSpeed;
 
                 robot.leftPowerControlBack = robot.leftPowerControl;
                 robot.rightPowerControlBack = robot.rightPowerControl;

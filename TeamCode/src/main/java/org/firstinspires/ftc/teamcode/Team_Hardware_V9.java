@@ -78,10 +78,10 @@ public class Team_Hardware_V9 {
     double clawClosed[] = {0.95, 0.10};
     double clawZero[] = {0.22, 0.75};
     double clawOpen[] = {0.60, 0.40};
-    double driveDefaultSpeed = 3.30;
+    double driveDefaultSpeed = 33.00;
     double armPosZero[] = {1, 0};
     // ************************** MAIN LOOP ******************************************************//
-    double turnDefaultSpeed = 0.16;
+    double turnDefaultSpeed = 16.00;
     double servoDefaultSpeed = 0.00033;
     public DcMotor leftDrive = null;
     public DcMotor rightDrive = null;
@@ -409,10 +409,10 @@ public class Team_Hardware_V9 {
             stopRobot();
             return;
         }
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //leftDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //rightDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + (int) leftDistanceControl);
         rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + (int) rightDistanceControl);
@@ -441,10 +441,10 @@ public class Team_Hardware_V9 {
             waitMillis(1);
         }
 
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //leftDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //rightDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -504,11 +504,11 @@ public class Team_Hardware_V9 {
             if (leftPowerControl == 0) headingCorrection = 0;
         }
 
-        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        liftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //liftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         if (leftPowerControl >= 0) {
             leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
