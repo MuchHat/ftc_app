@@ -128,7 +128,7 @@ public class Auto_Jewel_v9 extends LinearOpMode {
                 if (blueTeam && !foundBlue) knockFirst = true;
                 if (!blueTeam && !foundRed) knockFirst = true;
 
-                robot.move(20);
+                //robot.move(20);
 
                 double crrBase = armKnockB[foundPos];
                 double crrElbow = armKnockE[foundPos];
@@ -136,12 +136,12 @@ public class Auto_Jewel_v9 extends LinearOpMode {
                 waitMillis(222);
 
                 if (!knockFirst) { // move to between the balls
-                    robot.move(40);
+                    //robot.move(40);
                     waitMillis(222);
                 }
 
                 if (knockFirst) {
-                    robot.move(-40);
+                    //robot.move(-40);
                     waitMillis(222);
                 }
 
