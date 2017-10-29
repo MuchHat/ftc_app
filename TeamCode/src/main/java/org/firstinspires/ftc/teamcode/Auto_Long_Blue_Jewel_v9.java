@@ -20,9 +20,9 @@ Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufoywxzibq+y
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Auto Short Blue Jewel V9", group = "Competition")
+@TeleOp(name = "Auto Long Blue Jewel V9", group = "Competition")
 // @Disabled
-public class Auto_Short_Blue_Jewel_v9 extends LinearOpMode {
+public class Auto_Long_Blue_Jewel_v9 extends LinearOpMode {
 
     boolean foundBlue = false;
     boolean foundRed = false;
@@ -89,8 +89,8 @@ public class Auto_Short_Blue_Jewel_v9 extends LinearOpMode {
             double armFindJewelB[] = {0.19, 0.14, 0.12, 0.10};
             double armFindJewelE[] = {0.64, 0.69, 0.76, 0.81};
 
-            double armKnockB[] = {0, 0, 0, 0};
-            double armKnockE[] = {0.92, 0.92, 0.92, 0.92};
+            //double armKnockB[] = {0, 0, 0, 0};
+            //double armKnockE[] = {0.92, 0.92, 0.92, 0.92};
 
             double armExtendedB = 0.13;
             double armExtendedE = 0.65;
@@ -126,25 +126,25 @@ public class Auto_Short_Blue_Jewel_v9 extends LinearOpMode {
             if (foundBlue || foundRed) {
 
                 boolean knockFirst = true; //knock the ball in front or the other one
-                if (blueTeam && foundBlue) knockFirst = true;
-                if (!blueTeam && foundRed) knockFirst = true;
-                if (blueTeam && !foundBlue) knockFirst = false;
-                if (!blueTeam && !foundRed) knockFirst = false;
+                if (blueTeam && foundBlue) knockFirst = false;
+                if (!blueTeam && foundRed) knockFirst = false;
+                if (blueTeam && !foundBlue) knockFirst = true;
+                if (!blueTeam && !foundRed) knockFirst = true;
 
-                robot.move(20);
+                //robot.move(20);
 
-                double crrBase = armKnockB[foundPos];
-                double crrElbow = armKnockE[foundPos];
-                robot.moveArm(crrBase, crrElbow);
+                //double crrBase = armKnockB[foundPos];
+                //double crrElbow = armKnockE[foundPos];
+                //robot.moveArm(crrBase, crrElbow);
                 waitMillis(222);
 
                 if (!knockFirst) { // move to between the balls
-                    robot.move(40);
+                    //robot.move(40);
                     waitMillis(400);
                 }
 
                 if (knockFirst) {
-                    robot.move(-40);
+                    //robot.move(-40);
                     waitMillis(400);
                 }
 

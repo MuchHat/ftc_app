@@ -20,9 +20,9 @@ Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufoywxzibq+y
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Auto Short Blue Jewel V9", group = "Competition")
+@TeleOp(name = "Auto Short Red Jewel V9", group = "Competition")
 // @Disabled
-public class Auto_Short_Blue_Jewel_v9 extends LinearOpMode {
+public class Auto_Short_Red_Jewel_v9 extends LinearOpMode {
 
     boolean foundBlue = false;
     boolean foundRed = false;
@@ -35,7 +35,7 @@ public class Auto_Short_Blue_Jewel_v9 extends LinearOpMode {
     private ElapsedTime totalRuntime = null;
 
     //********************************* CONSTANTS ************************************************//
-    private Boolean blueTeam = true;
+    private Boolean blueTeam = false;
     private Boolean shortField = true;
     private Boolean loaded = false;
 
@@ -121,43 +121,82 @@ public class Auto_Short_Blue_Jewel_v9 extends LinearOpMode {
                 waitMillis(111);
                 robot.colorBeacon.yellow();
             }
-
             // move the jewel
-            if (foundBlue || foundRed) {
+            if (foundRed || foundBlue) {
 
                 boolean knockFirst = true; //knock the ball in front or the other one
-                if (blueTeam && foundBlue) knockFirst = true;
-                if (!blueTeam && foundRed) knockFirst = true;
-                if (blueTeam && !foundBlue) knockFirst = false;
-                if (!blueTeam && !foundRed) knockFirst = false;
+                if (blueTeam && foundBlue) knockFirst = false;
+                if (!blueTeam && foundRed) knockFirst = false;
 
-                robot.move(20);
+                waitMillis(222);
+                robot.moveArm(armExtendedB, armExtendedE);
+
+                robot.move(0.5 * 25.4);
+                robot.move(0.5 * 25.4);
+                robot.move(0.5 * 25.4);
+                robot.move(0.5 * 25.4);
+                robot.move(0.5 * 25.4);
 
                 double crrBase = armKnockB[foundPos];
                 double crrElbow = armKnockE[foundPos];
                 robot.moveArm(crrBase, crrElbow);
                 waitMillis(222);
 
-                if (!knockFirst) { // move to between the balls
-                    robot.move(40);
+                if (knockFirst) { // move to between the balls
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
                     waitMillis(400);
-                }
-
-                if (knockFirst) {
-                    robot.move(-40);
+                    robot.moveArm(armExtendedB, armExtendedE);
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
+                } else {
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
+                    robot.move(0.5 * 25.4);
                     waitMillis(400);
-                }
-
-                robot.moveArm(armExtendedB, armExtendedE);
-                robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
-                waitMillis(222);
-
-
-                robot.colorBeacon.green();
-
+                    robot.moveArm(armExtendedB, armExtendedE);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    robot.move(-0.5 * 25.4);
+                    }
             } else if (!foundBlue || !foundRed) {
                 robot.colorBeacon.yellow();
+                waitMillis(2000);
             }
+            robot.moveArm(armExtendedB, armExtendedE);
+            robot.moveArmPosZero();
+
 
             robot.stopRobot();
             stop(); //stop the opMode
