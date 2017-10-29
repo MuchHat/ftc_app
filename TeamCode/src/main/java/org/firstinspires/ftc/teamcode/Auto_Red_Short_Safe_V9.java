@@ -25,9 +25,9 @@ g4gcjqBPgBos5nCDk43KipEeX22z
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Auto Blue Short Safe V9", group = "Competition")
+@TeleOp(name = "Auto Red Short Safe V9", group = "Competition")
 // @Disabled
-public class Auto_Blue_Short_Safe_V9 extends LinearOpMode {
+public class Auto_Red_Short_Safe_V9 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
     private Team_Hardware_V9 robot = new Team_Hardware_V9();
@@ -35,7 +35,7 @@ public class Auto_Blue_Short_Safe_V9 extends LinearOpMode {
     //********************************* MOVE STATES **********************************************//
     private ElapsedTime totalRuntime = null;
 
-    private Boolean blueTeam = true;
+    private Boolean blueTeam = false;
     private Boolean shortField = true;
     private Boolean loaded = false;
 
@@ -86,15 +86,30 @@ public class Auto_Blue_Short_Safe_V9 extends LinearOpMode {
             //********************************* AUTO MOVE TO THE SAFE ZONE ***********************//
 
             // get using encoders in the general area
-            robot.move(120);
-            if (vu.targetSeen()) robot.colorBeacon.green();
-            waitMillis(111);
-            if (vu.targetSeen()) robot.colorBeacon.green();
-            robot.move(-60);
-            waitMillis(333);
-            if (vu.targetSeen()) robot.colorBeacon.green();
+            // 9.5 inches + 8 inches + 8 inches
 
-            if (vu.targetSeen()) {
+            int[] moveDistance = {241, 446, 648};
+
+            robot.move(610);
+            int index = 0;
+            if (vu.targetSeen())
+            {
+                robot.colorBeacon.green();
+                index = vu.lastTargetSeenNo;
+            }
+            else {robot.colorBeacon.yellow();}
+            waitMillis(111);
+            robot.move(-229);
+            if (vu.targetSeen()) {robot.colorBeacon.green();}
+            else {robot.colorBeacon.yellow();}
+            waitMillis(2000);
+            if (index != 0) {robot.move(moveDistance[index-1]);}
+            else {robot.colorBeacon.red();}
+            waitMillis(333);
+            if (vu.targetSeen()) {robot.colorBeacon.green();}
+            else {robot.colorBeacon.yellow();}
+
+            /*if (vu.targetSeen()) {
                 robot.colorBeacon.green();
 
                 int errDis = 50; // 1 left 2 center 3 right
@@ -113,11 +128,11 @@ public class Auto_Blue_Short_Safe_V9 extends LinearOpMode {
                     robot.colorBeacon.purple();
                     vuX = vu.getX();
                     if (desiredX - vuX < 100) {
-                        robot.move(2);
+                        robot.move(10);
                         waitMillis(33);
 
                     } else {
-                        robot.move(7);
+                        robot.move(20);
                         waitMillis(33);
 
                     }
@@ -134,10 +149,10 @@ public class Auto_Blue_Short_Safe_V9 extends LinearOpMode {
                 // turn yellow if not found
                 waitMillis(333);
                 robot.colorBeacon.yellow();
-            }
+            }*/
 
             //turn to put the glyph in
-            robot.turn(90);
+            robot.turn(87);
 
             //put the glyph in
             robot.move(11);
@@ -231,6 +246,8 @@ public class Auto_Blue_Short_Safe_V9 extends LinearOpMode {
         telemetry.addData("lift", "%.0f%%", robot.liftControl * 100);
         telemetry.addData("left claw", "%.0f%%", robot.leftClawControl * 100);
         telemetry.addData("right claw", "%.0f%%", robot.rightClawControl * 100);
+        telemetry.addData("Vuforia X: ", ".0f%%", vu.getX());
+        telemetry.addData("Vuforia Y: ", ".0f%%", vu.getY());
 
         telemetry.addData("crr heading", "%.2fdeg", (double) robot.modernRoboticsI2cGyro.getHeading());
         telemetry.addData("set heading", "%.2fdeg", (double) robot.headingControl);

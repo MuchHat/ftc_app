@@ -20,7 +20,7 @@ Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufoywxzibq+y
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Auto Short BLue Jewel V9", group = "Competition")
+@TeleOp(name = "Auto Short Blue Jewel V9", group = "Competition")
 // @Disabled
 public class Auto_Short_Blue_Jewel_v9 extends LinearOpMode {
 
