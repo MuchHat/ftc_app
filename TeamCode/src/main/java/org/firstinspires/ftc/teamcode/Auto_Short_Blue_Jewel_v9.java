@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -22,27 +20,31 @@ Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufoywxzibq+y
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Safe Auto V8", group = "Team")
+@TeleOp(name = "Auto Short BLue Jewel V9", group = "Competition")
 // @Disabled
-public class Safe_Auto_V8 extends LinearOpMode {
+public class Auto_Short_Blue_Jewel_v9 extends LinearOpMode {
+
+    boolean foundBlue = false;
+    boolean foundRed = false;
+    int foundPos = 0;
 
     //********************************* HW VARIABLES *********************************************//
-    private Team_Hardware_V3 robot = new Team_Hardware_V3();
+    private Team_Hardware_V9 robot = new Team_Hardware_V9();
 
     //********************************* MOVE STATES **********************************************//
     private ElapsedTime totalRuntime = null;
 
+    //********************************* CONSTANTS ************************************************//
     private Boolean blueTeam = true;
-    private Boolean rightField = true;
+    private Boolean shortField = true;
     private Boolean loaded = false;
-
-    // ************************** MAIN LOOP ******************************************************//
 
     @Override
     public void runOpMode() {
 
         //********************************* MAIN LOOP INIT ***************************************//
         robot.init(hardwareMap);
+        robot.colorSensor.enableLed(true);
 
         ElapsedTime controlRuntime = new ElapsedTime();
         ElapsedTime loopRuntime = new ElapsedTime();
@@ -52,7 +54,7 @@ public class Safe_Auto_V8 extends LinearOpMode {
         if (blueTeam) robot.colorBeacon.blue();
         if (!blueTeam) robot.colorBeacon.red();
 
-        robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
+        robot.moveArmPosZero();
 
         robot.modernRoboticsI2cGyro.calibrate();
         // Wait until the gyro calibration is complete
@@ -73,69 +75,117 @@ public class Safe_Auto_V8 extends LinearOpMode {
 
         while (opModeIsActive() && loaded) {
 
+            //********************************* CONTROL LOOP *************************************//
 
             double crrLoopTime = loopRuntime.nanoseconds() / 1000000; // covert to millis
             loopRuntime.reset();
+
             updateTelemetry();
 
-            //********************************* AUTO MOVE TO THE SAFE ZONE ***********************//
-
             robot.colorBeacon.yellow();
 
-            // load vuforia, turn green if marker found
-            waitMillis(333);
-            robot.colorBeacon.green();
+            // first find the right color jewel
 
-            // turn yellow if not found
-            waitMillis(333);
-            robot.colorBeacon.yellow();
+            double armFindJewelB[] = {0.19, 0.14, 0.12, 0.10};
+            double armFindJewelE[] = {0.64, 0.69, 0.76, 0.81};
 
-            // drive based on distances from vuforia
-            int stepsCount = 8;
-            double stepsMove[] = {0, 0, 66, 0, 66, 66, 66, 0};
-            double stepsSide[] = {0, 0, 0, 33, 0, 0, 0, 0};
-            double stepsTurns[] = {0, 0, 90, 0, 0, 0, -90, 0};
-            double stepsLift[] = {0, 11, 0, 0, 0, 0, -11, 0};
-            double stepsClaw[] = {1, 0, 0, 0, 0, -1, 0, 0};
+            //double armKnockB[] = {0, 0, 0, 0};
+            //double armKnockE[] = {0.92, 0.92, 0.92, 0.92};
 
-            waitMillis(333);
-            for (int i = 0; i < stepsCount; i++) {
+            double armExtendedB = 0.13;
+            double armExtendedE = 0.65;
 
-                robot.colorBeacon.teal();
+            int findPositions = 4;
+            robot.moveArm(armExtendedB, armExtendedE);
+            waitMillis(222);
 
-                if (stepsMove[i] != 0) {
-                    robot.move(stepsMove[i]);
+            for (int i = 0; i < findPositions; i++) {
+
+                double crrBase = armFindJewelB[i];
+                double crrElbow = armFindJewelE[i];
+
+                robot.moveArm(crrBase, crrElbow);
+                waitMillis(111);
+
+                if (foundJewel()) {
+                    foundPos = i;
+                    robot.moveArm(armExtendedB, armExtendedE);
+                    waitMillis(222);
+                    break;
                 }
-                if (stepsSide[i] != 0) {
-                    robot.moveSide(stepsSide[i]);
-                }
-                if (stepsTurns[i] != 0) {
-                    robot.turn((int) stepsTurns[i]);
-                }
-                if (stepsLift[i] != 0) {
-                    robot.moveLift(stepsLift[i]);
-                }
-                if (stepsClaw[i] != 0) {
-                    if (stepsClaw[i] > 0) {
-                        robot.openClaw();
-                    }
-                    if (stepsClaw[i] < 0) {
-                        robot.closeClaw();
-                    }
-                }
+            }
+            for (int i = 0; i < 3; i++) {
+
+                waitMillis(111);
                 robot.colorBeacon.off();
-                waitMillis(222);
+                waitMillis(111);
+                robot.colorBeacon.yellow();
             }
 
-            robot.colorBeacon.green();
-            robot.stopRobot();
+            // move the jewel
+            if (foundBlue || foundRed) {
 
+                boolean knockFirst = true; //knock the ball in front or the other one
+                if (blueTeam && foundBlue) knockFirst = false;
+                if (!blueTeam && foundRed) knockFirst = false;
+                if (blueTeam && !foundBlue) knockFirst = true;
+                if (!blueTeam && !foundRed) knockFirst = true;
+
+                //robot.move(20);
+
+                //double crrBase = armKnockB[foundPos];
+                //double crrElbow = armKnockE[foundPos];
+                //robot.moveArm(crrBase, crrElbow);
+                waitMillis(222);
+
+                if (!knockFirst) { // move to between the balls
+                    //robot.move(40);
+                    waitMillis(400);
+                }
+
+                if (knockFirst) {
+                    //robot.move(-40);
+                    waitMillis(400);
+                }
+
+                robot.moveArm(armExtendedB, armExtendedE);
+                robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
+                waitMillis(222);
+
+
+                robot.colorBeacon.green();
+
+            } else if (!foundBlue || !foundRed) {
+                robot.colorBeacon.yellow();
+            }
+
+            robot.stopRobot();
             stop(); //stop the opMode
 
             //********************************* END LOOP *****************************************//
         }
-
     }
+
+    boolean foundJewel() {
+
+        if (robot.colorSensor.red() > robot.colorSensor.blue()) {
+            foundRed = true;
+            foundBlue = false;
+            robot.colorBeacon.red();
+            return true;
+        }
+        if (robot.colorSensor.blue() > robot.colorSensor.red()) {
+            foundBlue = true;
+            foundRed = false;
+            robot.colorBeacon.blue();
+            return true;
+        }
+
+        return false;
+    }
+
+
+    // ************************** GENERAL MOVE HELPER FUNCTIONS  *********************************//
 
     private void waitMillis(double millis) {
 
@@ -156,11 +206,13 @@ public class Safe_Auto_V8 extends LinearOpMode {
 
     private void updateTelemetry() {
 
-        String field = rightField ? "right" : "left";
+        String field = shortField ? "short" : "long";
         String team = blueTeam ? "blue" : "red";
 
-        telemetry.addData("left drive", "%.0f%%", robot.leftDriveControl * 100);
-        telemetry.addData("right drive", "%.0f%%", robot.rightDriveControl * 100);
+        telemetry.addData("left drive power", "%.0f%%", robot.leftPowerControl * 100);
+        telemetry.addData("right drive power", "%.0f%%", robot.rightPowerControl * 100);
+        telemetry.addData("base", "%.0f%%", robot.baseControl * 100);
+        telemetry.addData("elbow", "%.0f%%", robot.elbowControl * 100);
         telemetry.addData("lift", "%.0f%%", robot.liftControl * 100);
         telemetry.addData("left claw", "%.0f%%", robot.leftClawControl * 100);
         telemetry.addData("right claw", "%.0f%%", robot.rightClawControl * 100);
@@ -179,3 +231,4 @@ public class Safe_Auto_V8 extends LinearOpMode {
 
     // ************************** OP END *********************************************************//
 }
+
