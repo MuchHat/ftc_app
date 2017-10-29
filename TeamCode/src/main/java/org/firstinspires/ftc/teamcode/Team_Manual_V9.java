@@ -196,7 +196,7 @@ public class Team_Manual_V9 extends LinearOpMode {
             // ********************************  control: SMALL STEP FORWARD  ****************//
             if (gamepad1.y ||
                     gamepad2.y) {
-                double step = 11;
+                double step = 33;
 
                 robot.move(step);
             }
@@ -204,7 +204,7 @@ public class Team_Manual_V9 extends LinearOpMode {
             // ********************************  control: SMALL STEP REVERSE  ****************//
             if (gamepad1.a ||
                     gamepad2.a) {
-                double step = 11;
+                double step = 33;
 
                 robot.move(-step);
             }
@@ -212,7 +212,7 @@ public class Team_Manual_V9 extends LinearOpMode {
             // ********************************  control: SMALL STEP LEFT  *******************//
             if (gamepad1.x ||
                     gamepad2.x) {
-                double step = 11;
+                double step = 33;
 
                 robot.moveSide(step);
             }
@@ -220,7 +220,7 @@ public class Team_Manual_V9 extends LinearOpMode {
             // ********************************  control: SMALL STEP RIGHT  ******************//
             if (gamepad1.b ||
                     gamepad2.b) {
-                double step = -11;
+                double step = -33;
 
                 robot.moveSide(step);
             }

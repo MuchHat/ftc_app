@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 // ************************** OP FOR TESTING THE SERVOS ******************************************//
@@ -82,6 +83,16 @@ public class Test_All_V9 extends LinearOpMode {
         robot.moveArmPosZero();
         robot.stopRobot();
 
+        robot.leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.leftDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.rightDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         waitForStart();
 
         while (opModeIsActive()) {
@@ -92,10 +103,10 @@ public class Test_All_V9 extends LinearOpMode {
             robot.colorSensor.enableLed(true);
 
             telemetry.addData("total distance", "%.0f", totalDistance);
-            telemetry.addData("left drive pos", "%.0f", robot.leftDrive.getCurrentPosition());
-            telemetry.addData("right drive pos", "%.0f", robot.rightDrive.getCurrentPosition());
-            telemetry.addData("left drive back pos", "%.0f", robot.leftDriveBack.getCurrentPosition());
-            telemetry.addData("right drive back pos", "%.0f", robot.rightDriveBack.getCurrentPosition());
+            telemetry.addData("left drive pos", "%.0f", (double)robot.leftDrive.getCurrentPosition());
+            telemetry.addData("right drive pos", "%.0f", (double)robot.rightDrive.getCurrentPosition());
+            telemetry.addData("left drive back pos", "%.0f", (double)robot.leftDriveBack.getCurrentPosition());
+            telemetry.addData("right drive back pos", "%.0f", (double)robot.rightDriveBack.getCurrentPosition());
 
             telemetry.addData("base", "%.0f%%", robot.base.getPosition()  * 100);
             telemetry.addData("elbow", "%.0f%%", robot.elbow.getPosition() * 100);
@@ -136,13 +147,13 @@ public class Test_All_V9 extends LinearOpMode {
             }
             // control: RIGHT_TRIGGER
             if (Math.abs(gamepad1.right_trigger) >0.33) {
-                driveDistanceControl = gamepad1.right_trigger * driveDistanceForOnePointZero;
+                driveDistanceControl = 100;
                 robot.move(driveDistanceControl);
                 totalDistance += driveDistanceControl;
             }
             // control: LEFT_TRIGGER
             if (Math.abs(gamepad1.left_trigger) >0.33) {
-                driveDistanceControl = -gamepad1.left_trigger * driveDistanceForOnePointZero;
+                driveDistanceControl = -100;
                 robot.move(driveDistanceControl);
                 totalDistance += driveDistanceControl;
             }

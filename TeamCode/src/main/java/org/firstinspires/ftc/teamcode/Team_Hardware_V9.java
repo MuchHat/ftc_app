@@ -130,15 +130,23 @@ public class Team_Hardware_V9 {
 
         colorSensor.enableLed(false);
 
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftDriveBack.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveBack.setDirection(DcMotor.Direction.REVERSE);
         rightDriveBack.setDirection(DcMotor.Direction.FORWARD);
         liftDrive.setDirection(DcMotor.Direction.FORWARD);
 
         leftDrive.setPower(0);
         rightDrive.setPower(0);
+        leftDriveBack.setPower(0);
+        rightDriveBack.setPower(0);
         liftDrive.setPower(0);
+
+        // Turn On RUN_TO_POSITION
+        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -282,23 +290,17 @@ public class Team_Hardware_V9 {
 
     void moveLinear(double distanceMM, double power, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
 
-        double distanceLowSpeedMM = 22;
-        double distanceHighSpeedMM = 333;
+        double distanceLowSpeedMM = 99;
 
-        double lowSpeedPower = 0.33;
+        double lowSpeedPower = 0.66;
         double highSpeedPower = 1.0;
 
-        double ratio = 1.0;
-
         //convert from mm to tics
+        double correction = 4.75;
         double revolutions = distanceMM / ((25.4 * 4) * Math.PI); //a 4 inch wheel
-        double distancePulses = revolutions * (7 * 60); // 420 tics per revolution
+        double distancePulses = revolutions * (7 * 60) * correction; // 420 tics per revolution
 
-        ratio = Math.abs(distanceMM) / Math.abs((distanceHighSpeedMM - distanceLowSpeedMM));
-        ratio = Range.clip(ratio, 0, 1);
-
-        double crrPower = lowSpeedPower + ratio * (highSpeedPower - lowSpeedPower);
-        crrPower = Range.clip(crrPower, lowSpeedPower, highSpeedPower);
+        double crrPower = Math.abs(distanceMM)>distanceLowSpeedMM ? highSpeedPower : lowSpeedPower;
 
         leftPowerControl = crrPower;
         rightPowerControl = crrPower;
@@ -391,55 +393,62 @@ public class Team_Hardware_V9 {
 
     void setDrivesByDistance() {
 
-        // Turn On RUN_TO_POSITION
+        // reset the timeout time and start motion.
+        ElapsedTime encodersTimer = new ElapsedTime();
+
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        leftDriveBack.setPower(0);
+        rightDriveBack.setPower(0);
+
+        leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + (int) leftDistanceControl);
+        rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + (int) rightDistanceControl);
+        leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() + (int) leftDistanceControlBack);
+        rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + (int) rightDistanceControlBack);
+
+        leftDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveBack.setDirection(DcMotor.Direction.REVERSE);
+        rightDriveBack.setDirection(DcMotor.Direction.FORWARD);
+
         leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftDriveBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightDriveBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - (int) leftDistanceControl);
-        rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + (int) rightDistanceControl);
-        leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() - (int) leftDistanceControlBack);
-        rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + (int) rightDistanceControlBack);
-
-        // reset the timeout time and start motion.
-        ElapsedTime runTime = new ElapsedTime();
-        runTime.reset();
-
-        double timeOutSec = 6;
 
         leftDrive.setPower(Math.abs(leftPowerControl));
         rightDrive.setPower(Math.abs(rightPowerControl));
         leftDriveBack.setPower(Math.abs(leftPowerControlBack));
         rightDriveBack.setPower(Math.abs(rightPowerControlBack));
 
-        while (runtime.seconds() < timeOutSec) {
+        double timeOutSec = 3;
+        encodersTimer.reset();
+
+        while (encodersTimer.seconds() < timeOutSec) {
             boolean stillRunning = leftDrive.isBusy() ||
                     rightDrive.isBusy() ||
                     leftDriveBack.isBusy() ||
-                    leftDriveBack.isBusy();
+                    rightDriveBack.isBusy();
             if (!stillRunning) {
-                waitMillis(66);
+                waitMillis(111);
                 boolean stillRunning2ndCheck = leftDrive.isBusy() ||
                         rightDrive.isBusy() ||
                         leftDriveBack.isBusy() ||
-                        leftDriveBack.isBusy();
+                        rightDriveBack.isBusy();
                 if (!stillRunning2ndCheck) break;
             }
             waitMillis(33);
         }
 
-        leftDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightDriveBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        leftDriveBack.setPower(0);
+        rightDriveBack.setPower(0);
 
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        stopRobot();
     }
 
     void setDrivesByPower() {
