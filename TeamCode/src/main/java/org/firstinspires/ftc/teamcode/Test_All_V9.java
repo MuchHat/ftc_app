@@ -103,12 +103,12 @@ public class Test_All_V9 extends LinearOpMode {
             robot.colorSensor.enableLed(true);
 
             telemetry.addData("total distance", "%.0f", totalDistance);
-            telemetry.addData("left drive pos", "%.0f", (double)robot.leftDrive.getCurrentPosition());
-            telemetry.addData("right drive pos", "%.0f", (double)robot.rightDrive.getCurrentPosition());
-            telemetry.addData("left drive back pos", "%.0f", (double)robot.leftDriveBack.getCurrentPosition());
-            telemetry.addData("right drive back pos", "%.0f", (double)robot.rightDriveBack.getCurrentPosition());
+            telemetry.addData("left drive pos", "%.0f", (double) robot.leftDrive.getCurrentPosition());
+            telemetry.addData("right drive pos", "%.0f", (double) robot.rightDrive.getCurrentPosition());
+            telemetry.addData("left drive back pos", "%.0f", (double) robot.leftDriveBack.getCurrentPosition());
+            telemetry.addData("right drive back pos", "%.0f", (double) robot.rightDriveBack.getCurrentPosition());
 
-            telemetry.addData("base", "%.0f%%", robot.base.getPosition()  * 100);
+            telemetry.addData("base", "%.0f%%", robot.base.getPosition() * 100);
             telemetry.addData("elbow", "%.0f%%", robot.elbow.getPosition() * 100);
             telemetry.addData("left claw", "%.0f%%", robot.leftClaw.getPosition() * 100);
             telemetry.addData("right claw", "%.0f%%", robot.rightClaw.getPosition() * 100);
@@ -142,17 +142,17 @@ public class Test_All_V9 extends LinearOpMode {
             }
             // control: RIGHT CLAW
             if (gamepad1.right_stick_x != 0) {
-                robot.rightClawControl += gamepad1.right_stick_x * servoDefaultSpeed * crrLoopTime;
+                robot.rightClawControl += gamepad1.right_stick_x * servoDefaultSpeed * crrLoopTime * -1;
                 robot.setServos();
             }
             // control: RIGHT_TRIGGER
-            if (Math.abs(gamepad1.right_trigger) >0.33) {
+            if (Math.abs(gamepad1.right_trigger) > 0.33) {
                 driveDistanceControl = 100;
                 robot.move(driveDistanceControl);
                 totalDistance += driveDistanceControl;
             }
             // control: LEFT_TRIGGER
-            if (Math.abs(gamepad1.left_trigger) >0.33) {
+            if (Math.abs(gamepad1.left_trigger) > 0.33) {
                 driveDistanceControl = -100;
                 robot.move(driveDistanceControl);
                 totalDistance += driveDistanceControl;
@@ -181,7 +181,6 @@ public class Test_All_V9 extends LinearOpMode {
             }
         }
     }
-
     // ************************** END OP *********************************************************//
 }
 
