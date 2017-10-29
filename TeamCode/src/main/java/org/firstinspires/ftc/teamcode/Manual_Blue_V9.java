@@ -295,7 +295,8 @@ public class Manual_Blue_V9 extends LinearOpMode {
         telemetry.addData("set heading", "%.2fdeg", (double) robot.headingControl);
         telemetry.addData("start heading", "%.2fdeg", robot.gameStartHeading);
         telemetry.addData("z angle", "%.2fdeg",
-                (double) robot.gyro.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
+                (double) robot.gyro.getAngularOrientation
+                        (AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         telemetry.addData("team", team);
 
         telemetry.update();
