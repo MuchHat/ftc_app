@@ -73,9 +73,8 @@ public class Auto_Blue_Short_Safe_V9 extends LinearOpMode {
         telemetry.addData("driver", "CLICK  >>> to START");
         telemetry.update();
 
-        waitForStart();
-
         vu.init(hardwareMap);
+        waitForStart();
 
         while (opModeIsActive() && loaded) {
 
@@ -86,23 +85,23 @@ public class Auto_Blue_Short_Safe_V9 extends LinearOpMode {
 
             //********************************* AUTO MOVE TO THE SAFE ZONE ***********************//
 
-            robot.colorBeacon.yellow();
-            robot.move(120);
-            waitMillis(111);
-            robot.move(-60);
-
             // get using encoders in the general area
-
-            // load vuforia, turn green if marker found
+            robot.move(120);
+            if (vu.targetSeen()) robot.colorBeacon.green();
             waitMillis(111);
-            if (vu.targetSeen()) {
+            if (vu.targetSeen()) robot.colorBeacon.green();
+            robot.move(-60);
+            waitMillis(333);
+            if (vu.targetSeen()) robot.colorBeacon.green();
 
+            if (vu.targetSeen()) {
                 robot.colorBeacon.green();
 
                 int errDis = 50; // 1 left 2 center 3 right
 
                 int[] xValues = {540, 465, 450}; // Desired value for left, right, and middle
-                int desiredX = xValues[vu.getLastTargetSeenNo() - 1];
+                int index = vu.getLastTargetSeenNo() - 1;
+                int desiredX = xValues[index];
 
                 waitMillis(333);
                 robot.move(50);
@@ -110,7 +109,7 @@ public class Auto_Blue_Short_Safe_V9 extends LinearOpMode {
                 double vuX = vu.getX();
                 double attempts = 0;
 
-                while (vuX < desiredX && attempts < 8) {
+                while (vuX < desiredX && attempts < 33) {
                     robot.colorBeacon.purple();
                     vuX = vu.getX();
                     if (desiredX - vuX < 100) {
@@ -124,7 +123,7 @@ public class Auto_Blue_Short_Safe_V9 extends LinearOpMode {
                     }
                     attempts++;
                 }
-                if( blueTeam)robot.colorBeacon.blue();
+                if (blueTeam) robot.colorBeacon.blue();
                 else robot.colorBeacon.red();
 
                 if (vu.getX() - desiredX > errDis) {
