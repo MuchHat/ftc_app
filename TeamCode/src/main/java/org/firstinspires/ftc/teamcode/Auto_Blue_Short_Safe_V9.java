@@ -87,74 +87,66 @@ public class Auto_Blue_Short_Safe_V9 extends LinearOpMode {
             //********************************* AUTO MOVE TO THE SAFE ZONE ***********************//
 
             robot.colorBeacon.yellow();
+            robot.move(120);
+            waitMillis(111);
+            robot.move(-60);
+
+            // get using encoders in the general area
 
             // load vuforia, turn green if marker found
-            waitMillis(333);
-            robot.colorBeacon.green();
+            waitMillis(111);
+            if (vu.targetSeen()) {
 
-            // turn yellow if not found
-            waitMillis(333);
-            robot.colorBeacon.yellow();
+                robot.colorBeacon.green();
 
-            int errDis = 50; // 1 left 2 center 3 right
+                int errDis = 50; // 1 left 2 center 3 right
 
-            int[] xValues = {540, 465, 450}; // Desired value for left, right, and middle column
-            int desiredX = xValues[vu.getLastTargetSeenNo()+1];
+                int[] xValues = {540, 465, 450}; // Desired value for left, right, and middle
+                int desiredX = xValues[vu.getLastTargetSeenNo() - 1];
 
-            double stepsMove[] = {0, 0, 575, 0, 0, 0, 15, 0};
-            double stepsSide[] = {0, 0, 0, 0, 0, 0, 0, 0};
-            double stepsTurns[] = {0, 0, 0, 0, 85, 0, 0, 0};
+                waitMillis(333);
+                robot.move(50);
 
-            double vuPositionX[] = {0, 0, 0, 0, 0, 0, 0, 0}; //adjust based on vuforia if available
-            double vuPositionY[] = {0, 0, 0, 0, 0, 0, 0, 0}; //adjust based on vuforia if available
-            double vuMoveSide[] = {0, 0, 0, 0, 0, 0, 0, 0}; //adjust based on vuforia if available
-
-            double stepsLift[] = {0, 0, 0, 0, 0, 0, 0, 0};
-            double clawLeft[] = {0, 0.35, 0.35, 0.35, 0.35, 0.35, 0.35, 0};
-            double clawRight[] = {1, 0.55, 0.55, 0.55, 0.55, 0.55, 0.55, 1};
-
-            waitMillis(333);
-            robot.move(50);
                 double vuX = vu.getX();
-                while(vuX < desiredX)
-                {
-                    vuX = vu.getX();
-                    if(desiredX - vuX < 100)
-                    {
-                        robot.move(2);
-                        waitMillis(5);
-                    }
-                    else
-                    {
-                        robot.move(7);
-                        waitMillis(5);
-                    }
-                    robot.colorBeacon.red();
-                }
-                robot.colorBeacon.blue();
+                double attempts = 0;
 
-                if(vu.getX()-desiredX > errDis)
-                {
+                while (vuX < desiredX && attempts < 8) {
+                    robot.colorBeacon.purple();
+                    vuX = vu.getX();
+                    if (desiredX - vuX < 100) {
+                        robot.move(2);
+                        waitMillis(33);
+
+                    } else {
+                        robot.move(7);
+                        waitMillis(33);
+
+                    }
+                    attempts++;
+                }
+                if( blueTeam)robot.colorBeacon.blue();
+                else robot.colorBeacon.red();
+
+                if (vu.getX() - desiredX > errDis) {
                     robot.move(-2);
                 }
 
-                robot.turn(90);
-                /*if (stepsMove[i] != 0) {
-                    robot.move(stepsMove[i]);
-                }
-                if (stepsSide[i] != 0) {
-                    robot.moveSide(stepsSide[i]);
-                }
-                if (stepsTurns[i] != 0) {
-                    robot.turn((int) stepsTurns[i]);
-                }
-                if (stepsLift[i] != 0) {
-                    robot.moveLift(stepsLift[i]);
-                }*/
-                /*if ((vuPositionX[i] != 0 || vuPositionY[i] != 0) && vu.targetSeen()) {
+            } else {
+                // turn yellow if not found
+                waitMillis(333);
+                robot.colorBeacon.yellow();
+            }
 
-                    vuAdjust(vuPositionX[i], vuPositionY[i], vuMoveSide[i]);
-                }*/
+            //turn to put the glyph in
+            robot.turn(90);
+
+            //put the glyph in
+            robot.move(11);
+
+            robot.openClaw();
+            waitMillis(111);
+
+            robot.move(-11);
 
             robot.stopRobot();
 

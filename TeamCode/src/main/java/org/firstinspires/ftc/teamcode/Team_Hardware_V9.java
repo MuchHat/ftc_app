@@ -265,10 +265,13 @@ public class Team_Hardware_V9 {
         double stepTime = Math.abs(distance) / mmMillis;
         double liftDefaultPower = 0.88;
 
-        liftControl = liftDefaultPower;
-        setDrivesByPower();
+        stepTime = Range.clip(stepTime, 0, 3333);
 
-        waitMillis(stepTime);
+        for (double i = 0; i < stepTime; i++) { //do a loop such it can stop at the switch
+            liftControl = liftDefaultPower;
+            setDrivesByPower();
+            waitMillis(1);
+        }
 
         liftControl = 0;
         setDrivesByPower();
@@ -300,7 +303,7 @@ public class Team_Hardware_V9 {
         double revolutions = distanceMM / ((25.4 * 4) * Math.PI); //a 4 inch wheel
         double distancePulses = revolutions * (7 * 60) * correction; // 420 tics per revolution
 
-        double crrPower = Math.abs(distanceMM)>distanceLowSpeedMM ? highSpeedPower : lowSpeedPower;
+        double crrPower = Math.abs(distanceMM) > distanceLowSpeedMM ? highSpeedPower : lowSpeedPower;
 
         leftPowerControl = crrPower;
         rightPowerControl = crrPower;
@@ -394,9 +397,9 @@ public class Team_Hardware_V9 {
     void setDrivesByDistance() {
 
         double distance = Math.abs(leftDistanceControl);
-        distance = Math.max( distance,Math.abs(rightDistanceControl) );
-        distance = Math.max( distance,Math.abs(leftDistanceControlBack) );
-        distance = Math.max( distance,Math.abs(rightDistanceControlBack) );
+        distance = Math.max(distance, Math.abs(rightDistanceControl));
+        distance = Math.max(distance, Math.abs(leftDistanceControlBack));
+        distance = Math.max(distance, Math.abs(rightDistanceControlBack));
 
         // reset the timeout time and start motion.
         ElapsedTime encodersTimer = new ElapsedTime();
@@ -426,24 +429,45 @@ public class Team_Hardware_V9 {
         leftDriveBack.setPower(Math.abs(leftPowerControlBack));
         rightDriveBack.setPower(Math.abs(rightPowerControlBack));
 
-        double timeOutSec = distance/100 + 0.5;
-        timeOutSec = Range.clip( timeOutSec, 0.5, 6 );
+        double timeOutSec = distance / 100 + 0.5;
+        timeOutSec = Range.clip(timeOutSec, 0.5, 6);
         encodersTimer.reset();
 
-        while (encodersTimer.milliseconds()/1000 < timeOutSec) {
+        double stallPosDiff = 3;
+        double leftDrivePrevPosition = leftDrive.getCurrentPosition();
+        double rightDrivePrevPosition = rightDrive.getCurrentPosition();
+        double leftDriveBackPrevPosition = leftDriveBack.getCurrentPosition();
+        double rightDriveBackPrevPosition = rightDriveBack.getCurrentPosition();
+
+        while (encodersTimer.milliseconds() / 1000 < timeOutSec) {
+
             boolean stillRunning = leftDrive.isBusy() ||
                     rightDrive.isBusy() ||
                     leftDriveBack.isBusy() ||
                     rightDriveBack.isBusy();
+
             if (!stillRunning) {
-                waitMillis(111);
+                waitMillis(66);
                 boolean stillRunning2ndCheck = leftDrive.isBusy() ||
                         rightDrive.isBusy() ||
                         leftDriveBack.isBusy() ||
                         rightDriveBack.isBusy();
                 if (!stillRunning2ndCheck) break;
             }
-            waitMillis(33);
+
+            waitMillis(66);
+
+            boolean isStalled = Math.abs(leftDrive.getCurrentPosition() - leftDrivePrevPosition) < stallPosDiff &&
+                    Math.abs(rightDrive.getCurrentPosition() - rightDrivePrevPosition) < stallPosDiff &&
+                    Math.abs(leftDriveBack.getCurrentPosition() - leftDriveBackPrevPosition) < stallPosDiff &&
+                    Math.abs(rightDriveBack.getCurrentPosition() - rightDriveBackPrevPosition) < stallPosDiff;
+
+            if (isStalled) break;
+
+            leftDrivePrevPosition = leftDrive.getCurrentPosition();
+            rightDrivePrevPosition = rightDrive.getCurrentPosition();
+            leftDriveBackPrevPosition = leftDriveBack.getCurrentPosition();
+            rightDriveBackPrevPosition = rightDriveBack.getCurrentPosition();
         }
 
         leftDrive.setPower(0);
