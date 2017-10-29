@@ -393,6 +393,11 @@ public class Team_Hardware_V9 {
 
     void setDrivesByDistance() {
 
+        double distance = Math.abs(leftDistanceControl);
+        distance = Math.max( distance,Math.abs(rightDistanceControl) );
+        distance = Math.max( distance,Math.abs(leftDistanceControlBack) );
+        distance = Math.max( distance,Math.abs(rightDistanceControlBack) );
+
         // reset the timeout time and start motion.
         ElapsedTime encodersTimer = new ElapsedTime();
 
@@ -421,10 +426,11 @@ public class Team_Hardware_V9 {
         leftDriveBack.setPower(Math.abs(leftPowerControlBack));
         rightDriveBack.setPower(Math.abs(rightPowerControlBack));
 
-        double timeOutSec = 3;
+        double timeOutSec = distance/100 + 0.5;
+        timeOutSec = Range.clip( timeOutSec, 0.5, 6 );
         encodersTimer.reset();
 
-        while (encodersTimer.seconds() < timeOutSec) {
+        while (encodersTimer.milliseconds()/1000 < timeOutSec) {
             boolean stillRunning = leftDrive.isBusy() ||
                     rightDrive.isBusy() ||
                     leftDriveBack.isBusy() ||

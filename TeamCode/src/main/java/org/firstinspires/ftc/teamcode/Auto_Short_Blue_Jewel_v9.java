@@ -20,9 +20,9 @@ Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufoywxzibq+y
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Auto Jewel V9", group = "Team")
+@TeleOp(name = "Auto Short BLue Jewel V9", group = "Competition")
 // @Disabled
-public class Auto_Jewel_v9 extends LinearOpMode {
+public class Auto_Short_Blue_Jewel_v9 extends LinearOpMode {
 
     boolean foundBlue = false;
     boolean foundRed = false;
@@ -36,7 +36,7 @@ public class Auto_Jewel_v9 extends LinearOpMode {
 
     //********************************* CONSTANTS ************************************************//
     private Boolean blueTeam = true;
-    private Boolean rightField = true;
+    private Boolean shortField = true;
     private Boolean loaded = false;
 
     @Override
@@ -206,7 +206,7 @@ public class Auto_Jewel_v9 extends LinearOpMode {
 
     private void updateTelemetry() {
 
-        String field = rightField ? "right" : "left";
+        String field = shortField ? "short" : "long";
         String team = blueTeam ? "blue" : "red";
 
         telemetry.addData("left drive power", "%.0f%%", robot.leftPowerControl * 100);

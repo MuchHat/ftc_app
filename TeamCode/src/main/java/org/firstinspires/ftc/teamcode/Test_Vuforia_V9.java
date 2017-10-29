@@ -48,7 +48,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 // ************************** OP FOR TESTING THE SERVOS ******************************************//
 
-@TeleOp(name = "Test Vuforia V9", group = "Team")
+@TeleOp(name = "Test Vuforia V9", group = "Test")
 //@Disabled
 public class Test_Vuforia_V9 extends LinearOpMode {
 

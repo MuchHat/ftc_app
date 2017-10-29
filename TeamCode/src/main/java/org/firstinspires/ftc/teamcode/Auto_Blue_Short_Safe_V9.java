@@ -25,9 +25,9 @@ g4gcjqBPgBos5nCDk43KipEeX22z
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "AUto Safe V9", group = "Team")
+@TeleOp(name = "Auto Blue Short Safe V9", group = "Competition")
 // @Disabled
-public class Auto_Safe_V9 extends LinearOpMode {
+public class Auto_Blue_Short_Safe_V9 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
     private Team_Hardware_V9 robot = new Team_Hardware_V9();
@@ -36,7 +36,7 @@ public class Auto_Safe_V9 extends LinearOpMode {
     private ElapsedTime totalRuntime = null;
 
     private Boolean blueTeam = true;
-    private Boolean rightField = true;
+    private Boolean shortField = true;
     private Boolean loaded = false;
 
     private Vu vu = new Vu();
@@ -232,7 +232,7 @@ public class Auto_Safe_V9 extends LinearOpMode {
 
     private void updateTelemetry() {
 
-        String field = rightField ? "right" : "left";
+        String field = shortField ? "short" : "long";
         String team = blueTeam ? "blue" : "red";
 
         telemetry.addData("left drive", "%.0f%%", robot.leftPowerControl * 100);

@@ -20,9 +20,9 @@ Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufoywxzibq+y
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Team Manual V9", group = "Team")
+@TeleOp(name = "Manual Blue V9", group = "Competition")
 // @Disabled
-public class Team_Manual_V9 extends LinearOpMode {
+public class Manual_Blue_V9 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
     private Team_Hardware_V9 robot = new Team_Hardware_V9();
@@ -32,7 +32,6 @@ public class Team_Manual_V9 extends LinearOpMode {
 
     //********************************* CONSTANTS ************************************************//
     private Boolean blueTeam = true;
-    private Boolean rightField = true;
     private Boolean loaded = false;
 
     // ************************** MAIN LOOP ******************************************************//
@@ -93,8 +92,28 @@ public class Team_Manual_V9 extends LinearOpMode {
             //            IF THE SAME COMMAND IS GIVEN ON BOTH GAME PAD 1 WINS                    //
             //********************************* MANUAL MODE **************************************//
 
+            // ***************************** control: SIDE  ********************************//*/
+            if ((Math.abs(gamepad2.right_stick_x) > 0.06) ||
+                    (Math.abs(gamepad1.right_stick_x) > 0.06)) {
+                double sideInput = 0;
+
+                if (Math.abs(gamepad2.right_stick_x) > 0.06) {
+                    sideInput = gamepad2.right_stick_x;
+                }
+                if (Math.abs(gamepad1.right_stick_x) > 0.06) {
+                    sideInput = gamepad1.right_stick_x;
+                }
+
+                robot.leftPowerControl = sideInput * robot.driveDefaultSpeed;
+                robot.rightPowerControl = -sideInput * robot.driveDefaultSpeed;
+
+                robot.leftPowerControlBack = -sideInput * robot.driveDefaultSpeed;
+                robot.rightPowerControlBack = sideInput * robot.driveDefaultSpeed;
+
+                robot.setDrivesByPower();
+            }
             // ***************************** control: DRIVES  ********************************//
-            {
+            else {
                 double xInput = 0;
                 double yInput = 0;
 
@@ -129,27 +148,6 @@ public class Team_Manual_V9 extends LinearOpMode {
                 robot.setDrivesByPower();
 
                 if (xInput != 0) robot.headingControl = robot.modernRoboticsI2cGyro.getHeading();
-            }
-
-            // ***************************** control: SIDE  ********************************//*/
-            if ((Math.abs(gamepad2.right_stick_x) > 0.06) ||
-                    (Math.abs(gamepad1.right_stick_x) > 0.06)) {
-                double sideInput = 0;
-
-                if (Math.abs(gamepad2.right_stick_x) > 0.06) {
-                    sideInput = gamepad2.right_stick_x;
-                }
-                if (Math.abs(gamepad1.right_stick_x) > 0.06) {
-                    sideInput = gamepad1.right_stick_x;
-                }
-
-                robot.leftPowerControl = sideInput * robot.driveDefaultSpeed;
-                robot.rightPowerControl = -sideInput * robot.driveDefaultSpeed;
-
-                robot.leftPowerControlBack = -sideInput * robot.driveDefaultSpeed;
-                robot.rightPowerControlBack = sideInput * robot.driveDefaultSpeed;
-
-                robot.setDrivesByPower();
             }
 
             // ********************************  control: LIFT  ******************************//
@@ -196,7 +194,7 @@ public class Team_Manual_V9 extends LinearOpMode {
             // ********************************  control: SMALL STEP FORWARD  ****************//
             if (gamepad1.y ||
                     gamepad2.y) {
-                double step = 33;
+                double step = 66;
 
                 robot.move(step);
             }
@@ -204,7 +202,7 @@ public class Team_Manual_V9 extends LinearOpMode {
             // ********************************  control: SMALL STEP REVERSE  ****************//
             if (gamepad1.a ||
                     gamepad2.a) {
-                double step = 33;
+                double step = 66;
 
                 robot.move(-step);
             }
@@ -212,7 +210,7 @@ public class Team_Manual_V9 extends LinearOpMode {
             // ********************************  control: SMALL STEP LEFT  *******************//
             if (gamepad1.x ||
                     gamepad2.x) {
-                double step = 33;
+                double step = 66;
 
                 robot.moveSide(step);
             }
@@ -220,7 +218,7 @@ public class Team_Manual_V9 extends LinearOpMode {
             // ********************************  control: SMALL STEP RIGHT  ******************//
             if (gamepad1.b ||
                     gamepad2.b) {
-                double step = -33;
+                double step = -66;
 
                 robot.moveSide(step);
             }
