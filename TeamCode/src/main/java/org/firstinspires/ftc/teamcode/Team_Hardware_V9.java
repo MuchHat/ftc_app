@@ -74,11 +74,13 @@ public class Team_Hardware_V9 {
     double baseControl = 0;
     double elbowControl = 0;
     double gameStartHeading = 0;
+
     //********************************* PREDEFINED POS *******************************************//
     double clawClosed[] = {0.82, 0.22};
     double clawZero[] = {0.22, 0.75};
     double clawOpen[] = {0.60, 0.40};
     double armPosZero[] = {1, 0};
+
     // ************************** MAIN LOOP ******************************************************//
     double driveDefaultSpeed = 1.0;
     double turnDefaultSpeed = 0.66;
@@ -170,17 +172,19 @@ public class Team_Hardware_V9 {
 
     // ************************** MANUAL DRIVE HELPER FUNCTIONS  *********************************//
 
-    void turnTo12(){
+    void turnTo12() {
         turn2Heading(0);
     }
 
-    void turnTo3(){
+    void turnTo3() {
         turn2Heading(270);
     }
-    void turnTo16(){
+
+    void turnTo16() {
         turn2Heading(180);
     }
-    void turnTo9(){
+
+    void turnTo9() {
         turn2Heading(90);
     }
 
@@ -197,7 +201,7 @@ public class Team_Hardware_V9 {
 
         double direction = endHeading > startHeading ? 1.0 : -1.0;
 
-        if(diffAbs360 < diffAbs ){
+        if (diffAbs360 < diffAbs) {
             direction *= -1;
         }
 
