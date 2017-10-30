@@ -18,7 +18,7 @@ public class Auto_Jewel_Run {
     Boolean shortField = true;
     Boolean loaded = false;
 
-    void init(Team_Hardware_V9 aRobot, boolean aBlueTeam, boolean aShortField ) {
+    void init(Team_Hardware_V9 aRobot, boolean aBlueTeam, boolean aShortField) {
 
         robot = aRobot;
         robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
@@ -62,13 +62,6 @@ public class Auto_Jewel_Run {
                 waitMillis(222);
                 break;
             }
-        }
-        for (int i = 0; i < 3; i++) {
-
-            waitMillis(111);
-            robot.colorBeacon.off();
-            waitMillis(111);
-            robot.colorBeacon.yellow();
         }
 
         // move the jewel
@@ -139,5 +132,5 @@ public class Auto_Jewel_Run {
 //        }
 
     }
- }
+}
 

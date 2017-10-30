@@ -42,24 +42,30 @@ public class Auto_Glyph_Run {
         int[] moveDistance = {580, 358, 161};
 
         robot.move(178);
-        if(vu.targetSeen())
+        if (vu.targetSeen())
             robot.colorBeacon.green();
         waitMillis(1000);
         robot.move(432);
         int index = 0;
-        if (vu.targetSeen())
-        {
+        if (vu.targetSeen()) {
             robot.colorBeacon.green();
             index = vu.lastTargetSeenNo;
+        } else {
+            robot.colorBeacon.yellow();
         }
-        else {robot.colorBeacon.yellow();}
         waitMillis(111);
         robot.move(-260);
-        if (vu.targetSeen()) {robot.colorBeacon.green();}
-        else {robot.colorBeacon.yellow();}
+        if (vu.targetSeen()) {
+            robot.colorBeacon.green();
+        } else {
+            robot.colorBeacon.yellow();
+        }
         waitMillis(1000);
-        if (index != 0) {robot.move(moveDistance[index-1]);}
-        else {robot.colorBeacon.red();}
+        if (index != 0) {
+            robot.move(moveDistance[index - 1]);
+        } else {
+            robot.colorBeacon.red();
+        }
         waitMillis(333);
 
         if (vu.targetSeen()) {
@@ -93,11 +99,11 @@ public class Auto_Glyph_Run {
                 if (blueTeam) robot.colorBeacon.blue();
                 else robot.colorBeacon.red();*/
 
-            while(vu.getX() - desiredX > errDis) {
+            while (vu.getX() - desiredX > errDis) {
                 robot.colorBeacon.purple();
                 robot.move(-10);
             }
-            if(blueTeam)
+            if (blueTeam)
                 robot.colorBeacon.blue();
             else
                 robot.colorBeacon.red();
@@ -113,7 +119,7 @@ public class Auto_Glyph_Run {
         waitMillis(555);
 
         //put the glyph in
-        for( int halfInches = 0; halfInches < 11; halfInches++){
+        for (int halfInches = 0; halfInches < 11; halfInches++) {
             robot.move(0.5 * 25.4);
             waitMillis(33);
         }
@@ -123,7 +129,7 @@ public class Auto_Glyph_Run {
         waitMillis(111);
 
         robot.move(-100);
-        for( int halfInches = 0; halfInches < 6; halfInches++){
+        for (int halfInches = 0; halfInches < 6; halfInches++) {
             robot.move(0.5 * 25.4);
             waitMillis(33);
         }
@@ -143,5 +149,5 @@ public class Auto_Glyph_Run {
 //        }
 
     }
- }
+}
 

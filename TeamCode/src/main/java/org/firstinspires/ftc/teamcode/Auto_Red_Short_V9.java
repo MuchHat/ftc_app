@@ -75,9 +75,6 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
         telemetry.addData("driver", "CLICK  >>> to START");
         telemetry.update();
 
-        robot.rightClaw.setPosition(0.59);
-        robot.leftClaw.setPosition(0.54);
-
         waitForStart();
 
         while (opModeIsActive() && loaded) {
