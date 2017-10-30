@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -26,7 +27,7 @@ g4gcjqBPgBos5nCDk43KipEeX22z
 //********************************* MAIN OP CLASS ************************************************//
 
 @TeleOp(name = "Auto Blue Long V9", group = "Competition")
-// @Disabled
+@Disabled
 public class Auto_Blue_Long_V9 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
