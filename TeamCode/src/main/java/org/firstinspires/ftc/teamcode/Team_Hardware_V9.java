@@ -303,15 +303,15 @@ public class Team_Hardware_V9 {
         setDrivesByPower();
     }
 
-    void move(double distance) {
+    void move(double distanceMM) {
 
-        moveLinear(distance, 0, 1.0, 1.0, 1.0, 1.0);
+        moveLinear(distanceMM, 0, 1.0, 1.0, 1.0, 1.0);
     }
 
-    void moveEx(double distance, double movePower) {
+    void moveInches(double distanceInches, double movePower) {
 
 
-        moveLinear(distance, movePower, 1.0, 1.0, 1.0, 1.0);
+        moveLinear(distanceInches * 24.5, movePower, 1.0, 1.0, 1.0, 1.0);
     }
 
     void moveSide(double distanceMM) {
