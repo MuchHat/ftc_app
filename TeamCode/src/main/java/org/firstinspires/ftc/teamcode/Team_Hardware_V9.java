@@ -287,9 +287,9 @@ public class Team_Hardware_V9 {
 
     void moveLinear(double distanceMM, double power, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
 
-//        double distanceLowSpeedMM = 99;
+        double distanceLowSpeedMM = 99;
 
-//        double lowSpeedPower = 0.66;
+        double lowSpeedPower = 0.66;
         double highSpeedPower = 1.0;
 
         //convert from mm to tics
@@ -297,8 +297,7 @@ public class Team_Hardware_V9 {
         double revolutions = distanceMM / ((25.4 * 4) * Math.PI); //a 4 inch wheel
         double distancePulses = revolutions * (7 * 60) * correction; // 420 tics per revolution
 
-//        double crrPower = Math.abs(distanceMM) > distanceLowSpeedMM ? highSpeedPower : lowSpeedPower;
-        double crrPower = 1.0;
+        double crrPower = Math.abs(distanceMM) > distanceLowSpeedMM ? highSpeedPower : lowSpeedPower;
 
         leftPowerControl = crrPower;
         rightPowerControl = crrPower;
@@ -314,24 +313,6 @@ public class Team_Hardware_V9 {
         stopRobot();
     }
 
-    double getS(double ratio) {
-
-        double jerk = 1.355;
-        double div = ((1 - Math.cos(Math.pow(0.5, jerk) * Math.PI)) / 2) / 2;
-        ratio = Range.clip(ratio, 0, 1);
-        double s = ratio;
-
-        if (ratio <= 0.5) {
-            s = ((1 - Math.cos(Math.pow(ratio, jerk) * Math.PI)) / 2) / div / 2;
-            s = Range.clip(s, 0, 0.5);
-        } else if (ratio > 0.5) {
-            s = 1 - (((1 - Math.cos(Math.pow(1 - ratio, jerk) * Math.PI)) / 2) / div / 2);
-            s = Range.clip(s, 0.5, 1);
-        }
-
-        return Range.clip(s, 0.01, 1);
-    }
-
     // ************************** ARM  DRIVE SERVOS HELPER FUNCTIONS  ****************************//
 
     void moveArmPosZero() {
@@ -340,11 +321,11 @@ public class Team_Hardware_V9 {
 
     void moveArm(double newBase, double newElbow) {
 
-        double stepSize = 0.006;
+        double stepSize = 0.06;
         double stepsAccel = 11;
         double stepsBrake = 22;
-        double defaultTime = 3;
-        double minStepTime = 3;
+        double defaultTime = 2;
+        double minStepTime = 1;
         double maxStepTime = 6;
 
         double baseStart = baseControl;
@@ -371,12 +352,10 @@ public class Team_Hardware_V9 {
 
             double crrStepTime = defaultTime;
             if (i < stepsAccel) {
-                double ratio = getS((stepsAccel - i) / stepsAccel);
-                crrStepTime = defaultTime * 1 / ratio;
+                crrStepTime = defaultTime * stepsAccel / (stepsAccel - i);
             }
             if (stepCount - i < stepsBrake) {
-                double ratio = getS((stepCount - i - stepsBrake) / stepsBrake);
-                crrStepTime = defaultTime * 1 / ratio;
+                crrStepTime = defaultTime * stepsBrake / (stepsBrake - (stepCount - i ) );
             }
             crrStepTime = Range.clip(crrStepTime, minStepTime, maxStepTime);
             waitMillis(crrStepTime);
@@ -424,17 +403,16 @@ public class Team_Hardware_V9 {
         leftDriveBack.setPower(Math.abs(leftPowerControlBack));
         rightDriveBack.setPower(Math.abs(rightPowerControlBack));
 
-        double timeOutSec = distance / 100 + 0.5;
-        timeOutSec = Range.clip(timeOutSec, 0.5, 6);
+        double timeOutSec = 6;
         encodersTimer.reset();
 
-        double stallPosDiff = 3;
+        double stallPosDiff = 0;
         double leftDrivePrevPosition = leftDrive.getCurrentPosition();
         double rightDrivePrevPosition = rightDrive.getCurrentPosition();
         double leftDriveBackPrevPosition = leftDriveBack.getCurrentPosition();
         double rightDriveBackPrevPosition = rightDriveBack.getCurrentPosition();
 
-        while (encodersTimer.milliseconds() / 1000 < timeOutSec) {
+        while (encodersTimer.seconds() < timeOutSec) {
 
             boolean stillRunning = leftDrive.isBusy() ||
                     rightDrive.isBusy() ||
@@ -442,7 +420,7 @@ public class Team_Hardware_V9 {
                     rightDriveBack.isBusy();
 
             if (!stillRunning) {
-                waitMillis(66);
+                waitMillis(33);
                 boolean stillRunning2ndCheck = leftDrive.isBusy() ||
                         rightDrive.isBusy() ||
                         leftDriveBack.isBusy() ||
@@ -450,12 +428,12 @@ public class Team_Hardware_V9 {
                 if (!stillRunning2ndCheck) break;
             }
 
-            waitMillis(66);
+            waitMillis(33);
 
-            boolean isStalled = Math.abs(leftDrive.getCurrentPosition() - leftDrivePrevPosition) < stallPosDiff &&
-                    Math.abs(rightDrive.getCurrentPosition() - rightDrivePrevPosition) < stallPosDiff &&
-                    Math.abs(leftDriveBack.getCurrentPosition() - leftDriveBackPrevPosition) < stallPosDiff &&
-                    Math.abs(rightDriveBack.getCurrentPosition() - rightDriveBackPrevPosition) < stallPosDiff;
+            boolean isStalled = Math.abs(leftDrive.getCurrentPosition() - leftDrivePrevPosition) <= stallPosDiff &&
+                    Math.abs(rightDrive.getCurrentPosition() - rightDrivePrevPosition) <= stallPosDiff &&
+                    Math.abs(leftDriveBack.getCurrentPosition() - leftDriveBackPrevPosition) <= stallPosDiff &&
+                    Math.abs(rightDriveBack.getCurrentPosition() - rightDriveBackPrevPosition) <= stallPosDiff;
 
             if (isStalled) break;
 
