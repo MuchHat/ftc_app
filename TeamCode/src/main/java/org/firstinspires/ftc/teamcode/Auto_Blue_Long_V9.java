@@ -25,9 +25,9 @@ g4gcjqBPgBos5nCDk43KipEeX22z
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Auto Red Short Safe V9", group = "Competition")
+@TeleOp(name = "Auto Blue Long V9", group = "Competition")
 // @Disabled
-public class Auto_Red_Short_Safe_V9 extends LinearOpMode {
+public class Auto_Blue_Long_V9 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
     private Team_Hardware_V9 robot = new Team_Hardware_V9();
@@ -35,11 +35,12 @@ public class Auto_Red_Short_Safe_V9 extends LinearOpMode {
     //********************************* MOVE STATES **********************************************//
     private ElapsedTime totalRuntime = null;
 
-    private Boolean blueTeam = false;
-    private Boolean shortField = true;
+    private Boolean blueTeam = true;
+    private Boolean shortField = false;
     private Boolean loaded = false;
 
-    private Vu vu = new Vu();
+    private Auto_Glyph_Run glyphRun = new Auto_Glyph_Run();
+    private Auto_Jewel_Run jewelRun = new Auto_Jewel_Run();
 
     // ************************** MAIN LOOP ******************************************************//
     @Override
@@ -56,7 +57,8 @@ public class Auto_Red_Short_Safe_V9 extends LinearOpMode {
         if (blueTeam) robot.colorBeacon.blue();
         else robot.colorBeacon.red();
 
-        robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
+        jewelRun.init( robot, blueTeam, shortField );
+        glyphRun.init( robot, hardwareMap, blueTeam, shortField );
 
         robot.modernRoboticsI2cGyro.calibrate();
         // Wait until the gyro calibration is complete
@@ -73,8 +75,6 @@ public class Auto_Red_Short_Safe_V9 extends LinearOpMode {
         telemetry.addData("driver", "CLICK  >>> to START");
         telemetry.update();
 
-        vu.init(hardwareMap);
-
         robot.rightClaw.setPosition(0.59);
         robot.leftClaw.setPosition(0.54);
 
@@ -82,112 +82,13 @@ public class Auto_Red_Short_Safe_V9 extends LinearOpMode {
 
         while (opModeIsActive() && loaded) {
 
+            jewelRun.runAuto();
 
-            double crrLoopTime = loopRuntime.nanoseconds() / 1000000; // covert to millis
-            loopRuntime.reset();
-            updateTelemetry();
-
-            //********************************* AUTO MOVE TO THE SAFE ZONE ***********************//
-
-            // get using encoders in the general area
-            // Right x: 356 Middle: 421 3rd: 477
-
-            int[] moveDistance = {580, 358, 161};
-
-            robot.move(178);
-            if(vu.targetSeen())
-                robot.colorBeacon.green();
-            waitMillis(1000);
-            robot.move(432);
-            int index = 0;
-            if (vu.targetSeen())
-            {
-                robot.colorBeacon.green();
-                index = vu.lastTargetSeenNo;
-            }
-            else {robot.colorBeacon.yellow();}
-            waitMillis(111);
-            robot.move(-260);
-            if (vu.targetSeen()) {robot.colorBeacon.green();}
-            else {robot.colorBeacon.yellow();}
-            waitMillis(1000);
-            if (index != 0) {robot.move(moveDistance[index-1]);}
-            else {robot.colorBeacon.red();}
-            waitMillis(333);
-
-            if (vu.targetSeen()) {
-                robot.colorBeacon.green();
-
-                int errDis = 20; // 1 left 2 center 3 right
-                int[] xValues = {460, 415, 340}; // Desired value for left, right, and middle
-                index = vu.getLastTargetSeenNo() - 1;
-                int desiredX = xValues[index];
-
-                waitMillis(333);
-                robot.move(50);
-
-                double vuX = vu.getX();
-                double attempts = 0;
-
-                /*while (vuX < desiredX && attempts < 33) {
-                    robot.colorBeacon.purple();
-                    vuX = vu.getX();
-                    if (desiredX - vuX < 100) {
-                        robot.move(10);
-                        waitMillis(33);
-
-                    } else {
-                        robot.move(20);
-                        waitMillis(33);
-
-                    }
-                    attempts++;
-                }
-                if (blueTeam) robot.colorBeacon.blue();
-                else robot.colorBeacon.red();*/
-
-                 while(vu.getX() - desiredX > errDis) {
-                    robot.colorBeacon.purple();
-                    robot.move(-10);
-                }
-                if(blueTeam)
-                    robot.colorBeacon.blue();
-                 else
-                     robot.colorBeacon.red();
-            }
-            //turn to put the glyph in
-
-            robot.colorBeacon.teal();
-            robot.turn(85);
-            robot.colorBeacon.white();
-            updateTelemetry();
-            waitMillis(555);
+            glyphRun.runAuto();
 
             robot.stopRobot();
-            updateTelemetry();
-            waitMillis(555);
+            stop();
 
-            //put the glyph in
-            for( int halfInches = 0; halfInches < 11; halfInches++){
-                robot.move(0.5 * 25.4);
-                waitMillis(33);
-            }
-
-            robot.rightClaw.setPosition(0.75);
-            robot.leftClaw.setPosition(0.22);
-            waitMillis(111);
-
-            robot.move(-100);
-            for( int halfInches = 0; halfInches < 6; halfInches++){
-                robot.move(0.5 * 25.4);
-                waitMillis(33);
-            }
-
-            robot.stopRobot();
-
-            stop(); //stop the opMode
-
-            //********************************* END LOOP *****************************************//
         }
     }
 
@@ -218,8 +119,8 @@ public class Auto_Red_Short_Safe_V9 extends LinearOpMode {
         telemetry.addData("lift", "%.0f%%", robot.liftControl * 100);
         telemetry.addData("left claw", "%.0f%%", robot.leftClawControl * 100);
         telemetry.addData("right claw", "%.0f%%", robot.rightClawControl * 100);
-        telemetry.addData("Vuforia X: ", ".0f%%", vu.getX());
-        telemetry.addData("Vuforia Y: ", ".0f%%", vu.getY());
+        //telemetry.addData("Vuforia X: ", ".0f%%", glyphRun.vu.getX());
+        //telemetry.addData("Vuforia Y: ", ".0f%%", glyphRun.vu.getY());
 
         telemetry.addData("crr heading", "%.2fdeg", (double) robot.modernRoboticsI2cGyro.getHeading());
         telemetry.addData("set heading", "%.2fdeg", (double) robot.headingControl);

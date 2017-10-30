@@ -170,25 +170,25 @@ public class Manual_Blue_V9 extends LinearOpMode {
             // ********************************  control: TURNS 90  **************************//
             if (gamepad1.dpad_right ||
                     gamepad2.dpad_right) {
-                robot.turn(90);
+
             }
 
             // ********************************  control: TURNS -90
             if (gamepad1.dpad_left ||
                     gamepad2.dpad_left) {
-                robot.turn(-90);
+
             }
 
             // ********************************  control: TURN FACING THE CRYPTO BOX  ********//
             if (gamepad1.dpad_up ||
                     gamepad2.dpad_up) {
-                robot.turnToHeading(0);
+
             }
 
             // ********************************  control: TURNS 180  *************************//
             if (gamepad1.dpad_down ||
                     gamepad2.dpad_down) {
-                robot.turn(180);
+
             }
 
             // ********************************  control: SMALL STEP FORWARD  ****************//

@@ -170,93 +170,72 @@ public class Team_Hardware_V9 {
 
     // ************************** MANUAL DRIVE HELPER FUNCTIONS  *********************************//
 
-    void turnToHeading(double newHeading) {
-
-        newHeading += 360;
-        newHeading %= 360;
-
-        double crrHeading = modernRoboticsI2cGyro.getHeading();
-        double turnDeg = 0;
-
-        double diffAbs = Math.abs(newHeading - crrHeading);
-        double diff360Abs = 360 - diffAbs;
-        boolean inverted = diffAbs > diff360Abs ? false : true;
-
-        if (!inverted) {
-            turnDeg = newHeading - crrHeading;
-        } else {
-            if( newHeading < crrHeading )newHeading += 360;
-            else crrHeading += 360;
-            turnDeg = newHeading - crrHeading;
-        }
-        turnD(turnDeg);
+    void turnTo12(){
+        turn2Heading(0);
     }
 
-    void turn(double turnDeg) {
-        double newHeading = modernRoboticsI2cGyro.getHeading() + turnDeg;
-
-        for (int attempts = 0; attempts < 3; attempts++) {
-            turnToHeading(newHeading);
-        }
+    void turnTo3(){
+        turn2Heading(270);
+    }
+    void turnTo16(){
+        turn2Heading(180);
+    }
+    void turnTo9(){
+        turn2Heading(90);
     }
 
-    void turnD(double turnDeg) {
+    void turn2Heading(double endHeading) {
 
-        turnDeg *= -1;
-
-        double turnPower = 0.66;
+        double turnPower = 0.22;
+        double turnPowerMed = 0.15;
+        double turnPowerLow = 0.08;
 
         double startHeading = modernRoboticsI2cGyro.getHeading();
-        double endHeading = startHeading + turnDeg;
 
-        double direction = turnDeg > 0 ? 1.0 : -1.0;
-        double crrError = turnDeg * direction;
+        double diffAbs = Math.abs(endHeading - startHeading);
+        double diffAbs360 = 360 - diffAbs;
 
-        double iterations = 0;
+        double direction = endHeading > startHeading ? 1.0 : -1.0;
 
-        double radius = 190; //mm
-        double distanceMM = (2 * radius * Math.PI * turnDeg * direction) / 360;
+        if(diffAbs360 < diffAbs ){
+            direction *= -1;
+        }
 
-        //convert from mm to tics
-        double correction = 4.75;
-        double revolutions = distanceMM / ((25.4 * 4) * Math.PI); //a 4 inch wheel
-        double distancePulses = revolutions * (7 * 60) * correction; // 420 tics per revolution
+        if (startHeading >= 180 && direction > 0 && endHeading < 180) {
+            endHeading += 360;
+        }
+        if (startHeading <= 180 && direction < 0 && endHeading > 180) {
+            endHeading -= 360;
+        }
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        if (direction > 0) {
+            leftDrive.setDirection(DcMotor.Direction.FORWARD);
+            leftDriveBack.setDirection(DcMotor.Direction.FORWARD);
+            rightDrive.setDirection(DcMotor.Direction.FORWARD);
+            rightDriveBack.setDirection(DcMotor.Direction.FORWARD);
+        } else {
+            leftDrive.setDirection(DcMotor.Direction.REVERSE);
+            rightDrive.setDirection(DcMotor.Direction.REVERSE);
+            leftDriveBack.setDirection(DcMotor.Direction.REVERSE);
+            rightDriveBack.setDirection(DcMotor.Direction.REVERSE);
+        }
 
         leftDrive.setPower(0);
         rightDrive.setPower(0);
         leftDriveBack.setPower(0);
         rightDriveBack.setPower(0);
 
-        leftDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive.setDirection(DcMotor.Direction.FORWARD);
-        leftDriveBack.setDirection(DcMotor.Direction.REVERSE);
-        rightDriveBack.setDirection(DcMotor.Direction.FORWARD);
-
-        leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - (int) distancePulses);
-        rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + (int) distancePulses);
-        leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() - (int) distancePulses);
-        rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + (int) distancePulses);
-
-        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftDriveBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDriveBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        leftDrive.setPower(Math.abs(turnPower));
-        rightDrive.setPower(Math.abs(turnPower));
-        leftDriveBack.setPower(Math.abs(turnPower));
-        rightDriveBack.setPower(Math.abs(turnPower));
-
         ElapsedTime turnTime = new ElapsedTime();
         turnTime.reset();
-        double timeOut = 6;
+        double timeOut = 30;
+        double crrError = 0;
 
-        while ((crrError > 0) &&
-                (turnTime.seconds() < timeOut) &&
-                (leftDrive.isBusy() &&
-                        rightDrive.isBusy() &&
-                        leftDriveBack.isBusy() &&
-                        rightDriveBack.isBusy())) {
+        while (true) {
 
             double crrHeading = modernRoboticsI2cGyro.getHeading();
 
@@ -267,14 +246,28 @@ public class Team_Hardware_V9 {
                 crrHeading -= 360;
             }
             crrError = (endHeading - crrHeading) * direction;
-            waitMillis(0);
+
+            boolean doContinue = (crrError > 0) &&
+                    (turnTime.seconds() < timeOut);
+            if (!doContinue) {
+                break;
+            }
+
+            double crrPower = turnPower;
+            if (crrError < 19) crrPower = turnPowerMed;
+            if (crrError < 11) crrPower = turnPowerLow;
+
+            leftDrive.setPower(Math.abs(crrPower));
+            rightDrive.setPower(Math.abs(crrPower));
+            leftDriveBack.setPower(Math.abs(crrPower));
+            rightDriveBack.setPower(Math.abs(crrPower));
+
+            sleep(111);
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
         leftDriveBack.setPower(0);
         rightDriveBack.setPower(0);
-
-        headingControl = modernRoboticsI2cGyro.getHeading();
     }
 
     void openClaw() {
