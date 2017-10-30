@@ -6,7 +6,7 @@ import static android.os.SystemClock.sleep;
 
 //********************************* MAIN OP CLASS ************************************************//
 
-public class Auto_Glyph_Run {
+public class Run_Glyph {
 
     private Vu vu = new Vu();
     private HardwareMap hwMap = null;
@@ -33,7 +33,7 @@ public class Auto_Glyph_Run {
 
     }
 
-    void runAuto() {
+    void run() {
 
         if (robot == null) {
             return;

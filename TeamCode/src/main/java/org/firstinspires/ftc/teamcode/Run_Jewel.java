@@ -4,7 +4,7 @@ import static android.os.SystemClock.sleep;
 
 //********************************* MAIN OP CLASS ************************************************//
 
-public class Auto_Jewel_Run {
+public class Run_Jewel {
 
     boolean foundBlue = false;
     boolean foundRed = false;
@@ -27,7 +27,7 @@ public class Auto_Jewel_Run {
         blueTeam = aBlueTeam;
     }
 
-    void runAuto() {
+    void run() {
 
         if (robot == null) {
             return;

@@ -39,8 +39,8 @@ public class Auto_Blue_Short_V9 extends LinearOpMode {
     private Boolean shortField = true;
     private Boolean loaded = false;
 
-    private Auto_Glyph_Run glyphRun = new Auto_Glyph_Run();
-    private Auto_Jewel_Run jewelRun = new Auto_Jewel_Run();
+    private Run_Glyph glyphRun = new Run_Glyph();
+    private Run_Jewel jewelRun = new Run_Jewel();
 
     // ************************** MAIN LOOP ******************************************************//
     @Override
@@ -79,9 +79,9 @@ public class Auto_Blue_Short_V9 extends LinearOpMode {
 
         while (opModeIsActive() && loaded) {
 
-            jewelRun.runAuto();
+            jewelRun.run();
 
-            glyphRun.runAuto();
+            glyphRun.run();
 
             robot.stopRobot();
             stop();
