@@ -131,10 +131,10 @@ public class Run_Glyph {
         robot.leftClaw.setPosition(0.22);
         waitMillis(111);
 
-        robot.moveInches(-3, 0.22);
-        robot.moveInches(3, 0.22);
         robot.moveInches(-4, 0.22);
-        robot.moveInches(2, 0.22);
+        robot.turnTo9();
+        robot.moveInches(-2, 0.22);
+        robot.moveInches(1, 0.22);
 
         robot.stopRobot();
 
