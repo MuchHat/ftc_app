@@ -305,7 +305,11 @@ public class Team_Hardware_V9 {
 
     void move(double distance) {
 
-        double movePower = 0.66;
+        moveLinear(distance, 0, 1.0, 1.0, 1.0, 1.0);
+    }
+
+    void moveEx(double distance, double movePower) {
+
 
         moveLinear(distance, movePower, 1.0, 1.0, 1.0, 1.0);
     }
