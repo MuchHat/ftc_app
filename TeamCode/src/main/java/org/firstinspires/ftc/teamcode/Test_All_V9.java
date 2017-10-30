@@ -156,22 +156,34 @@ public class Test_All_V9 extends LinearOpMode {
                 driveDistanceControl = -100;
                 robot.move(driveDistanceControl);
                 totalDistance += driveDistanceControl;
+            }            // control: RIGHT_TRIGGER
+            if (gamepad1.dpad_up) {
+                robot.moveLift(0.5);
+            }
+            if (gamepad1.dpad_down) {
+                robot.moveLift(-0.5);
+            }
+            // control: LEFT_TRIGGER
+            if (Math.abs(gamepad1.left_trigger) > 0.33) {
+                driveDistanceControl = -100;
+                robot.move(driveDistanceControl);
+                totalDistance += driveDistanceControl;
             }
             // control: A
             if (gamepad1.a) {
-                totalDistance = 0;
+                robot.turnToHeading(-180);
             }
             // control: B
             if (gamepad1.b) {
-                totalDistance = 0;
+                robot.turnToHeading(90);
             }
             // control: X
             if (gamepad1.x) {
-                robot.colorBeacon.blue();
+                robot.turnToHeading(-90);
             }
             // control: Y
             if (gamepad1.y) {
-                robot.colorBeacon.red();
+                robot.turnToHeading(0);
             }
             if (robot.colorSensor.blue() > 0 && robot.colorSensor.blue() > robot.colorSensor.red()) {
                 robot.colorBeacon.blue();

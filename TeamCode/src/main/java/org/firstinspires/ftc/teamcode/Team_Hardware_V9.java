@@ -172,59 +172,91 @@ public class Team_Hardware_V9 {
 
     void turnToHeading(double newHeading) {
 
+        newHeading += 360;
         newHeading %= 360;
 
         double crrHeading = modernRoboticsI2cGyro.getHeading();
+        double turnDeg = 0;
+
         double diffAbs = Math.abs(newHeading - crrHeading);
         double diff360Abs = 360 - diffAbs;
-        double direction = newHeading > crrHeading ? 1.0 : -1.0;
-        double inverted = diffAbs > diff360Abs ? 1.0 : -1.0;
+        boolean inverted = diffAbs > diff360Abs ? false : true;
 
-        double turnDeg = inverted > 0 ? diffAbs : diff360Abs;
-        turnDeg *= direction * inverted;
-
-        turn(turnDeg);
+        if (!inverted) {
+            turnDeg = newHeading - crrHeading;
+        } else {
+            if( newHeading < crrHeading )newHeading += 360;
+            else crrHeading += 360;
+            turnDeg = newHeading - crrHeading;
+        }
+        turnD(turnDeg);
     }
 
     void turn(double turnDeg) {
+        double newHeading = modernRoboticsI2cGyro.getHeading() + turnDeg;
+
+        for (int attempts = 0; attempts < 3; attempts++) {
+            turnToHeading(newHeading);
+        }
+    }
+
+    void turnD(double turnDeg) {
 
         turnDeg *= -1;
 
-        double turnPower = 0.33;
-        double turnPowerMin = 0.11;
+        double turnPower = 0.66;
 
         double startHeading = modernRoboticsI2cGyro.getHeading();
         double endHeading = startHeading + turnDeg;
 
         double direction = turnDeg > 0 ? 1.0 : -1.0;
         double crrError = turnDeg * direction;
-        double prevError = crrError;
 
         double iterations = 0;
 
-        while ((crrError > 3) &&
-                (iterations < 1111) &&
-                (Math.abs(crrError) <= (Math.abs(prevError) + 3))) {
+        double radius = 190; //mm
+        double distanceMM = (2 * radius * Math.PI * turnDeg * direction) / 360;
 
-            prevError = crrError;
-            double crrPower = turnPower;
+        //convert from mm to tics
+        double correction = 4.75;
+        double revolutions = distanceMM / ((25.4 * 4) * Math.PI); //a 4 inch wheel
+        double distancePulses = revolutions * (7 * 60) * correction; // 420 tics per revolution
 
-            if (crrError < 30) {
-                crrPower = turnPowerMin + Math.abs((turnPower - turnPowerMin) * 30 / crrError);
-            }
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        leftDriveBack.setPower(0);
+        rightDriveBack.setPower(0);
 
-            leftPowerControl = -crrPower * direction;
-            rightPowerControl = crrPower * direction;
-            leftPowerControlBack = leftPowerControl;
-            rightPowerControlBack = rightPowerControl;
-            setDrivesByPower();
+        leftDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftDriveBack.setDirection(DcMotor.Direction.REVERSE);
+        rightDriveBack.setDirection(DcMotor.Direction.FORWARD);
 
-            double stepMillis = 3;
-            waitMillis(stepMillis);
-            if (Math.abs(crrError) < 15) {
-                stopRobot();
-                waitMillis(stepMillis);
-            }
+        leftDrive.setTargetPosition(leftDrive.getCurrentPosition() - (int) distancePulses);
+        rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + (int) distancePulses);
+        leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() - (int) distancePulses);
+        rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + (int) distancePulses);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftDriveBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDriveBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftDrive.setPower(Math.abs(turnPower));
+        rightDrive.setPower(Math.abs(turnPower));
+        leftDriveBack.setPower(Math.abs(turnPower));
+        rightDriveBack.setPower(Math.abs(turnPower));
+
+        ElapsedTime turnTime = new ElapsedTime();
+        turnTime.reset();
+        double timeOut = 6;
+
+        while ((crrError > 0) &&
+                (turnTime.seconds() < timeOut) &&
+                (leftDrive.isBusy() &&
+                        rightDrive.isBusy() &&
+                        leftDriveBack.isBusy() &&
+                        rightDriveBack.isBusy())) {
 
             double crrHeading = modernRoboticsI2cGyro.getHeading();
 
@@ -235,10 +267,13 @@ public class Team_Hardware_V9 {
                 crrHeading -= 360;
             }
             crrError = (endHeading - crrHeading) * direction;
-
-            iterations++;
+            waitMillis(0);
         }
-        stopRobot();
+        leftDrive.setPower(0);
+        rightDrive.setPower(0);
+        leftDriveBack.setPower(0);
+        rightDriveBack.setPower(0);
+
         headingControl = modernRoboticsI2cGyro.getHeading();
     }
 
@@ -291,6 +326,11 @@ public class Team_Hardware_V9 {
 
         double lowSpeedPower = 0.66;
         double highSpeedPower = 1.0;
+
+        if (power != 0) {
+            lowSpeedPower = Math.abs(power);
+            highSpeedPower = Math.abs(power);
+        }
 
         //convert from mm to tics
         double correction = 4.75;
@@ -355,7 +395,7 @@ public class Team_Hardware_V9 {
                 crrStepTime = defaultTime * stepsAccel / (stepsAccel - i);
             }
             if (stepCount - i < stepsBrake) {
-                crrStepTime = defaultTime * stepsBrake / (stepsBrake - (stepCount - i ) );
+                crrStepTime = defaultTime * stepsBrake / (stepsBrake - (stepCount - i));
             }
             crrStepTime = Range.clip(crrStepTime, minStepTime, maxStepTime);
             waitMillis(crrStepTime);
@@ -425,17 +465,26 @@ public class Team_Hardware_V9 {
                         rightDrive.isBusy() ||
                         leftDriveBack.isBusy() ||
                         rightDriveBack.isBusy();
-                if (!stillRunning2ndCheck) break;
+                if (!stillRunning2ndCheck) {
+                    break;
+                }
             }
-
-            waitMillis(33);
 
             boolean isStalled = Math.abs(leftDrive.getCurrentPosition() - leftDrivePrevPosition) <= stallPosDiff &&
                     Math.abs(rightDrive.getCurrentPosition() - rightDrivePrevPosition) <= stallPosDiff &&
                     Math.abs(leftDriveBack.getCurrentPosition() - leftDriveBackPrevPosition) <= stallPosDiff &&
                     Math.abs(rightDriveBack.getCurrentPosition() - rightDriveBackPrevPosition) <= stallPosDiff;
 
-            if (isStalled) break;
+            if (isStalled) {
+                waitMillis(111);
+                boolean isStalled2ndCheck = Math.abs(leftDrive.getCurrentPosition() - leftDrivePrevPosition) <= stallPosDiff &&
+                        Math.abs(rightDrive.getCurrentPosition() - rightDrivePrevPosition) <= stallPosDiff &&
+                        Math.abs(leftDriveBack.getCurrentPosition() - leftDriveBackPrevPosition) <= stallPosDiff &&
+                        Math.abs(rightDriveBack.getCurrentPosition() - rightDriveBackPrevPosition) <= stallPosDiff;
+                if (isStalled2ndCheck) {
+                    break;
+                }
+            }
 
             leftDrivePrevPosition = leftDrive.getCurrentPosition();
             rightDrivePrevPosition = rightDrive.getCurrentPosition();
