@@ -102,15 +102,17 @@ public class Run_Glyph {
             double vuX = vu.getX();
             double attempts = 0;
 
-            if (vu.getX() - desiredX > 0) { //TODO
+            if (vu.getX() - desiredX > 0 && attempts < 11) { //TODO
                 while (vu.getX() - desiredX > errDis) {
                     robot.colorBeacon.purple();
                     robot.moveInches(-10 / 24.5, 0.15);
+                    attempts++;
                 }
             } else {
-                while (vu.getX() - desiredX < errDis) {
+                while (vu.getX() - desiredX < errDis && attempts < 11) {
                     robot.colorBeacon.purple();
                     robot.moveInches(10 / 24.5, 0.15);
+                    attempts++;
                 }
             }
 
