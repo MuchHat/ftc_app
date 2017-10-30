@@ -54,7 +54,7 @@ public class Auto_Red_Short_Safe_V9 extends LinearOpMode {
 
         controlRuntime.reset();
         if (blueTeam) robot.colorBeacon.blue();
-        if (!blueTeam) robot.colorBeacon.red();
+        else robot.colorBeacon.red();
 
         robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
 
@@ -74,6 +74,10 @@ public class Auto_Red_Short_Safe_V9 extends LinearOpMode {
         telemetry.update();
 
         vu.init(hardwareMap);
+
+        robot.rightClaw.setPosition(0.59);
+        robot.leftClaw.setPosition(0.54);
+
         waitForStart();
 
         while (opModeIsActive() && loaded) {
@@ -86,11 +90,15 @@ public class Auto_Red_Short_Safe_V9 extends LinearOpMode {
             //********************************* AUTO MOVE TO THE SAFE ZONE ***********************//
 
             // get using encoders in the general area
-            // 9.5 inches + 8 inches + 8 inches
+            // Right x: 356 Middle: 421 3rd: 477
 
-            int[] moveDistance = {241, 446, 648};
+            int[] moveDistance = {580, 358, 161};
 
-            robot.move(610);
+            robot.move(178);
+            if(vu.targetSeen())
+                robot.colorBeacon.green();
+            waitMillis(1000);
+            robot.move(432);
             int index = 0;
             if (vu.targetSeen())
             {
@@ -99,23 +107,20 @@ public class Auto_Red_Short_Safe_V9 extends LinearOpMode {
             }
             else {robot.colorBeacon.yellow();}
             waitMillis(111);
-            robot.move(-229);
+            robot.move(-260);
             if (vu.targetSeen()) {robot.colorBeacon.green();}
             else {robot.colorBeacon.yellow();}
-            waitMillis(2000);
+            waitMillis(1000);
             if (index != 0) {robot.move(moveDistance[index-1]);}
             else {robot.colorBeacon.red();}
             waitMillis(333);
-            if (vu.targetSeen()) {robot.colorBeacon.green();}
-            else {robot.colorBeacon.yellow();}
 
-            /*if (vu.targetSeen()) {
+            if (vu.targetSeen()) {
                 robot.colorBeacon.green();
 
-                int errDis = 50; // 1 left 2 center 3 right
-
-                int[] xValues = {540, 465, 450}; // Desired value for left, right, and middle
-                int index = vu.getLastTargetSeenNo() - 1;
+                int errDis = 20; // 1 left 2 center 3 right
+                int[] xValues = {460, 415, 340}; // Desired value for left, right, and middle
+                index = vu.getLastTargetSeenNo() - 1;
                 int desiredX = xValues[index];
 
                 waitMillis(333);
@@ -124,7 +129,7 @@ public class Auto_Red_Short_Safe_V9 extends LinearOpMode {
                 double vuX = vu.getX();
                 double attempts = 0;
 
-                while (vuX < desiredX && attempts < 33) {
+                /*while (vuX < desiredX && attempts < 33) {
                     robot.colorBeacon.purple();
                     vuX = vu.getX();
                     if (desiredX - vuX < 100) {
@@ -139,83 +144,50 @@ public class Auto_Red_Short_Safe_V9 extends LinearOpMode {
                     attempts++;
                 }
                 if (blueTeam) robot.colorBeacon.blue();
-                else robot.colorBeacon.red();
+                else robot.colorBeacon.red();*/
 
-                if (vu.getX() - desiredX > errDis) {
-                    robot.move(-2);
+                 while(vu.getX() - desiredX > errDis) {
+                    robot.colorBeacon.purple();
+                    robot.move(-10);
                 }
-
-            } else {
-                // turn yellow if not found
-                waitMillis(333);
-                robot.colorBeacon.yellow();
-            }*/
-
+                if(blueTeam)
+                    robot.colorBeacon.blue();
+                 else
+                     robot.colorBeacon.red();
+            }
             //turn to put the glyph in
-            robot.turn(87);
+
+            robot.colorBeacon.teal();
+            robot.turn(85);
+            robot.colorBeacon.white();
+            updateTelemetry();
+            waitMillis(555);
+
+            robot.stopRobot();
+            updateTelemetry();
+            waitMillis(555);
 
             //put the glyph in
-            robot.move(11);
+            for( int halfInches = 0; halfInches < 11; halfInches++){
+                robot.move(0.5 * 25.4);
+                waitMillis(33);
+            }
 
-            robot.openClaw();
+            robot.rightClaw.setPosition(0.75);
+            robot.leftClaw.setPosition(0.22);
             waitMillis(111);
 
-            robot.move(-11);
+            robot.move(-100);
+            for( int halfInches = 0; halfInches < 6; halfInches++){
+                robot.move(0.5 * 25.4);
+                waitMillis(33);
+            }
 
             robot.stopRobot();
 
             stop(); //stop the opMode
 
             //********************************* END LOOP *****************************************//
-        }
-    }
-
-    void vuAdjust(double positionDesiredX, double positionDesiredY, double moveSide) {
-
-        if (!vu.targetSeen()) {
-            // vuforia not working
-            return;
-        }
-
-        double tolerance = 222; //in vu units
-
-        boolean useX = false;
-        boolean useY = false;
-
-        //use only one X or Y, the one matching the current orientation of the robot
-        if (positionDesiredX != 0) useX = true;
-        else if (positionDesiredY != 0) useY = true;
-
-        double positionDesired = 0;
-        if (useX) positionDesired = positionDesiredX;
-        if (useY) positionDesired = positionDesiredY;
-
-        double positionActual = 0;
-        if (useX) positionActual = vu.getX();
-        if (useY) positionActual = vu.getY();
-
-        double dir = positionDesired > positionActual ? 1.0 : -1.0;
-        double err = positionDesired - positionActual;
-
-        if (err * dir > tolerance) {
-            // the diff is too big, vuforia is probably not working
-            return;
-        }
-
-        int attempts = 0;
-        while (err * dir > 0 && attempts < 6) {
-            double step = 4; //move 4 mm at a time
-
-            if (moveSide > 0) robot.moveSide(step * dir);
-            else robot.move(step * dir);
-
-            if (useX) positionActual = vu.getX();
-            if (useY) positionActual = vu.getY();
-
-            err = positionDesired - positionActual;
-            attempts++;
-
-            waitMillis(111);
         }
     }
 

@@ -155,11 +155,11 @@ public class Manual_Blue_V9 extends LinearOpMode {
                 double liftInput = 0;
 
                 if (Math.abs(gamepad2.right_stick_y) > 0.06) {
-                    liftInput = gamepad2.right_stick_y;
+                    liftInput = -gamepad2.right_stick_y;
                 }
 
                 if (Math.abs(gamepad1.right_stick_y) > 0.06) {
-                    liftInput = gamepad1.right_stick_y;
+                    liftInput = -gamepad1.right_stick_y;
                 }
 
                 double liftDefaultSpeed = 1.5;

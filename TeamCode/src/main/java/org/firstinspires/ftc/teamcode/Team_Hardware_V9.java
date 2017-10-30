@@ -75,13 +75,13 @@ public class Team_Hardware_V9 {
     double elbowControl = 0;
     double gameStartHeading = 0;
     //********************************* PREDEFINED POS *******************************************//
-    double clawClosed[] = {0.95, 0.10};
+    double clawClosed[] = {0.82, 0.22};
     double clawZero[] = {0.22, 0.75};
     double clawOpen[] = {0.60, 0.40};
     double armPosZero[] = {1, 0};
     // ************************** MAIN LOOP ******************************************************//
     double driveDefaultSpeed = 1.0;
-    double turnDefaultSpeed = 0.5;
+    double turnDefaultSpeed = 0.66;
     double servoDefaultSpeed = 0.00033;
     public DcMotor leftDrive = null;
     public DcMotor rightDrive = null;
@@ -190,46 +190,40 @@ public class Team_Hardware_V9 {
 
         turnDeg *= -1;
 
-        double accelDistance = 6; // accelerate to max over 11 deg
-        double brakeDistance = 44; // ramp down the last 15 deg
-
-        double minPower = 0.11;
-        double maxPower = 0.29;
+        double turnPower = 0.33;
+        double turnPowerMin = 0.11;
 
         double startHeading = modernRoboticsI2cGyro.getHeading();
         double endHeading = startHeading + turnDeg;
 
         double direction = turnDeg > 0 ? 1.0 : -1.0;
         double crrError = turnDeg * direction;
+        double prevError = crrError;
 
         double iterations = 0;
 
-        while (crrError > 0 && iterations < 3333) {
+        while ((crrError > 3) &&
+                (iterations < 1111) &&
+                (Math.abs(crrError) <= (Math.abs(prevError) + 3))) {
 
-            double crrPower = maxPower;
-            double crrDistance = turnDeg * direction - crrError;
+            prevError = crrError;
+            double crrPower = turnPower;
 
-            if (crrDistance < accelDistance) {
-                crrPower = minPower + getS(crrDistance / accelDistance) * (maxPower - minPower);
+            if (crrError < 30) {
+                crrPower = turnPowerMin + Math.abs((turnPower - turnPowerMin) * 30 / crrError);
             }
-            if (crrError < brakeDistance) {
-                crrPower = minPower + getS(crrError / brakeDistance) * (maxPower - minPower);
-            }
-
-            crrPower = Range.clip(crrPower, minPower, maxPower);
 
             leftPowerControl = -crrPower * direction;
             rightPowerControl = crrPower * direction;
             leftPowerControlBack = leftPowerControl;
             rightPowerControlBack = rightPowerControl;
-
             setDrivesByPower();
 
-            double stepMillis = 1;
+            double stepMillis = 3;
             waitMillis(stepMillis);
-            if (Math.abs(crrError) < 30) {
+            if (Math.abs(crrError) < 15) {
                 stopRobot();
-                waitMillis(2 * stepMillis);
+                waitMillis(stepMillis);
             }
 
             double crrHeading = modernRoboticsI2cGyro.getHeading();
@@ -261,7 +255,7 @@ public class Team_Hardware_V9 {
     }
 
     void moveLift(double distance) {
-        double mmMillis = 0.3;
+        double mmMillis = 0.03;
         double stepTime = Math.abs(distance) / mmMillis;
         double liftDefaultPower = 0.88;
 
@@ -293,9 +287,9 @@ public class Team_Hardware_V9 {
 
     void moveLinear(double distanceMM, double power, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
 
-        double distanceLowSpeedMM = 99;
+//        double distanceLowSpeedMM = 99;
 
-        double lowSpeedPower = 0.66;
+//        double lowSpeedPower = 0.66;
         double highSpeedPower = 1.0;
 
         //convert from mm to tics
@@ -303,7 +297,8 @@ public class Team_Hardware_V9 {
         double revolutions = distanceMM / ((25.4 * 4) * Math.PI); //a 4 inch wheel
         double distancePulses = revolutions * (7 * 60) * correction; // 420 tics per revolution
 
-        double crrPower = Math.abs(distanceMM) > distanceLowSpeedMM ? highSpeedPower : lowSpeedPower;
+//        double crrPower = Math.abs(distanceMM) > distanceLowSpeedMM ? highSpeedPower : lowSpeedPower;
+        double crrPower = 1.0;
 
         leftPowerControl = crrPower;
         rightPowerControl = crrPower;
@@ -529,6 +524,8 @@ public class Team_Hardware_V9 {
             headingCorrection *= driveDirection; // apply correction the other way when running in reverse
 
             if (leftPowerControl == 0) headingCorrection = 0;
+
+            headingCorrection = 0;
         }
 
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -607,6 +604,11 @@ public class Team_Hardware_V9 {
         leftDrive.setPower(0);
         rightDriveBack.setPower(0);
         leftDriveBack.setPower(0);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     void waitMillis(double millis) {
