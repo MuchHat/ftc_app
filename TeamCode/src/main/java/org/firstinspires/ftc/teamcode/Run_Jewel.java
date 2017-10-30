@@ -84,27 +84,25 @@ public class Run_Jewel {
             robot.moveArm(crrBase, crrElbow);
             waitMillis(111);
 
-            if (!knockFirst) { // move to between the balls
-                robot.moveInches(3.5, 0.22);
+            if (!knockFirst) {
+                robot.moveInches(4, 0.22);
                 waitMillis(111);
                 robot.moveArm(armExtendedB, armExtendedE);
-            }
-
-            if (knockFirst) {
+            } else {
                 robot.moveInches(-4, 0.22);
                 waitMillis(111);
                 robot.moveArm(armExtendedB, armExtendedE);
                 waitMillis(111);
-                robot.moveInches(3.5 + 4, 0.22);
+                robot.moveInches(8, 0.22);
             }
 
             robot.moveArm(armExtendedB, armExtendedE);
             robot.moveArmPosZero();
             waitMillis(111);
-
-            if (blueTeam) robot.colorBeacon.blue();
-            else robot.colorBeacon.red();
         }
+
+        if (blueTeam) robot.colorBeacon.blue();
+        else robot.colorBeacon.red();
 
         robot.stopRobot();
     }

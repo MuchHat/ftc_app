@@ -43,34 +43,28 @@ public class Run_Glyph {
             robot.colorBeacon.green();
         } else {
             robot.colorBeacon.yellow();
+            waitMillis(888);
         }
-
-        robot.moveInches(178 / 24.5, 0.33);
-        waitMillis(333);
         if (vu.targetSeen()) {
             robot.colorBeacon.green();
         } else {
             robot.colorBeacon.yellow();
-        }
-        waitMillis(1000);
-        if (vu.targetSeen()) {
-            robot.colorBeacon.green();
-        } else {
-            robot.colorBeacon.yellow();
+            waitMillis(888);
         }
 
         robot.moveInches(432 / 24.5, 0.33);
-        waitMillis(333);
+        waitMillis(222);
         if (vu.targetSeen()) {
             robot.colorBeacon.green();
         } else {
             robot.colorBeacon.yellow();
         }
 
-        robot.moveInches(-260 / 24.5, 0.33);
-        waitMillis(333);
         robot.turnTo12();
-        waitMillis(1000);
+        waitMillis(222);
+
+        robot.moveInches(-260 / 24.5, 0.33);
+        waitMillis(222);
 
         int index = 0;
         if (vu.targetSeen()) {
@@ -81,7 +75,7 @@ public class Run_Glyph {
             index = 2; //go midedle if no vuforia
             robot.colorBeacon.yellow();
         }
-        waitMillis(111);
+        waitMillis(222);
 
         if (index != 0) {
             robot.moveInches(moveDistance[index - 1] / 24.5, 0.22);
@@ -97,7 +91,7 @@ public class Run_Glyph {
             int desiredX = xValues[index];
 
             waitMillis(222);
-            robot.moveInches(50 / 24.5, 0.33);
+            robot.moveInches(50 / 24.5, 0.33); //TODO
 
             double vuX = vu.getX();
             double attempts = 0;
@@ -115,11 +109,6 @@ public class Run_Glyph {
                     attempts++;
                 }
             }
-
-            if (blueTeam)
-                robot.colorBeacon.blue();
-            else
-                robot.colorBeacon.red();
         }
         //turn to put the glyph in
 
@@ -136,14 +125,16 @@ public class Run_Glyph {
         waitMillis(222);
 
         //put the glyph in
-        robot.moveInches(0.5 * 11, 0.33);
+        robot.moveInches(6.5, 0.33);
 
         robot.rightClaw.setPosition(0.75);
         robot.leftClaw.setPosition(0.22);
         waitMillis(111);
 
-        robot.moveInches(-100 / 24.5, 0.22);
+        robot.moveInches(-3, 0.22);
         robot.moveInches(3, 0.22);
+        robot.moveInches(-4, 0.22);
+        robot.moveInches(2, 0.22);
 
         robot.stopRobot();
 
