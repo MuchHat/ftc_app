@@ -8,15 +8,13 @@ import static android.os.SystemClock.sleep;
 
 public class Run_Glyph {
 
-    private Vu vu = new Vu();
-    private HardwareMap hwMap = null;
-
     //********************************* HW VARIABLES *********************************************//
     Team_Hardware_V9 robot = null;
-
     //********************************* CONSTANTS ************************************************//
     Boolean blueTeam = true;
     Boolean shortField = true;
+    private Vu vu = new Vu();
+    private HardwareMap hwMap = null;
 
     void init(Team_Hardware_V9 aRobot, HardwareMap aHwMap, boolean aBlueTeam, boolean aShortField) {
 
@@ -41,68 +39,81 @@ public class Run_Glyph {
 
         int[] moveDistance = {580, 358, 161};
 
-        robot.move(178);
-        if (vu.targetSeen())
+        if (vu.targetSeen()) {
             robot.colorBeacon.green();
+        } else {
+            robot.colorBeacon.yellow();
+        }
+
+        robot.moveInches(178 / 24.5, 0.33);
+        waitMillis(333);
+        if (vu.targetSeen()) {
+            robot.colorBeacon.green();
+        } else {
+            robot.colorBeacon.yellow();
+        }
         waitMillis(1000);
-        robot.move(432);
+        if (vu.targetSeen()) {
+            robot.colorBeacon.green();
+        } else {
+            robot.colorBeacon.yellow();
+        }
+
+        robot.moveInches(432 / 24.5, 0.33);
+        waitMillis(333);
+        if (vu.targetSeen()) {
+            robot.colorBeacon.green();
+        } else {
+            robot.colorBeacon.yellow();
+        }
+
+        robot.moveInches(-260 / 24.5, 0.33);
+        waitMillis(333);
+        robot.turnTo12();
+        waitMillis(1000);
+
         int index = 0;
         if (vu.targetSeen()) {
             robot.colorBeacon.green();
             index = vu.lastTargetSeenNo;
+            robot.colorBeacon.green();
         } else {
+            index = 2; //go midedle if no vuforia
             robot.colorBeacon.yellow();
         }
         waitMillis(111);
-        robot.move(-260);
-        if (vu.targetSeen()) {
-            robot.colorBeacon.green();
-        } else {
-            robot.colorBeacon.yellow();
-        }
-        waitMillis(1000);
+
         if (index != 0) {
-            robot.move(moveDistance[index - 1]);
-        } else {
-            robot.colorBeacon.red();
+            robot.moveInches(moveDistance[index - 1] / 24.5, 0.22);
         }
-        waitMillis(333);
+        waitMillis(222);
 
         if (vu.targetSeen()) {
             robot.colorBeacon.green();
 
-            int errDis = 20; // 1 left 2 center 3 right
+            int errDis = 15; // 1 left 2 center 3 right
             int[] xValues = {460, 415, 340}; // Desired value for left, right, and middle
             index = vu.getLastTargetSeenNo() - 1;
             int desiredX = xValues[index];
 
-            waitMillis(333);
-            robot.move(50);
+            waitMillis(222);
+            robot.moveInches(50 / 24.5, 0.33);
 
             double vuX = vu.getX();
             double attempts = 0;
 
-                /*while (vuX < desiredX && attempts < 33) {
+            if (vu.getX() - desiredX > 0) { //TODO
+                while (vu.getX() - desiredX > errDis) {
                     robot.colorBeacon.purple();
-                    vuX = vu.getX();
-                    if (desiredX - vuX < 100) {
-                        robot.move(10);
-                        waitMillis(33);
-
-                    } else {
-                        robot.move(20);
-                        waitMillis(33);
-
-                    }
-                    attempts++;
+                    robot.moveInches(-10 / 24.5, 0.15);
                 }
-                if (blueTeam) robot.colorBeacon.blue();
-                else robot.colorBeacon.red();*/
-
-            while (vu.getX() - desiredX > errDis) {
-                robot.colorBeacon.purple();
-                robot.move(-10);
+            } else {
+                while (vu.getX() - desiredX < errDis) {
+                    robot.colorBeacon.purple();
+                    robot.moveInches(10 / 24.5, 0.15);
+                }
             }
+
             if (blueTeam)
                 robot.colorBeacon.blue();
             else
@@ -112,27 +123,25 @@ public class Run_Glyph {
 
         robot.colorBeacon.teal();
         robot.turnTo3();
-        robot.colorBeacon.white();
-        waitMillis(555);
+
+        if (blueTeam)
+            robot.colorBeacon.blue();
+        else
+            robot.colorBeacon.red();
+        waitMillis(222);
 
         robot.stopRobot();
-        waitMillis(555);
+        waitMillis(222);
 
         //put the glyph in
-        for (int halfInches = 0; halfInches < 11; halfInches++) {
-            robot.move(0.5 * 25.4);
-            waitMillis(33);
-        }
+        robot.moveInches(0.5 * 11, 0.33);
 
         robot.rightClaw.setPosition(0.75);
         robot.leftClaw.setPosition(0.22);
         waitMillis(111);
 
-        robot.move(-100);
-        for (int halfInches = 0; halfInches < 6; halfInches++) {
-            robot.move(0.5 * 25.4);
-            waitMillis(33);
-        }
+        robot.moveInches(-100 / 24.5, 0.22);
+        robot.moveInches(3, 0.22);
 
         robot.stopRobot();
 

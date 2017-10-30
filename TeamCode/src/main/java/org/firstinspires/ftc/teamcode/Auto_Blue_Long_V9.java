@@ -82,7 +82,13 @@ public class Auto_Blue_Long_V9 extends LinearOpMode {
 
             jewelRun.run();
 
+            if (blueTeam) robot.colorBeacon.blue();
+            else robot.colorBeacon.red();
+
             glyphRun.run();
+
+            if (blueTeam) robot.colorBeacon.blue();
+            else robot.colorBeacon.red();
 
             robot.stopRobot();
             stop();

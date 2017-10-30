@@ -46,7 +46,7 @@ public class Run_Jewel {
 
         int findPositions = 4;
         robot.moveArm(armExtendedB, armExtendedE);
-        waitMillis(222);
+        waitMillis(111);
 
         for (int i = 0; i < findPositions; i++) {
 
@@ -59,7 +59,7 @@ public class Run_Jewel {
             if (foundJewel()) {
                 foundPos = i;
                 robot.moveArm(armExtendedB, armExtendedE);
-                waitMillis(222);
+                waitMillis(111);
                 break;
             }
         }
@@ -67,38 +67,43 @@ public class Run_Jewel {
         // move the jewel
         if (foundBlue || foundRed) {
 
+            robot.colorBeacon.purple();
+
             boolean knockFirst = true; //knock the ball in front or the other one
+
             if (blueTeam && foundBlue) knockFirst = true;
             if (!blueTeam && foundRed) knockFirst = true;
             if (blueTeam && !foundBlue) knockFirst = false;
             if (!blueTeam && !foundRed) knockFirst = false;
 
-            robot.move(20);
+            // move between the balls
+            robot.moveInches(3.5, 0.22);
 
             double crrBase = armKnockB[foundPos];
             double crrElbow = armKnockE[foundPos];
             robot.moveArm(crrBase, crrElbow);
-            waitMillis(222);
+            waitMillis(111);
 
             if (!knockFirst) { // move to between the balls
-                robot.move(40);
-                waitMillis(400);
+                robot.moveInches(3.5, 0.22);
+                waitMillis(111);
+                robot.moveArm(armExtendedB, armExtendedE);
             }
 
             if (knockFirst) {
-                robot.move(-40);
-                waitMillis(400);
+                robot.moveInches(-4, 0.22);
+                waitMillis(111);
+                robot.moveArm(armExtendedB, armExtendedE);
+                waitMillis(111);
+                robot.moveInches(3.5 + 4, 0.22);
             }
 
             robot.moveArm(armExtendedB, armExtendedE);
-            robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
-            waitMillis(222);
+            robot.moveArmPosZero();
+            waitMillis(111);
 
-
-            robot.colorBeacon.green();
-
-        } else if (!foundBlue || !foundRed) {
-            robot.colorBeacon.yellow();
+            if (blueTeam) robot.colorBeacon.blue();
+            else robot.colorBeacon.red();
         }
 
         robot.stopRobot();

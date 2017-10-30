@@ -56,6 +56,7 @@ public class Team_Hardware_V9 {
     public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     public IntegratingGyroscope gyro;
     public MRIColorBeacon colorBeacon;
+
     //********************************* MOVE STATES **********************************************//
     double leftPowerControl = 0;
     double rightPowerControl = 0;
