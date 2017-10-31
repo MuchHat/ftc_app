@@ -93,13 +93,9 @@ public class Manual_Blue_V9 extends LinearOpMode {
             //********************************* MANUAL MODE **************************************//
 
             // ***************************** control: SIDE  ********************************//*/
-            if ((Math.abs(gamepad2.right_stick_x) > 0.06) ||
-                    (Math.abs(gamepad1.right_stick_x) > 0.06)) {
+            if (Math.abs(gamepad1.right_stick_x) > 0.06) {
                 double sideInput = 0;
 
-                if (Math.abs(gamepad2.right_stick_x) > 0.06) {
-                    sideInput = gamepad2.right_stick_x;
-                }
                 if (Math.abs(gamepad1.right_stick_x) > 0.06) {
                     sideInput = gamepad1.right_stick_x;
                 }
@@ -122,20 +118,12 @@ public class Manual_Blue_V9 extends LinearOpMode {
                 robot.leftDistanceControlBack = 0;
                 robot.rightDistanceControlBack = 0;
 
-                if (Math.abs(gamepad2.left_stick_y) > 0.06) {
-                    yInput = -gamepad2.left_stick_y;
-                }
-                if (Math.abs(gamepad2.left_stick_x) > 0.06) {
-                    xInput = gamepad2.left_stick_x;
-                }
-
                 if (Math.abs(gamepad1.left_stick_y) > 0.06) {
                     yInput = -gamepad1.left_stick_y;
                 }
                 if (Math.abs(gamepad1.left_stick_x) > 0.06) {
                     xInput = gamepad1.left_stick_x;
                 }
-
                 robot.leftPowerControl = yInput * robot.driveDefaultSpeed;
                 robot.rightPowerControl = yInput * robot.driveDefaultSpeed;
 
@@ -167,60 +155,48 @@ public class Manual_Blue_V9 extends LinearOpMode {
                 robot.setDrivesByPower();
             }
 
-            // ********************************  control: TURNS 90  **************************//
-            if (gamepad1.dpad_right ||
-                    gamepad2.dpad_right) {
+            // ********************************  control:  ***********************************//
+            if (gamepad1.dpad_right) {
+                robot.moveSide(66);
+            }
+
+            // ********************************  control:   ***********************************//
+            if (gamepad1.dpad_left) {
+                robot.moveSide(-66);
 
             }
 
-            // ********************************  control: TURNS -90
-            if (gamepad1.dpad_left ||
-                    gamepad2.dpad_left) {
+            // ********************************  control:  ***********************************//
+            if (gamepad1.dpad_up) {
+                robot.move(66);
+            }
+
+            // ********************************  control:  ***********************************//
+            if (gamepad1.dpad_down) {
+                robot.move(-66);
+            }
+
+            // ********************************  control:  ***********************************//
+            if (gamepad2.dpad_right) {
+                robot.moveLift(-1);
+            }
+
+            // ********************************  control:   ***********************************//
+            if (gamepad2.dpad_left) {
+                robot.moveLift(1);
 
             }
 
-            // ********************************  control: TURN FACING THE CRYPTO BOX  ********//
-            if (gamepad1.dpad_up ||
-                    gamepad2.dpad_up) {
+            // ********************************  control:  ***********************************//
+            if (gamepad2.dpad_up) {
+                robot.moveLift(0.5);
 
             }
 
-            // ********************************  control: TURNS 180  *************************//
-            if (gamepad1.dpad_down ||
-                    gamepad2.dpad_down) {
+            // ********************************  control:  ***********************************//
+            if (gamepad2.dpad_down) {
+                robot.moveLift(-0.5);
 
-            }
-
-            // ********************************  control: SMALL STEP FORWARD  ****************//
-            if (gamepad1.y ||
-                    gamepad2.y) {
-                double step = 66;
-
-                robot.move(step);
-            }
-
-            // ********************************  control: SMALL STEP REVERSE  ****************//
-            if (gamepad1.a ||
-                    gamepad2.a) {
-                double step = 66;
-
-                robot.move(-step);
-            }
-
-            // ********************************  control: SMALL STEP LEFT  *******************//
-            if (gamepad1.x ||
-                    gamepad2.x) {
-                double step = 66;
-
-                robot.moveSide(step);
-            }
-
-            // ********************************  control: SMALL STEP RIGHT  ******************//
-            if (gamepad1.b ||
-                    gamepad2.b) {
-                double step = -66;
-
-                robot.moveSide(step);
             }
 
             // ********************************  control: CLAW OPEN  *************************//
