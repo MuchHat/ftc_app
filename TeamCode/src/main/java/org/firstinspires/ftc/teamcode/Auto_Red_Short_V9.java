@@ -34,9 +34,6 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
 
     //********************************* MOVE STATES **********************************************//
     private ElapsedTime totalRuntime = null;
-
-    private Boolean blueTeam = false;
-    private Boolean shortField = true;
     private Boolean loaded = false;
 
     private Run_Glyph glyphRun = new Run_Glyph();
@@ -52,17 +49,20 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
         ElapsedTime controlRuntime = new ElapsedTime();
         ElapsedTime loopRuntime = new ElapsedTime();
         totalRuntime = new ElapsedTime();
-        controlRuntime.reset();
 
         robot.blueTeam = false;
         robot.shortField = true;
         robot.showTeamColor();
 
+        telemetry.addData("starting vuforia", "... do NOT move");
+        telemetry.update();
+
         jewelRun.init(robot);
         glyphRun.init(robot, hardwareMap);
 
         robot.modernRoboticsI2cGyro.calibrate();
-        // Wait until the gyro calibration is complete
+
+        controlRuntime.reset();        // Wait until the gyro calibration is complete
         while (!isStopRequested() && robot.modernRoboticsI2cGyro.isCalibrating()) {
             telemetry.addData("calibrating gyro", "... do NOT move");
             telemetry.addData("calibrating gyro", "%s", Math.round(controlRuntime.seconds()));
@@ -115,8 +115,8 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
 
     private void updateTelemetry() {
 
-        String field = shortField ? "short" : "long";
-        String team = blueTeam ? "blue" : "red";
+        String field = robot.shortField ? "short" : "long";
+        String team = robot.blueTeam ? "blue" : "red";
 
         telemetry.addData("left drive", "%.0f%%", robot.leftPowerControl * 100);
         telemetry.addData("right drive", "%.0f%%", robot.rightPowerControl * 100);
