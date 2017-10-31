@@ -195,9 +195,9 @@ public class Team_Hardware_V9 {
 
     void turn2Heading(double endHeading) {
 
-        double turnPower = 0.15;
-        double turnPowerMed = 0.11;
-        double turnPowerLow = 0.08;
+        double turnPower = 0.22;
+        double turnPowerMed = 0.22;
+        double turnPowerLow = 0.11;
 
         double startHeading = modernRoboticsI2cGyro.getHeading();
 
@@ -263,8 +263,8 @@ public class Team_Hardware_V9 {
             }
 
             double crrPower = turnPower;
-            if (crrError < 19) crrPower = turnPowerMed;
-            if (crrError < 11) crrPower = turnPowerLow;
+            if (crrError < 13) crrPower = turnPowerMed;
+            if (crrError < 9) crrPower = turnPowerLow;
 
             leftDrive.setPower(Math.abs(crrPower));
             rightDrive.setPower(Math.abs(crrPower));
@@ -369,7 +369,8 @@ public class Team_Hardware_V9 {
 
         double stepSize = 0.004;
         double stepTime = 8;
-        double rampUp = 0.02/stepSize;
+        double rampUp = 8;
+        double rampUp2 = 49;
 
         double baseStart = baseControl;
         double elbowStart = elbowControl;
@@ -381,26 +382,24 @@ public class Team_Hardware_V9 {
         double elbowStepSize = (newElbow - elbowStart) / stepCount;
         double baseStepSize = (newBase - baseStart) / stepCount;
 
-        for (int i = 0; i < (int) stepCount; i++) {
+        int i = 0;
+        while (i < (int) stepCount) {
 
+            double crrStepTime = stepTime;
+
+            if (i > rampUp2 && i < stepCount - rampUp2) {
+                i += 4;
+            } else if (i > rampUp && i < stepCount - rampUp) {
+                i += 2;
+            } else {
+                i++;
+            }
             double baseCrr = baseStart + i * baseStepSize;
             double elbowCrr = elbowStart + i * elbowStepSize;
 
             baseControl = baseCrr;
             elbowControl = elbowCrr;
             setServos();
-
-            double crrStepTime = stepTime;
-
-            if( i > rampUp && i> stepCount - rampUp){
-                crrStepTime = stepTime / 2;
-            }
-            if( i > rampUp * 2 && i> stepCount - rampUp * 2){
-                crrStepTime = stepTime / 4;
-            }
-            if( i > rampUp * 4 && i> stepCount - rampUp * 4){
-                crrStepTime = stepTime / 8;
-            }
 
             waitMillis(crrStepTime);
         }

@@ -77,7 +77,7 @@ public class Run_Glyph {
 
         //****  2. MOVE OFF THE PLATFORM *********************************************************//
 
-        robot.moveInches(432 / 24.5 * direction, 0.44);
+        robot.moveInches(432 / 24.5 * direction, 0.66);
         waitMillis(222);
         if (vu.targetSeen()) {
             robot.colorBeacon.green();
@@ -103,7 +103,7 @@ public class Run_Glyph {
 
         //****  4. BACK AGAINST THE PLATFORM TO START FROM A KNOWN POS ***************************//
 
-        robot.moveInches(-260 / 24.5, 0.44);
+        robot.moveInches(-260 / 24.5, 0.66);
         waitMillis(222);
 
         //****  5. MOVE IN FRONT OF THE BOX L/M/R PER THE WUMARK *********************************//
@@ -123,15 +123,12 @@ public class Run_Glyph {
         //****  SPECIAL STEPS FOR THE LONG FIELD *************************************************//
 
         if (!shortField) {
-            robot.moveInches(moveDistanceFirstLegLongField / 24.5, 0.44);
+            robot.moveInches(moveDistanceFirstLegLongField / 24.5, 0.66);
             waitMillis(222);
 
             robot.colorBeacon.teal();
-            if (!blueTeam) {
-                robot.turnTo9();
-            } else {
-                robot.turnTo3();
-            }
+            robot.turnTo9();
+
             waitMillis(222);
 
             if (vu.targetSeen()) {
@@ -144,7 +141,7 @@ public class Run_Glyph {
         //****  CONTINUES THE SAME WITH THE SHORT FIELD ******************************************//
 
         if (index != 0) {
-            robot.moveInches(moveDistance[index - 1] / 24.5, 0.44);
+            robot.moveInches(moveDistance[index - 1] / 24.5, 0.66);
         }
         waitMillis(222);
 
@@ -166,13 +163,13 @@ public class Run_Glyph {
             if (vu.getX() - desiredX > 0 && attempts < 11) { //TODO
                 while (vu.getX() - desiredX > errDis) {
                     robot.colorBeacon.purple();
-                    robot.moveInches(-10 / 24.5, 0.44);
+                    robot.moveInches(-10 / 24.5, 0.66);
                     attempts++;
                 }
             } else {
                 while (vu.getX() - desiredX < errDis && attempts < 11) {
                     robot.colorBeacon.purple();
-                    robot.moveInches(10 / 24.5, 0.44);
+                    robot.moveInches(10 / 24.5, 0.66);
                     attempts++;
                 }
             }
@@ -180,14 +177,16 @@ public class Run_Glyph {
 
         //****  7. TURN 90 TOWARDS THE BOX ******************************************************//
 
-        if (!blueTeam) {
-            robot.colorBeacon.teal();
+        robot.colorBeacon.teal();
+        if (shortField) {
             robot.turnTo3();
         } else {
-            robot.colorBeacon.teal();
-            robot.turnTo3();
+            if (blueTeam) {
+                robot.turnTo6();
+            } else {
+                robot.turnTo12();
+            }
         }
-
         if (blueTeam)
             robot.colorBeacon.blue();
         else
@@ -199,7 +198,7 @@ public class Run_Glyph {
 
         //****  8. PUT THE GLYPH IN  *************************************************************//
 
-        robot.moveInches(6.5, 0.44);
+        robot.moveInches(6.5, 0.66);
 
         robot.rightClaw.setPosition(0.75);
         robot.leftClaw.setPosition(0.22);
@@ -207,7 +206,7 @@ public class Run_Glyph {
 
         //****  9. BACKOFF ***********************************************************************//
 
-        robot.moveInches(-4, 0.44);
+        robot.moveInches(-4, 0.66);
 
         //****  10. TURN 180 AND TUCK IT IN ******************************************************//
 
@@ -217,11 +216,11 @@ public class Run_Glyph {
             robot.colorBeacon.blue();
         else
             robot.colorBeacon.red();
-        robot.moveInches(-2, 0.44);
+        robot.moveInches(-2, 0.66);
 
         //****  11. MOVE 1 INCH AWAY FROM BOX FOR THE REST POSITION ******************************//
 
-        robot.moveInches(1, 0.44);
+        robot.moveInches(1, 0.66);
         robot.stopRobot();
 
         //********************************* END LOOP *****************************************//
