@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -36,7 +37,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 // ************************** OP FOR TESTING THE SERVOS ******************************************//
 
 @TeleOp(name = "Test Vu V9", group = "Test")
-//@Disabled
+@Disabled
 public class Test_Vu_V9 extends LinearOpMode {
 
     // ************************** VARIABLES ******************************************************//

@@ -22,7 +22,7 @@ Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufoywxzibq+y
 
 @TeleOp(name = "Manual Blue V9", group = "Competition")
 // @Disabled
-public class Manual_Blue_V9 extends LinearOpMode {
+public class Manual_Red_V9 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
     private Team_Hardware_V9 robot = new Team_Hardware_V9();
@@ -46,7 +46,7 @@ public class Manual_Blue_V9 extends LinearOpMode {
         totalRuntime = new ElapsedTime();
 
         controlRuntime.reset();
-        robot.blueTeam = true;
+        robot.blueTeam = false;
         robot.showTeamColor();
 
         robot.modernRoboticsI2cGyro.calibrate();
