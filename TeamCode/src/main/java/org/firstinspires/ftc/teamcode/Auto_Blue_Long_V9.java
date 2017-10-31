@@ -27,7 +27,7 @@ g4gcjqBPgBos5nCDk43KipEeX22z
 //********************************* MAIN OP CLASS ************************************************//
 
 @TeleOp(name = "Auto Blue Long V9", group = "Competition")
-@Disabled
+//@Disabled
 public class Auto_Blue_Long_V9 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//

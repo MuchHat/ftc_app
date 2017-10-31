@@ -96,42 +96,44 @@ public class Run_Jewel {
 
                 //*****  4.1 MOVE FORWARD AND REMAIN AT EDGE *************************************//
 
-                robot.moveInches(4, 0.22);
+                robot.moveInches(4, 0.44);
                 waitMillis(111);
                 robot.moveArm(armExtendedB, armExtendedE);
 
                 // if blue move back to get to the edge of the platform
                 if (blueTeam) {
                     waitMillis(111);
-                    robot.moveInches(-7.5, 0.22);
+                    robot.moveInches(-7.5, 0.44);
                 }
             } else {
                 //******  4.2 MOVE BACK THEN FW TO END UP AT EDGE ********************************//
 
-                robot.moveInches(-4, 0.22);
+                robot.moveInches(-4, 0.44);
                 waitMillis(111);
                 robot.moveArm(armExtendedB, armExtendedE);
 
                 //if red move fw to get to the edge of the platform
                 if (!blueTeam) {
                     waitMillis(111);
-                    robot.moveInches(7.5, 0.22);
+                    robot.moveInches(7.5, 0.44);
                 }
             }
 
-            //****   6. PUT ARM BACK AT POS ZERO *************************************************//
-
-            robot.moveArm(armExtendedB, armExtendedE);
-            robot.moveArmPosZero();
-            waitMillis(111);
         }
 
-        //***************************************************************************************//
+        //****   6. PUT ARM BACK AT POS ZERO *************************************************//
 
+        robot.moveArm(armExtendedB, armExtendedE);
+        waitMillis(111);
+        robot.moveArmPosZero();
+        waitMillis(111);
+
+        robot.colorBeacon.purple();
+        robot.turnTo12();
+        
         if (blueTeam) robot.colorBeacon.blue();
         else robot.colorBeacon.red();
 
-        robot.beaconBlink(3);
         robot.stopRobot();
     }
 

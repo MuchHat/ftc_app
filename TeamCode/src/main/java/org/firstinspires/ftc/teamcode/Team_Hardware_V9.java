@@ -175,24 +175,28 @@ public class Team_Hardware_V9 {
 
     void turnTo12() {
         turn2Heading(0);
+        turn2Heading(0);
     }
 
     void turnTo3() {
+        turn2Heading(270);
         turn2Heading(270);
     }
 
     void turnTo6() {
         turn2Heading(180);
+        turn2Heading(180);
     }
 
     void turnTo9() {
+        turn2Heading(90);
         turn2Heading(90);
     }
 
     void turn2Heading(double endHeading) {
 
-        double turnPower = 0.22;
-        double turnPowerMed = 0.15;
+        double turnPower = 0.15;
+        double turnPowerMed = 0.11;
         double turnPowerLow = 0.08;
 
         double startHeading = modernRoboticsI2cGyro.getHeading();
@@ -363,22 +367,19 @@ public class Team_Hardware_V9 {
 
     void moveArm(double newBase, double newElbow) {
 
-        double stepSize = 0.06;
-        double stepsAccel = 11;
-        double stepsBrake = 22;
-        double defaultTime = 2;
-        double minStepTime = 1;
-        double maxStepTime = 6;
+        double stepSize = 0.004;
+        double stepTime = 8;
+        double rampUp = 0.02/stepSize;
 
         double baseStart = baseControl;
         double elbowStart = elbowControl;
 
         double stepCount = Math.abs(baseStart - newBase) / stepSize;
         stepCount = Math.max(Math.abs(elbowStart - newElbow) / stepSize, stepCount);
-        stepCount = Range.clip(stepCount, 66, 666); //should not be more than 999 steps
+        stepCount = Range.clip(stepCount, 0, 333);
 
-        double elbowStepSize = (newElbow - baseStart) / stepCount;
-        double baseStepSize = (newBase - elbowStart) / stepCount;
+        double elbowStepSize = (newElbow - elbowStart) / stepCount;
+        double baseStepSize = (newBase - baseStart) / stepCount;
 
         for (int i = 0; i < (int) stepCount; i++) {
 
@@ -387,19 +388,20 @@ public class Team_Hardware_V9 {
 
             baseControl = baseCrr;
             elbowControl = elbowCrr;
-
-            baseControl = Range.clip(baseControl, Math.min(baseStart, newBase), Math.max(baseStart, newBase));
-            elbowControl = Range.clip(elbowControl, Math.min(elbowStart, newElbow), Math.max(elbowStart, newElbow));
             setServos();
 
-            double crrStepTime = defaultTime;
-            if (i < stepsAccel) {
-                crrStepTime = defaultTime * stepsAccel / (stepsAccel - i);
+            double crrStepTime = stepTime;
+
+            if( i > rampUp && i> stepCount - rampUp){
+                crrStepTime = stepTime / 2;
             }
-            if (stepCount - i < stepsBrake) {
-                crrStepTime = defaultTime * stepsBrake / (stepsBrake - (stepCount - i));
+            if( i > rampUp * 2 && i> stepCount - rampUp * 2){
+                crrStepTime = stepTime / 4;
             }
-            crrStepTime = Range.clip(crrStepTime, minStepTime, maxStepTime);
+            if( i > rampUp * 4 && i> stepCount - rampUp * 4){
+                crrStepTime = stepTime / 8;
+            }
+
             waitMillis(crrStepTime);
         }
 
@@ -412,12 +414,6 @@ public class Team_Hardware_V9 {
 
     void setDrivesByDistance() {
 
-        double distance = Math.abs(leftDistanceControl);
-        distance = Math.max(distance, Math.abs(rightDistanceControl));
-        distance = Math.max(distance, Math.abs(leftDistanceControlBack));
-        distance = Math.max(distance, Math.abs(rightDistanceControlBack));
-
-        // reset the timeout time and start motion.
         ElapsedTime encodersTimer = new ElapsedTime();
 
         leftDrive.setPower(0);
@@ -425,15 +421,15 @@ public class Team_Hardware_V9 {
         leftDriveBack.setPower(0);
         rightDriveBack.setPower(0);
 
-        leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + (int) leftDistanceControl);
-        rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + (int) rightDistanceControl);
-        leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() + (int) leftDistanceControlBack);
-        rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + (int) rightDistanceControlBack);
-
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
         leftDriveBack.setDirection(DcMotor.Direction.REVERSE);
         rightDriveBack.setDirection(DcMotor.Direction.FORWARD);
+
+        leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + (int) leftDistanceControl);
+        rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + (int) rightDistanceControl);
+        leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() + (int) leftDistanceControlBack);
+        rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + (int) rightDistanceControlBack);
 
         leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -448,50 +444,15 @@ public class Team_Hardware_V9 {
         double timeOutSec = 6;
         encodersTimer.reset();
 
-        double stallPosDiff = 0;
-        double leftDrivePrevPosition = leftDrive.getCurrentPosition();
-        double rightDrivePrevPosition = rightDrive.getCurrentPosition();
-        double leftDriveBackPrevPosition = leftDriveBack.getCurrentPosition();
-        double rightDriveBackPrevPosition = rightDriveBack.getCurrentPosition();
-
         while (encodersTimer.seconds() < timeOutSec) {
 
             boolean stillRunning = leftDrive.isBusy() ||
                     rightDrive.isBusy() ||
                     leftDriveBack.isBusy() ||
                     rightDriveBack.isBusy();
-
             if (!stillRunning) {
-                waitMillis(33);
-                boolean stillRunning2ndCheck = leftDrive.isBusy() ||
-                        rightDrive.isBusy() ||
-                        leftDriveBack.isBusy() ||
-                        rightDriveBack.isBusy();
-                if (!stillRunning2ndCheck) {
-                    break;
-                }
+                break;
             }
-
-            boolean isStalled = Math.abs(leftDrive.getCurrentPosition() - leftDrivePrevPosition) <= stallPosDiff &&
-                    Math.abs(rightDrive.getCurrentPosition() - rightDrivePrevPosition) <= stallPosDiff &&
-                    Math.abs(leftDriveBack.getCurrentPosition() - leftDriveBackPrevPosition) <= stallPosDiff &&
-                    Math.abs(rightDriveBack.getCurrentPosition() - rightDriveBackPrevPosition) <= stallPosDiff;
-
-            if (isStalled) {
-                waitMillis(111);
-                boolean isStalled2ndCheck = Math.abs(leftDrive.getCurrentPosition() - leftDrivePrevPosition) <= stallPosDiff &&
-                        Math.abs(rightDrive.getCurrentPosition() - rightDrivePrevPosition) <= stallPosDiff &&
-                        Math.abs(leftDriveBack.getCurrentPosition() - leftDriveBackPrevPosition) <= stallPosDiff &&
-                        Math.abs(rightDriveBack.getCurrentPosition() - rightDriveBackPrevPosition) <= stallPosDiff;
-                if (isStalled2ndCheck) {
-                    break;
-                }
-            }
-
-            leftDrivePrevPosition = leftDrive.getCurrentPosition();
-            rightDrivePrevPosition = rightDrive.getCurrentPosition();
-            leftDriveBackPrevPosition = leftDriveBack.getCurrentPosition();
-            rightDriveBackPrevPosition = rightDriveBack.getCurrentPosition();
         }
 
         leftDrive.setPower(0);
@@ -529,33 +490,7 @@ public class Team_Hardware_V9 {
             liftDrive.setPower(Math.abs(liftControl));
         }
 
-        // if gyro indicates drifting add same power to correct
-        // do not add if already doing a turn
         double headingCorrection = 0;
-
-        if (leftPowerControl == rightPowerControl &&
-                leftPowerControl == rightPowerControlBack &&
-                leftPowerControl == leftPowerControlBack) {
-            double headingCrr = modernRoboticsI2cGyro.getHeading();
-            double error;
-            double driveDirection = leftPowerControl > 0 ? 1.0 : -1.0;
-
-            if (headingControl > 180 && headingCrr <= 180 && headingControl - headingCrr > 180) {
-                headingCrr += 360;
-            }
-            if (headingControl <= 180 && headingCrr > 180 && headingCrr - headingControl > 180) {
-                headingCrr -= 360;
-            }
-            error = headingCrr - headingControl;
-            error = Range.clip(error, -45, 45); // if completely off trim down
-
-            headingCorrection = error / 45 * 0.11; //TODO tune up the amount of correction
-            headingCorrection *= driveDirection; // apply correction the other way when running in reverse
-
-            if (leftPowerControl == 0) headingCorrection = 0;
-
-            headingCorrection = 0;
-        }
 
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -640,10 +575,10 @@ public class Team_Hardware_V9 {
         rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    void beaconBlink( int count ){
+    void beaconBlink(int count) {
         int color = colorBeacon.getColorNumber();
 
-        for( int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++) {
             colorBeacon.off();
             waitMillis(333);
             colorBeacon.colorNumber(color);
