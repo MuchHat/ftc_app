@@ -640,6 +640,16 @@ public class Team_Hardware_V9 {
         rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    void beaconBlink( int count ){
+        int color = colorBeacon.getColorNumber();
+
+        for( int i = 0; i < count; i++){
+            colorBeacon.off();
+            waitMillis(333);
+            colorBeacon.colorNumber(color);
+        }
+    }
+
     void waitMillis(double millis) {
 
         sleep((long) millis);

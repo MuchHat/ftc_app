@@ -44,9 +44,13 @@ public class Run_Jewel {
         double armExtendedB = 0.13;
         double armExtendedE = 0.65;
 
+        //****  1. ARM IN EXTENDED POSITION ******************************************************//
+
         int findPositions = 4;
         robot.moveArm(armExtendedB, armExtendedE);
         waitMillis(111);
+
+        //****   2. GO THRU $ POSITION TO FIND THE JEWEL *****************************************//
 
         for (int i = 0; i < findPositions; i++) {
 
@@ -63,6 +67,8 @@ public class Run_Jewel {
                 break;
             }
         }
+
+        //****   3. GO IN BETWEEN THE BALLS ******************************************************//
 
         // move the jewel
         if (foundBlue || foundRed) {
@@ -84,6 +90,10 @@ public class Run_Jewel {
             robot.moveArm(crrBase, crrElbow);
             waitMillis(111);
 
+            //*****  4. MOVE BACK OR FW TO KNOCKK THE CORRECT BALL *******************************//
+            //*****  5. AFTER KNOCK MOVE SUCH ROBOT END UP AT THE EDGE OF PLATFORM ***************//
+            //******************WITH CAMERA FACING THE VUMARK ************************************//
+
             if (!knockFirst) {
                 robot.moveInches(4, 0.22);
                 waitMillis(111);
@@ -96,13 +106,19 @@ public class Run_Jewel {
                 robot.moveInches(8, 0.22);
             }
 
+            //****   6. PUT ARM BACK AT POS ZERO *************************************************//
+
             robot.moveArm(armExtendedB, armExtendedE);
             robot.moveArmPosZero();
             waitMillis(111);
         }
 
+        //***************************************************************************************//
+
         if (blueTeam) robot.colorBeacon.blue();
         else robot.colorBeacon.red();
+
+        robot.beaconBlink(3);
 
         robot.stopRobot();
     }

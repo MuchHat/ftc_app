@@ -39,6 +39,8 @@ public class Run_Glyph {
 
         int[] moveDistance = {580, 358, 161};
 
+        //****  1. WAIT IF NEEDED FOR VUFORIA TO LOCK ON THE TARGET ******************************//
+
         if (vu.targetSeen()) {
             robot.colorBeacon.green();
         } else {
@@ -51,6 +53,8 @@ public class Run_Glyph {
             robot.colorBeacon.yellow();
             waitMillis(888);
         }
+
+        //****  2. MOVE OFF THE PLATFORM *********************************************************//
 
         robot.moveInches(432 / 24.5, 0.33);
         waitMillis(222);
@@ -60,17 +64,24 @@ public class Run_Glyph {
             robot.colorBeacon.yellow();
         }
 
+        //****  3. CORRECT HEADING IF NEEDED ********************** ******************************//
+
         robot.turnTo12();
         waitMillis(222);
 
+        //****  4. BACK AGAINST THE PLATFORM TO START FROM A KNOWN POS ***************************//
+
         robot.moveInches(-260 / 24.5, 0.33);
         waitMillis(222);
+
+        //****  5. MOVE IN FRONT OF THE BOX L/M/R PER THE WUMARK *********************************//
 
         int index = 0;
         if (vu.targetSeen()) {
             robot.colorBeacon.green();
             index = vu.lastTargetSeenNo;
             robot.colorBeacon.green();
+            robot.beaconBlink(index+1);
         } else {
             index = 2; //go midedle if no vuforia
             robot.colorBeacon.yellow();
@@ -81,6 +92,8 @@ public class Run_Glyph {
             robot.moveInches(moveDistance[index - 1] / 24.5, 0.22);
         }
         waitMillis(222);
+
+        //****  6. FINE ADJUST THE POS USING VUMARK AS AN ANCHOR *********************************//
 
         if (vu.targetSeen()) {
             robot.colorBeacon.green();
@@ -110,7 +123,8 @@ public class Run_Glyph {
                 }
             }
         }
-        //turn to put the glyph in
+
+        //****  7. TURN 90 TOWARDS THE BOX ******************************************************//
 
         robot.colorBeacon.teal();
         robot.turnTo3();
@@ -124,18 +138,26 @@ public class Run_Glyph {
         robot.stopRobot();
         waitMillis(222);
 
-        //put the glyph in
+        //****  8. PUT THE GLYPH IN  *************************************************************//
+
         robot.moveInches(6.5, 0.33);
 
         robot.rightClaw.setPosition(0.75);
         robot.leftClaw.setPosition(0.22);
         waitMillis(111);
 
+        //****  9. BACKOFF ***********************************************************************//
+
         robot.moveInches(-4, 0.22);
+
+        //****  10. TURN 180 AND TUCK IT IN ******************************************************//
+
         robot.turnTo9();
         robot.moveInches(-2, 0.22);
-        robot.moveInches(1, 0.22);
 
+        //****  11. MOVE 1 INCH AWAY FROM BOX FOR THE REST POSITION ******************************//
+
+        robot.moveInches(1, 0.22);
         robot.stopRobot();
 
         //********************************* END LOOP *****************************************//

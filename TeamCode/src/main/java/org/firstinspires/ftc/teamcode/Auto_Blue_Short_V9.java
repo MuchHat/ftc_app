@@ -86,8 +86,8 @@ public class Auto_Blue_Short_V9 extends LinearOpMode {
 
             glyphRun.run();
 
-            if (blueTeam) robot.colorBeacon.blue();
-            else robot.colorBeacon.red();
+            robot.beaconBlink(3);
+            robot.colorBeacon.off();
 
             robot.stopRobot();
             stop();
