@@ -54,8 +54,7 @@ public class Auto_Blue_Short_V9 extends LinearOpMode {
         totalRuntime = new ElapsedTime();
 
         controlRuntime.reset();
-        if (blueTeam) robot.colorBeacon.blue();
-        else robot.colorBeacon.red();
+        robot.showTeamColor();
 
         jewelRun.init( robot, blueTeam, shortField );
         glyphRun.init( robot, hardwareMap, blueTeam, shortField );
@@ -76,13 +75,13 @@ public class Auto_Blue_Short_V9 extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
+        robot.autoTimer.reset();
 
         while (opModeIsActive() && loaded) {
 
             jewelRun.run();
 
-            if (blueTeam) robot.colorBeacon.blue();
-            else robot.colorBeacon.red();
+            robot.showTeamColor();
 
             glyphRun.run();
 

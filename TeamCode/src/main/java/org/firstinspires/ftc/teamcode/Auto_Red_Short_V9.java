@@ -76,13 +76,13 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
+        robot.autoTimer.reset();
 
         while (opModeIsActive() && loaded) {
 
             jewelRun.run();
 
-            if (blueTeam) robot.colorBeacon.blue();
-            else robot.colorBeacon.red();
+            robot.showTeamColor();
 
             glyphRun.run();
 

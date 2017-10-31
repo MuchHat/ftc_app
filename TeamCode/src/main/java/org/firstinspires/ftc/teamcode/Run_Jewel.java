@@ -49,6 +49,7 @@ public class Run_Jewel {
 
         robot.moveArm(armExtendedB, armExtendedE);
         waitMillis(111);
+        if (robot.timeOut30secs()) return;
 
         //****   2. GO THRU $ POSITION TO FIND THE JEWEL *****************************************//
 
@@ -67,6 +68,7 @@ public class Run_Jewel {
                 break;
             }
         }
+        if (robot.timeOut30secs()) return;
 
         //****   KNOCK THE BALL IF COLOR FOUND ***************************************************//
 
@@ -89,6 +91,7 @@ public class Run_Jewel {
             double crrElbow = armKnockE[foundPos];
             robot.moveArm(crrBase, crrElbow);
             waitMillis(111);
+            if (robot.timeOut30secs()) return;
 
             //****   4. KNOCK THE BALL ***********************************************************//
 
@@ -118,22 +121,20 @@ public class Run_Jewel {
                     robot.moveInches(7.5, 0.44);
                 }
             }
+            if (robot.timeOut30secs()) return;
 
         }
 
         //****   6. PUT ARM BACK AT POS ZERO *************************************************//
+
+        robot.showTeamColor();
 
         robot.moveArm(armExtendedB, armExtendedE);
         waitMillis(111);
         robot.moveArmPosZero();
         waitMillis(111);
 
-        robot.colorBeacon.purple();
         robot.turnTo12();
-        
-        if (blueTeam) robot.colorBeacon.blue();
-        else robot.colorBeacon.red();
-
         robot.stopRobot();
     }
 

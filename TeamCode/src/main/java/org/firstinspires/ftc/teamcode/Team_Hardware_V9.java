@@ -52,40 +52,9 @@ public class Team_Hardware_V9 {
     public DigitalChannel bottomSwitch = null;
     public ColorSensor colorSensor = null;
     public HardwareMap hwMap = null;
-    public ElapsedTime runtime = new ElapsedTime();
     public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     public IntegratingGyroscope gyro;
     public MRIColorBeacon colorBeacon;
-
-    //********************************* MOVE STATES **********************************************//
-    double leftPowerControl = 0;
-    double rightPowerControl = 0;
-    double leftPowerControlBack = 0;
-    double rightPowerControlBack = 0;
-
-    double leftDistanceControl = 0;
-    double rightDistanceControl = 0;
-    double leftDistanceControlBack = 0;
-    double rightDistanceControlBack = 0;
-
-    double headingControl = 0;
-    double liftControl = 0;
-    double leftClawControl = 0;
-    double rightClawControl = 0;
-    double baseControl = 0;
-    double elbowControl = 0;
-    double gameStartHeading = 0;
-
-    //********************************* PREDEFINED POS *******************************************//
-    double clawClosed[] = {0.82, 0.22};
-    double clawZero[] = {0.22, 0.75};
-    double clawOpen[] = {0.60, 0.40};
-    double armPosZero[] = {1, 0};
-
-    // ************************** MAIN LOOP ******************************************************//
-    double driveDefaultSpeed = 1.0;
-    double turnDefaultSpeed = 0.66;
-    double servoDefaultSpeed = 0.00033;
     public DcMotor leftDrive = null;
     public DcMotor rightDrive = null;
     public DcMotor rightDriveBack = null;
@@ -95,6 +64,39 @@ public class Team_Hardware_V9 {
     public Servo rightClaw = null;
     public Servo base = null;
     public Servo elbow = null;
+
+    //********************************* FIELD ***************************************************//
+    boolean blueTeam = true;
+    boolean shortField = true;
+
+    //********************************* TIMERS ***************************************************//
+    public ElapsedTime autoTimer = new ElapsedTime();
+
+    // ********************************* MOVE STATES **********************************************//
+    double leftPowerControl = 0;
+    double rightPowerControl = 0;
+    double leftPowerControlBack = 0;
+    double rightPowerControlBack = 0;
+    double leftDistanceControl = 0;
+    double rightDistanceControl = 0;
+    double leftDistanceControlBack = 0;
+    double rightDistanceControlBack = 0;
+    double headingControl = 0;
+    double liftControl = 0;
+    double leftClawControl = 0;
+    double rightClawControl = 0;
+    double baseControl = 0;
+    double elbowControl = 0;
+    double gameStartHeading = 0;
+    //********************************* PREDEFINED POS *******************************************//
+    double clawClosed[] = {0.82, 0.22};
+    double clawZero[] = {0.22, 0.75};
+    double clawOpen[] = {0.60, 0.40};
+    double armPosZero[] = {1, 0};
+    // ************************** MAIN LOOP ******************************************************//
+    double driveDefaultSpeed = 1.0;
+    double turnDefaultSpeed = 0.66;
+    double servoDefaultSpeed = 0.00033;
 
     // ************************** HW CONSTRUCTOR  ************************************************//
 
@@ -198,7 +200,9 @@ public class Team_Hardware_V9 {
         double turnPower = 0.22;
         double turnPowerMed = 0.22;
         double turnPowerLow = 0.11;
+        int prevBeaconColor = colorBeacon.getColorNumber();
 
+        colorBeacon.teal();
         double startHeading = modernRoboticsI2cGyro.getHeading();
 
         double diffAbs = Math.abs(endHeading - startHeading);
@@ -277,6 +281,8 @@ public class Team_Hardware_V9 {
         rightDrive.setPower(0);
         leftDriveBack.setPower(0);
         rightDriveBack.setPower(0);
+
+        colorBeacon.colorNumber(prevBeaconColor);
     }
 
     void openClaw() {
@@ -574,6 +580,10 @@ public class Team_Hardware_V9 {
         rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    boolean timeOut30secs() {
+        return autoTimer.seconds() > 27;
+    }
+
     void beaconBlink(int count) {
         int color = colorBeacon.getColorNumber();
 
@@ -582,6 +592,13 @@ public class Team_Hardware_V9 {
             waitMillis(333);
             colorBeacon.colorNumber(color);
         }
+    }
+
+    void showTeamColor() {
+        if (blueTeam)
+            colorBeacon.blue();
+        else
+            colorBeacon.red();
     }
 
     void waitMillis(double millis) {
