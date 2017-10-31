@@ -38,6 +38,7 @@ public class Run_Jewel {
         double armFindJewelB[] = {0.19, 0.14, 0.12, 0.10};
         double armFindJewelE[] = {0.64, 0.69, 0.76, 0.81};
 
+        int findPositions = 4;
         double armKnockB[] = {0, 0, 0, 0};
         double armKnockE[] = {0.92, 0.92, 0.92, 0.92};
 
@@ -46,7 +47,6 @@ public class Run_Jewel {
 
         //****  1. ARM IN EXTENDED POSITION ******************************************************//
 
-        int findPositions = 4;
         robot.moveArm(armExtendedB, armExtendedE);
         waitMillis(111);
 
