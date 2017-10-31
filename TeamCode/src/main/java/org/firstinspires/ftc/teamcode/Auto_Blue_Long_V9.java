@@ -55,10 +55,12 @@ public class Auto_Blue_Long_V9 extends LinearOpMode {
         totalRuntime = new ElapsedTime();
 
         controlRuntime.reset();
+        robot.blueTeam = true;
+        robot.shortField = false;
         robot.showTeamColor();
 
-        jewelRun.init( robot, blueTeam, shortField );
-        glyphRun.init( robot, hardwareMap, blueTeam, shortField );
+        jewelRun.init( robot );
+        glyphRun.init( robot, hardwareMap );
 
         robot.modernRoboticsI2cGyro.calibrate();
         // Wait until the gyro calibration is complete

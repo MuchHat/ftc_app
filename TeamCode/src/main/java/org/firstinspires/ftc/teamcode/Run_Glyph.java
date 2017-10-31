@@ -11,18 +11,13 @@ public class Run_Glyph {
     //********************************* HW VARIABLES *********************************************//
     Team_Hardware_V9 robot = null;
     //********************************* CONSTANTS ************************************************//
-    Boolean blueTeam = true;
-    Boolean shortField = true;
     private Vu vu = new Vu();
     private HardwareMap hwMap = null;
 
-    void init(Team_Hardware_V9 aRobot, HardwareMap aHwMap, boolean aBlueTeam, boolean aShortField) {
+    void init(Team_Hardware_V9 aRobot, HardwareMap aHwMap) {
 
         hwMap = aHwMap;
         robot = aRobot;
-
-        blueTeam = aBlueTeam;
-        shortField = aShortField;
 
         robot.rightClaw.setPosition(0.59);
         robot.leftClaw.setPosition(0.54);
@@ -48,14 +43,14 @@ public class Run_Glyph {
         //****  0. ADJUST VARIABLES DEPENDING ON THE FIELD **************************************//
 
         double direction = 1.0;
-        if (blueTeam) direction = -1.0;
+        if (robot.blueTeam) direction = -1.0;
 
-        if (!shortField) {
+        if (!robot.shortField) {
             moveDistance[0] = moveDistanceLongField[0];
             moveDistance[1] = moveDistanceLongField[1];
             moveDistance[2] = moveDistanceLongField[2];
         }
-        if (!shortField) {
+        if (!robot.shortField) {
             vuforiaValues[0] = vuforiaValuesLongField[0];
             vuforiaValues[1] = vuforiaValuesLongField[1];
             vuforiaValues[2] = vuforiaValuesLongField[2];
@@ -86,7 +81,7 @@ public class Run_Glyph {
 
         //****  3. CORRECT HEADING IF NEEDED ********************** ******************************//
 
-        if (!blueTeam) {
+        if (!robot.blueTeam) {
             robot.turnTo12();
         } else {
             robot.turnTo6();
@@ -117,7 +112,7 @@ public class Run_Glyph {
 
         //****  SPECIAL STEPS FOR THE LONG FIELD *************************************************//
 
-        if (!shortField) {
+        if (!robot.shortField) {
             robot.moveInches(moveDistanceFirstLegLongField / 24.5, 0.66);
             waitMillis(222);
 
@@ -168,10 +163,10 @@ public class Run_Glyph {
 
         //****  7. TURN 90 TOWARDS THE BOX ******************************************************//
 
-        if (shortField) {
+        if (robot.shortField) {
             robot.turnTo3();
         } else {
-            if (blueTeam) {
+            if (robot.blueTeam) {
                 robot.turnTo6();
             } else {
                 robot.turnTo12();

@@ -52,13 +52,14 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
         ElapsedTime controlRuntime = new ElapsedTime();
         ElapsedTime loopRuntime = new ElapsedTime();
         totalRuntime = new ElapsedTime();
-
         controlRuntime.reset();
-        if (blueTeam) robot.colorBeacon.blue();
-        else robot.colorBeacon.red();
 
-        jewelRun.init( robot, blueTeam, shortField );
-        glyphRun.init( robot, hardwareMap, blueTeam, shortField );
+        robot.blueTeam = false;
+        robot.shortField = true;
+        robot.showTeamColor();
+
+        jewelRun.init(robot);
+        glyphRun.init(robot, hardwareMap);
 
         robot.modernRoboticsI2cGyro.calibrate();
         // Wait until the gyro calibration is complete

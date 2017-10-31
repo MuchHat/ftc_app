@@ -14,17 +14,11 @@ public class Run_Jewel {
     Team_Hardware_V9 robot = null;
 
     //********************************* CONSTANTS ************************************************//
-    Boolean blueTeam = true;
-    Boolean shortField = true;
-    Boolean loaded = false;
 
-    void init(Team_Hardware_V9 aRobot, boolean aBlueTeam, boolean aShortField) {
+    void init(Team_Hardware_V9 aRobot) {
 
         robot = aRobot;
         robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
-
-        shortField = aShortField;
-        blueTeam = aBlueTeam;
     }
 
     void run() {
@@ -78,10 +72,10 @@ public class Run_Jewel {
 
             boolean knockFirst = true; //knock the ball in front or the other one
 
-            if (blueTeam && foundBlue) knockFirst = true;
-            if (!blueTeam && foundRed) knockFirst = true;
-            if (blueTeam && !foundBlue) knockFirst = false;
-            if (!blueTeam && !foundRed) knockFirst = false;
+            if (robot.blueTeam && foundBlue) knockFirst = true;
+            if (!robot.blueTeam && foundRed) knockFirst = true;
+            if (robot.blueTeam && !foundBlue) knockFirst = false;
+            if (!robot.blueTeam && !foundRed) knockFirst = false;
 
             //****   3. GO IN BETWEEN THE BALLS **************************************************//
 
@@ -104,7 +98,7 @@ public class Run_Jewel {
                 robot.moveArm(armExtendedB, armExtendedE);
 
                 // if blue move back to get to the edge of the platform
-                if (blueTeam) {
+                if (robot.blueTeam) {
                     waitMillis(111);
                     robot.moveInches(-7.5, 0.44);
                 }
@@ -116,7 +110,7 @@ public class Run_Jewel {
                 robot.moveArm(armExtendedB, armExtendedE);
 
                 //if red move fw to get to the edge of the platform
-                if (!blueTeam) {
+                if (!robot.blueTeam) {
                     waitMillis(111);
                     robot.moveInches(7.5, 0.44);
                 }
