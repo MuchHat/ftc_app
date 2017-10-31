@@ -38,6 +38,28 @@ public class Run_Glyph {
         }
 
         int[] moveDistance = {580, 358, 161};
+        int[] moveDistanceLongField = {419, 197, 0};
+
+        int[] vuforiaValues = {460, 415, 340}; // Desired value for left, right, and middle
+        int[] vuforiaValuesLongField = {460, 415, 340}; // Desired value for left, right, and middle
+
+        int moveDistanceFirstLegLongField = 161;
+
+        //****  0. ADJUST VARIABLES DEPENDING ON THE FIELD **************************************//
+
+        double direction = 1.0;
+        if (blueTeam) direction = -1.0;
+
+        if (!shortField) {
+            moveDistance[0] = moveDistanceLongField[0];
+            moveDistance[1] = moveDistanceLongField[1];
+            moveDistance[2] = moveDistanceLongField[2];
+        }
+        if (!shortField) {
+            vuforiaValues[0] = vuforiaValuesLongField[0];
+            vuforiaValues[1] = vuforiaValuesLongField[1];
+            vuforiaValues[2] = vuforiaValuesLongField[2];
+        }
 
         //****  1. WAIT IF NEEDED FOR VUFORIA TO LOCK ON THE TARGET ******************************//
 
@@ -56,7 +78,7 @@ public class Run_Glyph {
 
         //****  2. MOVE OFF THE PLATFORM *********************************************************//
 
-        robot.moveInches(432 / 24.5, 0.33);
+        robot.moveInches(432 / 24.5 * direction, 0.33);
         waitMillis(222);
         if (vu.targetSeen()) {
             robot.colorBeacon.green();
@@ -66,7 +88,11 @@ public class Run_Glyph {
 
         //****  3. CORRECT HEADING IF NEEDED ********************** ******************************//
 
-        robot.turnTo12();
+        if (!blueTeam) {
+            robot.turnTo12();
+        } else {
+            robot.turnTo6();
+        }
         waitMillis(222);
 
         //****  4. BACK AGAINST THE PLATFORM TO START FROM A KNOWN POS ***************************//
@@ -81,12 +107,35 @@ public class Run_Glyph {
             robot.colorBeacon.green();
             index = vu.lastTargetSeenNo;
             robot.colorBeacon.green();
-            robot.beaconBlink(index+1);
+            robot.beaconBlink(index + 1);
         } else {
             index = 2; //go midedle if no vuforia
             robot.colorBeacon.yellow();
         }
         waitMillis(222);
+
+        //****  SPECIAL STEPS FOR THE LONG FIELD *************************************************//
+
+        if (!shortField) {
+            robot.moveInches(moveDistanceFirstLegLongField / 24.5, 0.22);
+            waitMillis(222);
+
+            robot.colorBeacon.teal();
+            if (!blueTeam) {
+                robot.turnTo9();
+            } else {
+                robot.turnTo3();
+            }
+            waitMillis(222);
+
+            if (vu.targetSeen()) {
+                robot.colorBeacon.green();
+            } else {
+                robot.colorBeacon.yellow();
+            }
+        }
+
+        //****  CONTINUES THE SAME WITH THE SHORT FIELD ******************************************//
 
         if (index != 0) {
             robot.moveInches(moveDistance[index - 1] / 24.5, 0.22);
@@ -99,9 +148,8 @@ public class Run_Glyph {
             robot.colorBeacon.green();
 
             int errDis = 15; // 1 left 2 center 3 right
-            int[] xValues = {460, 415, 340}; // Desired value for left, right, and middle
             index = vu.getLastTargetSeenNo() - 1;
-            int desiredX = xValues[index];
+            int desiredX = vuforiaValues[index];
 
             waitMillis(222);
             robot.moveInches(50 / 24.5, 0.33); //TODO
@@ -127,7 +175,12 @@ public class Run_Glyph {
         //****  7. TURN 90 TOWARDS THE BOX ******************************************************//
 
         robot.colorBeacon.teal();
-        robot.turnTo3();
+
+        if (!blueTeam) {
+            robot.turnTo3();
+        } else {
+            robot.turnTo9();
+        }
 
         if (blueTeam)
             robot.colorBeacon.blue();

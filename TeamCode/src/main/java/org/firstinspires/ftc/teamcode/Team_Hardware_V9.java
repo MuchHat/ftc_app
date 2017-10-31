@@ -181,7 +181,7 @@ public class Team_Hardware_V9 {
         turn2Heading(270);
     }
 
-    void turnTo16() {
+    void turnTo6() {
         turn2Heading(180);
     }
 

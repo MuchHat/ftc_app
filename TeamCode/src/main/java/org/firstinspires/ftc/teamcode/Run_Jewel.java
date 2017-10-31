@@ -100,14 +100,23 @@ public class Run_Jewel {
                 waitMillis(111);
                 robot.moveArm(armExtendedB, armExtendedE);
 
+                // if blue move back to get to the edge of the platform
+                if (blueTeam) {
+                    waitMillis(111);
+                    robot.moveInches(-7.5, 0.22);
+                }
             } else {
                 //******  4.2 MOVE BACK THEN FW TO END UP AT EDGE ********************************//
 
                 robot.moveInches(-4, 0.22);
                 waitMillis(111);
                 robot.moveArm(armExtendedB, armExtendedE);
-                waitMillis(111);
-                robot.moveInches(7.5, 0.22);
+
+                //if red move fw to get to the edge of the platform
+                if (!blueTeam) {
+                    waitMillis(111);
+                    robot.moveInches(7.5, 0.22);
+                }
             }
 
             //****   6. PUT ARM BACK AT POS ZERO *************************************************//
