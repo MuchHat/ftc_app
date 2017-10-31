@@ -68,9 +68,8 @@ public class Run_Jewel {
             }
         }
 
-        //****   3. GO IN BETWEEN THE BALLS ******************************************************//
+        //****   KNOCK THE BALL IF COLOR FOUND ***************************************************//
 
-        // move the jewel
         if (foundBlue || foundRed) {
 
             robot.colorBeacon.purple();
@@ -82,7 +81,8 @@ public class Run_Jewel {
             if (blueTeam && !foundBlue) knockFirst = false;
             if (!blueTeam && !foundRed) knockFirst = false;
 
-            // move between the balls
+            //****   3. GO IN BETWEEN THE BALLS **************************************************//
+
             robot.moveInches(3.5, 0.22);
 
             double crrBase = armKnockB[foundPos];
@@ -90,20 +90,24 @@ public class Run_Jewel {
             robot.moveArm(crrBase, crrElbow);
             waitMillis(111);
 
-            //*****  4. MOVE BACK OR FW TO KNOCKK THE CORRECT BALL *******************************//
-            //*****  5. AFTER KNOCK MOVE SUCH ROBOT END UP AT THE EDGE OF PLATFORM ***************//
-            //******************WITH CAMERA FACING THE VUMARK ************************************//
+            //****   4. KNOCK THE BALL ***********************************************************//
 
             if (!knockFirst) {
+
+                //*****  4.1 MOVE FORWARD AND REMAIN AT EDGE *************************************//
+
                 robot.moveInches(4, 0.22);
                 waitMillis(111);
                 robot.moveArm(armExtendedB, armExtendedE);
+
             } else {
+                //******  4.2 MOVE BACK THEN FW TO END UP AT EDGE ********************************//
+
                 robot.moveInches(-4, 0.22);
                 waitMillis(111);
                 robot.moveArm(armExtendedB, armExtendedE);
                 waitMillis(111);
-                robot.moveInches(8, 0.22);
+                robot.moveInches(7.5, 0.22);
             }
 
             //****   6. PUT ARM BACK AT POS ZERO *************************************************//
@@ -119,7 +123,6 @@ public class Run_Jewel {
         else robot.colorBeacon.red();
 
         robot.beaconBlink(3);
-
         robot.stopRobot();
     }
 
