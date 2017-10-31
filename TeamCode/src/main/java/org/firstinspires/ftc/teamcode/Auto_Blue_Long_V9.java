@@ -78,7 +78,6 @@ public class Auto_Blue_Long_V9 extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-
         robot.autoTimer.reset();
 
         while (opModeIsActive() && loaded) {

@@ -84,7 +84,7 @@ public class Auto_Red_Long_V9 extends LinearOpMode {
 
             jewelRun.run();
 
-           robot.showTeamColor();
+            robot.showTeamColor();
 
             glyphRun.run();
 
