@@ -53,6 +53,9 @@ import java.util.Locale;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  *
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
+ *
+ * https://github.com/SwerveRobotics/ftc_app/commit/1ad29f5df1545f17049e88b99cec6390dc357d30
+ *
  */
 @Autonomous(name = "Sensor: Bosh Gyro", group = "Sensor")
 @Disabled                            // Comment this out to add to the opmode list
@@ -68,6 +71,7 @@ public class Test_Bosh_Gyro_V9 extends LinearOpMode
     // State used for updating telemetry
     Orientation angles;
     Acceleration gravity;
+    Position position;
 
     //----------------------------------------------------------------------------------------------
     // Main logic
@@ -122,6 +126,7 @@ public class Test_Bosh_Gyro_V9 extends LinearOpMode
                 // three times the necessary expense.
                 angles   = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
                 gravity  = imu.getGravity();
+                position = imu.getPosition();
                 }
             });
 
@@ -138,19 +143,34 @@ public class Test_Bosh_Gyro_V9 extends LinearOpMode
                 });
 
         telemetry.addLine()
-            .addData("heading", new Func<String>() {
-                @Override public String value() {
-                    return formatAngle(angles.angleUnit, angles.firstAngle);
+                .addData("x", new Func<String>() {
+                    @Override public String value() {
+                        return formatPosition(position.x);
                     }
                 })
-            .addData("roll", new Func<String>() {
-                @Override public String value() {
-                    return formatAngle(angles.angleUnit, angles.secondAngle);
+                .addData("y", new Func<String>() {
+                    @Override public String value() {
+                        return formatPosition(position.y);
                     }
                 })
-            .addData("pitch", new Func<String>() {
-                @Override public String value() {
-                    return formatAngle(angles.angleUnit, angles.thirdAngle);
+                .addData("z", new Func<String>() {
+                    @Override public String value() {
+                        return formatPosition(position.z);
+                    }
+                })
+                .addData("heading", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, angles.firstAngle);
+                    }
+                })
+                .addData("roll", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, angles.secondAngle);
+                    }
+                })
+                .addData("pitch", new Func<String>() {
+                    @Override public String value() {
+                        return formatAngle(angles.angleUnit, angles.thirdAngle);
                     }
                 });
 
@@ -178,7 +198,10 @@ public class Test_Bosh_Gyro_V9 extends LinearOpMode
         return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
     }
 
-    String formatDegrees(double degrees){
-        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
-    }
+        String formatDegrees(double degrees){
+            return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
+        }
+        String formatPosition(double position){
+            return String.format(Locale.getDefault(), "%.1f", position);
+        }
 }
