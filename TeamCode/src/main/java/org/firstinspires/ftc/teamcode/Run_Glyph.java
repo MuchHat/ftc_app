@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import static android.os.SystemClock.sleep;
 
@@ -156,18 +157,17 @@ public class Run_Glyph {
             waitMillis(222);
             robot.moveInches(50 / 24.5, 0.33);
 
-            double vuX = vu.getX();
             double attempts = 0;
 
-            if (vu.getX() - desiredX > 0 && attempts < 11) {
-                while (vu.getX() - desiredX > errDis) {
+            if (vu.getX() - desiredX > errDis) {
+                while (vu.getX() - desiredX > errDis && attempts < 11) {
                     robot.colorBeacon.purple();
                     robot.moveInches(-10 / 24.5, 0.66);
                     attempts++;
                     if (!timeLeft()) return;
                 }
-            } else {
-                while (vu.getX() - desiredX < errDis && attempts < 11) {
+            } else if (vu.getX() - desiredX < -errDis) {
+                while (vu.getX() - desiredX < -errDis && attempts < 11) {
                     robot.colorBeacon.purple();
                     robot.moveInches(10 / 24.5, 0.66);
                     attempts++;
@@ -175,10 +175,31 @@ public class Run_Glyph {
                 }
             }
 
-        } else {
-            // use IMU if available
-            if (robot.gyro2.available()) {
-                // TODO
+        } else if (robot.imuGyro.available()) {
+
+            int errDis = 15; // 1 left 2 center 3 right
+            index = Range.clip(index, 1, 3);
+            int desiredX = imuValues[index];
+
+            waitMillis(222);
+            robot.moveInches(50 / 24.5, 0.33);
+
+            double attempts = 0;
+
+            if (robot.imuGyro.getX() - desiredX > errDis) {
+                while (robot.imuGyro.getX() - desiredX > errDis && attempts < 11) {
+                    robot.colorBeacon.white();
+                    robot.moveInches(-10 / 24.5, 0.66);
+                    attempts++;
+                    if (!timeLeft()) return;
+                }
+            } else if (robot.imuGyro.getX() - desiredX < -errDis) {
+                while (robot.imuGyro.getX() - desiredX < -errDis && attempts < 11) {
+                    robot.colorBeacon.white();
+                    robot.moveInches(10 / 24.5, 0.66);
+                    attempts++;
+                    if (!timeLeft()) return;
+                }
             }
         }
         robot.showTeamColor();

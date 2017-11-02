@@ -65,7 +65,7 @@ public class Team_Hardware_V9 {
     public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     public IntegratingGyroscope gyro;
     public MRIColorBeacon colorBeacon;
-    public Gyro gyro2;
+    public ImuGyro imuGyro;
 
     //********************************* FIELD ***************************************************//
     boolean blueTeam = true;
@@ -128,9 +128,9 @@ public class Team_Hardware_V9 {
 
         modernRoboticsI2cGyro = hwMap.get(ModernRoboticsI2cGyro.class, "Gyro");
         gyro = modernRoboticsI2cGyro;
-        gyro2 = new Gyro();
+        imuGyro = new ImuGyro();
 
-        gyro2.init(hwMap);
+        imuGyro.init(hwMap);
 
         colorBeacon = new MRIColorBeacon();
         colorBeacon.init(hwMap, "Beacon");
