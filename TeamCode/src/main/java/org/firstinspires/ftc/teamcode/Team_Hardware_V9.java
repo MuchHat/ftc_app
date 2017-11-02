@@ -69,9 +69,6 @@ public class Team_Hardware_V9 {
     boolean blueTeam = true;
     boolean shortField = true;
 
-    //********************************* TIMERS ***************************************************//
-    public ElapsedTime autoTimer = new ElapsedTime();
-
     // ********************************* MOVE STATES **********************************************//
     double leftPowerControl = 0;
     double rightPowerControl = 0;
@@ -578,11 +575,6 @@ public class Team_Hardware_V9 {
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
-
-    boolean timeOut30secs() {
-        return false;
-        //return autoTimer.seconds() > 27;
     }
 
     void beaconBlink(int count) {

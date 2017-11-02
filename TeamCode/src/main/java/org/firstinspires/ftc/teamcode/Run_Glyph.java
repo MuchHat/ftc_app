@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import static android.os.SystemClock.sleep;
 
@@ -13,6 +14,8 @@ public class Run_Glyph {
     //********************************* CONSTANTS ************************************************//
     private Vu vu = new Vu();
     private HardwareMap hwMap = null;
+    double secsLeftAtStart = 30;
+    ElapsedTime timer = new ElapsedTime();
 
     void init(Team_Hardware_V9 aRobot, HardwareMap aHwMap) {
 
@@ -25,12 +28,20 @@ public class Run_Glyph {
         vu.init(hwMap);
     }
 
-    void run() {
+    boolean timeLeft(){
+
+        return ( secsLeftAtStart - timer.seconds() ) > 2;
+    }
+
+    void run( double secsLeft ) {
 
         if (robot == null) {
             return;
         }
-        if (robot.timeOut30secs()) return;
+
+        secsLeftAtStart = secsLeft;
+        timer.reset();
+        if( !timeLeft())return;
 
         int[] moveDistance = {580, 358, 161};
         int[] moveDistanceLongField = {419, 197, 0};
@@ -65,19 +76,15 @@ public class Run_Glyph {
                 break;
             }
             waitMillis(1);
-            if (robot.timeOut30secs()) return;
+            if( !timeLeft()) return;
         }
 
         //****  2. MOVE OFF THE PLATFORM *********************************************************//
 
         robot.moveInches(432 / 24.5 * direction, 0.66);
         waitMillis(222);
-        if (vu.targetSeen()) {
-            robot.colorBeacon.green();
-        } else {
-            robot.colorBeacon.yellow();
-        }
-        if (robot.timeOut30secs()) return;
+        showGreenIfTargetSeen();
+        if( !timeLeft()) return;
 
         //****  3. CORRECT HEADING IF NEEDED ********************** ******************************//
 
@@ -88,14 +95,14 @@ public class Run_Glyph {
         }
         showGreenIfTargetSeen();
         waitMillis(222);
-        if (robot.timeOut30secs()) return;
+        if( !timeLeft()) return;
 
         //****  4. BACK AGAINST THE PLATFORM TO START FROM A KNOWN POS ***************************//
 
         robot.moveInches(-260 / 24.5, 0.66);
         showGreenIfTargetSeen();
         waitMillis(222);
-        if (robot.timeOut30secs()) return;
+        if( !timeLeft()) return;
 
         //****  5. MOVE IN FRONT OF THE BOX L/M/R PER THE WUMARK *********************************//
 
@@ -108,7 +115,7 @@ public class Run_Glyph {
         showGreenIfTargetSeen();
         robot.beaconBlink(index + 1);
         waitMillis(222);
-        if (robot.timeOut30secs()) return;
+        if( !timeLeft()) return;
 
         //****  SPECIAL STEPS FOR THE LONG FIELD *************************************************//
 
@@ -119,7 +126,7 @@ public class Run_Glyph {
             robot.turnTo9();
             waitMillis(222);
         }
-        if (robot.timeOut30secs()) return;
+        if( !timeLeft()) return;
 
         //****  CONTINUES THE SAME WITH THE SHORT FIELD ******************************************//
 
@@ -127,7 +134,7 @@ public class Run_Glyph {
             robot.moveInches(moveDistance[index - 1] / 24.5, 0.66);
             waitMillis(222);
         }
-        if (robot.timeOut30secs()) return;
+        if( !timeLeft()) return;
 
         //****  6. FINE ADJUST THE POS USING VUMARK AS AN ANCHOR *********************************//
 
@@ -138,24 +145,24 @@ public class Run_Glyph {
             int desiredX = vuforiaValues[index];
 
             waitMillis(222);
-            robot.moveInches(50 / 24.5, 0.33); //TODO
+            robot.moveInches(50 / 24.5, 0.33);
 
             double vuX = vu.getX();
             double attempts = 0;
 
-            if (vu.getX() - desiredX > 0 && attempts < 11) { //TODO
+            if (vu.getX() - desiredX > 0 && attempts < 11) {
                 while (vu.getX() - desiredX > errDis) {
                     robot.colorBeacon.purple();
                     robot.moveInches(-10 / 24.5, 0.66);
                     attempts++;
-                    if (robot.timeOut30secs()) return;
+                    if( !timeLeft()) return;
                 }
             } else {
                 while (vu.getX() - desiredX < errDis && attempts < 11) {
                     robot.colorBeacon.purple();
                     robot.moveInches(10 / 24.5, 0.66);
                     attempts++;
-                    if (robot.timeOut30secs()) return;
+                    if( !timeLeft()) return;
                 }
             }
         }
@@ -173,7 +180,7 @@ public class Run_Glyph {
             }
         }
         waitMillis(222);
-        if (robot.timeOut30secs()) return;
+        if( !timeLeft()) return;
 
         robot.stopRobot();
         waitMillis(222);
@@ -185,7 +192,7 @@ public class Run_Glyph {
         robot.rightClaw.setPosition(0.75);
         robot.leftClaw.setPosition(0.22);
         waitMillis(111);
-        if (robot.timeOut30secs()) return;
+        if( !timeLeft()) return;
 
         //****  9. BACKOFF ***********************************************************************//
 
@@ -194,9 +201,9 @@ public class Run_Glyph {
         //****  10. TURN 180 AND TUCK IT IN ******************************************************//
 
         robot.turnTo9();
-        if (robot.timeOut30secs()) return;
-        robot.moveInches(-2, 0.66);
-        if (robot.timeOut30secs()) return;
+        if( !timeLeft()) return;
+        robot.moveInches(-3, 0.66);
+        if( !timeLeft()) return;
 
         //****  11. MOVE 1 INCH AWAY FROM BOX FOR THE REST POSITION ******************************//
 

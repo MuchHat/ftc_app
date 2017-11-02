@@ -26,7 +26,7 @@ g4gcjqBPgBos5nCDk43KipEeX22z
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Auto Blue Long V9", group = "Competition")
+@TeleOp(name = "Auto Blue Long V9", group = "Auto")
 //@Disabled
 public class Auto_Blue_Long_V9 extends LinearOpMode {
 
@@ -77,7 +77,7 @@ public class Auto_Blue_Long_V9 extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        robot.autoTimer.reset();
+        totalRuntime.reset();
 
         while (opModeIsActive() && loaded) {
 
@@ -85,7 +85,7 @@ public class Auto_Blue_Long_V9 extends LinearOpMode {
 
             robot.showTeamColor();
 
-            glyphRun.run();
+            glyphRun.run(30 - totalRuntime.seconds());
 
             robot.beaconBlink(3);
             robot.colorBeacon.off();

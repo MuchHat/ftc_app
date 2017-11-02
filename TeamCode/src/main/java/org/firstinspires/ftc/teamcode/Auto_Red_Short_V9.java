@@ -25,7 +25,7 @@ g4gcjqBPgBos5nCDk43KipEeX22z
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Auto Red Short V9", group = "Competition")
+@TeleOp(name = "Auto Red Short V9", group = "Auto")
 // @Disabled
 public class Auto_Red_Short_V9 extends LinearOpMode {
 
@@ -79,7 +79,7 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
-        robot.autoTimer.reset();
+        totalRuntime.reset();
 
         while (opModeIsActive() && loaded) {
 
@@ -87,7 +87,7 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
 
             robot.showTeamColor();
 
-            glyphRun.run();
+            glyphRun.run(30 - totalRuntime.seconds());
 
             robot.beaconBlink(3);
             robot.colorBeacon.off();
@@ -136,7 +136,7 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
                         AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         telemetry.addData("team", team);
         telemetry.addData("field", field);
-        //telemetry.addData("total runtime", "%.0fs", totalRuntime.seconds());
+        telemetry.addData("total runtime", "%.0fs", totalRuntime.seconds());
 
         telemetry.update();
     }

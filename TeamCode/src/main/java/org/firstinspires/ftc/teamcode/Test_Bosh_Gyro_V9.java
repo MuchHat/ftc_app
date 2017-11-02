@@ -56,8 +56,8 @@ import java.util.Locale;
  * <p>
  * https://github.com/SwerveRobotics/ftc_app/commit/1ad29f5df1545f17049e88b99cec6390dc357d30
  */
-@Autonomous(name = "Sensor: Bosh Gyro", group = "Sensor")
-@Disabled                            // Comment this out to add to the opmode list
+@Autonomous(name = "Sensor: Bosh Gyro", group = "Test")
+//@Disabled                            // Comment this out to add to the opmode list
 public class Test_Bosh_Gyro_V9 extends LinearOpMode {
     //----------------------------------------------------------------------------------------------
     // State
