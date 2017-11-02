@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 /**
- * Created by gigela on 10/27/2017.
+ * Created by MuchHat on 10/27/2017.
  */
 
 public class Vu {
