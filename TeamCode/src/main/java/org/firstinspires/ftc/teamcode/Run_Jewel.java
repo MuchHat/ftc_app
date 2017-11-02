@@ -43,7 +43,7 @@ public class Run_Jewel {
 
         robot.moveArm(armExtendedB, armExtendedE);
         waitMillis(111);
-        if (robot.timeOut30secs()) return;
+        //if (robot.timeOut30secs()) return;
 
         //****   2. GO THRU $ POSITION TO FIND THE JEWEL *****************************************//
 
@@ -62,20 +62,18 @@ public class Run_Jewel {
                 break;
             }
         }
-        if (robot.timeOut30secs()) return;
-
+        //if (robot.timeOut30secs()) return;
         //****   KNOCK THE BALL IF COLOR FOUND ***************************************************//
 
         if (foundBlue || foundRed) {
 
             robot.colorBeacon.purple();
-
             boolean knockFirst = true; //knock the ball in front or the other one
 
-            if (robot.blueTeam && foundBlue) knockFirst = true;
-            if (!robot.blueTeam && foundRed) knockFirst = true;
-            if (robot.blueTeam && !foundBlue) knockFirst = false;
-            if (!robot.blueTeam && !foundRed) knockFirst = false;
+            if (robot.blueTeam && foundBlue) knockFirst = false;
+            if (!robot.blueTeam && foundRed) knockFirst = false;
+            if (robot.blueTeam && !foundBlue) knockFirst = true;
+            if (!robot.blueTeam && !foundRed) knockFirst = true;
 
             //****   3. GO IN BETWEEN THE BALLS **************************************************//
 
@@ -85,7 +83,7 @@ public class Run_Jewel {
             double crrElbow = armKnockE[foundPos];
             robot.moveArm(crrBase, crrElbow);
             waitMillis(111);
-            if (robot.timeOut30secs()) return;
+            //if (robot.timeOut30secs()) return;
 
             //****   4. KNOCK THE BALL ***********************************************************//
 
@@ -115,7 +113,7 @@ public class Run_Jewel {
                     robot.moveInches(7.5, 0.44);
                 }
             }
-            if (robot.timeOut30secs()) return;
+            //if (robot.timeOut30secs()) return;
 
         }
 

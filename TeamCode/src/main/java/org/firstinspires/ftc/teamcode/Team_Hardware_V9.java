@@ -165,8 +165,8 @@ public class Team_Hardware_V9 {
         rightPowerControl = 0;
         leftPowerControlBack = 0;
         rightPowerControlBack = 0;
-        leftClawControl = clawZero[0];
-        rightClawControl = clawZero[1];
+        leftClawControl = clawZero[1];
+        rightClawControl = clawZero[0];
         baseControl = armPosZero[0];
         elbowControl = armPosZero[1];
         setDrivesByPower();
@@ -581,7 +581,8 @@ public class Team_Hardware_V9 {
     }
 
     boolean timeOut30secs() {
-        return autoTimer.seconds() > 27;
+        return false;
+        //return autoTimer.seconds() > 27;
     }
 
     void beaconBlink(int count) {
