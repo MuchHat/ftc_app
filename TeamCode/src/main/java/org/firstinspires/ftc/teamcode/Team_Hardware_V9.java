@@ -52,9 +52,6 @@ public class Team_Hardware_V9 {
     public DigitalChannel bottomSwitch = null;
     public ColorSensor colorSensor = null;
     public HardwareMap hwMap = null;
-    public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
-    public IntegratingGyroscope gyro;
-    public MRIColorBeacon colorBeacon;
     public DcMotor leftDrive = null;
     public DcMotor rightDrive = null;
     public DcMotor rightDriveBack = null;
@@ -64,6 +61,11 @@ public class Team_Hardware_V9 {
     public Servo rightClaw = null;
     public Servo base = null;
     public Servo elbow = null;
+
+    public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
+    public IntegratingGyroscope gyro;
+    public MRIColorBeacon colorBeacon;
+    public Gyro gyro2;
 
     //********************************* FIELD ***************************************************//
     boolean blueTeam = true;
@@ -126,6 +128,9 @@ public class Team_Hardware_V9 {
 
         modernRoboticsI2cGyro = hwMap.get(ModernRoboticsI2cGyro.class, "Gyro");
         gyro = modernRoboticsI2cGyro;
+        gyro2 = new Gyro();
+
+        gyro2.init(hwMap);
 
         colorBeacon = new MRIColorBeacon();
         colorBeacon.init(hwMap, "Beacon");

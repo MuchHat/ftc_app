@@ -27,11 +27,7 @@ public class Vu {
     int lastTargetSeenNo = 0;
     HardwareMap hardwareMap = null;
 
-    void vuController() {
-
-    }
-
-    void init(HardwareMap aHwMap) {
+   void init(HardwareMap aHwMap) {
 
         hardwareMap = aHwMap;
 

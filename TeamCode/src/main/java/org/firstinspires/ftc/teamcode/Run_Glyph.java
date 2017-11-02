@@ -13,6 +13,7 @@ public class Run_Glyph {
     Team_Hardware_V9 robot = null;
     double secsLeftAtStart = 30;
     ElapsedTime timer = new ElapsedTime();
+
     //********************************* CONSTANTS ************************************************//
     private Vu vu = new Vu();
     private HardwareMap hwMap = null;
@@ -176,8 +177,9 @@ public class Run_Glyph {
 
         } else {
             // use IMU if available
-
-
+            if (robot.gyro2.available()) {
+                // TODO
+            }
         }
         robot.showTeamColor();
 
