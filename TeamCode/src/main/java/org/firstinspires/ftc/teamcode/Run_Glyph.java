@@ -19,8 +19,8 @@ public class Run_Glyph {
         hwMap = aHwMap;
         robot = aRobot;
 
-        robot.rightClaw.setPosition(0.59);
-        robot.leftClaw.setPosition(0.54);
+        robot.rightClaw.setPosition(0.10);
+        robot.leftClaw.setPosition(0.90);
 
         vu.init(hwMap);
     }

@@ -89,9 +89,9 @@ public class Team_Hardware_V9 {
     double elbowControl = 0;
     double gameStartHeading = 0;
     //********************************* PREDEFINED POS *******************************************//
-    double clawClosed[] = {0.82, 0.22};
-    double clawZero[] = {0.22, 0.75};
-    double clawOpen[] = {0.60, 0.40};
+    double clawClosed[] = {0.45, 0.59};
+    double clawZero[] = {0, 1};
+    double clawOpen[] = {0,40, 0.64};
     double armPosZero[] = {1, 0};
     // ************************** MAIN LOOP ******************************************************//
     double driveDefaultSpeed = 1.0;
