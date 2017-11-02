@@ -48,11 +48,11 @@ public class Run_Glyph {
         int[] moveDistance = {580, 358, 161};
         int[] moveDistanceLongField = {419, 197, 0};
 
-        int[] vuforiaValues = {460, 415, 340}; // Desired value for left, right, and middle
-        int[] vuforiaValuesLongField = {460, 415, 340}; // Desired value for left, right, and middle
+        int[] vuforiaValues = {460, 415, 340};
+        int[] vuforiaValuesLongField = {460, 415, 340};
 
-        int[] imuValues = {460, 415, 340}; // Desired value for left, right, and middle
-        int[] imuValuesLongField = {460, 415, 340}; // Desired value for left, right, and middle
+        int[] imuValues = {460, 415, 340};
+        int[] imuValuesLongField = {460, 415, 340};
 
         int moveDistanceFirstLegLongField = 161;
 
