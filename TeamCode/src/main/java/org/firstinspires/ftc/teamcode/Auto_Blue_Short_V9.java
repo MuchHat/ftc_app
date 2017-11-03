@@ -50,7 +50,7 @@ public class Auto_Blue_Short_V9 extends LinearOpMode {
         ElapsedTime loopRuntime = new ElapsedTime();
         totalRuntime = new ElapsedTime();
 
-        robot.blueTeam = false;
+        robot.blueTeam = true;
         robot.shortField = true;
         robot.showTeamColor();
 

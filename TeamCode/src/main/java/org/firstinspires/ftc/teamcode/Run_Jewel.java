@@ -16,9 +16,11 @@ public class Run_Jewel {
     //********************************* CONSTANTS ************************************************//
 
     void init(Team_Hardware_V9 aRobot) {
-
         robot = aRobot;
         robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
+        robot.colorSensor.enableLed(true);
+        robot.rightClaw.setPosition(0.38);
+        robot.leftClaw.setPosition(0.64);
     }
 
     void run() {
@@ -29,12 +31,12 @@ public class Run_Jewel {
 
         robot.colorBeacon.yellow();
 
-        double armFindJewelB[] = {0.19, 0.14, 0.12, 0.10};
-        double armFindJewelE[] = {0.64, 0.69, 0.76, 0.81};
+        double armFindJewelB[] = {0.19, 0.14, 0.10, 0.07};
+        double armFindJewelE[] = {0.64, 0.69, 0.78, 0.82};
 
         int findPositions = 4;
-        double armKnockB[] = {0, 0, 0, 0};
-        double armKnockE[] = {0.92, 0.92, 0.92, 0.92};
+        double armKnockB = 0;
+        double armKnockE = 0.90;
 
         double armExtendedB = 0.13;
         double armExtendedE = 0.65;
@@ -44,7 +46,7 @@ public class Run_Jewel {
         robot.moveArm(armExtendedB, armExtendedE);
         waitMillis(111);
 
-        //****   2. GO THRU $ POSITION TO FIND THE JEWEL *****************************************//
+        //****   2. GO THRU POSITION TO FIND THE JEWEL *****************************************//
 
         for (int i = 0; i < findPositions; i++) {
 
@@ -69,52 +71,42 @@ public class Run_Jewel {
             boolean knockFirst = true; //knock the ball in front or the other one
 
             if (robot.blueTeam && foundBlue) knockFirst = false;
-            if (!robot.blueTeam && foundRed) knockFirst = false;
             if (robot.blueTeam && !foundBlue) knockFirst = true;
+            if (!robot.blueTeam && foundRed) knockFirst = false;
             if (!robot.blueTeam && !foundRed) knockFirst = true;
 
             //****   3. GO IN BETWEEN THE BALLS **************************************************//
 
-            robot.moveInches(3.5, 0.22);
-
-            double crrBase = armKnockB[foundPos];
-            double crrElbow = armKnockE[foundPos];
-            robot.moveArm(crrBase, crrElbow);
+            robot.moveInches(2.5, 0.22);
             waitMillis(111);
 
+            robot.moveArm(armKnockB, armKnockE);
             //****   4. KNOCK THE BALL ***********************************************************//
-
             if (!knockFirst) {
-
                 //*****  4.1 MOVE FORWARD AND REMAIN AT EDGE *************************************//
-
-                robot.moveInches(4, 0.44);
-                waitMillis(111);
-                robot.moveArm(armExtendedB, armExtendedE);
-
+                robot.moveInches(4, 0.66);
                 // if blue move back to get to the edge of the platform
+                robot.moveArm(armExtendedB, armExtendedE);
                 if (robot.blueTeam) {
                     waitMillis(111);
-                    robot.moveInches(-7.5, 0.44);
+                    robot.moveInches(-7.5, 0.66);
                 }
             } else {
                 //******  4.2 MOVE BACK THEN FW TO END UP AT EDGE ********************************//
-
-                robot.moveInches(-4, 0.44);
-                waitMillis(111);
-                robot.moveArm(armExtendedB, armExtendedE);
-
+                robot.moveInches(-4, 0.66);
                 //if red move fw to get to the edge of the platform
+                robot.moveArm(armExtendedB, armExtendedE);
                 if (!robot.blueTeam) {
                     waitMillis(111);
-                    robot.moveInches(7.5, 0.44);
+                    robot.moveInches(7.5, 0.66);
                 }
             }
+            waitMillis(111);
         }
+        waitMillis(111);
+        robot.colorBeacon.white();
 
         //****   6. PUT ARM BACK AT POS ZERO *************************************************//
-
-        robot.showTeamColor();
 
         robot.moveArm(armExtendedB, armExtendedE);
         waitMillis(111);
@@ -139,7 +131,6 @@ public class Run_Jewel {
             robot.colorBeacon.blue();
             return true;
         }
-
         return false;
     }
 

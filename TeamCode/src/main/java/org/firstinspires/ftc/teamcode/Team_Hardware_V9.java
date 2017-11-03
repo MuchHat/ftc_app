@@ -88,9 +88,9 @@ public class Team_Hardware_V9 {
     double elbowControl = 0;
     double gameStartHeading = 0;
     //********************************* PREDEFINED POS *******************************************//
-    double clawClosed[] = {0.45, 0.59};
-    double clawZero[] = {0, 1};
-    double clawOpen[] = {0,40, 0.64};
+    double clawClosed[] = {1.00, 0.03};
+    double clawZero[] = {30, 66};
+    double clawOpen[] = {0.84, 0.17};
     double armPosZero[] = {1, 0};
     // ************************** MAIN LOOP ******************************************************//
     double driveDefaultSpeed = 1.0;
@@ -180,9 +180,11 @@ public class Team_Hardware_V9 {
     void turnTo12() {
         turn2Heading(0);
         turn2Heading(0);
+        turn2Heading(0);
     }
 
     void turnTo3() {
+        turn2Heading(270);
         turn2Heading(270);
         turn2Heading(270);
     }
@@ -190,22 +192,24 @@ public class Team_Hardware_V9 {
     void turnTo6() {
         turn2Heading(180);
         turn2Heading(180);
+        turn2Heading(180);
     }
 
     void turnTo9() {
+        turn2Heading(90);
         turn2Heading(90);
         turn2Heading(90);
     }
 
     void turn2Heading(double endHeading) {
 
-        double turnPower = 0.22;
-        double turnPowerMed = 0.22;
+        double turnPower = 0.88;
+        double turnPowerMed = 0.44;
         double turnPowerLow = 0.11;
         int prevBeaconColor = colorBeacon.getColorNumber();
 
         colorBeacon.teal();
-        double startHeading = modernRoboticsI2cGyro.getHeading();
+        double startHeading = imuGyro.getHeading();
 
         double diffAbs = Math.abs(endHeading - startHeading);
         double diffAbs360 = 360 - diffAbs;
@@ -252,7 +256,7 @@ public class Team_Hardware_V9 {
 
         while (true) {
 
-            double crrHeading = modernRoboticsI2cGyro.getHeading();
+            double crrHeading = imuGyro.getHeading();
 
             if (startHeading >= 180 && direction > 0 && crrHeading < 180) {
                 crrHeading += 360;
@@ -547,8 +551,11 @@ public class Team_Hardware_V9 {
         double minRightClaw = Math.min(Math.min(clawZero[1], clawClosed[1]), clawOpen[1]);
         double maxRightClaw = Math.max(Math.max(clawZero[1], clawClosed[1]), clawOpen[1]);
 
-        leftClawControl = Range.clip(leftClawControl, minLeftClaw, maxLeftClaw);
-        rightClawControl = Range.clip(rightClawControl, minRightClaw, maxRightClaw);
+        //leftClawControl = Range.clip(leftClawControl, minLeftClaw, maxLeftClaw);
+        //rightClawControl = Range.clip(rightClawControl, minRightClaw, maxRightClaw);
+
+        leftClawControl = Range.clip(leftClawControl, 0, 1);
+        rightClawControl = Range.clip(rightClawControl, 0, 1);
 
         leftClaw.setPosition(leftClawControl);
         rightClaw.setPosition(rightClawControl);
@@ -598,7 +605,7 @@ public class Team_Hardware_V9 {
         else
             colorBeacon.red();
     }
-
+    
     void waitMillis(double millis) {
 
         sleep((long) millis);

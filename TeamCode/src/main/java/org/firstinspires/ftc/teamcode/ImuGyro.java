@@ -58,7 +58,7 @@ public class ImuGyro {
 
     double getHeading(){
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        return AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle);
+        return (AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle) + 360)%360;
     }
 
     double getX(){

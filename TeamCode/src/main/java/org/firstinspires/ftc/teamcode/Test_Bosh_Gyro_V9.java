@@ -34,6 +34,7 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
@@ -56,8 +57,8 @@ import java.util.Locale;
  * <p>
  * https://github.com/SwerveRobotics/ftc_app/commit/1ad29f5df1545f17049e88b99cec6390dc357d30
  */
-@Autonomous(name = "Sensor: Bosh Gyro", group = "Test")
-//@Disabled                            // Comment this out to add to the opmode list
+@TeleOp(name = "Bosh Gyro", group = "Test")
+                   // Comment this out to add to the opmode list
 public class Test_Bosh_Gyro_V9 extends LinearOpMode {
     //----------------------------------------------------------------------------------------------
     // State

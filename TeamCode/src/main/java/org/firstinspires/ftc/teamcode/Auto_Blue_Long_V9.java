@@ -51,8 +51,8 @@ public class Auto_Blue_Long_V9 extends LinearOpMode {
         ElapsedTime loopRuntime = new ElapsedTime();
         totalRuntime = new ElapsedTime();
 
-        robot.blueTeam = false;
-        robot.shortField = true;
+        robot.blueTeam = true;
+        robot.shortField = false;
         robot.showTeamColor();
 
         telemetry.addData("starting vuforia", "... do NOT move");
