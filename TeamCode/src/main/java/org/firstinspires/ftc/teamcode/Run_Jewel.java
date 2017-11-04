@@ -17,10 +17,13 @@ public class Run_Jewel {
 
     void init(Team_Hardware_V9 aRobot) {
         robot = aRobot;
-        robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
         robot.colorSensor.enableLed(true);
-        robot.rightClaw.setPosition(0.38);
-        robot.leftClaw.setPosition(0.64);
+        robot.leftClawControl = robot.clawAutoClose[0];
+        robot.rightClawControl =robot.clawAutoClose[1];
+        robot.baseControl = robot.armPosZero[0];
+        robot.elbowControl = robot.armPosZero[1];
+        robot.setServos();
+        waitMillis(111);
     }
 
     void run() {

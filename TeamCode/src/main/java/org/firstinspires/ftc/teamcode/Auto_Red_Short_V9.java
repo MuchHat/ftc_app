@@ -49,9 +49,6 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
         ElapsedTime controlRuntime = new ElapsedTime();
         totalRuntime = new ElapsedTime();
 
-        robot.leftClaw.setPosition(0);
-        robot.rightClaw.setPosition(1);
-
         robot.blueTeam = false;
         robot.shortField = true;
         robot.showTeamColor();

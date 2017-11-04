@@ -41,6 +41,9 @@ public class Manual_Red_V9 extends LinearOpMode {
         //********************************* MAIN LOOP INIT ***************************************//
         robot.init(hardwareMap);
 
+        robot.rightClaw.setPosition(0.17);
+        robot.leftClaw.setPosition(0.84);
+
         ElapsedTime controlRuntime = new ElapsedTime();
         ElapsedTime loopRuntime = new ElapsedTime();
         totalRuntime = new ElapsedTime();
@@ -78,18 +81,18 @@ public class Manual_Red_V9 extends LinearOpMode {
             //********************************* MANUAL MODE **************************************//
 
             // ***************************** control: SIDE  ********************************//*/
-            if (Math.abs(gamepad1.right_stick_x) > 0.06) {
+            if (Math.abs(gamepad1.right_stick_x) > 0.11) {
                 double sideInput = 0;
 
-                if (Math.abs(gamepad1.right_stick_x) > 0.06) {
+                if (Math.abs(gamepad1.right_stick_x) > 0.11) {
                     sideInput = gamepad1.right_stick_x;
                 }
 
-                robot.leftPowerControl = sideInput * robot.driveDefaultSpeed;
-                robot.rightPowerControl = -sideInput * robot.driveDefaultSpeed;
+                robot.leftPowerControl = -sideInput * robot.driveDefaultSpeed;
+                robot.rightPowerControl = sideInput * robot.driveDefaultSpeed;
 
-                robot.leftPowerControlBack = -sideInput * robot.driveDefaultSpeed;
-                robot.rightPowerControlBack = sideInput * robot.driveDefaultSpeed;
+                robot.leftPowerControlBack = sideInput * robot.driveDefaultSpeed;
+                robot.rightPowerControlBack = -sideInput * robot.driveDefaultSpeed;
 
                 robot.setDrivesByPower();
             }
@@ -127,11 +130,11 @@ public class Manual_Red_V9 extends LinearOpMode {
             {
                 double liftInput = 0;
 
-                if (Math.abs(gamepad2.right_stick_y) > 0.06) {
+                if (Math.abs(gamepad2.right_stick_y) > 0.11) {
                     liftInput = -gamepad2.right_stick_y;
                 }
 
-                if (Math.abs(gamepad1.right_stick_y) > 0.06) {
+                if (Math.abs(gamepad1.right_stick_y) > 0.11) {
                     liftInput = -gamepad1.right_stick_y;
                 }
 

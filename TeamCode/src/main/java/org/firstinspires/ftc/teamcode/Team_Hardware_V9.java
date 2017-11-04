@@ -88,13 +88,14 @@ public class Team_Hardware_V9 {
     double elbowControl = 0;
     double gameStartHeading = 0;
     //********************************* PREDEFINED POS *******************************************//
-    double clawClosed[] = {1.00, 0.03};
-    double clawZero[] = {30, 66};
+    double clawClosed[] = {1.00, 0.00};
     double clawOpen[] = {0.84, 0.17};
+    double clawAutoClose[] = {0.64, 0.38};
     double armPosZero[] = {1, 0};
+
     // ************************** MAIN LOOP ******************************************************//
     double driveDefaultSpeed = 1.0;
-    double turnDefaultSpeed = 0.66;
+    double turnDefaultSpeed = 0.88;
     double servoDefaultSpeed = 0.00033;
 
     // ************************** HW CONSTRUCTOR  ************************************************//
@@ -129,8 +130,6 @@ public class Team_Hardware_V9 {
         modernRoboticsI2cGyro = hwMap.get(ModernRoboticsI2cGyro.class, "Gyro");
         gyro = modernRoboticsI2cGyro;
         imuGyro = new ImuGyro();
-
-        imuGyro.init(hwMap);
 
         colorBeacon = new MRIColorBeacon();
         colorBeacon.init(hwMap, "Beacon");
@@ -167,12 +166,14 @@ public class Team_Hardware_V9 {
         rightPowerControl = 0;
         leftPowerControlBack = 0;
         rightPowerControlBack = 0;
-        leftClawControl = clawZero[1];
-        rightClawControl = clawZero[0];
+        leftClawControl = clawAutoClose[0];
+        rightClawControl = clawAutoClose[1];
         baseControl = armPosZero[0];
         elbowControl = armPosZero[1];
         setDrivesByPower();
         setServos();
+
+        imuGyro.init(hwMap);
     }
 
     // ************************** MANUAL DRIVE HELPER FUNCTIONS  *********************************//
@@ -545,15 +546,6 @@ public class Team_Hardware_V9 {
 
     void setServos() {
 
-        double minLeftClaw = Math.min(Math.min(clawZero[0], clawClosed[0]), clawOpen[0]);
-        double maxLeftClaw = Math.max(Math.max(clawZero[0], clawClosed[0]), clawOpen[0]);
-
-        double minRightClaw = Math.min(Math.min(clawZero[1], clawClosed[1]), clawOpen[1]);
-        double maxRightClaw = Math.max(Math.max(clawZero[1], clawClosed[1]), clawOpen[1]);
-
-        //leftClawControl = Range.clip(leftClawControl, minLeftClaw, maxLeftClaw);
-        //rightClawControl = Range.clip(rightClawControl, minRightClaw, maxRightClaw);
-
         leftClawControl = Range.clip(leftClawControl, 0, 1);
         rightClawControl = Range.clip(rightClawControl, 0, 1);
 
@@ -605,7 +597,7 @@ public class Team_Hardware_V9 {
         else
             colorBeacon.red();
     }
-    
+
     void waitMillis(double millis) {
 
         sleep((long) millis);
