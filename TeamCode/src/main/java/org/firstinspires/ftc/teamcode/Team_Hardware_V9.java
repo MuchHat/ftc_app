@@ -62,8 +62,6 @@ public class Team_Hardware_V9 {
     public Servo base = null;
     public Servo elbow = null;
 
-    public ModernRoboticsI2cGyro modernRoboticsI2cGyro;
-    public IntegratingGyroscope gyro;
     public MRIColorBeacon colorBeacon;
     public ImuGyro imuGyro;
 
@@ -126,9 +124,6 @@ public class Team_Hardware_V9 {
         rightClaw = hwMap.get(Servo.class, "Claw_Right");
 
         colorSensor = hwMap.get(ColorSensor.class, "Color_Sensor");
-
-        modernRoboticsI2cGyro = hwMap.get(ModernRoboticsI2cGyro.class, "Gyro");
-        gyro = modernRoboticsI2cGyro;
         imuGyro = new ImuGyro();
 
         colorBeacon = new MRIColorBeacon();
@@ -181,11 +176,9 @@ public class Team_Hardware_V9 {
     void turnTo12() {
         turn2Heading(0);
         turn2Heading(0);
-        turn2Heading(0);
     }
 
     void turnTo3() {
-        turn2Heading(270);
         turn2Heading(270);
         turn2Heading(270);
     }
@@ -193,11 +186,9 @@ public class Team_Hardware_V9 {
     void turnTo6() {
         turn2Heading(180);
         turn2Heading(180);
-        turn2Heading(180);
     }
 
     void turnTo9() {
-        turn2Heading(90);
         turn2Heading(90);
         turn2Heading(90);
     }

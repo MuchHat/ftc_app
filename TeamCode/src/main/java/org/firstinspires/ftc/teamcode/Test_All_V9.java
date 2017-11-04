@@ -67,16 +67,6 @@ public class Test_All_V9 extends LinearOpMode {
         telemetry.log().add("calibrating gyro, do not move");
         telemetry.update();
         sleep(444);
-        robot.modernRoboticsI2cGyro.calibrate();
-
-        // Wait until the gyro calibration is complete
-        runtimeLoop.reset();
-        while (!isStopRequested() && robot.modernRoboticsI2cGyro.isCalibrating()) {
-            telemetry.addData("calibrating gyro", "%s",
-                    Math.round(runtimeLoop.seconds()) % 2 == 0 ? "..  " : "   ..");
-            telemetry.update();
-            sleep(66);
-        }
         runtimeLoop.reset();
         telemetry.log().clear();
 
@@ -121,7 +111,7 @@ public class Test_All_V9 extends LinearOpMode {
             telemetry.addData("switch top", "%.2f", robot.topSwitch.getState() ? 1.0 : 0.0);
             telemetry.addData("switch bottom", "%.2f", robot.bottomSwitch.getState() ? 1.0 : 0.0);
 
-            telemetry.addData("crr heading", "%.2fdeg", (double) robot.modernRoboticsI2cGyro.getHeading());
+            telemetry.addData("crr heading", "%.2fdeg", (double) robot.imuGyro.getHeading());
 
             telemetry.update();
 
@@ -200,7 +190,7 @@ public class Test_All_V9 extends LinearOpMode {
         double turnPowerMed = 0.15;
         double turnPowerLow = 0.08;
 
-        double startHeading = robot.modernRoboticsI2cGyro.getHeading();
+        double startHeading = robot.imuGyro.getHeading();
 
         double diffAbs = Math.abs(endHeading - startHeading);
         double diffAbs360 = 360 - diffAbs;
@@ -255,7 +245,7 @@ public class Test_All_V9 extends LinearOpMode {
 
         while (true) {
 
-            double crrHeading = robot.modernRoboticsI2cGyro.getHeading();
+            double crrHeading = robot.imuGyro.getHeading();
 
             if (startHeading >= 180 && direction > 0 && crrHeading < 180) {
                 crrHeading += 360;

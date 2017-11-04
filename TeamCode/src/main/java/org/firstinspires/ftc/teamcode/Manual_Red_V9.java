@@ -31,7 +31,6 @@ public class Manual_Red_V9 extends LinearOpMode {
     private ElapsedTime totalRuntime = null;
 
     //********************************* CONSTANTS ************************************************//
-    private Boolean loaded = false;
 
     // ************************** MAIN LOOP ******************************************************//
 
@@ -52,15 +51,7 @@ public class Manual_Red_V9 extends LinearOpMode {
         robot.blueTeam = false;
         robot.showTeamColor();
 
-        robot.modernRoboticsI2cGyro.calibrate();
-        // Wait until the gyro calibration is complete
-        while (!isStopRequested() && robot.modernRoboticsI2cGyro.isCalibrating()) {
-            telemetry.addData("calibrating gyro", "... do NOT move");
-            telemetry.addData("calibrating gyro", "%s", Math.round(controlRuntime.seconds()));
-            loaded = true;
-            telemetry.update();
-            sleep(66);
-        }
+
 
         telemetry.clear();
         telemetry.update();
@@ -69,7 +60,7 @@ public class Manual_Red_V9 extends LinearOpMode {
 
         waitForStart();
 
-        while (opModeIsActive() && loaded) {
+        while (opModeIsActive()) {
 
             //********************************* CONTROL LOOP *************************************//
 
@@ -123,7 +114,6 @@ public class Manual_Red_V9 extends LinearOpMode {
 
                 robot.setDrivesByPower();
 
-                if (xInput != 0) robot.headingControl = robot.modernRoboticsI2cGyro.getHeading();
             }
 
             // ********************************  control: LIFT  ******************************//
@@ -255,12 +245,8 @@ public class Manual_Red_V9 extends LinearOpMode {
         telemetry.addData("left claw", "%.0f%%", robot.leftClawControl * 100);
         telemetry.addData("right claw", "%.0f%%", robot.rightClawControl * 100);
 
-        telemetry.addData("crr heading", "%.2fdeg", (double) robot.modernRoboticsI2cGyro.getHeading());
         telemetry.addData("set heading", "%.2fdeg", (double) robot.headingControl);
         telemetry.addData("start heading", "%.2fdeg", robot.gameStartHeading);
-        telemetry.addData("z angle", "%.2fdeg",
-                (double) robot.gyro.getAngularOrientation
-                        (AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         telemetry.addData("team", team);
 
         telemetry.update();

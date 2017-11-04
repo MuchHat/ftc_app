@@ -34,7 +34,6 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
 
     //********************************* MOVE STATES **********************************************//
     private ElapsedTime totalRuntime = null;
-    private Boolean loaded = false;
 
     private Run_Glyph glyphRun = new Run_Glyph();
     private Run_Jewel jewelRun = new Run_Jewel();
@@ -59,16 +58,7 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
         jewelRun.init(robot);
         glyphRun.init(robot, hardwareMap);
 
-        robot.modernRoboticsI2cGyro.calibrate();
-
         controlRuntime.reset();        // Wait until the gyro calibration is complete
-        while (!isStopRequested() && robot.modernRoboticsI2cGyro.isCalibrating()) {
-            telemetry.addData("calibrating gyro", "... do NOT move");
-            telemetry.addData("calibrating gyro", "%s", Math.round(controlRuntime.seconds()));
-            loaded = true;
-            telemetry.update();
-            sleep(66);
-        }
 
         telemetry.clear();
         telemetry.update();
@@ -78,7 +68,7 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
         waitForStart();
         totalRuntime.reset();
 
-        while (opModeIsActive() && loaded) {
+        while (opModeIsActive()) {
 
             jewelRun.run();
 
@@ -125,12 +115,8 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
         //telemetry.addData("Vuforia X: ", ".0f%%", glyphRun.vu.getX());
         //telemetry.addData("Vuforia Y: ", ".0f%%", glyphRun.vu.getY());
 
-        telemetry.addData("crr heading", "%.2fdeg", (double) robot.modernRoboticsI2cGyro.getHeading());
         telemetry.addData("set heading", "%.2fdeg", (double) robot.headingControl);
         telemetry.addData("start heading", "%.2fdeg", robot.gameStartHeading);
-        telemetry.addData("z angle", "%.2fdeg",
-                (double) robot.gyro.getAngularOrientation(AxesReference.INTRINSIC,
-                        AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle);
         telemetry.addData("team", team);
         telemetry.addData("field", field);
         telemetry.addData("total runtime", "%.0fs", totalRuntime.seconds());

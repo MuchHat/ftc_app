@@ -28,7 +28,7 @@ public class Run_Glyph {
 
     boolean timeLeft() {
 
-        return true;//(secsLeftAtStart - timer.seconds()) > 2;
+        return (secsLeftAtStart - timer.seconds()) > 2;
     }
 
     void run(double secsLeft) {

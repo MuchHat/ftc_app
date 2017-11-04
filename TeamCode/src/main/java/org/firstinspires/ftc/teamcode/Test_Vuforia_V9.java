@@ -71,16 +71,7 @@ public class Test_Vuforia_V9 extends LinearOpMode {
         telemetry.log().add("calibrating gyro, do not move");
         telemetry.update();
         sleep(111);
-        robot.modernRoboticsI2cGyro.calibrate();
 
-        // Wait until the gyro calibration is complete
-        runtimeLoop.reset();
-        while (!isStopRequested() && robot.modernRoboticsI2cGyro.isCalibrating()) {
-            telemetry.addData("calibrating gyro", "%s",
-                    Math.round(runtimeLoop.seconds()) % 2 == 0 ? "..  " : "   ..");
-            telemetry.update();
-            sleep(66);
-        }
         runtimeLoop.reset();
         telemetry.log().clear();
 
