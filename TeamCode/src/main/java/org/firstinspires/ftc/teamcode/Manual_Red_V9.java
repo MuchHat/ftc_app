@@ -135,23 +135,110 @@ public class Manual_Red_V9 extends LinearOpMode {
 
             // ********************************  control:  ***********************************//
             if (gamepad1.dpad_right) {
-                robot.moveSide(66);
+                double sideInput = 0.3;
+                double turnInput = 0.15;
+
+                robot.leftDistanceControl = 0;
+                robot.rightDistanceControl = 0;
+                robot.leftDistanceControlBack = 0;
+                robot.rightDistanceControlBack = 0;
+
+                robot.leftPowerControl = -sideInput * robot.driveDefaultSpeed;
+                robot.rightPowerControl = sideInput * robot.driveDefaultSpeed;
+                robot.leftPowerControlBack = sideInput * robot.driveDefaultSpeed;
+                robot.rightPowerControlBack = -sideInput * robot.driveDefaultSpeed;
+
+                robot.leftPowerControl = turnInput * robot.driveDefaultSpeed;
+                robot.rightPowerControl = -turnInput * robot.driveDefaultSpeed;
+                robot.leftPowerControlBack = turnInput * robot.driveDefaultSpeed;
+                robot.rightPowerControlBack = -turnInput * robot.driveDefaultSpeed;
+
+                robot.setDrivesByPower();
+                waitMillis(22);
+
+                robot.leftPowerControl = 0;
+                robot.rightPowerControl = 0;
+                robot.leftPowerControlBack = 0;
+                robot.rightPowerControlBack = 0;
+                robot.setDrivesByPower();
             }
 
             // ********************************  control:   ***********************************//
             if (gamepad1.dpad_left) {
-                robot.moveSide(-66);
+                double sideInput = -0.3;
+                double turnInput = -0.15;
 
+                robot.leftDistanceControl = 0;
+                robot.rightDistanceControl = 0;
+                robot.leftDistanceControlBack = 0;
+                robot.rightDistanceControlBack = 0;
+
+                robot.leftPowerControl = -sideInput * robot.driveDefaultSpeed;
+                robot.rightPowerControl = sideInput * robot.driveDefaultSpeed;
+                robot.leftPowerControlBack = sideInput * robot.driveDefaultSpeed;
+                robot.rightPowerControlBack = -sideInput * robot.driveDefaultSpeed;
+
+                robot.leftPowerControl = turnInput * robot.driveDefaultSpeed;
+                robot.rightPowerControl = -turnInput * robot.driveDefaultSpeed;
+                robot.leftPowerControlBack = turnInput * robot.driveDefaultSpeed;
+                robot.rightPowerControlBack = -turnInput * robot.driveDefaultSpeed;
+
+                robot.setDrivesByPower();
+                waitMillis(22);
+
+                robot.leftPowerControl = 0;
+                robot.rightPowerControl = 0;
+                robot.leftPowerControlBack = 0;
+                robot.rightPowerControlBack = 0;
+                robot.setDrivesByPower();
             }
 
             // ********************************  control:  ***********************************//
             if (gamepad1.dpad_up) {
-                robot.move(66);
+                double xInput = 0.3;
+
+                robot.leftDistanceControl = 0;
+                robot.rightDistanceControl = 0;
+                robot.leftDistanceControlBack = 0;
+                robot.rightDistanceControlBack = 0;
+
+                robot.leftPowerControl = xInput * robot.driveDefaultSpeed;
+                robot.rightPowerControl = xInput * robot.driveDefaultSpeed;
+                robot.leftPowerControlBack = xInput * robot.driveDefaultSpeed;
+                robot.rightPowerControlBack = xInput * robot.driveDefaultSpeed;
+
+                robot.setDrivesByPower();
+                waitMillis(22);
+
+                robot.leftPowerControl = 0;
+                robot.rightPowerControl = 0;
+                robot.leftPowerControlBack = 0;
+                robot.rightPowerControlBack = 0;
+                robot.setDrivesByPower();
             }
 
             // ********************************  control:  ***********************************//
             if (gamepad1.dpad_down) {
-                robot.move(-66);
+                double xInput = -0.3;
+
+                robot.leftDistanceControl = 0;
+                robot.rightDistanceControl = 0;
+                robot.leftDistanceControlBack = 0;
+                robot.rightDistanceControlBack = 0;
+
+                robot.leftPowerControl = xInput * robot.driveDefaultSpeed;
+                robot.rightPowerControl = xInput * robot.driveDefaultSpeed;
+                robot.leftPowerControlBack = xInput * robot.driveDefaultSpeed;
+                robot.rightPowerControlBack = xInput * robot.driveDefaultSpeed;
+
+                robot.setDrivesByPower();
+                waitMillis(22);
+
+                robot.leftPowerControl = 0;
+                robot.rightPowerControl = 0;
+                robot.leftPowerControlBack = 0;
+                robot.rightPowerControlBack = 0;
+                robot.setDrivesByPower();
             }
 
             // ********************************  control:  ***********************************//
