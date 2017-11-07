@@ -8,21 +8,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
-/* NOTES
-
-https://github.com/ftctechnh/ftc_app/wiki/Identifying-Vuforia-VuMarks
-
-Vuforia key
-
-Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufo
-ywxzibq+y5BGBa2cChKWAcUkKaD9/ak5lwCm9Wp3Osk9omsMR0YYoxt4TuPktrflK4HuTH
-8cOAQA8YDuOs/SO/cgOmWbQZtRXN/lFkUwGZA9eiV5D8730BG2SBLPR4A9rcFs0Fp/yPgc
-m4Zsh5Kv2Ct8XjJXmXk5mAjERZ5B6hKQzf/4wd9tSQ6BeQLvsgd5nI0Pj+K1NHI4EyHdFy
-xCPu91AMcCsXCLjkABfYt11Zhxu1uYaFF/AcN3eBHRwprVpDEBBXOMnD4BRCj0xxYYPWWO6
-g4gcjqBPgBos5nCDk43KipEeX22z
-
- */
-
 //********************************* MAIN OP CLASS ************************************************//
 
 @TeleOp(name = "Auto Blue Short V9", group = "Auto")
@@ -64,6 +49,7 @@ public class Auto_Blue_Short_V9 extends LinearOpMode {
 
         waitForStart();
         totalRuntime.reset();
+        robot.imuGyro.start();
 
         while (opModeIsActive()) {
 
