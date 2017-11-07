@@ -57,7 +57,7 @@ import java.util.Locale;
  * <p>
  * https://github.com/SwerveRobotics/ftc_app/commit/1ad29f5df1545f17049e88b99cec6390dc357d30
  */
-@TeleOp(name = "Bosh Gyro", group = "Test")
+@TeleOp(name = "Test Bosh Gyro", group = "Test")
 // Comment this out to add to the opmode list
 public class Test_Bosh_Gyro_V9 extends LinearOpMode {
     //----------------------------------------------------------------------------------------------
@@ -81,9 +81,6 @@ public class Test_Bosh_Gyro_V9 extends LinearOpMode {
 
         imu.init(hardwareMap);
 
-        // Set up our telemetry dashboard
-        updateTelemetry();
-
         // Wait until we're told to go
         waitForStart();
 
@@ -94,6 +91,7 @@ public class Test_Bosh_Gyro_V9 extends LinearOpMode {
         while (opModeIsActive()) {
 
             updateTelemetry();
+            sleep( 111 );
         }
     }
 
@@ -103,9 +101,9 @@ public class Test_Bosh_Gyro_V9 extends LinearOpMode {
 
     void updateTelemetry() {
 
-        telemetry.addData("heading", "%0.2f", imu.getHeading());
-        telemetry.addData("x", "%0.2f", imu.getX());
-        telemetry.addData("y", "%0.2f", imu.getY());
+        telemetry.addData("heading", "%.2f", (double) imu.getHeading());
+        telemetry.addData("x", "%.2f", (double) imu.getX());
+        telemetry.addData("y", "%.2f", (double) imu.getY());
         telemetry.update();
     }
 }
