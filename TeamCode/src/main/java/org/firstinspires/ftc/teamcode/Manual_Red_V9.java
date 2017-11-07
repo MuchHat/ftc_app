@@ -8,20 +8,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
-/* NOTES
-
-https://github.com/ftctechnh/ftc_app/wiki/Identifying-Vuforia-VuMarks
-
-Vuforia key
-
-Ac6cr63/////AAAAGUsQTEyyG0kggwF13U8WoMlPgXZiUoKR9pf2nlfhVVfvDXFsTn0wufoywxzibq
-+y5BGBa2cChKWAcUkKaD9/ak5lwCm9Wp3Osk9omsMR0YYoxt4TuPktrflK4HuTH8cOAQA8YDuOs/SO
-/cgOmWbQZtRXN/lFkUwGZA9eiV5D8730BG2SBLPR4A9rcFs0Fp/yPgcm4Zsh5Kv2Ct8XjJXmXk5mAj
-ERZ5B6hKQzf/4wd9tSQ6BeQLvsgd5nI0Pj+K1NHI4EyHdFyxCPu91AMcCsXCLjkABfYt11Zhxu1uYa
-FF/AcN3eBHRwprVpDEBBXOMnD4BRCj0xxYYPWWO6g4gcjqBPgBos5nCDk43KipEeX22z
-
- */
-
 //********************************* MAIN OP CLASS ************************************************//
 
 @TeleOp(name = "Manual Red V9", group = "Manual")
@@ -42,10 +28,10 @@ public class Manual_Red_V9 extends LinearOpMode {
     public void runOpMode() {
 
         //********************************* MAIN LOOP INIT ***************************************//
-        robot.init(hardwareMap);
+        telemetry.addData("DRIVER", ">>> WAIT WAIT WAIT >>>");
+        telemetry.update();
 
-        robot.rightClaw.setPosition(0.17);
-        robot.leftClaw.setPosition(0.84);
+        robot.init(hardwareMap);
 
         ElapsedTime controlRuntime = new ElapsedTime();
         ElapsedTime loopRuntime = new ElapsedTime();
@@ -55,14 +41,11 @@ public class Manual_Red_V9 extends LinearOpMode {
         robot.blueTeam = false;
         robot.showTeamColor();
 
-
-
-        telemetry.clear();
-        telemetry.update();
-        telemetry.addData("driver", "CLICK  >>> to START");
+        telemetry.addData("DRIVER", ">>>  PRESS START >>>");
         telemetry.update();
 
         waitForStart();
+        robot.imuGyro.start();
 
         while (opModeIsActive()) {
 
@@ -76,10 +59,10 @@ public class Manual_Red_V9 extends LinearOpMode {
             //********************************* MANUAL MODE **************************************//
 
             // ***************************** control: SIDE  ********************************//*/
-            if (Math.abs(gamepad1.right_stick_x) > 0.11) {
+            if (Math.abs(gamepad1.right_stick_x) > 0.03) {
                 double sideInput = 0;
 
-                if (Math.abs(gamepad1.right_stick_x) > 0.11) {
+                if (Math.abs(gamepad1.right_stick_x) > 0.03) {
                     sideInput = gamepad1.right_stick_x;
                 }
 
@@ -101,10 +84,10 @@ public class Manual_Red_V9 extends LinearOpMode {
                 robot.leftDistanceControlBack = 0;
                 robot.rightDistanceControlBack = 0;
 
-                if (Math.abs(gamepad1.left_stick_y) > 0.06) {
+                if (Math.abs(gamepad1.left_stick_y) > 0.03) {
                     yInput = -gamepad1.left_stick_y;
                 }
-                if (Math.abs(gamepad1.left_stick_x) > 0.06) {
+                if (Math.abs(gamepad1.left_stick_x) > 0.03) {
                     xInput = gamepad1.left_stick_x;
                 }
                 robot.leftPowerControl = yInput * robot.driveDefaultSpeed;
@@ -139,26 +122,21 @@ public class Manual_Red_V9 extends LinearOpMode {
 
             // ********************************  control:  ***********************************//
             if (gamepad1.dpad_right) {
-                double sideInput = 0.3;
-                double turnInput = 0.15;
+                double frontInput = 0.66;
+                double backInput = 0.22;
 
                 robot.leftDistanceControl = 0;
                 robot.rightDistanceControl = 0;
                 robot.leftDistanceControlBack = 0;
                 robot.rightDistanceControlBack = 0;
 
-                robot.leftPowerControl = -sideInput * robot.driveDefaultSpeed;
-                robot.rightPowerControl = sideInput * robot.driveDefaultSpeed;
-                robot.leftPowerControlBack = sideInput * robot.driveDefaultSpeed;
-                robot.rightPowerControlBack = -sideInput * robot.driveDefaultSpeed;
-
-                robot.leftPowerControl = turnInput * robot.driveDefaultSpeed;
-                robot.rightPowerControl = -turnInput * robot.driveDefaultSpeed;
-                robot.leftPowerControlBack = turnInput * robot.driveDefaultSpeed;
-                robot.rightPowerControlBack = -turnInput * robot.driveDefaultSpeed;
+                robot.leftPowerControl = -frontInput;
+                robot.rightPowerControl = frontInput;
+                robot.leftPowerControlBack = backInput;
+                robot.rightPowerControlBack = -backInput;
 
                 robot.setDrivesByPower();
-                waitMillis(22);
+                waitMillis(666);
 
                 robot.leftPowerControl = 0;
                 robot.rightPowerControl = 0;
@@ -169,26 +147,21 @@ public class Manual_Red_V9 extends LinearOpMode {
 
             // ********************************  control:   ***********************************//
             if (gamepad1.dpad_left) {
-                double sideInput = -0.3;
-                double turnInput = -0.15;
+                double frontInput = -0.66;
+                double backInput = -0.22;
 
                 robot.leftDistanceControl = 0;
                 robot.rightDistanceControl = 0;
                 robot.leftDistanceControlBack = 0;
                 robot.rightDistanceControlBack = 0;
 
-                robot.leftPowerControl = -sideInput * robot.driveDefaultSpeed;
-                robot.rightPowerControl = sideInput * robot.driveDefaultSpeed;
-                robot.leftPowerControlBack = sideInput * robot.driveDefaultSpeed;
-                robot.rightPowerControlBack = -sideInput * robot.driveDefaultSpeed;
-
-                robot.leftPowerControl = turnInput * robot.driveDefaultSpeed;
-                robot.rightPowerControl = -turnInput * robot.driveDefaultSpeed;
-                robot.leftPowerControlBack = turnInput * robot.driveDefaultSpeed;
-                robot.rightPowerControlBack = -turnInput * robot.driveDefaultSpeed;
+                robot.leftPowerControl = -frontInput;
+                robot.rightPowerControl = frontInput;
+                robot.leftPowerControlBack = backInput;
+                robot.rightPowerControlBack = -backInput;
 
                 robot.setDrivesByPower();
-                waitMillis(22);
+                waitMillis(666);
 
                 robot.leftPowerControl = 0;
                 robot.rightPowerControl = 0;
@@ -199,7 +172,7 @@ public class Manual_Red_V9 extends LinearOpMode {
 
             // ********************************  control:  ***********************************//
             if (gamepad1.dpad_up) {
-                double xInput = 0.3;
+                double xInput = 0.33;
 
                 robot.leftDistanceControl = 0;
                 robot.rightDistanceControl = 0;
@@ -212,7 +185,7 @@ public class Manual_Red_V9 extends LinearOpMode {
                 robot.rightPowerControlBack = xInput * robot.driveDefaultSpeed;
 
                 robot.setDrivesByPower();
-                waitMillis(22);
+                waitMillis(222);
 
                 robot.leftPowerControl = 0;
                 robot.rightPowerControl = 0;
@@ -223,7 +196,7 @@ public class Manual_Red_V9 extends LinearOpMode {
 
             // ********************************  control:  ***********************************//
             if (gamepad1.dpad_down) {
-                double xInput = -0.3;
+                double xInput = -0.33;
 
                 robot.leftDistanceControl = 0;
                 robot.rightDistanceControl = 0;
@@ -236,7 +209,7 @@ public class Manual_Red_V9 extends LinearOpMode {
                 robot.rightPowerControlBack = xInput * robot.driveDefaultSpeed;
 
                 robot.setDrivesByPower();
-                waitMillis(22);
+                waitMillis(222);
 
                 robot.leftPowerControl = 0;
                 robot.rightPowerControl = 0;
@@ -246,47 +219,75 @@ public class Manual_Red_V9 extends LinearOpMode {
             }
 
             // ********************************  control:  ***********************************//
-            if (gamepad2.dpad_right) {
+            if (gamepad1.a) {
                 robot.moveLift(-1);
             }
 
             // ********************************  control:   ***********************************//
-            if (gamepad2.dpad_left) {
+            if (gamepad1.y) {
                 robot.moveLift(1);
 
             }
 
             // ********************************  control:  ***********************************//
-            if (gamepad2.dpad_up) {
-                robot.moveLift(0.5);
+            if (gamepad1.b) {
+                double sideInput = 0.66;
 
+                robot.leftDistanceControl = 0;
+                robot.rightDistanceControl = 0;
+                robot.leftDistanceControlBack = 0;
+                robot.rightDistanceControlBack = 0;
+
+                robot.leftPowerControl = -sideInput;
+                robot.rightPowerControl = sideInput ;
+                robot.leftPowerControlBack = sideInput;
+                robot.rightPowerControlBack = -sideInput;
+
+                robot.setDrivesByPower();
+                waitMillis(222);
+
+                robot.leftPowerControl = 0;
+                robot.rightPowerControl = 0;
+                robot.leftPowerControlBack = 0;
+                robot.rightPowerControlBack = 0;
+
+                robot.setDrivesByPower();
             }
 
             // ********************************  control:  ***********************************//
-            if (gamepad2.dpad_down) {
-                robot.moveLift(-0.5);
+            if (gamepad1.x) {
+                double sideInput = -0.66;
 
+                robot.leftDistanceControl = 0;
+                robot.rightDistanceControl = 0;
+                robot.leftDistanceControlBack = 0;
+                robot.rightDistanceControlBack = 0;
+
+                robot.leftPowerControl = -sideInput;
+                robot.rightPowerControl = sideInput;
+                robot.leftPowerControlBack = sideInput;
+                robot.rightPowerControlBack = -sideInput;
+
+                robot.setDrivesByPower();
+                waitMillis(222);
+
+                robot.leftPowerControl = 0;
+                robot.rightPowerControl = 0;
+                robot.leftPowerControlBack = 0;
+                robot.rightPowerControlBack = 0;
+
+                robot.setDrivesByPower();
             }
 
             // ********************************  control: CLAW OPEN  *************************//
-            if (gamepad2.left_trigger != 0) {
-                robot.leftClawControl -= gamepad2.left_trigger * robot.servoDefaultSpeed * crrLoopTime;
-                robot.rightClawControl += gamepad2.left_trigger * robot.servoDefaultSpeed * crrLoopTime;
-                robot.setServos();
-            }
-            if (gamepad1.left_trigger != 0) {
+            if (Math.abs(gamepad1.left_trigger) > 0.03) {
                 robot.leftClawControl -= gamepad1.left_trigger * robot.servoDefaultSpeed * crrLoopTime;
                 robot.rightClawControl += gamepad1.left_trigger * robot.servoDefaultSpeed * crrLoopTime;
                 robot.setServos();
             }
 
             // ********************************  control: CLAW CLOSE  ************************//
-            if (gamepad2.right_trigger != 0) {
-                robot.leftClawControl += gamepad2.right_trigger * robot.servoDefaultSpeed * crrLoopTime;
-                robot.rightClawControl -= gamepad2.right_trigger * robot.servoDefaultSpeed * crrLoopTime;
-                robot.setServos();
-            }
-            if (gamepad1.right_trigger != 0) {
+            if (Math.abs(gamepad1.right_trigger) > 0.03) {
                 robot.leftClawControl += gamepad1.right_trigger * robot.servoDefaultSpeed * crrLoopTime;
                 robot.rightClawControl -= gamepad1.right_trigger * robot.servoDefaultSpeed * crrLoopTime;
                 robot.setServos();

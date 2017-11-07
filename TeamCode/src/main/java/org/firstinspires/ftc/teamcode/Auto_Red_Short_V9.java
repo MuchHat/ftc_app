@@ -43,26 +43,21 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
     public void runOpMode() {
 
         //********************************* MAIN LOOP INIT ***************************************//
-        robot.init(hardwareMap);
-
-        ElapsedTime controlRuntime = new ElapsedTime();
         totalRuntime = new ElapsedTime();
+
+        telemetry.addData("DRIVER", ">>> WAIT WAIT WAIT >>>");
+        telemetry.update();
+
+        robot.init(hardwareMap);
 
         robot.blueTeam = false;
         robot.shortField = true;
         robot.showTeamColor();
 
-        telemetry.addData("starting vuforia", "... do NOT move");
-        telemetry.update();
-
         jewelRun.init(robot);
         glyphRun.init(robot, hardwareMap);
 
-        controlRuntime.reset();        // Wait until the gyro calibration is complete
-
-        telemetry.clear();
-        telemetry.update();
-        telemetry.addData("driver", "CLICK  >>> to START");
+        telemetry.addData("DRIVER", ">>> PRESS START >>>");
         telemetry.update();
 
         waitForStart();

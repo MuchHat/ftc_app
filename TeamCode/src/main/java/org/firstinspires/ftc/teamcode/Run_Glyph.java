@@ -41,13 +41,10 @@ public class Run_Glyph {
         timer.reset();
         if (!timeLeft()) return;
 
-        int[] moveDistance = {580, 358, 161};
-        int[] moveDistanceLongField = {419, 197, 0};
+        double[] moveDistance = {23.5, 14.5, 7.5};
+        double[] moveDistanceLongField = {14, 7, 0};
 
-        int[] vuforiaValues = {460, 415, 340};
-        int[] vuforiaValuesLongField = {296, 355, 347};
-
-        int moveDistanceFirstLegLongField = 161;
+        double moveDistanceFirstLegLongField = 6.5;
 
         //****  0. ADJUST VARIABLES DEPENDING ON THE FIELD **************************************//
 
@@ -59,51 +56,33 @@ public class Run_Glyph {
             moveDistance[1] = moveDistanceLongField[1];
             moveDistance[2] = moveDistanceLongField[2];
         }
-        if (!robot.shortField) {
-            vuforiaValues[0] = vuforiaValuesLongField[0];
-            vuforiaValues[1] = vuforiaValuesLongField[1];
-            vuforiaValues[2] = vuforiaValuesLongField[2];
-        }
 
         //****  1. WAIT IF NEEDED FOR VUFORIA TO LOCK ON THE TARGET ******************************//
 
+        showGreenIfTargetSeen();
         for (int i = 0; i < 10; i++) {
-            robot.colorBeacon.teal();
-            showGreenIfTargetSeen();
             if (vu.targetSeen()) {
                 break;
             }
-            waitMillis(100);
+            robot.colorBeacon.purple();
+            waitMillis(166);
             if (!timeLeft()) return;
         }
+        showGreenIfTargetSeen();
 
-        robot.colorBeacon.white();
         //****  2. MOVE OFF THE PLATFORM *********************************************************//
 
-        robot.moveInches(432 / 24.5 * direction, 0.88);
-        waitMillis(222);
+        robot.moveInches(18.5 * direction, 1.0);
+        waitMillis(66);
         showGreenIfTargetSeen();
         if (!timeLeft()) return;
 
         //****  3. CORRECT HEADING IF NEEDED ********************** ******************************//
 
-        if (!robot.blueTeam) {
-            robot.turnTo12();
-        } else {
-            robot.turnTo6();
-        }
-        showGreenIfTargetSeen();
-        waitMillis(222);
-        if (!timeLeft()) return;
+        robot.turnTo12();
 
-        //****  4. BACK AGAINST THE PLATFORM TO START FROM A KNOWN POS ***************************//
-
-        if(robot.blueTeam)
-            robot.moveInches(-5, 0.88);
-        else
-            robot.moveInches(-260 / 24.5, 0.88);
         showGreenIfTargetSeen();
-        waitMillis(222);
+        waitMillis(66);
         if (!timeLeft()) return;
 
         //****  5. MOVE IN FRONT OF THE BOX L/M/R PER THE WUMARK *********************************//
@@ -111,64 +90,32 @@ public class Run_Glyph {
         int index = 0;
         if (vu.targetSeen()) {
             index = vu.lastTargetSeenNo;
+            showGreenIfTargetSeen();
+            robot.beaconBlink(index + 1);
         } else {
             index = 2; //go midedle if no vuforia
         }
-        showGreenIfTargetSeen();
-        robot.beaconBlink(index + 1);
-        waitMillis(222);
+        waitMillis(66);
         if (!timeLeft()) return;
 
         //****  SPECIAL STEPS FOR THE LONG FIELD *************************************************//
 
         if (!robot.shortField) {
-            robot.moveInches(moveDistanceFirstLegLongField / 24.5, 0.88);
-            waitMillis(222);
+            robot.moveInches(moveDistanceFirstLegLongField * direction, 1.0);
+            waitMillis(66);
 
             robot.turnTo9();
-            waitMillis(222);
+            waitMillis(66);
         }
         if (!timeLeft()) return;
 
         //****  CONTINUES THE SAME WITH THE SHORT FIELD ******************************************//
 
         if (index != 0) {
-            robot.moveInches(moveDistance[index - 1] / 24.5, 0.88);
-            waitMillis(222);
+            robot.moveInches(moveDistance[index - 1] * direction, 1.0);
+            waitMillis(66);
         }
         if (!timeLeft()) return;
-
-        //****  6. FINE ADJUST THE POS USING VUMARK AS AN ANCHOR *********************************//
-
-        if (vu.targetSeen()) {
-
-            int errDis = 15; // 1 left 2 center 3 right
-            index = vu.getLastTargetSeenNo() - 1;
-            int desiredX = vuforiaValues[index];
-
-            waitMillis(222);
-            robot.moveInches(50 / 24.5, 0.33);
-
-            double attempts = 0;
-
-            if (vu.getX() - desiredX > errDis) {
-                while (vu.getX() - desiredX > errDis && attempts < 11) {
-                    robot.colorBeacon.purple();
-                    robot.moveInches(-10 / 24.5, 0.88);
-                    attempts++;
-                    if (!timeLeft()) return;
-                }
-            } else if (vu.getX() - desiredX < -errDis) {
-                while (vu.getX() - desiredX < -errDis && attempts < 11) {
-                    robot.colorBeacon.purple();
-                    robot.moveInches(10 / 24.5, 0.88);
-                    attempts++;
-                    if (!timeLeft()) return;
-                }
-            }
-
-        }
-        robot.showTeamColor();
 
         //****  7. TURN 90 TOWARDS THE BOX ******************************************************//
 
@@ -181,41 +128,24 @@ public class Run_Glyph {
                 robot.turnTo12();
             }
         }
-        waitMillis(222);
+        waitMillis(66);
         if (!timeLeft()) return;
 
         robot.stopRobot();
-        waitMillis(222);
+        waitMillis(66);
 
         //****  8. PUT THE GLYPH IN  *************************************************************//
 
-        robot.moveInches(6.5, 0.88);
+        robot.moveInches(6.5, 1.0);
 
         robot.rightClaw.setPosition(0.75);
         robot.leftClaw.setPosition(0.22);
-        waitMillis(111);
+        waitMillis(66);
         if (!timeLeft()) return;
 
         //****  9. BACKOFF ***********************************************************************//
 
-        robot.moveInches(-4, 0.88);
-
-        //****  10. TURN 180 AND TUCK IT IN ******************************************************//
-
-        if(robot.shortField)
-        {
-            robot.turnTo9();
-            if (!timeLeft()) return;
-            robot.moveInches(-3, 0.88);
-            if (!timeLeft()) return;
-        }
-        else
-            robot.turnTo12();
-
-        //****  11. MOVE 1 INCH AWAY FROM BOX FOR THE REST POSITION ******************************//
-
-        robot.moveInches(1, 0.88);
-        robot.stopRobot();
+        robot.moveInches(-1, 1.0);
 
         //********************************* END LOOP *****************************************//
     }

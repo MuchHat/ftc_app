@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import java.util.Locale;
 
@@ -49,6 +50,10 @@ public class ImuGyro {
         // and named "Gyro_Bosh".
         imu = hardwareMap.get(BNO055IMU.class, "Gyro_Bosh");
         isAvailable = imu.initialize(parameters);
+    }
+
+    void start(){
+        imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
     }
 
     boolean available(){

@@ -92,9 +92,9 @@ public class Team_Hardware_V9 {
     double armPosZero[] = {1, 0};
 
     // ************************** MAIN LOOP ******************************************************//
-    double driveDefaultSpeed = 1.0;
-    double turnDefaultSpeed = 0.88;
-    double servoDefaultSpeed = 0.00033;
+    double driveDefaultSpeed = 1.3;
+    double turnDefaultSpeed = 1.0;
+    double servoDefaultSpeed = 0.003;
 
     // ************************** HW CONSTRUCTOR  ************************************************//
 
@@ -196,7 +196,7 @@ public class Team_Hardware_V9 {
     void turn2Heading(double endHeading) {
 
         double turnPower = 0.88;
-        double turnPowerMed = 0.44;
+        double turnPowerMed = 0.66;
         double turnPowerLow = 0.11;
         int prevBeaconColor = colorBeacon.getColorNumber();
 
@@ -298,14 +298,14 @@ public class Team_Hardware_V9 {
     void moveLift(double distance) {
         double mmMillis = 0.03;
         double stepTime = Math.abs(distance) / mmMillis;
-        double liftDefaultPower = 0.88;
+        double liftDefaultPower = distance > 0 ? 1.0 : -1.0;
 
         stepTime = Range.clip(stepTime, 0, 3333);
 
         for (double i = 0; i < stepTime; i++) { //do a loop such it can stop at the switch
             liftControl = liftDefaultPower;
             setDrivesByPower();
-            waitMillis(1);
+            waitMillis(33);
         }
 
         liftControl = 0;
@@ -371,10 +371,10 @@ public class Team_Hardware_V9 {
 
     void moveArm(double newBase, double newElbow) {
 
-        double stepSize = 0.004;
+        double stepSize = 0.006;
         double stepTime = 8;
-        double rampUp = 8;
-        double rampUp2 = 49;
+        double rampUp = 33;
+        double rampUp2 = 66;
 
         double baseStart = baseControl;
         double elbowStart = elbowControl;
@@ -391,10 +391,10 @@ public class Team_Hardware_V9 {
 
             double crrStepTime = stepTime;
 
-            if (i > rampUp2 && i < stepCount - rampUp2) {
-                i += 4;
-            } else if (i > rampUp && i < stepCount - rampUp) {
-                i += 2;
+            if (i > rampUp2/3 && i < stepCount - rampUp2) {
+                i += 7;
+            } else if (i > rampUp/5 && i < stepCount - rampUp) {
+                i += 3;
             } else {
                 i++;
             }

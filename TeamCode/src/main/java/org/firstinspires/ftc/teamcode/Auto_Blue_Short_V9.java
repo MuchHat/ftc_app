@@ -53,15 +53,13 @@ public class Auto_Blue_Short_V9 extends LinearOpMode {
         robot.shortField = true;
         robot.showTeamColor();
 
-        telemetry.addData("starting vuforia", "... do NOT move");
+        telemetry.addData("DRIVER", ">>> WAIT WAIT WAIT >>>");
         telemetry.update();
 
         jewelRun.init(robot);
         glyphRun.init(robot, hardwareMap);
 
-        telemetry.clear();
-        telemetry.update();
-        telemetry.addData("driver", "CLICK  >>> to START");
+        telemetry.addData("DRIVER", ">>> PRESS START >>>");
         telemetry.update();
 
         waitForStart();

@@ -23,7 +23,7 @@ public class Run_Jewel {
         robot.baseControl = robot.armPosZero[0];
         robot.elbowControl = robot.armPosZero[1];
         robot.setServos();
-        waitMillis(111);
+        waitMillis(66);
     }
 
     void run() {
@@ -47,9 +47,9 @@ public class Run_Jewel {
         //****  1. ARM IN EXTENDED POSITION ******************************************************//
 
         robot.moveArm(armExtendedB, armExtendedE);
-        waitMillis(111);
+        waitMillis(66);
 
-        //****   2. GO THRU POSITION TO FIND THE JEWEL *****************************************//
+        //****   2. GO THRU POSITIONS TO FIND THE JEWEL *****************************************//
 
         for (int i = 0; i < findPositions; i++) {
 
@@ -57,12 +57,12 @@ public class Run_Jewel {
             double crrElbow = armFindJewelE[i];
 
             robot.moveArm(crrBase, crrElbow);
-            waitMillis(111);
+            waitMillis(66);
 
             if (foundJewel()) {
                 foundPos = i;
                 robot.moveArm(armExtendedB, armExtendedE);
-                waitMillis(111);
+                waitMillis(66);
                 break;
             }
         }
@@ -70,7 +70,6 @@ public class Run_Jewel {
 
         if (foundBlue || foundRed) {
 
-            robot.colorBeacon.purple();
             boolean knockFirst = true; //knock the ball in front or the other one
 
             if (robot.blueTeam && foundBlue) knockFirst = false;
@@ -81,40 +80,37 @@ public class Run_Jewel {
             //****   3. GO IN BETWEEN THE BALLS **************************************************//
 
             robot.moveInches(2.5, 0.22);
-            waitMillis(111);
+            waitMillis(66);
 
             robot.moveArm(armKnockB, armKnockE);
             //****   4. KNOCK THE BALL ***********************************************************//
+
             if (!knockFirst) {
                 //*****  4.1 MOVE FORWARD AND REMAIN AT EDGE *************************************//
-                robot.moveInches(4, 0.66);
+                robot.moveInches(4, 0.88);
                 // if blue move back to get to the edge of the platform
                 robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
                 if (robot.blueTeam) {
-                    waitMillis(111);
-                    robot.moveInches(-7.5, 0.66);
+                    waitMillis(66);
+                    robot.moveInches(-7.5, 0.88);
                 }
             } else {
                 //******  4.2 MOVE BACK THEN FW TO END UP AT EDGE ********************************//
-                robot.moveInches(-4, 0.66);
+                robot.moveInches(-4, 0.88);
                 //if red move fw to get to the edge of the platform
-                robot.moveArm(armExtendedB, armExtendedE);
+                robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
                 if (!robot.blueTeam) {
-                    waitMillis(111);
-                    robot.moveInches(7.5, 0.66);
+                    waitMillis(66);
+                    robot.moveInches(7.5, 0.88);
                 }
             }
-            waitMillis(111);
+            waitMillis(66);
         }
-        waitMillis(111);
-        robot.colorBeacon.white();
 
         //****   6. PUT ARM BACK AT POS ZERO *************************************************//
 
-        robot.moveArm(armExtendedB, armExtendedE);
-        waitMillis(111);
         robot.moveArmPosZero();
-        waitMillis(111);
+        waitMillis(66);
 
         robot.turnTo12();
         robot.stopRobot();
