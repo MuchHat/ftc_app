@@ -89,7 +89,7 @@ public class Run_Jewel {
                 //*****  4.1 MOVE FORWARD AND REMAIN AT EDGE *************************************//
                 robot.moveInches(4, 0.66);
                 // if blue move back to get to the edge of the platform
-                robot.moveArm(armExtendedB, armExtendedE);
+                robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
                 if (robot.blueTeam) {
                     waitMillis(111);
                     robot.moveInches(-7.5, 0.66);
