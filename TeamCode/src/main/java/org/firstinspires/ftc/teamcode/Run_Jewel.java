@@ -32,8 +32,6 @@ public class Run_Jewel {
             return;
         }
 
-        robot.colorBeacon.yellow();
-
         double armFindJewelB[] = {0.19, 0.14, 0.10, 0.07};
         double armFindJewelE[] = {0.64, 0.69, 0.78, 0.82};
 
@@ -55,6 +53,8 @@ public class Run_Jewel {
 
             double crrBase = armFindJewelB[i];
             double crrElbow = armFindJewelE[i];
+
+            robot.showTeamColorLight();
 
             robot.moveArm(crrBase, crrElbow);
             waitMillis(66);
@@ -86,31 +86,44 @@ public class Run_Jewel {
             //****   4. KNOCK THE BALL ***********************************************************//
 
             if (!knockFirst) {
-                //*****  4.1 MOVE FORWARD AND REMAIN AT EDGE *************************************//
+                //*****  MOVE FORWARD AND REMAIN AT EDGE *************************************//
                 robot.moveInches(4, 0.88);
                 // if blue move back to get to the edge of the platform
-                robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
+
+                robot.moveArmPosZero();
+                robot.showTeamColor();
+
                 if (robot.blueTeam) {
                     waitMillis(66);
-                    robot.moveInches(-7.5, 0.88);
+                    robot.moveInches(-6.5 * 2, 0.88);
                 }
             } else {
-                //******  4.2 MOVE BACK THEN FW TO END UP AT EDGE ********************************//
+                //******  MOVE BACK THEN FW TO END UP AT EDGE ********************************//
                 robot.moveInches(-4, 0.88);
                 //if red move fw to get to the edge of the platform
-                robot.moveArm(robot.armPosZero[0], robot.armPosZero[1]);
+
+                robot.moveArmPosZero();
+                robot.showTeamColor();
+
                 if (!robot.blueTeam) {
                     waitMillis(66);
-                    robot.moveInches(7.5, 0.88);
+                    robot.moveInches(8, 0.88);
+                } else {
+                    waitMillis(66);
+                    robot.moveInches(-4, 0.88);
                 }
             }
             waitMillis(66);
+        } else {
+            if (!robot.blueTeam) robot.moveInches(6.5, 0.88);
+            else robot.moveInches(-6.5, 0.88);
         }
 
         //****   6. PUT ARM BACK AT POS ZERO *************************************************//
 
         robot.moveArmPosZero();
         robot.colorSensor.enableLed(false);
+        robot.showTeamColor();
         waitMillis(66);
 
         robot.turnTo12();

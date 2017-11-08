@@ -78,6 +78,14 @@ public class MRIColorBeacon {
         colorBreader.write8(4, 7);
     }
 
+    public void lightRed() {
+        rgb(33,0,0);
+    }
+
+    public void lightBlue() {
+        rgb(0,0,33);
+    }
+
     public void rgb(int red, int green, int blue) {
         colorBreader.write8(4, 8); //Custom Color Mode
         colorBreader.write8(5, red);

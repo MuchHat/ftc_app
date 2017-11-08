@@ -59,29 +59,29 @@ public class Run_Glyph {
 
         //****  1. WAIT IF NEEDED FOR VUFORIA TO LOCK ON THE TARGET ******************************//
 
-        showGreenIfTargetSeen();
+        showIfTargetSeen();
         for (int i = 0; i < 10; i++) {
             if (vu.targetSeen()) {
                 break;
             }
-            robot.colorBeacon.purple();
+            robot.colorBeacon.white();
             waitMillis(166);
             if (!timeLeft()) return;
         }
-        showGreenIfTargetSeen();
+        showIfTargetSeen();
 
         //****  2. MOVE OFF THE PLATFORM *********************************************************//
 
         robot.moveInches(18.5 * direction, 1.0);
         waitMillis(66);
-        showGreenIfTargetSeen();
+        showIfTargetSeen();
         if (!timeLeft()) return;
 
         //****  3. CORRECT HEADING IF NEEDED ********************** ******************************//
 
         robot.turnTo12();
 
-        showGreenIfTargetSeen();
+        showIfTargetSeen();
         waitMillis(66);
         if (!timeLeft()) return;
 
@@ -90,7 +90,7 @@ public class Run_Glyph {
         int index = 0;
         if (vu.targetSeen()) {
             index = vu.lastTargetSeenNo;
-            showGreenIfTargetSeen();
+            showIfTargetSeen();
             robot.beaconBlink(index + 1);
         } else {
             index = 2; //go midedle if no vuforia
@@ -161,11 +161,11 @@ public class Run_Glyph {
 
     }
 
-    void showGreenIfTargetSeen() {
+    void showIfTargetSeen() {
         if (vu.targetSeen()) {
-            robot.colorBeacon.green();
+            robot.colorBeacon.purple();
         } else {
-            robot.colorBeacon.yellow();
+            robot.showTeamColorLight();
         }
     }
 }

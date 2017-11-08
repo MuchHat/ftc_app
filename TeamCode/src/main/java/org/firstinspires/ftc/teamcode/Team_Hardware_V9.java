@@ -620,6 +620,13 @@ public class Team_Hardware_V9 {
             colorBeacon.red();
     }
 
+    void showTeamColorLight() {
+        if (blueTeam)
+            colorBeacon.lightBlue();
+        else
+            colorBeacon.lightRed();
+    }
+
     void waitMillis(double millis) {
 
         sleep((long) millis);
