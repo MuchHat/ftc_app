@@ -28,7 +28,7 @@ public class Run_Glyph {
 
     boolean timeLeft() {
 
-        return (secsLeftAtStart - timer.seconds()) > 2;
+        return (secsLeftAtStart - timer.seconds()) > 1;
     }
 
     void run(double secsLeft) {
@@ -59,7 +59,6 @@ public class Run_Glyph {
 
         //****  1. WAIT IF NEEDED FOR VUFORIA TO LOCK ON THE TARGET ******************************//
 
-        showIfTargetSeen();
         for (int i = 0; i < 10; i++) {
             if (vu.targetSeen()) {
                 break;
@@ -138,7 +137,7 @@ public class Run_Glyph {
 
         robot.moveInches(6.5, 1.0);
 
-        robot.openClawWide();
+        robot.openClawAuto();
         waitMillis(66);
 
         if (!timeLeft()) return;
@@ -163,9 +162,9 @@ public class Run_Glyph {
 
     void showIfTargetSeen() {
         if (vu.targetSeen()) {
-            robot.colorBeacon.purple();
+            robot.colorBeacon.green();
         } else {
-            robot.showTeamColorLight();
+            robot.showTeamColor();
         }
     }
 }

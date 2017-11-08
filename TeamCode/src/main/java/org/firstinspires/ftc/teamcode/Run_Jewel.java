@@ -20,7 +20,7 @@ public class Run_Jewel {
         robot = aRobot;
         robot.colorSensor.enableLed(true);
 
-        robot.clawAutoClose();
+        robot.closeClawAuto();
         robot.moveArmPosZero();
 
         waitMillis(66);
@@ -44,6 +44,7 @@ public class Run_Jewel {
 
         //****  1. ARM IN EXTENDED POSITION ******************************************************//
 
+        robot.colorBeacon.purple();
         robot.moveArm(armExtendedB, armExtendedE);
         waitMillis(66);
 
@@ -54,7 +55,7 @@ public class Run_Jewel {
             double crrBase = armFindJewelB[i];
             double crrElbow = armFindJewelE[i];
 
-            robot.showTeamColorLight();
+            robot.colorBeacon.purple();
 
             robot.moveArm(crrBase, crrElbow);
             waitMillis(66);
@@ -115,6 +116,8 @@ public class Run_Jewel {
             }
             waitMillis(66);
         } else {
+            robot.moveArmPosZero();
+            robot.showTeamColor();
             if (!robot.blueTeam) robot.moveInches(6.5, 0.88);
             else robot.moveInches(-6.5, 0.88);
         }

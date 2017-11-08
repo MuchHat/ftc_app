@@ -50,6 +50,9 @@ public class Manual_Red_V9 extends LinearOpMode {
         waitForStart();
         robot.imuGyro.start();
 
+        liftMoving = 0;
+        timeLeftLiftMoving = 0;
+
         while (opModeIsActive()) {
 
             //********************************* CONTROL LOOP *************************************//
@@ -111,49 +114,42 @@ public class Manual_Red_V9 extends LinearOpMode {
             // ********************************  control: LIFT  ******************************//
 
             {
-                timeLeftLiftMoving = Range.clip(timeLeftLiftMoving, 0, 222);
-
-                if (timeLeftLiftMoving > 0) {
-                    timeLeftLiftMoving -= crrLoopTime;
-                }
-                if (timeLeftLiftMoving <= 0 || liftMoving == 0) {
-                    timeLeftLiftMoving = 0;
-                    liftMoving = 0;
-                }
-
                 if (gamepad1.a) {
-                    timeLeftLiftMoving = 33;
+                    timeLeftLiftMoving = 333;
                     liftMoving = -1;
                 }
 
                 if (gamepad1.y) {
-                    timeLeftLiftMoving = 33;
+                    timeLeftLiftMoving = 333;
                     liftMoving = 1;
                 }
 
-                if (liftMoving != 0 && timeLeftLiftMoving > 0) {
+                if (timeLeftLiftMoving > 0) {
+
+                    timeLeftLiftMoving -= crrLoopTime;
+                    timeLeftLiftMoving = Range.clip(timeLeftLiftMoving, 0, 9999);
+
                     robot.liftControl = liftMoving;
                     robot.setDrivesByPower();
+                } else {
+                    liftMoving = 0;
                 }
             }
 
             // ********************************  control: LIFT  ******************************//
 
             {
-                double liftInput = 0;
+                double liftInput = liftMoving;
 
                 if (Math.abs(gamepad2.right_stick_y) > 0.06) {
                     liftInput = -gamepad2.right_stick_y;
-                    liftMoving = 0;
                 }
 
                 if (Math.abs(gamepad1.right_stick_y) > 0.06) {
                     liftInput = -gamepad1.right_stick_y;
-                    liftMoving = 0;
                 }
 
-                double liftDefaultSpeed = 1.5;
-                robot.liftControl = liftInput * liftDefaultSpeed;
+                robot.liftControl = liftInput;
                 robot.setDrivesByPower();
             }
 
@@ -313,37 +309,42 @@ public class Manual_Red_V9 extends LinearOpMode {
             }
 
             // ********************************  control: CLAW OPEN  ****************************//
-            if (Math.abs(gamepad1.left_trigger) > 0.03) {
+            if (Math.abs(gamepad1.right_trigger) > 0.03) {
 
-                robot.leftClawControl -= gamepad1.left_trigger * robot.servoDefaultSpeed * crrLoopTime;
-                robot.rightClawControl += gamepad1.left_trigger * robot.servoDefaultSpeed * crrLoopTime;
+                robot.leftClawControl -= gamepad1.right_trigger * robot.servoDefaultSpeed * crrLoopTime;
+                robot.rightClawControl += gamepad1.right_trigger * robot.servoDefaultSpeed * crrLoopTime;
                 robot.setServos();
             }
 
             // ********************************  control: CLAW CLOSE  ***************************//
-            if (Math.abs(gamepad1.right_trigger) > 0.03) {
+            if (Math.abs(gamepad1.left_trigger) > 0.03) {
 
-                robot.leftClawControl += gamepad1.right_trigger * robot.servoDefaultSpeed * crrLoopTime;
-                robot.rightClawControl -= gamepad1.right_trigger * robot.servoDefaultSpeed * crrLoopTime;
+                robot.leftClawControl += gamepad1.left_trigger * robot.servoDefaultSpeed * crrLoopTime;
+                robot.rightClawControl -= gamepad1.left_trigger * robot.servoDefaultSpeed * crrLoopTime;
                 robot.setServos();
             }
 
             // ********************************  control: CLAW PREDEF OPEN  **********************//
-            if (gamepad1.left_bumper) {
-                if (robot.clawOpened()) {
+            if (gamepad1.right_bumper) {
+                if (robot.isClawOpened()) {
                     robot.openClawWide();
+                    waitMillis(111);
                 } else {
                     robot.openClaw();
+                    waitMillis(111);
                 }
             }
 
             // ********************************  control: CLAW PREDEF CLOSE  ********************//
-            if (gamepad1.right_bumper) {
+            if (gamepad1.left_bumper) {
                 robot.closeClaw();
             }
 
             //********************************* END LOOP *****************************************//
         }
+
+        robot.stopRobot();
+        robot.colorBeacon.off();
     }
 
     private void waitMillis(double millis) {

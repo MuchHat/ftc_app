@@ -87,10 +87,11 @@ public class Team_Hardware_V9 {
     double gameStartHeading = 0;
 
     //********************************* CLAW POS ************************************************//
-    double clawClosed[] = {1.00, 0.00};
-    double clawOpen[] = {0.84, 0.17};
-    double clawOpenWide[] = {0.94, 0.07};
-    double clawAutoClose[] = {0.62, 0.36};
+    double clawClose[] = {1.00, 0.00};
+    double clawOpen[] = {0.80, 0.15};
+    double clawOpenWide[] = {0.65, 0.30};
+    double clawCloseAuto[] = {0.60, 0.35};
+    double clawOpenAuto[] = {0.45, 0.50};
 
     //********************************* ARM POS *************************************************//
     double armPosZero[] = {1, 0};
@@ -165,8 +166,8 @@ public class Team_Hardware_V9 {
         rightPowerControl = 0;
         leftPowerControlBack = 0;
         rightPowerControlBack = 0;
-        leftClawControl = clawAutoClose[0];
-        rightClawControl = clawAutoClose[1];
+        leftClawControl = clawCloseAuto[0];
+        rightClawControl = clawCloseAuto[1];
         baseControl = armPosZero[0];
         elbowControl = armPosZero[1];
         setDrivesByPower();
@@ -300,25 +301,31 @@ public class Team_Hardware_V9 {
     }
 
     void closeClaw() {
-        leftClawControl = clawClosed[0];
-        rightClawControl = clawClosed[1];
+        leftClawControl = clawClose[0];
+        rightClawControl = clawClose[1];
         setServos();
     }
 
-    void clawAutoClose() {
-        leftClawControl = clawAutoClose[0];
-        rightClawControl = clawAutoClose[1];
+    void closeClawAuto() {
+        leftClawControl = clawCloseAuto[0];
+        rightClawControl = clawCloseAuto[1];
         setServos();
     }
 
-    boolean clawOpened() {
+    void openClawAuto() {
+        leftClawControl = clawOpenAuto[0];
+        rightClawControl = clawOpenAuto[1];
+        setServos();
+    }
+
+    boolean isClawOpened() {
         return (leftClawControl == clawOpen[0] &&
                 rightClawControl == clawOpen[1]);
     }
 
-    boolean clawClosed() {
-        return (leftClawControl == clawClosed[0] &&
-                rightClawControl == clawClosed[1]);
+    boolean isClawClosed() {
+        return (leftClawControl == clawClose[0] &&
+                rightClawControl == clawClose[1]);
     }
 
     boolean clawWideOpen() {
