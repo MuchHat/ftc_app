@@ -85,10 +85,14 @@ public class Team_Hardware_V9 {
     double baseControl = 0;
     double elbowControl = 0;
     double gameStartHeading = 0;
-    //********************************* PREDEFINED POS *******************************************//
+
+    //********************************* CLAW POS ************************************************//
     double clawClosed[] = {1.00, 0.00};
     double clawOpen[] = {0.84, 0.17};
-    double clawAutoClose[] = {0.64, 0.38};
+    double clawOpenWide[] = {0.94, 0.07};
+    double clawAutoClose[] = {0.62, 0.36};
+
+    //********************************* ARM POS *************************************************//
     double armPosZero[] = {1, 0};
 
     // ************************** MAIN LOOP ******************************************************//
@@ -289,10 +293,37 @@ public class Team_Hardware_V9 {
         setServos();
     }
 
+    void openClawWide() {
+        leftClawControl = clawOpenWide[0];
+        rightClawControl = clawOpenWide[1];
+        setServos();
+    }
+
     void closeClaw() {
         leftClawControl = clawClosed[0];
         rightClawControl = clawClosed[1];
         setServos();
+    }
+
+    void clawAutoClose() {
+        leftClawControl = clawAutoClose[0];
+        rightClawControl = clawAutoClose[1];
+        setServos();
+    }
+
+    boolean clawOpened() {
+        return (leftClawControl == clawOpen[0] &&
+                rightClawControl == clawOpen[1]);
+    }
+
+    boolean clawClosed() {
+        return (leftClawControl == clawClosed[0] &&
+                rightClawControl == clawClosed[1]);
+    }
+
+    boolean clawWideOpen() {
+        return (leftClawControl == clawOpenWide[0] &&
+                rightClawControl == clawOpenWide[1]);
     }
 
     void moveLift(double distance) {
@@ -391,9 +422,9 @@ public class Team_Hardware_V9 {
 
             double crrStepTime = stepTime;
 
-            if (i > rampUp2/3 && i < stepCount - rampUp2) {
+            if (i > rampUp2 / 3 && i < stepCount - rampUp2) {
                 i += 7;
-            } else if (i > rampUp/5 && i < stepCount - rampUp) {
+            } else if (i > rampUp / 5 && i < stepCount - rampUp) {
                 i += 3;
             } else {
                 i++;

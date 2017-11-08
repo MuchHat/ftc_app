@@ -53,6 +53,7 @@ public class ImuGyro {
     }
 
     void start(){
+
         imu.startAccelerationIntegration(new Position(), new Velocity(), 1000);
     }
 

@@ -138,9 +138,9 @@ public class Run_Glyph {
 
         robot.moveInches(6.5, 1.0);
 
-        robot.rightClaw.setPosition(0.75);
-        robot.leftClaw.setPosition(0.22);
+        robot.openClawWide();
         waitMillis(66);
+
         if (!timeLeft()) return;
 
         //****  9. BACKOFF ***********************************************************************//
