@@ -28,7 +28,11 @@ public class Run_Glyph {
 
     boolean timeLeft() {
 
-        return (secsLeftAtStart - timer.seconds()) > 1;
+        if ((secsLeftAtStart - timer.seconds()) > 1) {
+            return true;
+        }
+        robot.stopRobot();
+        return false;
     }
 
     void run(double secsLeft) {
@@ -132,14 +136,15 @@ public class Run_Glyph {
 
         robot.stopRobot();
         waitMillis(66);
+        if (!timeLeft()) return;
 
         //****  8. PUT THE GLYPH IN  *************************************************************//
 
         robot.moveInches(6.5, 1.0);
+        if (!timeLeft()) return;
 
         robot.openClawAuto();
         waitMillis(66);
-
         if (!timeLeft()) return;
 
         //****  9. BACKOFF ***********************************************************************//
