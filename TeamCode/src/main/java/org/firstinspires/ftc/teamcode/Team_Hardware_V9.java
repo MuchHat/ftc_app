@@ -88,10 +88,10 @@ public class Team_Hardware_V9 {
 
     //********************************* CLAW POS ************************************************//
     double clawClose[] = {1.00, 0.00};
-    double clawOpen[] = {0.80, 0.15};
-    double clawOpenWide[] = {0.65, 0.30};
-    double clawCloseAuto[] = {0.60, 0.35};
-    double clawOpenAuto[] = {0.45, 0.50};
+    double clawOpen[] = {0.56, 0.47};
+    double clawOpenWide[] = {0.47, 0.56};
+    double clawCloseAuto[] = {0.56, 0.47};
+    double clawOpenAuto[] = {0.47, 0.56};
 
     //********************************* ARM POS *************************************************//
     double armPosZero[] = {1, 0};

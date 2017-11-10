@@ -73,7 +73,7 @@ public class Manual_Red_V9 extends LinearOpMode {
                 robot.leftDistanceControlBack = 0;
                 robot.rightDistanceControlBack = 0;
 
-                if (Math.abs(gamepad1.right_stick_x) > 0.03) {
+                if (Math.abs(gamepad1.right_stick_x) > 0.15) {
                     sideInput = gamepad1.right_stick_x;
                 }
                 if (Math.abs(gamepad1.left_stick_y) > 0.03) {
@@ -325,7 +325,7 @@ public class Manual_Red_V9 extends LinearOpMode {
             }
 
             // ********************************  control: CLAW PREDEF OPEN  **********************//
-            if (gamepad1.right_bumper) {
+            if (gamepad1.left_bumper) {
                 if (robot.isClawOpened()) {
                     robot.openClawWide();
                     waitMillis(111);
@@ -336,7 +336,7 @@ public class Manual_Red_V9 extends LinearOpMode {
             }
 
             // ********************************  control: CLAW PREDEF CLOSE  ********************//
-            if (gamepad1.left_bumper) {
+            if (gamepad1.right_bumper) {
                 robot.closeClaw();
             }
 
