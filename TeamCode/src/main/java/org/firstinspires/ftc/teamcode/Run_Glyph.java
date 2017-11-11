@@ -61,7 +61,7 @@ public class Run_Glyph {
         //****  1. WAIT IF NEEDED FOR VUFORIA TO LOCK ON THE TARGET ******************************//
 
         if(robot.blueTeam) {
-            robot.moveInches(-4, 0.4);
+            robot.moveInches(-6, 0.4);
         }
         for (int i = 0; i < 10; i++) {
             if (vu.targetSeen()) {
@@ -76,7 +76,7 @@ public class Run_Glyph {
         //****  2. MOVE OFF THE PLATFORM *********************************************************//
 
         if(robot.blueTeam){
-            robot.moveInches(7 * direction, 0.8);
+            robot.moveInches(10 * direction, 0.8);
         }
         else {
             robot.moveInches(13.5 * direction, 1.0);
