@@ -22,7 +22,6 @@ public class Run_Jewel {
 
         robot.closeClawAuto();
         robot.moveArmPosZero();
-
         waitMillis(66);
     }
 
@@ -100,7 +99,7 @@ public class Run_Jewel {
                 }
             } else {
                 //******  MOVE BACK THEN FW TO END UP AT EDGE ********************************//
-                robot.moveInches(-4, 0.88);
+                robot.moveInches(-4, 0.44);
                 //if red move fw to get to the edge of the platform
 
                 robot.moveArmPosZero();

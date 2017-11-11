@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
 import static android.os.SystemClock.sleep;
 
 //********************************* MAIN OP CLASS ************************************************//
@@ -12,15 +10,14 @@ public class Run_Glyph {
 
     //********************************* HW VARIABLES *********************************************//
     Team_Hardware_V9 robot = null;
-    double secsLeftAtStart = 30;
-    ElapsedTime timer = new ElapsedTime();
+    private double secsLeftAtStart = 30;
+    private ElapsedTime timer = new ElapsedTime();
 
     //********************************* CONSTANTS ************************************************//
     private Vu vu = new Vu();
     private HardwareMap hwMap = null;
 
     void init(Team_Hardware_V9 aRobot, HardwareMap aHwMap) {
-
         hwMap = aHwMap;
         robot = aRobot;
         vu.init(hwMap);
@@ -45,7 +42,7 @@ public class Run_Glyph {
         timer.reset();
         if (!timeLeft()) return;
 
-        double[] moveDistance = {14.5, 7.5, 1};
+        double[] moveDistance = {15.4, 9, 3};
         double[] moveDistanceLongField = {14, 7, 0};
 
         double moveDistanceFirstLegLongField = 6.5;
@@ -71,7 +68,7 @@ public class Run_Glyph {
                 break;
             }
             robot.colorBeacon.white();
-            waitMillis(166);
+            waitMillis(100);
             if (!timeLeft()) return;
         }
         showIfTargetSeen();
@@ -79,21 +76,20 @@ public class Run_Glyph {
         //****  2. MOVE OFF THE PLATFORM *********************************************************//
 
         if(robot.blueTeam){
-            robot.moveInches(10.5 * direction, 1.0);
+            robot.moveInches(7 * direction, 0.8);
         }
         else {
             robot.moveInches(13.5 * direction, 1.0);
         }
-        waitMillis(66);
+        waitMillis(22);
         showIfTargetSeen();
         if (!timeLeft()) return;
 
         //****  3. CORRECT HEADING IF NEEDED ********************** ******************************//
 
         robot.turnTo12();
-
         showIfTargetSeen();
-        waitMillis(66);
+        waitMillis(22);
         if (!timeLeft()) return;
 
         //****  5. MOVE IN FRONT OF THE BOX L/M/R PER THE WUMARK *********************************//
@@ -104,19 +100,19 @@ public class Run_Glyph {
             showIfTargetSeen();
             //robot.beaconBlink(index + 1);
         } else {
-            index = 2; //go midedle if no vuforia
+            index = 2; //go middle if no vuforia
         }
-        waitMillis(66);
+        waitMillis(22);
         if (!timeLeft()) return;
 
         //****  SPECIAL STEPS FOR THE LONG FIELD *************************************************//
 
         if (!robot.shortField) {
             robot.moveInches(moveDistanceFirstLegLongField * direction, 1.0);
-            waitMillis(66);
+            waitMillis(22);
 
             robot.turnTo9();
-            waitMillis(66);
+            waitMillis(22);
         }
         if (!timeLeft()) return;
 
@@ -139,11 +135,11 @@ public class Run_Glyph {
                 robot.turnTo12();
             }
         }
-        waitMillis(66);
+        waitMillis(22);
         if (!timeLeft()) return;
 
         robot.stopRobot();
-        waitMillis(66);
+        waitMillis(22);
         if (!timeLeft()) return;
 
         //****  8. PUT THE GLYPH IN  *************************************************************//
@@ -152,13 +148,13 @@ public class Run_Glyph {
         if (!timeLeft()) return;
 
         robot.openClawAuto();
-        waitMillis(66);
+        waitMillis(22);
         if (!timeLeft()) return;
 
         //****  9. BACKOFF ***********************************************************************//
 
-        robot.moveInches(-2.5, 1.0);
-
+        robot.moveInches(-3.5, 1.0);
+        robot.setClawPosZero();
         //********************************* END LOOP *****************************************//
     }
 

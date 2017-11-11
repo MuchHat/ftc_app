@@ -87,11 +87,19 @@ public class Team_Hardware_V9 {
     double gameStartHeading = 0;
 
     //********************************* CLAW POS ************************************************//
-    double clawClose[] = {1.00, 0.00};
+    /*double clawClose[] = {1.00, 0.00};
     double clawOpen[] = {0.56, 0.47};
     double clawOpenWide[] = {0.47, 0.56};
     double clawCloseAuto[] = {0.71, 0.25};
-    double clawOpenAuto[] = {0.47, 0.56};
+    double clawOpenAuto[] = {0.47, 0.56};*/
+
+
+    double clawClose[] = {0.42, 0.63};
+    double clawZero[] = {1.00, 0.00};
+    double clawOpen[] = {0.53, 0.51};
+    double clawOpenWide[] = {0.69, 0.30};
+    double clawCloseAuto[] = {0.42, 0.60};
+    double clawOpenAuto[] = {0.53, 0.51};
 
     //********************************* ARM POS *************************************************//
     double armPosZero[] = {1, 0};
@@ -482,7 +490,7 @@ public class Team_Hardware_V9 {
         leftDriveBack.setPower(Math.abs(leftPowerControlBack));
         rightDriveBack.setPower(Math.abs(rightPowerControlBack));
 
-        double timeOutSec = 6;
+        double timeOutSec = 1.5;
         encodersTimer.reset();
 
         while (encodersTimer.seconds() < timeOutSec) {
@@ -571,6 +579,13 @@ public class Team_Hardware_V9 {
             rightDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
             rightDriveBack.setPower(Math.abs(rightPowerControlBack) + headingCorrection);
         }
+    }
+
+    void setClawPosZero()
+    {
+        leftClawControl =  clawZero[0];
+        rightClawControl = clawZero[1];
+        setServos();
     }
 
     void setServos() {
