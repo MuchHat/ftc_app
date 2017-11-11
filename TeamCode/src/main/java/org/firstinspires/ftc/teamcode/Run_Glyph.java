@@ -45,7 +45,7 @@ public class Run_Glyph {
         timer.reset();
         if (!timeLeft()) return;
 
-        double[] moveDistance = {23.5, 14.5, 7.5};
+        double[] moveDistance = {14.5, 7.5, 1};
         double[] moveDistanceLongField = {14, 7, 0};
 
         double moveDistanceFirstLegLongField = 6.5;
@@ -63,6 +63,9 @@ public class Run_Glyph {
 
         //****  1. WAIT IF NEEDED FOR VUFORIA TO LOCK ON THE TARGET ******************************//
 
+        if(robot.blueTeam) {
+            robot.moveInches(-4, 0.4);
+        }
         for (int i = 0; i < 10; i++) {
             if (vu.targetSeen()) {
                 break;
@@ -75,7 +78,12 @@ public class Run_Glyph {
 
         //****  2. MOVE OFF THE PLATFORM *********************************************************//
 
-        robot.moveInches(18.5 * direction, 1.0);
+        if(robot.blueTeam){
+            robot.moveInches(10.5 * direction, 1.0);
+        }
+        else {
+            robot.moveInches(13.5 * direction, 1.0);
+        }
         waitMillis(66);
         showIfTargetSeen();
         if (!timeLeft()) return;
@@ -94,7 +102,7 @@ public class Run_Glyph {
         if (vu.targetSeen()) {
             index = vu.lastTargetSeenNo;
             showIfTargetSeen();
-            robot.beaconBlink(index + 1);
+            //robot.beaconBlink(index + 1);
         } else {
             index = 2; //go midedle if no vuforia
         }
@@ -149,7 +157,7 @@ public class Run_Glyph {
 
         //****  9. BACKOFF ***********************************************************************//
 
-        robot.moveInches(-1, 1.0);
+        robot.moveInches(-2.5, 1.0);
 
         //********************************* END LOOP *****************************************//
     }
@@ -157,12 +165,6 @@ public class Run_Glyph {
     private void waitMillis(double millis) {
 
         sleep((long) millis);
-//        millis = Range.clip(millis, 0.01, millis);
-//        runtimeWait.reset();
-//        while (runtimeWait.nanoseconds() < millis * 1000 * 1000) {
-//            idle();
-//        }
-
     }
 
     void showIfTargetSeen() {
