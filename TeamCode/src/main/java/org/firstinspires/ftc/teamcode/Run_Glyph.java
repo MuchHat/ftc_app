@@ -150,7 +150,8 @@ public class Run_Glyph {
         //****  7. BACKOFF ***********************************************************************//
         robot.moveInches(-4, 1, 1);
         robot.setClawPosZero();
-        robot.moveInches(-2, 1, 1);
+        robot.moveInches(2, 1, 1);
+        robot.moveInches(-4, 1, 1);
         robot.stopRobot();
 
         //********************************* END LOOP *****************************************//
