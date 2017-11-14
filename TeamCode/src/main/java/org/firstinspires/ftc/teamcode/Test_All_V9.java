@@ -111,6 +111,10 @@ public class Test_All_V9 extends LinearOpMode {
             telemetry.addData("switch top", "%.2f", robot.topSwitch.getState() ? 1.0 : 0.0);
             telemetry.addData("switch bottom", "%.2f", robot.bottomSwitch.getState() ? 1.0 : 0.0);
 
+            telemetry.addData("sonar front", "%.2f", (double)robot.frontSonar.readRawVoltage());
+            telemetry.addData("sonar left", "%.2f", (double)robot.leftSonar.readRawVoltage());
+            telemetry.addData("sonar right", "%.2f", (double)robot.rightSonar.readRawVoltage());
+
             telemetry.addData("crr heading", "%.2fdeg", (double) robot.imuGyro.getHeading());
 
             telemetry.update();

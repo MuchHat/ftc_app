@@ -30,9 +30,11 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.hardware.AnalogSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
@@ -87,13 +89,6 @@ public class Team_Hardware_V9 {
     double gameStartHeading = 0;
 
     //********************************* CLAW POS ************************************************//
-    /*double clawClose[] = {1.00, 0.00};
-    double clawOpen[] = {0.56, 0.47};
-    double clawOpenWide[] = {0.47, 0.56};
-    double clawCloseAuto[] = {0.71, 0.25};
-    double clawOpenAuto[] = {0.47, 0.56};*/
-
-
     double clawClose[] = {0.42, 0.63};
     double clawZero[] = {1.00, 0.00};
     double clawOpen[] = {0.53, 0.51};
@@ -108,6 +103,11 @@ public class Team_Hardware_V9 {
     double driveDefaultSpeed = 1.3;
     double turnDefaultSpeed = 1.0;
     double servoDefaultSpeed = 0.003;
+
+    DeviceInterfaceModule deviceInterface;                  // Device Object
+    AnalogSensor frontSonar;                // Device Object
+    AnalogSensor leftSonar;                // Device Object
+    AnalogSensor rightSonar;                // Device Object
 
     // ************************** HW CONSTRUCTOR  ************************************************//
 
@@ -141,6 +141,10 @@ public class Team_Hardware_V9 {
 
         colorBeacon = new MRIColorBeacon();
         colorBeacon.init(hwMap, "Beacon");
+
+        frontSonar = hwMap.get(AnalogSensor.class, "Front_Sonar");
+        leftSonar = hwMap.get(AnalogSensor.class, "Left_Sonar");
+        rightSonar = hwMap.get(AnalogSensor.class, "Right_Sonar");
 
         colorSensor.enableLed(false);
 
@@ -331,16 +335,6 @@ public class Team_Hardware_V9 {
                 rightClawControl == clawOpen[1]);
     }
 
-    boolean isClawClosed() {
-        return (leftClawControl == clawClose[0] &&
-                rightClawControl == clawClose[1]);
-    }
-
-    boolean clawWideOpen() {
-        return (leftClawControl == clawOpenWide[0] &&
-                rightClawControl == clawOpenWide[1]);
-    }
-
     void moveLift(double distance) {
         double mmMillis = 0.03;
         double stepTime = Math.abs(distance) / mmMillis;
@@ -360,22 +354,95 @@ public class Team_Hardware_V9 {
 
     void move(double distanceMM) {
 
-        moveLinear(distanceMM, 0, 1.0, 1.0, 1.0, 1.0);
+        moveLinear(distanceMM, 0, 0, 1.0, 1.0, 1.0, 1.0);
     }
 
-    void moveInches(double distanceInches, double movePower) {
+    void moveInches(double distanceInches, double movePower, double timeOut) {
 
 
-        moveLinear(distanceInches * 24.5, movePower, 1.0, 1.0, 1.0, 1.0);
+        moveLinear(distanceInches * 24.5, movePower, timeOut, 1.0, 1.0, 1.0, 1.0);
     }
 
-    void moveSide(double distanceMM) {
+    void moveSideInches(double distanceInches, double movePower, double timeOut) {
 
         double moveSidePower = 0.44;
-        moveLinear(distanceMM, moveSidePower, 1.0, -1.0, -1.0, 1.0);
+        if (moveSidePower > 0) moveSidePower = movePower;
+        moveLinear(distanceInches * 24.5, moveSidePower, timeOut, 1.0, -1.0, -1.0, 1.0);
     }
 
-    void moveLinear(double distanceMM, double power, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
+    void moveSideBySonarFront(double endPos, double power, double timeOutSec) {
+        moveSideBySonar(endPos, power, timeOutSec, true, false);
+    }
+
+    void moveSideBySonarLeft(double endPos, double power, double timeOutSec) {
+        moveSideBySonar(endPos, power, timeOutSec, false, true);
+    }
+
+    void moveSideBySonarRight(double endPos, double power, double timeOutSec) {
+        moveSideBySonar(endPos, power, timeOutSec, false, false);
+    }
+
+    void moveSideBySonar(double endPos, double power, double timeOutSec, boolean front, boolean left) {
+
+        ElapsedTime moveTimer = new ElapsedTime();
+        double powerMin = 0.22; //TODO
+        double rampDown = 22;
+        double powerCrr = power;
+        double crrPos = 0;
+
+        if (front) {
+            crrPos = frontSonar.readRawVoltage();
+        } else if (left) {
+            crrPos = leftSonar.readRawVoltage();
+        } else {
+            crrPos = rightSonar.readRawVoltage();
+        }
+
+        double crrError = endPos - crrPos;
+        double direction = crrError > 0 ? 1.0 : -1.0;
+        moveTimer.reset();
+
+        while (moveTimer.seconds() < timeOutSec && crrError * direction > 0) {
+
+            leftDistanceControl = 0;
+            rightDistanceControl = 0;
+            leftDistanceControlBack = 0;
+            rightDistanceControlBack = 0;
+
+            powerCrr = power;
+            if (crrError * direction < rampDown) {
+                powerCrr = powerMin;
+            }
+
+            if (front) {
+                leftPowerControl = powerCrr * direction;
+                rightPowerControl = powerCrr * direction;
+                leftPowerControlBack = powerCrr * direction;
+                rightPowerControlBack = powerCrr * direction;
+                setDrivesByPower();
+            } else {
+                leftPowerControl = -powerCrr * direction;
+                rightPowerControl = powerCrr * direction;
+                leftPowerControlBack = powerCrr * direction;
+                rightPowerControlBack = -powerCrr * direction;
+                setDrivesByPower();
+            }
+
+            waitMillis(111);
+            if (front) {
+                crrPos = frontSonar.readRawVoltage();
+            } else if (left) {
+                crrPos = leftSonar.readRawVoltage();
+            } else {
+                crrPos = rightSonar.readRawVoltage();
+            }
+            crrError = endPos - crrPos;
+        }
+        stopRobot();
+    }
+
+
+    void moveLinear(double distanceMM, double power, double timeOut, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
 
         double distanceLowSpeedMM = 99;
 
@@ -404,7 +471,7 @@ public class Team_Hardware_V9 {
         leftDistanceControlBack = distancePulses * dirBackLeft;
         rightDistanceControlBack = distancePulses * dirBackRight;
 
-        setDrivesByDistance();
+        setDrivesByDistance(timeOut);
         stopRobot();
     }
 
@@ -460,7 +527,7 @@ public class Team_Hardware_V9 {
 
     // ************************** HARDWARE SET FUNCTIONS *****************************************//
 
-    void setDrivesByDistance() {
+    void setDrivesByDistance(double timeOut) {
 
         ElapsedTime encodersTimer = new ElapsedTime();
 
@@ -489,7 +556,10 @@ public class Team_Hardware_V9 {
         leftDriveBack.setPower(Math.abs(leftPowerControlBack));
         rightDriveBack.setPower(Math.abs(rightPowerControlBack));
 
-        double timeOutSec = 3;
+        double timeOutSec = 4;
+        if (timeOut > 0) {
+            timeOutSec = timeOut;
+        }
         encodersTimer.reset();
 
         while (encodersTimer.seconds() < timeOutSec) {
@@ -580,9 +650,8 @@ public class Team_Hardware_V9 {
         }
     }
 
-    void setClawPosZero()
-    {
-        leftClawControl =  clawZero[0];
+    void setClawPosZero() {
+        leftClawControl = clawZero[0];
         rightClawControl = clawZero[1];
         setServos();
     }

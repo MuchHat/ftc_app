@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import static android.os.SystemClock.sleep;
 
 //********************************* MAIN OP CLASS ************************************************//
@@ -45,42 +46,38 @@ public class Run_Glyph {
         double[] moveDistance = {15.4, 9, 2};
         double[] moveDistanceLongField = {36, 26, 5};
 
-        double moveDistanceFirstLegLongField = 2;
-
         //****  0. ADJUST VARIABLES DEPENDING ON THE FIELD **************************************//
 
         double direction = 1.0;
         if (robot.blueTeam) direction = -1.0;
 
         if (!robot.shortField) {
-            for(int i = 0; i<moveDistance.length;i++)
-            {
+            for (int i = 0; i < moveDistance.length; i++) {
                 moveDistance[i] = moveDistanceLongField[i];
             }
         }
 
         //****  1. WAIT IF NEEDED FOR VUFORIA TO LOCK ON THE TARGET ******************************//
 
-        if(robot.blueTeam) {
-            robot.moveInches(-6, 0.4);
+        if (robot.blueTeam) {
+            robot.moveInches(-6, 0.4, 0.88);
         }
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 22; i++) {
             if (vu.targetSeen()) {
                 break;
             }
             robot.colorBeacon.white();
-            waitMillis(50);
+            waitMillis(66);
             if (!timeLeft()) return;
         }
         showIfTargetSeen();
 
         //****  2. MOVE OFF THE PLATFORM *********************************************************//
 
-        if(robot.blueTeam){
-            robot.moveInches(10 * direction, 0.6);
-        }
-        else {
-            robot.moveInches(13.5 * direction, 0.8);
+        if (robot.blueTeam) {
+            robot.moveInches(10 * direction, 0.6, 0.66);
+        } else {
+            robot.moveInches(13.5 * direction, 0.8, 0.66);
         }
         showIfTargetSeen();
         if (!timeLeft()) return;
@@ -91,41 +88,43 @@ public class Run_Glyph {
         showIfTargetSeen();
         if (!timeLeft()) return;
 
-        //****  5. MOVE IN FRONT OF THE BOX L/M/R PER THE WUMARK *********************************//
+        //****  4. DETERMINE WHAT COLUMN  *********************************//
         int index = 0;
         if (vu.targetSeen()) {
             index = vu.lastTargetSeenNo;
             showIfTargetSeen();
-            //robot.beaconBlink(index + 1);
         } else {
             index = 2; //go middle if no vuforia
         }
+        if (!timeLeft()) return;
 
-        if(!robot.shortField)
-        {
-            robot.moveSide(moveDistanceLongField[index-1]*direction*25.4);
-        }
-        else {
-            if (!timeLeft()) return;
-            //****  SPECIAL STEPS FOR THE LONG FIELD *************************************************//
-            if (!robot.shortField) {
-                robot.moveInches(moveDistanceFirstLegLongField * direction, 1.0);
-                waitMillis(10);
+        //****  5. MOVE IN FRONT OF THE BOX *********************************//
 
-                robot.turnTo9();
-                waitMillis(10);
+        if (!robot.shortField) {
+            //****  5. LONG FIELD *******************************//
+
+            robot.moveSideInches(moveDistanceLongField[index - 1] * direction,
+                    0.44, 4);
+            //TODO sonar
+
+            /*
+            if (!robot.blueTeam) {
+                robot.moveSideBySonarRight(22, 0.22, 3);
+            } else {
+                robot.moveSideBySonarLeft(22, 0.22, 3);
             }
-            if (!timeLeft()) return;
+            */
 
-            //****  CONTINUES THE SAME WITH THE SHORT FIELD ******************************************//
+        } else {
+            //****  5. SHORT FIELD *******************************//
 
             if (index != 0) {
-                robot.moveInches(moveDistance[index - 1] * direction, 1.0);
-                waitMillis(33);
+                robot.moveInches(moveDistance[index - 1] * direction, 0.88, 2);
+                waitMillis(22);
             }
             if (!timeLeft()) return;
 
-            //****  7. TURN 90 TOWARDS THE BOX ******************************************************//
+            //****  5.1. TURN 90 TOWARDS THE BOX ******************************************************//
 
             if (robot.shortField) {
                 robot.turnTo3();
@@ -136,26 +135,24 @@ public class Run_Glyph {
                     robot.turnTo12();
                 }
             }
-            waitMillis(22);
-            if (!timeLeft()) return;
-
             robot.stopRobot();
             waitMillis(22);
-            if (!timeLeft()) return;
-        }
-        //****  8. PUT THE GLYPH IN  *************************************************************//
 
+        }
         if (!timeLeft()) return;
 
+        //****  6. PUT THE GLYPH IN  *************************************************************//
+        robot.moveInches(5.5, 0.22, 1);
         robot.openClawAuto();
-        robot.moveInches(5.5, 1.0);
         waitMillis(22);
         if (!timeLeft()) return;
 
-        //****  9. BACKOFF ***********************************************************************//
-
-        robot.moveInches(-6, 1.0);
+        //****  7. BACKOFF ***********************************************************************//
+        robot.moveInches(-4, 1, 1);
         robot.setClawPosZero();
+        robot.moveInches(-2, 1, 1);
+        robot.stopRobot();
+
         //********************************* END LOOP *****************************************//
     }
 

@@ -79,7 +79,7 @@ public class Run_Jewel {
 
             //****   3. GO IN BETWEEN THE BALLS **************************************************//
 
-            robot.moveInches(2.5, 0.22);
+            robot.moveInches(2.5, 0.22, 2);
             waitMillis(66);
 
             robot.moveArm(armKnockB, armKnockE);
@@ -87,7 +87,7 @@ public class Run_Jewel {
 
             if (!knockFirst) {
                 //*****  MOVE FORWARD AND REMAIN AT EDGE *************************************//
-                robot.moveInches(4, 0.44);
+                robot.moveInches(4, 0.44, 1);
                 // if blue move back to get to the edge of the platform
 
                 robot.moveArmPosZero();
@@ -95,11 +95,11 @@ public class Run_Jewel {
 
                 if (robot.blueTeam) {
                     waitMillis(66);
-                    robot.moveInches(-6.5 * 2, 0.44);
+                    robot.moveInches(-6.5 * 2, 0.44, 1);
                 }
             } else {
                 //******  MOVE BACK THEN FW TO END UP AT EDGE ********************************//
-                robot.moveInches(-4, 0.44);
+                robot.moveInches(-4, 0.44, 1);
                 //if red move fw to get to the edge of the platform
 
                 robot.moveArmPosZero();
@@ -107,18 +107,20 @@ public class Run_Jewel {
 
                 if (!robot.blueTeam) {
                     waitMillis(66);
-                    robot.moveInches(8, 0.88);
+                    robot.moveInches(8, 0.88, 1);
                 } else {
                     waitMillis(66);
-                    robot.moveInches(-4, 0.88);
+                    robot.moveInches(-4, 0.88, 1);
                 }
             }
             waitMillis(66);
         } else {
             robot.moveArmPosZero();
             robot.showTeamColor();
-            if (!robot.blueTeam) robot.moveInches(6.5, 0.88);
-            else robot.moveInches(-6.5, 0.88);
+            if (!robot.blueTeam) {
+                robot.moveInches(6.5, 0.88, 1);
+            }
+            else robot.moveInches(-6.5, 0.88, 1);
         }
 
         //****   6. PUT ARM BACK AT POS ZERO *************************************************//
