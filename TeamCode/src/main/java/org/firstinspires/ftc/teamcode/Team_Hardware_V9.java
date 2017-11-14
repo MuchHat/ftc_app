@@ -46,7 +46,15 @@ import static android.os.SystemClock.sleep;
 
 // ************************** ROBOT HW CLASS *****************************************************//
 
+
+
 public class Team_Hardware_V9 {
+
+    public enum SonarPosition{
+        FRONT,
+        LEFT,
+        RIGHT
+    }
 
     // ************************** ROBOT HW VARIABLES *********************************************//
 
@@ -371,18 +379,18 @@ public class Team_Hardware_V9 {
     }
 
     void moveSideBySonarFront(double endPos, double power, double timeOutSec) {
-        moveSideBySonar(endPos, power, timeOutSec, true, false);
+        moveSideBySonar(endPos, power, timeOutSec, SonarPosition.FRONT);
     }
 
     void moveSideBySonarLeft(double endPos, double power, double timeOutSec) {
-        moveSideBySonar(endPos, power, timeOutSec, false, true);
+        moveSideBySonar(endPos, power, timeOutSec, SonarPosition.LEFT);
     }
 
     void moveSideBySonarRight(double endPos, double power, double timeOutSec) {
-        moveSideBySonar(endPos, power, timeOutSec, false, false);
+        moveSideBySonar(endPos, power, timeOutSec, SonarPosition.RIGHT);
     }
 
-    void moveSideBySonar(double endPos, double power, double timeOutSec, boolean front, boolean left) {
+    void moveSideBySonar(double endPos, double power, double timeOutSec, SonarPosition sonarPosition) {
 
         ElapsedTime moveTimer = new ElapsedTime();
         double powerMin = 0.22; //TODO
@@ -390,9 +398,9 @@ public class Team_Hardware_V9 {
         double powerCrr = power;
         double crrPos = 0;
 
-        if (front) {
+        if (sonarPosition == SonarPosition.FRONT) {
             crrPos = frontSonar.readRawVoltage();
-        } else if (left) {
+        } else if (sonarPosition == SonarPosition.LEFT) {
             crrPos = leftSonar.readRawVoltage();
         } else {
             crrPos = rightSonar.readRawVoltage();
@@ -414,7 +422,7 @@ public class Team_Hardware_V9 {
                 powerCrr = powerMin;
             }
 
-            if (front) {
+            if (sonarPosition == SonarPosition.FRONT) {
                 leftPowerControl = powerCrr * direction;
                 rightPowerControl = powerCrr * direction;
                 leftPowerControlBack = powerCrr * direction;
@@ -429,9 +437,9 @@ public class Team_Hardware_V9 {
             }
 
             waitMillis(111);
-            if (front) {
+            if (sonarPosition == SonarPosition.FRONT) {
                 crrPos = frontSonar.readRawVoltage();
-            } else if (left) {
+            } else if (sonarPosition == SonarPosition.LEFT) {
                 crrPos = leftSonar.readRawVoltage();
             } else {
                 crrPos = rightSonar.readRawVoltage();

@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -64,6 +65,8 @@ public class Test_Sonar_V9 extends LinearOpMode {
     double frontTarget = 0;
 
     Team_Hardware_V9 robot = new Team_Hardware_V9();
+    double crrError = 0;
+    double direction = 0;
 
     @Override
     public void runOpMode() {
@@ -78,34 +81,106 @@ public class Test_Sonar_V9 extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            telemetry.addData("rangeSensor ultrasonic", rangeSensor.rawUltrasonic());
-            telemetry.addData("rangeSensor optical", rangeSensor.rawOptical());
-            telemetry.addData("rangeSensor cm optical", "%.2f cm", rangeSensor.cmOptical());
-            telemetry.addData("rangeSensor cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
-            telemetry.addData("frontSonar", "%.2f v", (double) frontSonar.readRawVoltage());
-            telemetry.addData("leftSonar", "%.2f v", (double) leftSonar.readRawVoltage());
-            telemetry.addData("rightSonar", "%.2f v", (double) rightSonar.readRawVoltage());
-            telemetry.addData("leftTarget", "%.2f v", leftTarget);
-            telemetry.addData("leftTarget", "%.2f v", rightTarget);
-            telemetry.addData("leftTarget", "%.2f v", frontTarget);
-            telemetry.update();
+            telemetryUpdate();
+
+            if (gamepad1.dpad_left) leftTarget++;
+            if (gamepad1.dpad_right) rightTarget++;
+            if (gamepad1.dpad_up) frontTarget++;
+            if (gamepad1.dpad_down) {
+                rightTarget = 0;
+                leftTarget = 0;
+                frontTarget = 0;
+            }
+            rightTarget = Range.clip(rightTarget, 0, 1024);
+            leftTarget = Range.clip(leftTarget, 0, 1024);
+            frontTarget = Range.clip(frontTarget, 0, 1024);
+
+            if (gamepad1.x)
+                moveSideBySonar_Test(rightTarget, 0.44, 6, Team_Hardware_V9.SonarPosition.RIGHT);
+            if (gamepad1.b)
+                moveSideBySonar_Test(leftTarget, 0.44, 6, Team_Hardware_V9.SonarPosition.LEFT);
+            if (gamepad1.y)
+                moveSideBySonar_Test(frontTarget, 0.44, 6, Team_Hardware_V9.SonarPosition.FRONT);
         }
 
-        if (gamepad1.dpad_left) leftTarget++;
-        if (gamepad1.dpad_right) rightTarget++;
-        if (gamepad1.dpad_up) frontTarget++;
-        if (gamepad1.dpad_down) {
-            rightTarget = 0;
-            leftTarget = 0;
-            frontTarget = 0;
+    }
+
+    void moveSideBySonar_Test(double endPos, double power, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
+
+        ElapsedTime moveTimer = new ElapsedTime();
+        double powerMin = 0.22; //TODO
+        double rampDown = 22;
+        double powerCrr = power;
+        double crrPos = 0;
+
+        if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
+            crrPos = frontSonar.readRawVoltage();
+        } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
+            crrPos = leftSonar.readRawVoltage();
+        } else {
+            crrPos = rightSonar.readRawVoltage();
         }
-        rightTarget = Range.clip(rightTarget, 0, 1024);
-        leftTarget = Range.clip(leftTarget, 0, 1024);
-        frontTarget = Range.clip(frontTarget, 0, 1024);
 
-        if (gamepad1.x) robot.moveSideBySonarRight(rightTarget, 0.44, 6);
-        if (gamepad1.b) robot.moveSideBySonarLeft(leftTarget, 0.44, 6);
-        if (gamepad1.y) robot.moveSideBySonarFront(frontTarget, 0.44, 6);
+        crrError = endPos - crrPos;
+        direction = crrError > 0 ? 1.0 : -1.0;
+        moveTimer.reset();
 
+        while (moveTimer.seconds() < timeOutSec && crrError * direction > 0) {
+
+            robot.leftDistanceControl = 0;
+            robot.rightDistanceControl = 0;
+            robot.leftDistanceControlBack = 0;
+            robot.rightDistanceControlBack = 0;
+
+            powerCrr = power;
+            if (crrError * direction < rampDown) {
+                powerCrr = powerMin;
+            }
+
+            if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
+                robot.leftPowerControl = powerCrr * direction;
+                robot.rightPowerControl = powerCrr * direction;
+                robot.leftPowerControlBack = powerCrr * direction;
+                robot.rightPowerControlBack = powerCrr * direction;
+                robot.setDrivesByPower();
+
+            } else {
+                robot.leftPowerControl = -powerCrr * direction;
+                robot.rightPowerControl = powerCrr * direction;
+                robot.leftPowerControlBack = powerCrr * direction;
+                robot.rightPowerControlBack = -powerCrr * direction;
+                robot.setDrivesByPower();
+
+            }
+
+            robot.waitMillis(111);
+            if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
+                crrPos = frontSonar.readRawVoltage();
+            } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
+                crrPos = leftSonar.readRawVoltage();
+            } else {
+                crrPos = rightSonar.readRawVoltage();
+            }
+            crrError = endPos - crrPos;
+            telemetryUpdate();
+        }
+        robot.stopRobot();
+    }
+
+    void telemetryUpdate() {
+        telemetry.addData("rangeSensor ultrasonic", rangeSensor.rawUltrasonic());
+        telemetry.addData("rangeSensor optical", rangeSensor.rawOptical());
+        telemetry.addData("rangeSensor cm optical", "%.2f cm", rangeSensor.cmOptical());
+        telemetry.addData("rangeSensor cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
+        telemetry.addData("frontTarget", "%.2f v", frontTarget);
+        telemetry.addData("leftTarget", "%.2f v", leftTarget);
+        telemetry.addData("rightTarget", "%.2f v", rightTarget);
+        telemetry.addData("frontSonar", "%.2f v", (double) frontSonar.readRawVoltage());
+        telemetry.addData("leftSonar", "%.2f v", (double) leftSonar.readRawVoltage());
+        telemetry.addData("rightSonar", "%.2f v", (double) rightSonar.readRawVoltage());
+        telemetry.addData("crrError", "%.2f v", crrError);
+        telemetry.addData("direction", "%.2f", direction);
+
+        telemetry.update();
     }
 }
