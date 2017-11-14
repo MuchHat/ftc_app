@@ -105,12 +105,12 @@ public class Test_Sonar_V9 extends LinearOpMode {
 
     }
 
-    void moveSideBySonar_Test(double endPos, double power, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
+    void moveSideBySonar_Test(double endPos, double movePower, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
 
         ElapsedTime moveTimer = new ElapsedTime();
-        double powerMin = 0.22; //TODO
-        double rampDown = 22;
-        double powerCrr = power;
+        double minPower = 0.22; //TODO
+        double rampDown = 22; //TODO
+        double crrPower = movePower;
         double crrPos = 0;
 
         if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
@@ -132,23 +132,23 @@ public class Test_Sonar_V9 extends LinearOpMode {
             robot.leftDistanceControlBack = 0;
             robot.rightDistanceControlBack = 0;
 
-            powerCrr = power;
+            crrPower = movePower;
             if (crrError * direction < rampDown) {
-                powerCrr = powerMin;
+                crrPower = minPower;
             }
 
             if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
-                robot.leftPowerControl = powerCrr * direction;
-                robot.rightPowerControl = powerCrr * direction;
-                robot.leftPowerControlBack = powerCrr * direction;
-                robot.rightPowerControlBack = powerCrr * direction;
+                robot.leftPowerControl = crrPower * direction;
+                robot.rightPowerControl = crrPower * direction;
+                robot.leftPowerControlBack = crrPower * direction;
+                robot.rightPowerControlBack = crrPower * direction;
                 robot.setDrivesByPower();
 
             } else {
-                robot.leftPowerControl = -powerCrr * direction;
-                robot.rightPowerControl = powerCrr * direction;
-                robot.leftPowerControlBack = powerCrr * direction;
-                robot.rightPowerControlBack = -powerCrr * direction;
+                robot.leftPowerControl = -crrPower * direction;
+                robot.rightPowerControl = crrPower * direction;
+                robot.leftPowerControlBack = crrPower * direction;
+                robot.rightPowerControlBack = -crrPower * direction;
                 robot.setDrivesByPower();
 
             }
