@@ -42,10 +42,10 @@ public class Run_Glyph {
         timer.reset();
         if (!timeLeft()) return;
 
-        double[] moveDistance = {15.4, 9, 3};
-        double[] moveDistanceLongField = {14, 7, 0};
+        double[] moveDistance = {15.4, 9, 2};
+        double[] moveDistanceLongField = {36, 26, 5};
 
-        double moveDistanceFirstLegLongField = 6.5;
+        double moveDistanceFirstLegLongField = 2;
 
         //****  0. ADJUST VARIABLES DEPENDING ON THE FIELD **************************************//
 
@@ -53,9 +53,10 @@ public class Run_Glyph {
         if (robot.blueTeam) direction = -1.0;
 
         if (!robot.shortField) {
-            moveDistance[0] = moveDistanceLongField[0];
-            moveDistance[1] = moveDistanceLongField[1];
-            moveDistance[2] = moveDistanceLongField[2];
+            for(int i = 0; i<moveDistance.length;i++)
+            {
+                moveDistance[i] = moveDistanceLongField[i];
+            }
         }
 
         //****  1. WAIT IF NEEDED FOR VUFORIA TO LOCK ON THE TARGET ******************************//
@@ -63,12 +64,12 @@ public class Run_Glyph {
         if(robot.blueTeam) {
             robot.moveInches(-6, 0.4);
         }
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 15; i++) {
             if (vu.targetSeen()) {
                 break;
             }
             robot.colorBeacon.white();
-            waitMillis(100);
+            waitMillis(50);
             if (!timeLeft()) return;
         }
         showIfTargetSeen();
@@ -76,12 +77,11 @@ public class Run_Glyph {
         //****  2. MOVE OFF THE PLATFORM *********************************************************//
 
         if(robot.blueTeam){
-            robot.moveInches(10 * direction, 0.8);
+            robot.moveInches(10 * direction, 0.6);
         }
         else {
-            robot.moveInches(13.5 * direction, 1.0);
+            robot.moveInches(13.5 * direction, 0.8);
         }
-        waitMillis(22);
         showIfTargetSeen();
         if (!timeLeft()) return;
 
@@ -89,11 +89,9 @@ public class Run_Glyph {
 
         robot.turnTo12();
         showIfTargetSeen();
-        waitMillis(22);
         if (!timeLeft()) return;
 
         //****  5. MOVE IN FRONT OF THE BOX L/M/R PER THE WUMARK *********************************//
-
         int index = 0;
         if (vu.targetSeen()) {
             index = vu.lastTargetSeenNo;
@@ -102,58 +100,61 @@ public class Run_Glyph {
         } else {
             index = 2; //go middle if no vuforia
         }
-        waitMillis(22);
-        if (!timeLeft()) return;
 
-        //****  SPECIAL STEPS FOR THE LONG FIELD *************************************************//
-
-        if (!robot.shortField) {
-            robot.moveInches(moveDistanceFirstLegLongField * direction, 1.0);
-            waitMillis(22);
-
-            robot.turnTo9();
-            waitMillis(22);
+        if(!robot.shortField)
+        {
+            robot.moveSide(moveDistanceLongField[index-1]*direction*25.4);
         }
-        if (!timeLeft()) return;
+        else {
+            if (!timeLeft()) return;
+            //****  SPECIAL STEPS FOR THE LONG FIELD *************************************************//
+            if (!robot.shortField) {
+                robot.moveInches(moveDistanceFirstLegLongField * direction, 1.0);
+                waitMillis(10);
 
-        //****  CONTINUES THE SAME WITH THE SHORT FIELD ******************************************//
-
-        if (index != 0) {
-            robot.moveInches(moveDistance[index - 1] * direction, 1.0);
-            waitMillis(66);
-        }
-        if (!timeLeft()) return;
-
-        //****  7. TURN 90 TOWARDS THE BOX ******************************************************//
-
-        if (robot.shortField) {
-            robot.turnTo3();
-        } else {
-            if (robot.blueTeam) {
-                robot.turnTo6();
-            } else {
-                robot.turnTo12();
+                robot.turnTo9();
+                waitMillis(10);
             }
+            if (!timeLeft()) return;
+
+            //****  CONTINUES THE SAME WITH THE SHORT FIELD ******************************************//
+
+            if (index != 0) {
+                robot.moveInches(moveDistance[index - 1] * direction, 1.0);
+                waitMillis(33);
+            }
+            if (!timeLeft()) return;
+
+            //****  7. TURN 90 TOWARDS THE BOX ******************************************************//
+
+            if (robot.shortField) {
+                robot.turnTo3();
+            } else {
+                if (robot.blueTeam) {
+                    robot.turnTo6();
+                } else {
+                    robot.turnTo12();
+                }
+            }
+            waitMillis(22);
+            if (!timeLeft()) return;
+
+            robot.stopRobot();
+            waitMillis(22);
+            if (!timeLeft()) return;
         }
-        waitMillis(22);
-        if (!timeLeft()) return;
-
-        robot.stopRobot();
-        waitMillis(22);
-        if (!timeLeft()) return;
-
         //****  8. PUT THE GLYPH IN  *************************************************************//
 
-        robot.moveInches(6.5, 1.0);
         if (!timeLeft()) return;
 
         robot.openClawAuto();
+        robot.moveInches(5.5, 1.0);
         waitMillis(22);
         if (!timeLeft()) return;
 
         //****  9. BACKOFF ***********************************************************************//
 
-        robot.moveInches(-3.5, 1.0);
+        robot.moveInches(-6, 1.0);
         robot.setClawPosZero();
         //********************************* END LOOP *****************************************//
     }

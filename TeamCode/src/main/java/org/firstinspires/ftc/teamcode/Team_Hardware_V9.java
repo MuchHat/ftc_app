@@ -372,7 +372,6 @@ public class Team_Hardware_V9 {
     void moveSide(double distanceMM) {
 
         double moveSidePower = 0.44;
-
         moveLinear(distanceMM, moveSidePower, 1.0, -1.0, -1.0, 1.0);
     }
 
@@ -490,7 +489,7 @@ public class Team_Hardware_V9 {
         leftDriveBack.setPower(Math.abs(leftPowerControlBack));
         rightDriveBack.setPower(Math.abs(rightPowerControlBack));
 
-        double timeOutSec = 1.5;
+        double timeOutSec = 3;
         encodersTimer.reset();
 
         while (encodersTimer.seconds() < timeOutSec) {
