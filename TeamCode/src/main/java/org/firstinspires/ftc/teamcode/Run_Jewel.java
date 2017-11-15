@@ -8,7 +8,6 @@ public class Run_Jewel {
 
     boolean foundBlue = false;
     boolean foundRed = false;
-    int foundPos = 0;
 
     //********************************* HW VARIABLES *********************************************//
     Team_Hardware_V9 robot = null;
@@ -30,11 +29,11 @@ public class Run_Jewel {
         if (robot == null) {
             return;
         }
+        int findPositions = 4;
 
         double armFindJewelB[] = {0.19, 0.14, 0.10, 0.07};
         double armFindJewelE[] = {0.64, 0.69, 0.78, 0.82};
 
-        int findPositions = 4;
         double armKnockB = 0;
         double armKnockE = 0.90;
 
@@ -53,10 +52,9 @@ public class Run_Jewel {
 
             robot.colorBeacon.purple();
             robot.moveArm(crrBase, crrElbow);
-            waitMillis(66);
+            waitMillis(111);
 
             if (foundJewel()) {
-                foundPos = i;
                 robot.moveArm(armExtendedB, armExtendedE);
                 waitMillis(11);
                 break;
@@ -92,20 +90,20 @@ public class Run_Jewel {
                 robot.moveArmPosZero();
                 if (!robot.blueTeam) {
                     waitMillis(11);
-                    robot.moveInches(8, 0.88, 1);
+                    robot.moveInches(8, 0.66, 1);
                 } else {
                     waitMillis(11);
-                    robot.moveInches(-4, 0.88, 1);
+                    robot.moveInches(-4, 0.66, 1);
                 }
             }
-            waitMillis(11);
+            waitMillis(66);
         } else {
             // IF COLOR NOT FOUND JUST MOVE TO EDGE
             robot.moveArmPosZero();
             robot.showTeamColor();
             if (!robot.blueTeam) {
-                robot.moveInches(6.5, 0.88, 1);
-            } else robot.moveInches(-6.5, 0.88, 1);
+                robot.moveInches(6.5, 0.66, 1);
+            } else robot.moveInches(-6.5, 0.66, 1);
             waitMillis(11);
         }
 
