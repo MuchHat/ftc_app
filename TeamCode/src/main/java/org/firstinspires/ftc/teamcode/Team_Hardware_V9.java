@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.AnalogSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -113,9 +114,9 @@ public class Team_Hardware_V9 {
     double servoDefaultSpeed = 0.003;
 
     DeviceInterfaceModule deviceInterface;                  // Device Object
-    //AnalogSensor frontSonar;                // Device Object
-    //AnalogSensor leftSonar;                // Device Object
-    //AnalogSensor rightSonar;                // Device Object
+    AnalogInput frontSonar;                // Device Object
+    AnalogInput leftSonar;                // Device Object
+    AnalogInput rightSonar;                // Device Object
 
     // ************************** HW CONSTRUCTOR  ************************************************//
 
@@ -150,9 +151,9 @@ public class Team_Hardware_V9 {
         colorBeacon = new MRIColorBeacon();
         colorBeacon.init(hwMap, "Beacon");
 
-        //frontSonar = hwMap.get(AnalogSensor.class, "Front_Sonar");
-        //leftSonar = hwMap.get(AnalogSensor.class, "Left_Sonar");
-        //rightSonar = hwMap.get(AnalogSensor.class, "Right_Sonar");
+        frontSonar = hwMap.get(AnalogInput.class, "Front_Sonar");
+        leftSonar = hwMap.get(AnalogInput.class, "Left_Sonar");
+        rightSonar = hwMap.get(AnalogInput.class, "Right_Sonar");
 
         colorSensor.enableLed(false);
 
@@ -378,76 +379,85 @@ public class Team_Hardware_V9 {
         moveLinear(distanceInches * 24.5, moveSidePower, timeOut, 1.0, -1.0, -1.0, 1.0);
     }
 
-    void moveSideBySonarFront(double endPos, double power, double timeOutSec) {
-        moveSideBySonar(endPos, power, timeOutSec, SonarPosition.FRONT);
+    void moveBySonarFront(double endPos, double power, double timeOutSec) {
+        moveBySonar(endPos, power, timeOutSec, SonarPosition.FRONT);
     }
 
-    void moveSideBySonarLeft(double endPos, double power, double timeOutSec) {
-        moveSideBySonar(endPos, power, timeOutSec, SonarPosition.LEFT);
+    void moveBySonarLeft(double endPos, double power, double timeOutSec) {
+        moveBySonar(endPos, power, timeOutSec, SonarPosition.LEFT);
     }
 
-    void moveSideBySonarRight(double endPos, double power, double timeOutSec) {
-        moveSideBySonar(endPos, power, timeOutSec, SonarPosition.RIGHT);
+    void moveySonarRight(double endPos, double power, double timeOutSec) {
+        moveBySonar(endPos, power, timeOutSec, SonarPosition.RIGHT);
     }
 
-    void moveSideBySonar(double endPos, double power, double timeOutSec, SonarPosition sonarPosition) {
+    void moveBySonar(double endPos, double movePower, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
 
         ElapsedTime moveTimer = new ElapsedTime();
-        double powerMin = 0.22; //TODO
-        double rampDown = 22;
-        double powerCrr = power;
+        double minPower = 0.22; //TODO
+        double rampDown = 0.08; //TODO
+        double crrPower = movePower;
         double crrPos = 0;
 
-        if (sonarPosition == SonarPosition.FRONT) {
-            //crrPos = frontSonar.readRawVoltage();
-        } else if (sonarPosition == SonarPosition.LEFT) {
-            //crrPos = leftSonar.readRawVoltage();
+        if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
+            crrPos = frontSonar.getVoltage();
+        } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
+            crrPos = leftSonar.getVoltage();
         } else {
-            //crrPos = rightSonar.readRawVoltage();
+            crrPos = rightSonar.getVoltage();
         }
 
         double crrError = endPos - crrPos;
         double direction = crrError > 0 ? 1.0 : -1.0;
         moveTimer.reset();
 
-        while (moveTimer.seconds() < timeOutSec && crrError * direction > 0) {
+        while (moveTimer.seconds() < timeOutSec && crrError * direction > 0.01) {
 
             leftDistanceControl = 0;
             rightDistanceControl = 0;
             leftDistanceControlBack = 0;
             rightDistanceControlBack = 0;
 
-            powerCrr = power;
+            crrPower = movePower;
             if (crrError * direction < rampDown) {
-                powerCrr = powerMin;
+                crrPower = minPower;
             }
 
-            if (sonarPosition == SonarPosition.FRONT) {
-                leftPowerControl = powerCrr * direction;
-                rightPowerControl = powerCrr * direction;
-                leftPowerControlBack = powerCrr * direction;
-                rightPowerControlBack = powerCrr * direction;
+            if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
+                leftPowerControl = -crrPower * direction;
+                rightPowerControl = -crrPower * direction;
+                leftPowerControlBack = -crrPower * direction;
+                rightPowerControlBack = -crrPower * direction;
                 setDrivesByPower();
+
+            } else if( sonarPosition == Team_Hardware_V9.SonarPosition.LEFT){
+                leftPowerControl = -crrPower * direction;
+                rightPowerControl = crrPower * direction;
+                leftPowerControlBack = crrPower * direction;
+                rightPowerControlBack = -crrPower * direction;
+                setDrivesByPower();
+
             } else {
-                leftPowerControl = -powerCrr * direction;
-                rightPowerControl = powerCrr * direction;
-                leftPowerControlBack = powerCrr * direction;
-                rightPowerControlBack = -powerCrr * direction;
+                leftPowerControl = crrPower * direction;
+                rightPowerControl = -crrPower * direction;
+                leftPowerControlBack = -crrPower * direction;
+                rightPowerControlBack = crrPower * direction;
                 setDrivesByPower();
             }
 
             waitMillis(111);
-            if (sonarPosition == SonarPosition.FRONT) {
-                //crrPos = frontSonar.readRawVoltage();
-            } else if (sonarPosition == SonarPosition.LEFT) {
-                //crrPos = leftSonar.readRawVoltage();
+            if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
+                crrPos = frontSonar.getVoltage();
+            } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
+                crrPos = leftSonar.getVoltage();
             } else {
-                //crrPos = rightSonar.readRawVoltage();
+                crrPos = rightSonar.getVoltage();
             }
             crrError = endPos - crrPos;
         }
         stopRobot();
     }
+
 
 
     void moveLinear(double distanceMM, double power, double timeOut, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
