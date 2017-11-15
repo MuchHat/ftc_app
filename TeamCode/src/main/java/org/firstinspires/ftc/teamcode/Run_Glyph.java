@@ -24,13 +24,13 @@ public class Run_Glyph {
         vu.init(hwMap);
     }
 
-    boolean timeLeft() {
+    boolean noTimeLeft() {
 
         if ((secsLeftAtStart - timer.seconds()) > 1) {
-            return true;
+            return false;
         }
         robot.stopRobot();
-        return false;
+        return true;
     }
 
     void run(double secsLeft) {
@@ -52,7 +52,7 @@ public class Run_Glyph {
         {
             secsLeftAtStart = secsLeft;
             timer.reset();
-            if (!timeLeft()) return;
+            if (noTimeLeft()) return;
         }
         // READ VUFORIA
         {
@@ -63,16 +63,17 @@ public class Run_Glyph {
                 }
                 robot.colorBeacon.white();
                 waitMillis(66);
-                if (!timeLeft()) return;
+                if (noTimeLeft()) return;
             }
             showIfTargetSeen();
+            if (noTimeLeft()) return;
         }
         // MOVE OFF THE PLATFORM
         {
             if (red_) robot.moveInches(13.5, 0.8, 3);
             if (blue_) robot.moveInches(-9, 0.6, 3);
             showIfTargetSeen();
-            if (!timeLeft()) return;
+            if (noTimeLeft()) return;
         }
         // TURN TOWARDS THE BOX
         {
@@ -81,7 +82,7 @@ public class Run_Glyph {
             if (blue_ & short_) robot.turnTo3();
             if (blue_ & long_) robot.turnTo6();
             showIfTargetSeen();
-            if (!timeLeft()) return;
+            if (noTimeLeft()) return;
         }
         // DETERMINE WHAT COLUMN
         {
@@ -91,7 +92,7 @@ public class Run_Glyph {
             } else {
                 columnIndex = 2; //go middle if no vuforia
             }
-            if (!timeLeft()) return;
+            if (noTimeLeft()) return;
         }
         // MOVE IN FRONT OF THE COLUMN
         {
@@ -99,8 +100,8 @@ public class Run_Glyph {
             double redLongSonar[] = {0.4, 0.2, 0.1}; // L C R
             double blueShortSonar[] = {0.4, 0.2, 0.1}; // L C R
             double blueLongSonar[] = {0.4, 0.2, 0.1}; // L C R
-
             double columnSonarPos = 0.2;
+
             if (red_ & short_) columnSonarPos = redShortSonar[columnIndex - 1];
             if (red_ & long_) columnSonarPos = redLongSonar[columnIndex - 1];
             if (blue_ & short_) columnSonarPos = blueShortSonar[columnIndex - 1];
@@ -111,7 +112,7 @@ public class Run_Glyph {
             if (blue_ & short_) robot.moveSideBySonarLeft(columnSonarPos, 0.44, 6);
             if (blue_ & long_) robot.moveSideBySonarLeft(columnSonarPos, 0.44, 6);
 
-            if (!timeLeft()) return;
+            if (noTimeLeft()) return;
         }
         // TURN TOWARDS THE BOX
         {
@@ -119,14 +120,14 @@ public class Run_Glyph {
             if (red_ & long_) robot.turnTo12();
             if (blue_ & short_) robot.turnTo3();
             if (blue_ & long_) robot.turnTo6();
-            if (!timeLeft()) return;
+            if (noTimeLeft()) return;
         }
         //PUT THE GLYPH IN
         {
             robot.moveInches(5.5, 0.22, 1);
             robot.openClawAuto();
             waitMillis(22);
-            if (!timeLeft()) return;
+            if (noTimeLeft()) return;
         }
         //BACKOFF
         {
@@ -145,7 +146,7 @@ public class Run_Glyph {
 
         secsLeftAtStart = secsLeft;
         timer.reset();
-        if (!timeLeft()) return;
+        if (noTimeLeft()) return;
 
         double[] moveDistance = {15.4, 9, 2};
         double[] moveDistanceLongField = {36, 26, 5};
@@ -172,7 +173,7 @@ public class Run_Glyph {
             }
             robot.colorBeacon.white();
             waitMillis(66);
-            if (!timeLeft()) return;
+            if (noTimeLeft()) return;
         }
         showIfTargetSeen();
 
@@ -184,13 +185,13 @@ public class Run_Glyph {
             robot.moveInches(13.5 * direction, 0.8, 0.66);
         }
         showIfTargetSeen();
-        if (!timeLeft()) return;
+        if (noTimeLeft()) return;
 
         //****  3. CORRECT HEADING IF NEEDED ********************** ******************************//
 
         robot.turnTo12();
         showIfTargetSeen();
-        if (!timeLeft()) return;
+        if (noTimeLeft()) return;
 
         //****  4. DETERMINE WHAT COLUMN  *********************************//
         int index = 0;
@@ -200,7 +201,7 @@ public class Run_Glyph {
         } else {
             index = 2; //go middle if no vuforia
         }
-        if (!timeLeft()) return;
+        if (noTimeLeft()) return;
 
         //****  5. MOVE IN FRONT OF THE BOX *********************************//
 
@@ -226,7 +227,7 @@ public class Run_Glyph {
                 robot.moveInches(moveDistance[index - 1] * direction, 0.88, 2);
                 waitMillis(22);
             }
-            if (!timeLeft()) return;
+            if (noTimeLeft()) return;
 
             //****  5.1. TURN 90 TOWARDS THE BOX ******************************************************//
 
@@ -243,13 +244,13 @@ public class Run_Glyph {
             waitMillis(22);
 
         }
-        if (!timeLeft()) return;
+        if (noTimeLeft()) return;
 
         //****  6. PUT THE GLYPH IN  *************************************************************//
         robot.moveInches(5.5, 0.22, 1);
         robot.openClawAuto();
         waitMillis(22);
-        if (!timeLeft()) return;
+        if (noTimeLeft()) return;
 
         //****  7. BACKOFF ***********************************************************************//
         robot.moveInches(-4, 1, 1);
