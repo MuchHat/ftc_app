@@ -79,21 +79,21 @@ public class Run_Jewel {
 
             //IF COLOR FOUND KNOCK AND MOVE TO EDGE
             if (!knockFirst) {
-                robot.moveInches(4, 0.44, 1);
+                robot.moveInches(4, 0.22, 1);
                 robot.moveArmPosZero();
                 if (robot.blueTeam) {
                     waitMillis(11);
                     robot.moveInches(-6.5 * 2, 0.44, 1);
                 }
             } else {
-                robot.moveInches(-4, 0.44, 1);
+                robot.moveInches(-4, 0.22, 1);
                 robot.moveArmPosZero();
                 if (!robot.blueTeam) {
                     waitMillis(11);
-                    robot.moveInches(8, 0.66, 1);
+                    robot.moveInches(8, 0.44, 1);
                 } else {
                     waitMillis(11);
-                    robot.moveInches(-4, 0.66, 1);
+                    robot.moveInches(-4, 0.44, 1);
                 }
             }
             waitMillis(66);
