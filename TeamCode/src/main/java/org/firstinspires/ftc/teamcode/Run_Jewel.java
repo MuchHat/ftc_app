@@ -120,6 +120,7 @@ public class Run_Jewel {
             if (!robot.blueTeam) {
                 robot.moveInches(6.5, 0.88, 1);
             } else robot.moveInches(-6.5, 0.88, 1);
+            waitMillis(11);
         }
 
         //****   6. PUT ARM BACK AT POS ZERO *************************************************//
