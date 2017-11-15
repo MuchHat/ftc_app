@@ -387,7 +387,7 @@ public class Team_Hardware_V9 {
         moveBySonar(endPos, power, timeOutSec, SonarPosition.LEFT);
     }
 
-    void moveySonarRight(double endPos, double power, double timeOutSec) {
+    void moveBySonarRight(double endPos, double power, double timeOutSec) {
         moveBySonar(endPos, power, timeOutSec, SonarPosition.RIGHT);
     }
 

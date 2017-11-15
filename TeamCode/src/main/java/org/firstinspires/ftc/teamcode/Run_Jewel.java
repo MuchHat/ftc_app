@@ -26,6 +26,11 @@ public class Run_Jewel {
 
     void run() {
 
+        boolean red_ = !robot.blueTeam;
+        boolean blue_ = robot.blueTeam;
+        boolean short_ = robot.shortField;
+        boolean long_ = !robot.shortField;
+
         if (robot == null) {
             return;
         }
@@ -40,7 +45,7 @@ public class Run_Jewel {
         double armExtendedB = 0.13;
         double armExtendedE = 0.65;
 
-        //ARM IN EXTENDED POSITION
+        //START ARM IN EXTENDED POSITION
         robot.colorBeacon.purple();
         robot.moveArm(armExtendedB, armExtendedE);
         waitMillis(11);
@@ -60,53 +65,44 @@ public class Run_Jewel {
                 break;
             }
         }
-        // KNOCK THE BALL IF COLOR FOUND
+        // KNOCK THE JEWEL IF COLOR FOUND
         if (foundBlue || foundRed) {
 
             boolean knockFirst = true; //knock the ball in front or the other one
 
-            if (robot.blueTeam && foundBlue) knockFirst = false;
-            if (robot.blueTeam && !foundBlue) knockFirst = true;
-            if (!robot.blueTeam && foundRed) knockFirst = false;
-            if (!robot.blueTeam && !foundRed) knockFirst = true;
+            if (blue_ && foundBlue) knockFirst = false;
+            if (blue_ && !foundBlue) knockFirst = true;
+            if (red_ && foundRed) knockFirst = false;
+            if (red_ && !foundRed) knockFirst = true;
 
             //GO IN BETWEEN THE JEWELS
             robot.moveInches(2.5, 0.22, 2);
-            waitMillis(11);
+            waitMillis(33);
 
             //EXTEND ARM
             robot.moveArm(armKnockB, armKnockE);
 
-            //IF COLOR FOUND KNOCK AND MOVE TO EDGE
+            //KNOCK AND MOVE TO EDGE
+            if (knockFirst) {
+                robot.moveInches(-4, 0.22, 1);
+                robot.moveArmPosZero();
+                if (red_) robot.moveInches(8, 0.44, 1);
+                if (blue_) robot.moveInches(-4, 0.44, 1);
+            }
             if (!knockFirst) {
                 robot.moveInches(4, 0.22, 1);
                 robot.moveArmPosZero();
-                if (robot.blueTeam) {
-                    waitMillis(11);
-                    robot.moveInches(-6.5 * 2, 0.44, 1);
-                }
-            } else {
-                robot.moveInches(-4, 0.22, 1);
-                robot.moveArmPosZero();
-                if (!robot.blueTeam) {
-                    waitMillis(11);
-                    robot.moveInches(8, 0.44, 1);
-                } else {
-                    waitMillis(11);
-                    robot.moveInches(-4, 0.44, 1);
-                }
+                if (blue_) robot.moveInches(-13, 0.44, 1);
             }
-            waitMillis(66);
-        } else {
-            // IF COLOR NOT FOUND JUST MOVE TO EDGE
+        }
+        // IF COLOR NOT FOUND JUST MOVE TO EDGE
+        if (!foundBlue && !foundRed) {
+
             robot.moveArmPosZero();
             robot.showTeamColor();
-            if (!robot.blueTeam) {
-                robot.moveInches(6.5, 0.66, 1);
-            } else robot.moveInches(-6.5, 0.66, 1);
-            waitMillis(11);
+            if (red_) robot.moveInches(6.5, 0.66, 1);
+            if (blue_) robot.moveInches(-6.5, 0.66, 1);
         }
-
         //TURN OFF LED
         robot.moveArmPosZero();
         robot.colorSensor.enableLed(false);

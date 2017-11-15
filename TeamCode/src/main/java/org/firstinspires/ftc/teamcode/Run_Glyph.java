@@ -56,7 +56,7 @@ public class Run_Glyph {
         }
         // READ VUFORIA
         {
-            if (blue_) robot.moveInches(-7, 0.4, 2);
+            if (blue_) robot.moveInches(-8, 0.4, 2);
             for (int i = 0; i < 22; i++) {
                 if (vu.targetSeen()) {
                     break;
@@ -70,8 +70,8 @@ public class Run_Glyph {
         }
         // MOVE OFF THE PLATFORM, MOVE STARTS AT EDGE
         {
-            if (red_) robot.moveInches(13.5, 0.8, 3);
-            if (blue_) robot.moveInches(-9, 0.6, 3);
+            if (red_) robot.moveInches(12, 0.8, 3);
+            if (blue_) robot.moveInches(-4, 0.6, 3);
             showIfTargetSeen();
             if (noTimeLeft()) return;
         }
@@ -108,10 +108,10 @@ public class Run_Glyph {
                 if (blue_ & short_) columnSonarPos = blueShortSonar[columnIndex - 1];
                 if (blue_ & long_) columnSonarPos = blueLongSonar[columnIndex - 1];
 
-                if (red_ & short_) robot.moveSideBySonarRight(columnSonarPos, 0.44, 6);
-                if (red_ & long_) robot.moveSideBySonarRight(columnSonarPos, 0.44, 6);
-                if (blue_ & short_) robot.moveSideBySonarLeft(columnSonarPos, 0.44, 6);
-                if (blue_ & long_) robot.moveSideBySonarLeft(columnSonarPos, 0.44, 6);
+                if (red_ & short_) robot.moveBySonarRight(columnSonarPos, 0.44, 6);
+                if (red_ & long_) robot.moveBySonarRight(columnSonarPos, 0.44, 6);
+                if (blue_ & short_) robot.moveBySonarLeft(columnSonarPos, 0.44, 6);
+                if (blue_ & long_) robot.moveBySonarLeft(columnSonarPos, 0.44, 6);
 
                 if (noTimeLeft()) return;
             }
