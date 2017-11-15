@@ -111,7 +111,7 @@ public class Test_Sonar_V9 extends LinearOpMode {
 
         ElapsedTime moveTimer = new ElapsedTime();
         double minPower = 0.22; //TODO
-        double rampDown = 22; //TODO
+        double rampDown = 0.08; //TODO
         double crrPower = movePower;
         double crrPos = 0;
 
