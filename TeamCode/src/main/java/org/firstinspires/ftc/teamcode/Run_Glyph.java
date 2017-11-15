@@ -56,7 +56,7 @@ public class Run_Glyph {
         }
         // READ VUFORIA
         {
-            if (blue_) robot.moveInches(-8, 0.4, 2);
+            if (blue_) robot.moveInches(-8, 0.44, 2);
             for (int i = 0; i < 22; i++) {
                 if (vu.targetSeen()) {
                     break;
@@ -70,8 +70,8 @@ public class Run_Glyph {
         }
         // MOVE OFF THE PLATFORM, MOVE STARTS AT EDGE
         {
-            if (red_) robot.moveInches(12, 0.8, 3);
-            if (blue_) robot.moveInches(-4, 0.6, 3);
+            if (red_) robot.moveInches(12, 0.88, 3);
+            if (blue_) robot.moveInches(-4, 0.66, 3);
             showIfTargetSeen();
             if (noTimeLeft()) return;
         }
