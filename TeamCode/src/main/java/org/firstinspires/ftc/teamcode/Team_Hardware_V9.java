@@ -407,9 +407,19 @@ public class Team_Hardware_V9 {
             crrPos = rightSonar.getVoltage();
         }
 
+        if( crrPos == 0 ){
+            // IF NO SONAR SKIP
+            return;
+        }
+
         double crrError = endPos - crrPos;
         double direction = crrError > 0 ? 1.0 : -1.0;
         moveTimer.reset();
+
+        if( Math.abs(crrError ) > 0.8){ //TODO
+            // IF ERROR TOO BIG SKIP
+            return;
+        }
 
         while (moveTimer.seconds() < timeOutSec && crrError * direction > 0.01) {
 
