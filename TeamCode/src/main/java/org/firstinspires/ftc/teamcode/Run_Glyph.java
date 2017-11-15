@@ -34,7 +34,111 @@ public class Run_Glyph {
     }
 
     void run(double secsLeft) {
+        runSonar(secsLeft);
+    }
 
+    void runSonar(double secsLeft) {
+
+        int columnIndex = 2;
+        boolean red_ = !robot.blueTeam;
+        boolean blue_ = robot.blueTeam;
+        boolean short_ = robot.shortField;
+        boolean long_ = !robot.shortField;
+
+        if (robot == null) {
+            return;
+        }
+        // START TIMER
+        {
+            secsLeftAtStart = secsLeft;
+            timer.reset();
+            if (!timeLeft()) return;
+        }
+        // READ VUFORIA
+        {
+            if (blue_) robot.moveInches(-7, 0.4, 2);
+            for (int i = 0; i < 22; i++) {
+                if (vu.targetSeen()) {
+                    break;
+                }
+                robot.colorBeacon.white();
+                waitMillis(66);
+                if (!timeLeft()) return;
+            }
+            showIfTargetSeen();
+        }
+        // MOVE OFF THE PLATFORM
+        {
+            if (red_) robot.moveInches(13.5, 0.8, 3);
+            if (blue_) robot.moveInches(-9, 0.6, 3);
+            showIfTargetSeen();
+            if (!timeLeft()) return;
+        }
+        // TURN TOWARDS THE BOX
+        {
+            if (red_ & short_) robot.turnTo3();
+            if (red_ & long_) robot.turnTo12();
+            if (blue_ & short_) robot.turnTo3();
+            if (blue_ & long_) robot.turnTo6();
+            showIfTargetSeen();
+            if (!timeLeft()) return;
+        }
+        // DETERMINE WHAT COLUMN
+        {
+            if (vu.targetSeen()) {
+                columnIndex = vu.lastTargetSeenNo;
+                showIfTargetSeen();
+            } else {
+                columnIndex = 2; //go middle if no vuforia
+            }
+            if (!timeLeft()) return;
+        }
+        // MOVE IN FRONT OF THE COLUMN
+        {
+            double redShortSonar[] = {0.4, 0.2, 0.1}; // L C R
+            double redLongSonar[] = {0.4, 0.2, 0.1}; // L C R
+            double blueShortSonar[] = {0.4, 0.2, 0.1}; // L C R
+            double blueLongSonar[] = {0.4, 0.2, 0.1}; // L C R
+
+            double columnSonarPos = 0.2;
+            if (red_ & short_) columnSonarPos = redShortSonar[columnIndex - 1];
+            if (red_ & long_) columnSonarPos = redLongSonar[columnIndex - 1];
+            if (blue_ & short_) columnSonarPos = blueShortSonar[columnIndex - 1];
+            if (blue_ & long_) columnSonarPos = blueLongSonar[columnIndex - 1];
+
+            if (red_ & short_) robot.moveSideBySonarRight(columnSonarPos, 0.44, 6);
+            if (red_ & long_) robot.moveSideBySonarRight(columnSonarPos, 0.44, 6);
+            if (blue_ & short_) robot.moveSideBySonarLeft(columnSonarPos, 0.44, 6);
+            if (blue_ & long_) robot.moveSideBySonarLeft(columnSonarPos, 0.44, 6);
+
+            if (!timeLeft()) return;
+        }
+        // TURN TOWARDS THE BOX
+        {
+            if (red_ & short_) robot.turnTo3();
+            if (red_ & long_) robot.turnTo12();
+            if (blue_ & short_) robot.turnTo3();
+            if (blue_ & long_) robot.turnTo6();
+            if (!timeLeft()) return;
+        }
+        //PUT THE GLYPH IN
+        {
+            robot.moveInches(5.5, 0.22, 1);
+            robot.openClawAuto();
+            waitMillis(22);
+            if (!timeLeft()) return;
+        }
+        //BACKOFF
+        {
+            robot.moveInches(-4, 1, 1);
+            robot.setClawPosZero();
+            robot.moveInches(2, 1, 1);
+            robot.moveInches(-4, 1, 1);
+            robot.stopRobot();
+        }
+    }
+
+    void runOld(double secsLeft) {
         if (robot == null) {
             return;
         }
@@ -154,7 +258,6 @@ public class Run_Glyph {
         robot.moveInches(-4, 1, 1);
         robot.stopRobot();
 
-        //********************************* END LOOP *****************************************//
     }
 
     private void waitMillis(double millis) {
