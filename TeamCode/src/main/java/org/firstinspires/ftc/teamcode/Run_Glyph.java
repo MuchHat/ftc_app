@@ -25,7 +25,7 @@ public class Run_Glyph {
     }
 
     boolean noTimeLeft() {
-
+        waitMillis(11);
         if ((secsLeftAtStart - timer.seconds()) > 1) {
             return false;
         }
@@ -76,7 +76,7 @@ public class Run_Glyph {
             if (noTimeLeft()) return;
         }
         // TURN TOWARDS THE BOX
-        {
+        for (int attempts = 0; attempts < 2; attempts++) {
             if (red_ & short_) robot.turnTo3();
             if (red_ & long_) robot.turnTo12();
             if (blue_ & short_) robot.turnTo3();
@@ -95,32 +95,34 @@ public class Run_Glyph {
             if (noTimeLeft()) return;
         }
         // MOVE IN FRONT OF THE COLUMN
-        {
-            double redShortSonar[] = {0.4, 0.2, 0.1}; // L C R
-            double redLongSonar[] = {0.4, 0.2, 0.1}; // L C R
-            double blueShortSonar[] = {0.4, 0.2, 0.1}; // L C R
-            double blueLongSonar[] = {0.4, 0.2, 0.1}; // L C R
-            double columnSonarPos = 0.2;
+        for (int attempts = 0; attempts < 2; attempts++) {
+            {
+                double redShortSonar[] = {0.4, 0.2, 0.1}; // L C R
+                double redLongSonar[] = {0.4, 0.2, 0.1}; // L C R
+                double blueShortSonar[] = {0.4, 0.2, 0.1}; // L C R
+                double blueLongSonar[] = {0.4, 0.2, 0.1}; // L C R
+                double columnSonarPos = 0.2;
 
-            if (red_ & short_) columnSonarPos = redShortSonar[columnIndex - 1];
-            if (red_ & long_) columnSonarPos = redLongSonar[columnIndex - 1];
-            if (blue_ & short_) columnSonarPos = blueShortSonar[columnIndex - 1];
-            if (blue_ & long_) columnSonarPos = blueLongSonar[columnIndex - 1];
+                if (red_ & short_) columnSonarPos = redShortSonar[columnIndex - 1];
+                if (red_ & long_) columnSonarPos = redLongSonar[columnIndex - 1];
+                if (blue_ & short_) columnSonarPos = blueShortSonar[columnIndex - 1];
+                if (blue_ & long_) columnSonarPos = blueLongSonar[columnIndex - 1];
 
-            if (red_ & short_) robot.moveSideBySonarRight(columnSonarPos, 0.44, 6);
-            if (red_ & long_) robot.moveSideBySonarRight(columnSonarPos, 0.44, 6);
-            if (blue_ & short_) robot.moveSideBySonarLeft(columnSonarPos, 0.44, 6);
-            if (blue_ & long_) robot.moveSideBySonarLeft(columnSonarPos, 0.44, 6);
+                if (red_ & short_) robot.moveSideBySonarRight(columnSonarPos, 0.44, 6);
+                if (red_ & long_) robot.moveSideBySonarRight(columnSonarPos, 0.44, 6);
+                if (blue_ & short_) robot.moveSideBySonarLeft(columnSonarPos, 0.44, 6);
+                if (blue_ & long_) robot.moveSideBySonarLeft(columnSonarPos, 0.44, 6);
 
-            if (noTimeLeft()) return;
-        }
-        // TURN TOWARDS THE BOX
-        {
-            if (red_ & short_) robot.turnTo3();
-            if (red_ & long_) robot.turnTo12();
-            if (blue_ & short_) robot.turnTo3();
-            if (blue_ & long_) robot.turnTo6();
-            if (noTimeLeft()) return;
+                if (noTimeLeft()) return;
+            }
+            // TURN TOWARDS THE BOX
+            {
+                if (red_ & short_) robot.turnTo3();
+                if (red_ & long_) robot.turnTo12();
+                if (blue_ & short_) robot.turnTo3();
+                if (blue_ & long_) robot.turnTo6();
+                if (noTimeLeft()) return;
+            }
         }
         //PUT THE GLYPH IN
         {

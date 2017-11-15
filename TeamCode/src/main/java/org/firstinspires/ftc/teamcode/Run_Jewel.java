@@ -45,7 +45,7 @@ public class Run_Jewel {
 
         robot.colorBeacon.purple();
         robot.moveArm(armExtendedB, armExtendedE);
-        waitMillis(66);
+        waitMillis(11);
 
         //****   2. GO THRU POSITIONS TO FIND THE JEWEL *****************************************//
 
@@ -62,7 +62,7 @@ public class Run_Jewel {
             if (foundJewel()) {
                 foundPos = i;
                 robot.moveArm(armExtendedB, armExtendedE);
-                waitMillis(66);
+                waitMillis(11);
                 break;
             }
         }
@@ -80,7 +80,7 @@ public class Run_Jewel {
             //****   3. GO IN BETWEEN THE BALLS **************************************************//
 
             robot.moveInches(2.5, 0.22, 2);
-            waitMillis(66);
+            waitMillis(11);
 
             robot.moveArm(armKnockB, armKnockE);
             //****   4. KNOCK THE BALL ***********************************************************//
@@ -94,7 +94,7 @@ public class Run_Jewel {
                 robot.showTeamColor();
 
                 if (robot.blueTeam) {
-                    waitMillis(66);
+                    waitMillis(11);
                     robot.moveInches(-6.5 * 2, 0.44, 1);
                 }
             } else {
@@ -106,21 +106,20 @@ public class Run_Jewel {
                 robot.showTeamColor();
 
                 if (!robot.blueTeam) {
-                    waitMillis(66);
+                    waitMillis(11);
                     robot.moveInches(8, 0.88, 1);
                 } else {
-                    waitMillis(66);
+                    waitMillis(11);
                     robot.moveInches(-4, 0.88, 1);
                 }
             }
-            waitMillis(66);
+            waitMillis(11);
         } else {
             robot.moveArmPosZero();
             robot.showTeamColor();
             if (!robot.blueTeam) {
                 robot.moveInches(6.5, 0.88, 1);
-            }
-            else robot.moveInches(-6.5, 0.88, 1);
+            } else robot.moveInches(-6.5, 0.88, 1);
         }
 
         //****   6. PUT ARM BACK AT POS ZERO *************************************************//
@@ -128,7 +127,7 @@ public class Run_Jewel {
         robot.moveArmPosZero();
         robot.colorSensor.enableLed(false);
         robot.showTeamColor();
-        waitMillis(66);
+        waitMillis(11);
 
         robot.turnTo12();
         robot.stopRobot();
