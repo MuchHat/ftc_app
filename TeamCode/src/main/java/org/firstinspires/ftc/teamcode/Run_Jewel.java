@@ -41,21 +41,17 @@ public class Run_Jewel {
         double armExtendedB = 0.13;
         double armExtendedE = 0.65;
 
-        //****  1. ARM IN EXTENDED POSITION ******************************************************//
-
+        //ARM IN EXTENDED POSITION
         robot.colorBeacon.purple();
         robot.moveArm(armExtendedB, armExtendedE);
         waitMillis(11);
 
-        //****   2. GO THRU POSITIONS TO FIND THE JEWEL *****************************************//
-
+        //GO THRU POSITIONS TO FIND THE JEWEL
         for (int i = 0; i < findPositions; i++) {
-
             double crrBase = armFindJewelB[i];
             double crrElbow = armFindJewelE[i];
 
             robot.colorBeacon.purple();
-
             robot.moveArm(crrBase, crrElbow);
             waitMillis(66);
 
@@ -66,8 +62,7 @@ public class Run_Jewel {
                 break;
             }
         }
-        //****   KNOCK THE BALL IF COLOR FOUND ***************************************************//
-
+        // KNOCK THE BALL IF COLOR FOUND
         if (foundBlue || foundRed) {
 
             boolean knockFirst = true; //knock the ball in front or the other one
@@ -77,34 +72,24 @@ public class Run_Jewel {
             if (!robot.blueTeam && foundRed) knockFirst = false;
             if (!robot.blueTeam && !foundRed) knockFirst = true;
 
-            //****   3. GO IN BETWEEN THE BALLS **************************************************//
-
+            //GO IN BETWEEN THE JEWELS
             robot.moveInches(2.5, 0.22, 2);
             waitMillis(11);
 
+            //EXTEND ARM
             robot.moveArm(armKnockB, armKnockE);
-            //****   4. KNOCK THE BALL ***********************************************************//
 
+            //IF COLOR FOUND KNOCK AND MOVE TO EDGE
             if (!knockFirst) {
-                //*****  MOVE FORWARD AND REMAIN AT EDGE *************************************//
                 robot.moveInches(4, 0.44, 1);
-                // if blue move back to get to the edge of the platform
-
                 robot.moveArmPosZero();
-                robot.showTeamColor();
-
                 if (robot.blueTeam) {
                     waitMillis(11);
                     robot.moveInches(-6.5 * 2, 0.44, 1);
                 }
             } else {
-                //******  MOVE BACK THEN FW TO END UP AT EDGE ********************************//
                 robot.moveInches(-4, 0.44, 1);
-                //if red move fw to get to the edge of the platform
-
                 robot.moveArmPosZero();
-                robot.showTeamColor();
-
                 if (!robot.blueTeam) {
                     waitMillis(11);
                     robot.moveInches(8, 0.88, 1);
@@ -115,6 +100,7 @@ public class Run_Jewel {
             }
             waitMillis(11);
         } else {
+            // IF COLOR NOT FOUND JUST MOVE TO EDGE
             robot.moveArmPosZero();
             robot.showTeamColor();
             if (!robot.blueTeam) {
@@ -123,15 +109,14 @@ public class Run_Jewel {
             waitMillis(11);
         }
 
-        //****   6. PUT ARM BACK AT POS ZERO *************************************************//
-
+        //TURN OFF LED
         robot.moveArmPosZero();
         robot.colorSensor.enableLed(false);
         robot.showTeamColor();
         waitMillis(11);
 
+        //FIX HEADING
         robot.turnTo12();
-        robot.stopRobot();
     }
 
     boolean foundJewel() {

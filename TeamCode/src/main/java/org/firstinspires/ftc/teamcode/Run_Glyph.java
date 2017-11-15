@@ -68,7 +68,7 @@ public class Run_Glyph {
             showIfTargetSeen();
             if (noTimeLeft()) return;
         }
-        // MOVE OFF THE PLATFORM
+        // MOVE OFF THE PLATFORM, MOVE STARTS AT EDGE
         {
             if (red_) robot.moveInches(13.5, 0.8, 3);
             if (blue_) robot.moveInches(-9, 0.6, 3);
