@@ -113,9 +113,9 @@ public class Team_Hardware_V9 {
     double servoDefaultSpeed = 0.003;
 
     DeviceInterfaceModule deviceInterface;                  // Device Object
-    AnalogSensor frontSonar;                // Device Object
-    AnalogSensor leftSonar;                // Device Object
-    AnalogSensor rightSonar;                // Device Object
+    //AnalogSensor frontSonar;                // Device Object
+    //AnalogSensor leftSonar;                // Device Object
+    //AnalogSensor rightSonar;                // Device Object
 
     // ************************** HW CONSTRUCTOR  ************************************************//
 
@@ -150,9 +150,9 @@ public class Team_Hardware_V9 {
         colorBeacon = new MRIColorBeacon();
         colorBeacon.init(hwMap, "Beacon");
 
-        frontSonar = hwMap.get(AnalogSensor.class, "Front_Sonar");
-        leftSonar = hwMap.get(AnalogSensor.class, "Left_Sonar");
-        rightSonar = hwMap.get(AnalogSensor.class, "Right_Sonar");
+        //frontSonar = hwMap.get(AnalogSensor.class, "Front_Sonar");
+        //leftSonar = hwMap.get(AnalogSensor.class, "Left_Sonar");
+        //rightSonar = hwMap.get(AnalogSensor.class, "Right_Sonar");
 
         colorSensor.enableLed(false);
 
@@ -399,11 +399,11 @@ public class Team_Hardware_V9 {
         double crrPos = 0;
 
         if (sonarPosition == SonarPosition.FRONT) {
-            crrPos = frontSonar.readRawVoltage();
+            //crrPos = frontSonar.readRawVoltage();
         } else if (sonarPosition == SonarPosition.LEFT) {
-            crrPos = leftSonar.readRawVoltage();
+            //crrPos = leftSonar.readRawVoltage();
         } else {
-            crrPos = rightSonar.readRawVoltage();
+            //crrPos = rightSonar.readRawVoltage();
         }
 
         double crrError = endPos - crrPos;
@@ -438,11 +438,11 @@ public class Team_Hardware_V9 {
 
             waitMillis(111);
             if (sonarPosition == SonarPosition.FRONT) {
-                crrPos = frontSonar.readRawVoltage();
+                //crrPos = frontSonar.readRawVoltage();
             } else if (sonarPosition == SonarPosition.LEFT) {
-                crrPos = leftSonar.readRawVoltage();
+                //crrPos = leftSonar.readRawVoltage();
             } else {
-                crrPos = rightSonar.readRawVoltage();
+                //crrPos = rightSonar.readRawVoltage();
             }
             crrError = endPos - crrPos;
         }

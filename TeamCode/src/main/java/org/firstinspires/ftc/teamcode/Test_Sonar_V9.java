@@ -33,6 +33,8 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.AnalogSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -50,15 +52,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  *
  * @see <a href="http://modernroboticsinc.com/range-sensor">MR Range Sensor</a>
  */
-@Autonomous(name = "Test Sonar V9", group = "Test")
+@TeleOp(name = "Test Sonar V9", group = "Test")
 //@Disabled   // comment out or remove this line to enable this opmode
 public class Test_Sonar_V9 extends LinearOpMode {
 
-    ModernRoboticsI2cRangeSensor rangeSensor;
+    //ModernRoboticsI2cRangeSensor rangeSensor;
 
-    AnalogSensor frontSonar;
-    AnalogSensor leftSonar;
-    AnalogSensor rightSonar;
+    AnalogInput frontSonar;
+    AnalogInput leftSonar;
+    AnalogInput rightSonar;
 
     double target = 0;
 
@@ -71,35 +73,41 @@ public class Test_Sonar_V9 extends LinearOpMode {
 
         robot.init(hardwareMap);
 
-        rangeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "Front_Range_Sensor");
-        frontSonar = hardwareMap.get(AnalogSensor.class, "Front_Sonar");
-        leftSonar = hardwareMap.get(AnalogSensor.class, "Left_Sonar");
-        rightSonar = hardwareMap.get(AnalogSensor.class, "Right_Sonar");
+        //rangeSensor = hardwareMap.get(ModernRoboticsI2cRangeSensor.class, "Front_Range");
+        frontSonar = hardwareMap.get(AnalogInput.class, "Front_Sonar");
+        leftSonar = hardwareMap.get(AnalogInput.class, "Left_Sonar");
+        rightSonar = hardwareMap.get(AnalogInput.class, "Right_Sonar");
 
         waitForStart();
 
         while (opModeIsActive()) {
             telemetryUpdate();
 
-            if (gamepad1.dpad_left) target--;
-            if (gamepad1.dpad_right) target++;
+            if (gamepad1.dpad_left) {
+                target -= 0.01;
+                sleep(100);
+            }
+            if (gamepad1.dpad_right) {
+                target += 0.01;
+                sleep( 100 );
+            }
             if (gamepad1.dpad_up) target = 0;
             if (gamepad1.dpad_down) target = 0;
 
-            target = Range.clip(target, 0, 1024);
+            target = Range.clip(target, 0, 0.99);
 
 
             if (gamepad1.x)
-                moveSideBySonar_Test(target, 0.44, 6, Team_Hardware_V9.SonarPosition.LEFT);
+                moveBySonar(target, 0.44, 6, Team_Hardware_V9.SonarPosition.LEFT);
             if (gamepad1.b)
-                moveSideBySonar_Test(target, 0.44, 6, Team_Hardware_V9.SonarPosition.RIGHT);
+                moveBySonar(target, 0.44, 6, Team_Hardware_V9.SonarPosition.RIGHT);
             if (gamepad1.y)
-                moveSideBySonar_Test(target, 0.44, 6, Team_Hardware_V9.SonarPosition.FRONT);
+                moveBySonar(target, 0.44, 6, Team_Hardware_V9.SonarPosition.FRONT);
         }
 
     }
 
-    void moveSideBySonar_Test(double endPos, double movePower, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
+    void moveBySonar(double endPos, double movePower, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
 
         ElapsedTime moveTimer = new ElapsedTime();
         double minPower = 0.22; //TODO
@@ -108,18 +116,18 @@ public class Test_Sonar_V9 extends LinearOpMode {
         double crrPos = 0;
 
         if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
-            crrPos = frontSonar.readRawVoltage();
+            crrPos = frontSonar.getVoltage();
         } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
-            crrPos = leftSonar.readRawVoltage();
+            crrPos = leftSonar.getVoltage();
         } else {
-            crrPos = rightSonar.readRawVoltage();
+            crrPos = rightSonar.getVoltage();
         }
 
         crrError = endPos - crrPos;
         direction = crrError > 0 ? 1.0 : -1.0;
         moveTimer.reset();
 
-        while (moveTimer.seconds() < timeOutSec && crrError * direction > 0) {
+        while (moveTimer.seconds() < timeOutSec && crrError * direction > 0.01) {
 
             robot.leftDistanceControl = 0;
             robot.rightDistanceControl = 0;
@@ -132,10 +140,10 @@ public class Test_Sonar_V9 extends LinearOpMode {
             }
 
             if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
-                robot.leftPowerControl = crrPower * direction;
-                robot.rightPowerControl = crrPower * direction;
-                robot.leftPowerControlBack = crrPower * direction;
-                robot.rightPowerControlBack = crrPower * direction;
+                robot.leftPowerControl = -crrPower * direction;
+                robot.rightPowerControl = -crrPower * direction;
+                robot.leftPowerControlBack = -crrPower * direction;
+                robot.rightPowerControlBack = -crrPower * direction;
                 robot.setDrivesByPower();
 
             } else if( sonarPosition == Team_Hardware_V9.SonarPosition.LEFT){
@@ -156,11 +164,11 @@ public class Test_Sonar_V9 extends LinearOpMode {
 
             robot.waitMillis(111);
             if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
-                crrPos = frontSonar.readRawVoltage();
+                crrPos = frontSonar.getVoltage();
             } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
-                crrPos = leftSonar.readRawVoltage();
+                crrPos = leftSonar.getVoltage();
             } else {
-                crrPos = rightSonar.readRawVoltage();
+                crrPos = rightSonar.getVoltage();
             }
             crrError = endPos - crrPos;
             telemetryUpdate();
@@ -169,13 +177,13 @@ public class Test_Sonar_V9 extends LinearOpMode {
     }
 
     void telemetryUpdate() {
-        telemetry.addData("rangeSensor ultrasonic", rangeSensor.rawUltrasonic());
-        telemetry.addData("rangeSensor optical", rangeSensor.rawOptical());
-        telemetry.addData("rangeSensor cm optical", "%.2f cm", rangeSensor.cmOptical());
-        telemetry.addData("rangeSensor cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
-        telemetry.addData("frontSonar", "%.2f v", (double) frontSonar.readRawVoltage());
-        telemetry.addData("leftSonar", "%.2f v", (double) leftSonar.readRawVoltage());
-        telemetry.addData("rightSonar", "%.2f v", (double) rightSonar.readRawVoltage());
+        //telemetry.addData("rangeSensor ultrasonic", rangeSensor.rawUltrasonic());
+        //telemetry.addData("rangeSensor optical", rangeSensor.rawOptical());
+        //telemetry.addData("rangeSensor cm optical", "%.2f cm", rangeSensor.cmOptical());
+        //telemetry.addData("rangeSensor cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
+        telemetry.addData("frontSonar", "%.2f v", (double) frontSonar.getVoltage());
+        telemetry.addData("leftSonar", "%.2f v", (double) leftSonar.getVoltage());
+        telemetry.addData("rightSonar", "%.2f v", (double) rightSonar.getVoltage());
         telemetry.addData("crrError", "%.2f v", crrError);
         telemetry.addData("direction", "%.2f", direction);
         telemetry.addData("target", "%.2f v", target);
