@@ -97,10 +97,10 @@ public class Run_Glyph {
         // MOVE IN FRONT OF THE COLUMN
         for (int attempts = 0; attempts < 2; attempts++) {
             {
-                double redShortSonar[] = {0.4, 0.2, 0.1}; // L C R
-                double redLongSonar[] = {0.4, 0.2, 0.1}; // L C R
-                double blueShortSonar[] = {0.4, 0.2, 0.1}; // L C R
-                double blueLongSonar[] = {0.4, 0.2, 0.1}; // L C R
+                double redShortSonar[] = {62*5/512, 54*5/512, 46*5/512}; // L C R
+                double redLongSonar[] = {38*5/512, 30*5/512, 22*5/512}; // L C R
+                double blueShortSonar[] = {60*5/512, 52*5/512, 44*5/512}; // L C R
+                double blueLongSonar[] = {38*5/512, 30*5/512, 22*5/512}; // L C R
                 double columnSonarPos = 0.2;
 
                 if (red_ & short_) columnSonarPos = redShortSonar[columnIndex - 1];

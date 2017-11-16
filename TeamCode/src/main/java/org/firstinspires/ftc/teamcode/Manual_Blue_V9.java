@@ -5,15 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Manual Red V9", group = "Manual")
+@TeleOp(name = "Manual Blue V9", group = "Manual")
 // @Disabled
-public class Manual_Red_V9 extends LinearOpMode {
+public class Manual_Blue_V9 extends LinearOpMode {
 
     //********************************* HW VARIABLES *********************************************//
     private Team_Hardware_V9 robot = new Team_Hardware_V9();

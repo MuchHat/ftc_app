@@ -686,8 +686,8 @@ public class Team_Hardware_V9 {
 
     void setServos() {
 
-        leftClawControl = Range.clip(leftClawControl, 0, 1);
-        rightClawControl = Range.clip(rightClawControl, 0, 1);
+        leftClawControl = Range.clip(leftClawControl, 0.13, 1);
+        rightClawControl = Range.clip(rightClawControl, 0, 0.87);
 
         leftClaw.setPosition(leftClawControl);
         rightClaw.setPosition(rightClawControl);
