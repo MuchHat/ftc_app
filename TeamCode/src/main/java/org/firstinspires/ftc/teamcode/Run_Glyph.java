@@ -95,7 +95,7 @@ public class Run_Glyph {
             if (noTimeLeft()) return;
         }
         // MOVE IN FRONT OF THE COLUMN
-        for (int attempts = 0; attempts < 1; attempts++) {
+        for (int attempts = 0; attempts < 2; attempts++) {
             {
                 double redShortSonar[] = {0.48, 0.44, 0.40}; // L C R
                 double redLongSonar[] = {0.36, 0.32, 0.28}; // L C R
