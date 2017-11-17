@@ -57,7 +57,7 @@ public class Run_Glyph {
         // READ VUFORIA
         {
             if (blue_) robot.moveInches(-8, 0.44, 2);
-            for (int i = 0; i < 22; i++) {
+            for (int i = 0; i < 11; i++) {
                 if (vu.targetSeen()) {
                     break;
                 }
@@ -76,7 +76,7 @@ public class Run_Glyph {
             if (noTimeLeft()) return;
         }
         // TURN TOWARDS THE BOX
-        for (int attempts = 0; attempts < 2; attempts++) {
+        for (int attempts = 0; attempts < 1; attempts++) {
             if (red_ & short_) robot.turnTo3();
             if (red_ & long_) robot.turnTo12();
             if (blue_ & short_) robot.turnTo3();
@@ -95,23 +95,23 @@ public class Run_Glyph {
             if (noTimeLeft()) return;
         }
         // MOVE IN FRONT OF THE COLUMN
-        for (int attempts = 0; attempts < 2; attempts++) {
+        for (int attempts = 0; attempts < 1; attempts++) {
             {
-                double redShortSonar[] = {62*5/512, 54*5/512, 46*5/512}; // L C R
-                double redLongSonar[] = {38*5/512, 30*5/512, 22*5/512}; // L C R
-                double blueShortSonar[] = {60*5/512, 52*5/512, 44*5/512}; // L C R
-                double blueLongSonar[] = {38*5/512, 30*5/512, 22*5/512}; // L C R
-                double columnSonarPos = 0.2;
+                double redShortSonar[] = {0.48, 0.44, 0.40}; // L C R
+                double redLongSonar[] = {0.36, 0.32, 0.28}; // L C R
+                double blueShortSonar[] = {0.48, 0.44, 0.40}; // L C R
+                double blueLongSonar[] = {0.36, 0.32, 0.28}; // L C R
+                double columnSonarPos = 0.44;
 
                 if (red_ & short_) columnSonarPos = redShortSonar[columnIndex - 1];
                 if (red_ & long_) columnSonarPos = redLongSonar[columnIndex - 1];
                 if (blue_ & short_) columnSonarPos = blueShortSonar[columnIndex - 1];
                 if (blue_ & long_) columnSonarPos = blueLongSonar[columnIndex - 1];
 
-                if (red_ & short_) robot.moveBySonarRight(columnSonarPos, 0.44, 6);
-                if (red_ & long_) robot.moveBySonarRight(columnSonarPos, 0.44, 6);
-                if (blue_ & short_) robot.moveBySonarLeft(columnSonarPos, 0.44, 6);
-                if (blue_ & long_) robot.moveBySonarLeft(columnSonarPos, 0.44, 6);
+                if (red_ & short_) robot.moveBySonarRight(columnSonarPos, 0.33, 6);
+                if (red_ & long_) robot.moveBySonarRight(columnSonarPos, 0.33, 6);
+                if (blue_ & short_) robot.moveBySonarLeft(columnSonarPos, 0.33, 6);
+                if (blue_ & long_) robot.moveBySonarLeft(columnSonarPos, 0.33, 6);
 
                 if (noTimeLeft()) return;
             }

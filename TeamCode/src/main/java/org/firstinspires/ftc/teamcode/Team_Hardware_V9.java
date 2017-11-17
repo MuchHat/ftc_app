@@ -48,10 +48,9 @@ import static android.os.SystemClock.sleep;
 // ************************** ROBOT HW CLASS *****************************************************//
 
 
-
 public class Team_Hardware_V9 {
 
-    public enum SonarPosition{
+    public enum SonarPosition {
         FRONT,
         LEFT,
         RIGHT
@@ -221,8 +220,8 @@ public class Team_Hardware_V9 {
 
     void turn2Heading(double endHeading) {
 
-        double turnPower = 0.88;
-        double turnPowerMed = 0.66;
+        double turnPower = 0.66;
+        double turnPowerMed = 0.33;
         double turnPowerLow = 0.11;
         int prevBeaconColor = colorBeacon.getColorNumber();
 
@@ -394,7 +393,7 @@ public class Team_Hardware_V9 {
     void moveBySonar(double endPos, double movePower, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
 
         ElapsedTime moveTimer = new ElapsedTime();
-        double minPower = 0.22; //TODO
+        double minPower = 0.15; //TODO
         double rampDown = 0.08; //TODO
         double crrPower = movePower;
         double crrPos = 0;
@@ -407,7 +406,7 @@ public class Team_Hardware_V9 {
             crrPos = rightSonar.getVoltage();
         }
 
-        if( crrPos == 0 ){
+        if (crrPos == 0) {
             // IF NO SONAR SKIP
             return;
         }
@@ -416,7 +415,7 @@ public class Team_Hardware_V9 {
         double direction = crrError > 0 ? 1.0 : -1.0;
         moveTimer.reset();
 
-        if( Math.abs(crrError ) > 0.8){ //TODO
+        if (Math.abs(crrError) > 0.8) { //TODO
             // IF ERROR TOO BIG SKIP
             return;
         }
@@ -440,7 +439,7 @@ public class Team_Hardware_V9 {
                 rightPowerControlBack = -crrPower * direction;
                 setDrivesByPower();
 
-            } else if( sonarPosition == Team_Hardware_V9.SonarPosition.LEFT){
+            } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
                 leftPowerControl = -crrPower * direction;
                 rightPowerControl = crrPower * direction;
                 leftPowerControlBack = crrPower * direction;
@@ -467,7 +466,6 @@ public class Team_Hardware_V9 {
         }
         stopRobot();
     }
-
 
 
     void moveLinear(double distanceMM, double power, double timeOut, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
@@ -590,7 +588,15 @@ public class Team_Hardware_V9 {
         }
         encodersTimer.reset();
 
+        double stallDiff = 2;
+        double leftPrev = leftDrive.getCurrentPosition();
+        double rightPrev = rightDrive.getCurrentPosition();
+        double leftBackPrev = leftDriveBack.getCurrentPosition();
+        double rightBackPrev = rightDriveBack.getCurrentPosition();
+
         while (encodersTimer.seconds() < timeOutSec) {
+
+            waitMillis(133);
 
             boolean stillRunning = leftDrive.isBusy() ||
                     rightDrive.isBusy() ||
@@ -598,6 +604,31 @@ public class Team_Hardware_V9 {
                     rightDriveBack.isBusy();
             if (!stillRunning) {
                 break;
+            }
+
+            boolean stalled = (Math.abs(leftDrive.getCurrentPosition() - leftPrev) < stallDiff) ||
+                    (Math.abs(rightDrive.getCurrentPosition() - rightPrev) < stallDiff) ||
+                    (Math.abs(leftDriveBack.getCurrentPosition() - leftBackPrev) < stallDiff) ||
+                    (Math.abs(rightDriveBack.getCurrentPosition() - rightBackPrev) < stallDiff);
+
+            leftPrev = leftDrive.getCurrentPosition();
+            rightPrev = rightDrive.getCurrentPosition();
+            leftBackPrev = leftDriveBack.getCurrentPosition();
+            rightBackPrev = rightDriveBack.getCurrentPosition();
+
+            //if stalled stop and restart
+            if (stalled) {
+                leftDrive.setPower(0);
+                rightDrive.setPower(0);
+                leftDriveBack.setPower(0);
+                rightDriveBack.setPower(0);
+
+                waitMillis(133);
+
+                leftDrive.setPower(Math.abs(leftPowerControl));
+                rightDrive.setPower(Math.abs(rightPowerControl));
+                leftDriveBack.setPower(Math.abs(leftPowerControlBack));
+                rightDriveBack.setPower(Math.abs(rightPowerControlBack));
             }
         }
 
