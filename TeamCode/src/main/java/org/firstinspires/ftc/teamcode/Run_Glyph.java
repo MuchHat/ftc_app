@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import static android.os.SystemClock.sleep;
 
 //********************************* MAIN OP CLASS ************************************************//
@@ -53,76 +54,90 @@ public class Run_Glyph {
             timer.reset();
             if (noTimeLeft()) return;
         }
-        // READ VUFORIA
+        // DETERMINE WHAT COLUMN
         {
-            if (blue_) robot.moveInches(-8, 0.44, 2);
-            for (int i = 0; i < 11; i++) {
-                if (vu.targetSeen()) {
-                    break;
-                }
-                robot.colorBeacon.white();
-                waitMillis(66);
-                if (noTimeLeft()) return;
+            if (vu.targetSeen()) {
+                columnIndex = vu.lastTargetSeenNo;
+            } else {
+                columnIndex = 2; //go middle if no vuforia
             }
             showIfTargetSeen();
             if (noTimeLeft()) return;
         }
         // MOVE OFF THE PLATFORM, MOVE STARTS AT EDGE
         {
-            if (red_) robot.moveInches(12, 0.88, 3);
-            if (blue_) robot.moveInches(-4, 0.66, 3);
-            showIfTargetSeen();
+            if (red_ && short_) robot.moveInches(11, 0.88, 4);
+            if (red_ && long_) robot.moveInches(11, 0.88, 4);
+            if (blue_ && short_) robot.moveInches(-11, 0.88, 4);
+            if (blue_ && long_) robot.moveInches(-11, 0.88, 4);
+
+            if (noTimeLeft()) return;
+        }
+        // BACK AGAINST THE PLATFORM
+        {
+            if (red_) robot.moveInches(-1, 0.22, 1);
+            if (blue_) robot.moveInches(1, 0.22, 1);
+            if (noTimeLeft()) return;
+        }
+        // MOVE IN FRONT OF BOX USING ENCODERS
+        {
+            if (red_ && long_) robot.moveInches(4, 0.88, 4);
+            if (blue_ && long_) robot.moveInches(-4, 0.88, 4);
+
+            double redShortEncoder[] = {24, 16, 8}; // L C R
+            double redLongEncoder[] = {24, 16, 8}; // L C R
+            double blueShortEncoder[] = {24, 16, 8}; // L C R
+            double blueLongEncoder[] = {24, 16, 8}; // L C R
+            double moveDistance = 8;
+
+            if (red_ && short_) moveDistance = redShortEncoder[columnIndex - 1];
+            if (red_ && long_) moveDistance = redLongEncoder[columnIndex - 1];
+            if (blue_ && short_) moveDistance = blueShortEncoder[columnIndex - 1];
+            if (blue_ && long_) moveDistance = blueLongEncoder[columnIndex - 1];
+
+            if (red_ && short_) robot.moveInches(moveDistance, 0.22, 1);
+            if (red_ && long_) robot.moveSideInches(moveDistance, 0.22, 1);
+            if (blue_ && short_) robot.moveInches(-moveDistance, 0.22, 1);
+            if (blue_ && long_) robot.moveSideInches(-moveDistance, 0.22, 1);
             if (noTimeLeft()) return;
         }
         // TURN TOWARDS THE BOX
-        for (int attempts = 0; attempts < 1; attempts++) {
-            if (red_ & short_) robot.turnTo3();
-            if (red_ & long_) robot.turnTo12();
-            if (blue_ & short_) robot.turnTo3();
-            if (blue_ & long_) robot.turnTo6();
-            showIfTargetSeen();
-            if (noTimeLeft()) return;
-        }
-        // DETERMINE WHAT COLUMN
         {
-            if (vu.targetSeen()) {
-                columnIndex = vu.lastTargetSeenNo;
-                showIfTargetSeen();
-            } else {
-                columnIndex = 2; //go middle if no vuforia
-            }
+            if (red_ && short_) robot.turnTo3();
+            if (red_ && long_) robot.turnTo12();
+            if (blue_ && short_) robot.turnTo3();
+            if (blue_ && long_) robot.turnTo6();
             if (noTimeLeft()) return;
         }
-        // MOVE IN FRONT OF THE COLUMN
-        for (int attempts = 0; attempts < 1; attempts++) {
-            {
-                double redShortSonar[] = {0.249, 0.171, 0.117}; // L C R
-                double redLongSonar[] = {0.36, 0.32, 0.28}; // L C R
-                double blueShortSonar[] = {0.12, 0.18, 0.24}; // L C R
-                double blueLongSonar[] = {0.36, 0.32, 0.28}; // L C R
-                double columnSonarPos = 0.44;
+        // MOVE IN FRONT OF THE COLUMN USING SONAR
+        {
+            double redShortSonar[] = {0.249, 0.171, 0.117}; // L C R
+            double redLongSonar[] = {0.36, 0.32, 0.28}; // L C R
+            double blueShortSonar[] = {0.12, 0.18, 0.24}; // L C R
+            double blueLongSonar[] = {0.36, 0.32, 0.28}; // L C R
+            double columnSonarPos = 0.44;
 
-                if (red_ & short_) columnSonarPos = redShortSonar[columnIndex - 1];
-                if (red_ & long_) columnSonarPos = redLongSonar[columnIndex - 1];
-                if (blue_ & short_) columnSonarPos = blueShortSonar[columnIndex - 1];
-                if (blue_ & long_) columnSonarPos = blueLongSonar[columnIndex - 1];
+            if (red_ && short_) columnSonarPos = redShortSonar[columnIndex - 1];
+            if (red_ && long_) columnSonarPos = redLongSonar[columnIndex - 1];
+            if (blue_ && short_) columnSonarPos = blueShortSonar[columnIndex - 1];
+            if (blue_ && long_) columnSonarPos = blueLongSonar[columnIndex - 1];
 
-                if (red_ & short_) robot.moveBySonarRight(columnSonarPos, 0.44, 6);
-                if (red_ & long_) robot.moveBySonarRight(columnSonarPos, 0.44, 6);
-                if (blue_ & short_) robot.moveBySonarLeft(columnSonarPos, 0.44, 6);
-                if (blue_ & long_) robot.moveBySonarLeft(columnSonarPos, 0.44, 6);
+            if (red_ && short_) robot.moveBySonarRight(columnSonarPos, 0.44, 6);
+            if (red_ && long_) robot.moveBySonarRight(columnSonarPos, 0.44, 6);
+            if (blue_ && short_) robot.moveBySonarLeft(columnSonarPos, 0.44, 6);
+            if (blue_ && long_) robot.moveBySonarLeft(columnSonarPos, 0.44, 6);
 
-                if (noTimeLeft()) return;
-            }
-            // TURN TOWARDS THE BOX
-            {
-                if (red_ & short_) robot.turnTo3();
-                if (red_ & long_) robot.turnTo12();
-                if (blue_ & short_) robot.turnTo3();
-                if (blue_ & long_) robot.turnTo6();
-                if (noTimeLeft()) return;
-            }
+            if (noTimeLeft()) return;
         }
+        // TURN TOWARDS THE BOX
+        {
+            if (red_ && short_) robot.turnTo3();
+            if (red_ && long_) robot.turnTo12();
+            if (blue_ && short_) robot.turnTo3();
+            if (blue_ && long_) robot.turnTo6();
+            if (noTimeLeft()) return;
+        }
+
         //PUT THE GLYPH IN
         {
             robot.moveInches(5.5, 0.22, 1);
@@ -130,6 +145,7 @@ public class Run_Glyph {
             waitMillis(22);
             if (noTimeLeft()) return;
         }
+
         //BACKOFF
         {
             robot.moveInches(-4, 1, 1);
@@ -138,6 +154,7 @@ public class Run_Glyph {
             robot.moveInches(-4, 1, 1);
             robot.stopRobot();
         }
+
     }
 
     void runOld(double secsLeft) {

@@ -439,21 +439,37 @@ public class Team_Hardware_V9 {
                 rightPowerControlBack = -crrPower * direction;
                 setDrivesByPower();
 
-            } else {
+            }
+            if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT ){
                 leftPowerControl = -crrPower * direction;
                 rightPowerControl = crrPower * direction;
                 leftPowerControlBack = crrPower * direction;
                 rightPowerControlBack = -crrPower * direction;
                 setDrivesByPower();
             }
+            if (sonarPosition == Team_Hardware_V9.SonarPosition.RIGHT ){
+                leftPowerControl = crrPower * direction;
+                rightPowerControl = -crrPower * direction;
+                leftPowerControlBack = -crrPower * direction;
+                rightPowerControlBack = crrPower * direction;
+                setDrivesByPower();
+            }
 
             waitMillis(111);
-            if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
-                crrPos = frontSonar.getVoltage();
-            } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
-                crrPos = leftSonar.getVoltage();
-            } else {
-                crrPos = rightSonar.getVoltage();
+            for( int attempts = 0; attempts < 11; attempts++ ) {
+                if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
+                    crrPos = frontSonar.getVoltage();
+                } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
+                    crrPos = leftSonar.getVoltage();
+                } else {
+                    crrPos = rightSonar.getVoltage();
+                }
+                if( crrPos > 0.09 && crrPos < endPos * 2 ){
+                    break;
+                }
+            }
+            if( crrPos < 0.09 || crrPos > endPos * 2 ){
+                continue;
             }
             crrError = endPos - crrPos;
         }

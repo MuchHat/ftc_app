@@ -82,17 +82,32 @@ public class Run_Jewel {
             //EXTEND ARM
             robot.moveArm(armKnockB, armKnockE);
 
-            //KNOCK AND MOVE TO EDGE
+            //KNOCK AND MOVE AT THE EDGE
+            double edgeAdjustment = 0; //0 means middle is 6 from each edge, 1 means 7
             if (knockFirst) {
-                robot.moveInches(-4, 0.22, 1);
-                robot.moveArmPosZero();
-                if (red_) robot.moveInches(8, 0.44, 1);
-                if (blue_) robot.moveInches(-4, 0.44, 1);
+                if( red_ ){
+                    robot.moveInches(-4, 0.22, 1);
+                    robot.moveArmPosZero();
+                    robot.moveInches(10 + edgeAdjustment, 0.44, 1); // should be in front of Vuforia
+                }
+                if( blue_){
+                    robot.moveInches(-4, 0.44, 1);
+                    robot.moveArmPosZero();
+                    robot.moveInches(4 + 6 + edgeAdjustment, 0.44, 1); // should be in front of Vuforia
+                    waitMillis(333);
+                    robot.moveInches(( -6 - edgeAdjustment) * 2, 0.44, 1);
+                }
             }
             if (!knockFirst) {
-                robot.moveInches(4, 0.22, 1);
-                robot.moveArmPosZero();
-                if (blue_) robot.moveInches(-13, 0.44, 1);
+                if( red_ ){
+                    robot.moveInches(6 + edgeAdjustment, 0.22, 1);
+                    robot.moveArmPosZero();
+                }
+                if (blue_) {
+                    robot.moveInches(6 + edgeAdjustment, 0.22, 1);
+                    robot.moveArmPosZero();
+                    robot.moveInches((-6 - edgeAdjustment) * 2, 0.44, 1);
+                }
             }
         }
         // IF COLOR NOT FOUND JUST MOVE TO EDGE

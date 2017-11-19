@@ -89,7 +89,7 @@ public class Test_Sonar_V9 extends LinearOpMode {
             }
             if (gamepad1.dpad_right) {
                 target += 0.01;
-                sleep( 100 );
+                sleep(100);
             }
             if (gamepad1.dpad_up) target = 0;
             if (gamepad1.dpad_down) target = 0;
@@ -101,8 +101,6 @@ public class Test_Sonar_V9 extends LinearOpMode {
                 moveBySonar(target, 0.44, 6, Team_Hardware_V9.SonarPosition.LEFT);
             if (gamepad1.b)
                 moveBySonar(target, 0.44, 6, Team_Hardware_V9.SonarPosition.RIGHT);
-            if (gamepad1.y)
-                moveBySonar(target, 0.44, 6, Team_Hardware_V9.SonarPosition.FRONT);
         }
 
     }
@@ -110,14 +108,12 @@ public class Test_Sonar_V9 extends LinearOpMode {
     void moveBySonar(double endPos, double movePower, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
 
         ElapsedTime moveTimer = new ElapsedTime();
-        double minPower = 0.22; //TODO
+        double minPower = 0.33; //TODO
         double rampDown = 0.08; //TODO
         double crrPower = movePower;
         double crrPos = 0;
 
-        if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
-            crrPos = frontSonar.getVoltage();
-        } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
+        if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
             crrPos = leftSonar.getVoltage();
         } else {
             crrPos = rightSonar.getVoltage();
@@ -127,7 +123,7 @@ public class Test_Sonar_V9 extends LinearOpMode {
         direction = crrError > 0 ? 1.0 : -1.0;
         moveTimer.reset();
 
-        while (moveTimer.seconds() < timeOutSec && crrError * direction > 0.01) {
+        while (moveTimer.seconds() < timeOutSec && crrError * direction > 0) {
 
             robot.leftDistanceControl = 0;
             robot.rightDistanceControl = 0;
@@ -146,7 +142,7 @@ public class Test_Sonar_V9 extends LinearOpMode {
                 robot.rightPowerControlBack = -crrPower * direction;
                 robot.setDrivesByPower();
 
-            } else if( sonarPosition == Team_Hardware_V9.SonarPosition.LEFT){
+            } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
                 robot.leftPowerControl = -crrPower * direction;
                 robot.rightPowerControl = crrPower * direction;
                 robot.leftPowerControlBack = crrPower * direction;

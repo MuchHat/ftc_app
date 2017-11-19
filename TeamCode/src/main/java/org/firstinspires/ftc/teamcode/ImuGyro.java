@@ -1,7 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.hardware.bosch.NaiveAccelerationIntegrator;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -43,11 +47,8 @@ public class ImuGyro {
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled = false;
         parameters.loggingTag = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        parameters.accelerationIntegrationAlgorithm = new ImuGyroIntegrator();
 
-        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
-        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
-        // and named "Gyro_Bosh".
         imu = hardwareMap.get(BNO055IMU.class, "Gyro_Bosh");
         isAvailable = imu.initialize(parameters);
     }
@@ -72,7 +73,7 @@ public class ImuGyro {
         position = imu.getPosition();
         return position.x;
     }
-    double getXincline(){
+    double getInclineX(){
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return (AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.secondAngle) + 360)%360;
@@ -82,7 +83,7 @@ public class ImuGyro {
         position = imu.getPosition();
         return position.y;
     }
-    double getYincline(){
+    double getInclineY(){
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return (AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.thirdAngle) + 360)%360;
