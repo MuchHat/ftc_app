@@ -393,7 +393,7 @@ public class Team_Hardware_V9 {
     void moveBySonar(double endPos, double movePower, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
 
         ElapsedTime moveTimer = new ElapsedTime();
-        double minPower = 0.15; //TODO
+        double minPower = 0.33; //TODO
         double rampDown = 0.08; //TODO
         double crrPower = movePower;
         double crrPos = 0;
@@ -439,18 +439,11 @@ public class Team_Hardware_V9 {
                 rightPowerControlBack = -crrPower * direction;
                 setDrivesByPower();
 
-            } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
+            } else {
                 leftPowerControl = -crrPower * direction;
                 rightPowerControl = crrPower * direction;
                 leftPowerControlBack = crrPower * direction;
                 rightPowerControlBack = -crrPower * direction;
-                setDrivesByPower();
-
-            } else {
-                leftPowerControl = crrPower * direction;
-                rightPowerControl = -crrPower * direction;
-                leftPowerControlBack = -crrPower * direction;
-                rightPowerControlBack = crrPower * direction;
                 setDrivesByPower();
             }
 

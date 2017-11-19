@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import static android.os.SystemClock.sleep;
 
 //********************************* MAIN OP CLASS ************************************************//
@@ -25,12 +24,12 @@ public class Run_Glyph {
     }
 
     boolean noTimeLeft() {
-        waitMillis(11);
+        /*waitMillis(11);
         if ((secsLeftAtStart - timer.seconds()) > 1) {
             return false;
         }
-        robot.stopRobot();
-        return true;
+        robot.stopRobot();*/
+        return false;
     }
 
     void run(double secsLeft) {
@@ -95,11 +94,11 @@ public class Run_Glyph {
             if (noTimeLeft()) return;
         }
         // MOVE IN FRONT OF THE COLUMN
-        for (int attempts = 0; attempts < 2; attempts++) {
+        for (int attempts = 0; attempts < 1; attempts++) {
             {
-                double redShortSonar[] = {0.48, 0.44, 0.40}; // L C R
+                double redShortSonar[] = {0.249, 0.171, 0.117}; // L C R
                 double redLongSonar[] = {0.36, 0.32, 0.28}; // L C R
-                double blueShortSonar[] = {0.48, 0.44, 0.40}; // L C R
+                double blueShortSonar[] = {0.12, 0.18, 0.24}; // L C R
                 double blueLongSonar[] = {0.36, 0.32, 0.28}; // L C R
                 double columnSonarPos = 0.44;
 
@@ -108,10 +107,10 @@ public class Run_Glyph {
                 if (blue_ & short_) columnSonarPos = blueShortSonar[columnIndex - 1];
                 if (blue_ & long_) columnSonarPos = blueLongSonar[columnIndex - 1];
 
-                if (red_ & short_) robot.moveBySonarRight(columnSonarPos, 0.33, 6);
-                if (red_ & long_) robot.moveBySonarRight(columnSonarPos, 0.33, 6);
-                if (blue_ & short_) robot.moveBySonarLeft(columnSonarPos, 0.33, 6);
-                if (blue_ & long_) robot.moveBySonarLeft(columnSonarPos, 0.33, 6);
+                if (red_ & short_) robot.moveBySonarRight(columnSonarPos, 0.44, 6);
+                if (red_ & long_) robot.moveBySonarRight(columnSonarPos, 0.44, 6);
+                if (blue_ & short_) robot.moveBySonarLeft(columnSonarPos, 0.44, 6);
+                if (blue_ & long_) robot.moveBySonarLeft(columnSonarPos, 0.44, 6);
 
                 if (noTimeLeft()) return;
             }

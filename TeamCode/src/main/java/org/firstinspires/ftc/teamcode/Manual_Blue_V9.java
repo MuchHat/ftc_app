@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.Range;
 
 //********************************* MAIN OP CLASS ************************************************//
 
-@TeleOp(name = "Manual Red V9", group = "Manual")
+@TeleOp(name = "Manual Blue V9", group = "Manual")
 // @Disabled
 public class Manual_Blue_V9 extends LinearOpMode {
 
