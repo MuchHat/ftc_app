@@ -83,30 +83,29 @@ public class Run_Jewel {
             robot.moveArm(armKnockB, armKnockE);
 
             //KNOCK AND MOVE AT THE EDGE
-            double edgeAdjustment = 0; //0 means middle is 6 from each edge, 1 means 7
             if (knockFirst) {
                 if( red_ ){
                     robot.moveInches(-4, 0.22, 1);
                     robot.moveArmPosZero();
-                    robot.moveInches(10 + edgeAdjustment, 0.44, 1); // should be in front of Vuforia
+                    robot.moveInches(12, 0.44, 1); // should be in front of Vuforia
                 }
                 if( blue_){
                     robot.moveInches(-4, 0.44, 1);
                     robot.moveArmPosZero();
-                    robot.moveInches(4 + 6 + edgeAdjustment, 0.44, 1); // should be in front of Vuforia
+                    robot.moveInches(10, 0.44, 1); // should be in front of Vuforia
                     waitMillis(333);
-                    robot.moveInches(( -6 - edgeAdjustment) * 2, 0.44, 1);
+                    robot.moveInches((-6) * 2, 0.44, 1);
                 }
             }
             if (!knockFirst) {
                 if( red_ ){
-                    robot.moveInches(6 + edgeAdjustment, 0.22, 1);
+                    robot.moveInches(7.5, 0.44, 1);
                     robot.moveArmPosZero();
                 }
                 if (blue_) {
-                    robot.moveInches(6 + edgeAdjustment, 0.22, 1);
+                    robot.moveInches(6, 0.22, 1);
                     robot.moveArmPosZero();
-                    robot.moveInches((-6 - edgeAdjustment) * 2, 0.44, 1);
+                    robot.moveInches(-6 * 2, 0.44, 1);
                 }
             }
         }
@@ -129,7 +128,6 @@ public class Run_Jewel {
     }
 
     boolean foundJewel() {
-
         if (robot.colorSensor.red() > robot.colorSensor.blue()) {
             foundRed = true;
             foundBlue = false;
@@ -148,12 +146,6 @@ public class Run_Jewel {
     private void waitMillis(double millis) {
 
         sleep((long) millis);
-//        millis = Range.clip(millis, 0.01, millis);
-//        runtimeWait.reset();
-//        while (runtimeWait.nanoseconds() < millis * 1000 * 1000) {
-//            idle();
-//        }
-
     }
 }
 

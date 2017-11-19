@@ -85,7 +85,7 @@ public class Test_Encoders_V9 extends LinearOpMode {
                 sleep(100);
             }
 
-            target = Range.clip(target, 0, 2.0);
+            target = Range.clip(target, 0, 30.0);
             power = Range.clip(power, 0.11, 0.88);
 
             if (gamepad1.a)
@@ -100,8 +100,8 @@ public class Test_Encoders_V9 extends LinearOpMode {
     }
 
     void telemetryUpdate() {
-        telemetry.addData("target", "%.2f v", target);
-        telemetry.addData("power", "%.2f v", power);
+        telemetry.addData("target", "%.2f inches", target);
+        telemetry.addData("power", "%.2f power", power);
         telemetry.update();
     }
 }

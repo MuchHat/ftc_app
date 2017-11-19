@@ -29,16 +29,13 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.AnalogSensor;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -97,11 +94,11 @@ public class Team_Hardware_V9 {
     double gameStartHeading = 0;
 
     //********************************* CLAW POS ************************************************//
-    double clawClose[] = {0.42, 0.63};
+    double clawClose[] = {0.28, 0.71};
     double clawZero[] = {1.00, 0.00};
     double clawOpen[] = {0.53, 0.51};
     double clawOpenWide[] = {0.69, 0.30};
-    double clawCloseAuto[] = {0.42, 0.60};
+    double clawCloseAuto[] = {0.28, 0.71};
     double clawOpenAuto[] = {0.53, 0.51};
 
     //********************************* ARM POS *************************************************//
@@ -415,7 +412,7 @@ public class Team_Hardware_V9 {
         double direction = crrError > 0 ? 1.0 : -1.0;
         moveTimer.reset();
 
-        if (Math.abs(crrError) > 0.8) { //TODO
+        if (Math.abs(crrError) > 0.2) { //TODO
             // IF ERROR TOO BIG SKIP
             return;
         }
@@ -786,14 +783,7 @@ public class Team_Hardware_V9 {
     }
 
     void waitMillis(double millis) {
-
         sleep((long) millis);
-//        millis = Range.clip(millis, 0.01, millis);
-//        runtimeWait.reset();
-//        while (runtimeWait.nanoseconds() < millis * 1000 * 1000) {
-//            idle();
-//        }
-
     }
 
 

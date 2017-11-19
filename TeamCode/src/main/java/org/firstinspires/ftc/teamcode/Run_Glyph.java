@@ -66,7 +66,7 @@ public class Run_Glyph {
         }
         // MOVE OFF THE PLATFORM, MOVE STARTS AT EDGE
         {
-            if (red_ && short_) robot.moveInches(11, 0.88, 4);
+            if (red_ && short_) robot.moveInches(6.7, 0.88, 4);
             if (red_ && long_) robot.moveInches(11, 0.88, 4);
             if (blue_ && short_) robot.moveInches(-11, 0.88, 4);
             if (blue_ && long_) robot.moveInches(-11, 0.88, 4);
@@ -81,11 +81,11 @@ public class Run_Glyph {
         }
         // MOVE IN FRONT OF BOX USING ENCODERS
         {
-            if (red_ && long_) robot.moveInches(4, 0.88, 4);
+            if (red_ && long_) robot.moveInches(2, 0.88, 4);
             if (blue_ && long_) robot.moveInches(-4, 0.88, 4);
 
-            double redShortEncoder[] = {24, 16, 8}; // L C R
-            double redLongEncoder[] = {24, 16, 8}; // L C R
+            double redShortEncoder[] = {24, 16.5, 10}; // L C R
+            double redLongEncoder[] = {20.5, 14, 6.5}; // L C R
             double blueShortEncoder[] = {24, 16, 8}; // L C R
             double blueLongEncoder[] = {24, 16, 8}; // L C R
             double moveDistance = 8;
@@ -95,10 +95,10 @@ public class Run_Glyph {
             if (blue_ && short_) moveDistance = blueShortEncoder[columnIndex - 1];
             if (blue_ && long_) moveDistance = blueLongEncoder[columnIndex - 1];
 
-            if (red_ && short_) robot.moveInches(moveDistance, 0.22, 1);
-            if (red_ && long_) robot.moveSideInches(moveDistance, 0.22, 1);
-            if (blue_ && short_) robot.moveInches(-moveDistance, 0.22, 1);
-            if (blue_ && long_) robot.moveSideInches(-moveDistance, 0.22, 1);
+            if (red_ && short_) robot.moveInches(moveDistance, 0.44, 6);
+            if (red_ && long_) robot.moveSideInches(moveDistance, 0.44, 6);
+            if (blue_ && short_) robot.moveInches(-moveDistance, 0.44, 6);
+            if (blue_ && long_) robot.moveSideInches(-moveDistance, 0.44, 6);
             if (noTimeLeft()) return;
         }
         // TURN TOWARDS THE BOX
@@ -111,8 +111,8 @@ public class Run_Glyph {
         }
         // MOVE IN FRONT OF THE COLUMN USING SONAR
         {
-            double redShortSonar[] = {0.249, 0.171, 0.117}; // L C R
-            double redLongSonar[] = {0.36, 0.32, 0.28}; // L C R
+            double redShortSonar[] = {0.27, 0.22, 0.14}; // L C R
+            double redLongSonar[] = {0.425, 0.325, 0.245}; // L C R
             double blueShortSonar[] = {0.12, 0.18, 0.24}; // L C R
             double blueLongSonar[] = {0.36, 0.32, 0.28}; // L C R
             double columnSonarPos = 0.44;
@@ -122,10 +122,10 @@ public class Run_Glyph {
             if (blue_ && short_) columnSonarPos = blueShortSonar[columnIndex - 1];
             if (blue_ && long_) columnSonarPos = blueLongSonar[columnIndex - 1];
 
-            if (red_ && short_) robot.moveBySonarRight(columnSonarPos, 0.44, 6);
-            if (red_ && long_) robot.moveBySonarRight(columnSonarPos, 0.44, 6);
-            if (blue_ && short_) robot.moveBySonarLeft(columnSonarPos, 0.44, 6);
-            if (blue_ && long_) robot.moveBySonarLeft(columnSonarPos, 0.44, 6);
+            if (red_ && short_) robot.moveBySonarRight(columnSonarPos, 0.44, 1);
+            if (red_ && long_) robot.moveBySonarRight(columnSonarPos, 0.44, 1);
+            if (blue_ && short_) robot.moveBySonarLeft(columnSonarPos, 0.44, 1);
+            if (blue_ && long_) robot.moveBySonarLeft(columnSonarPos, 0.44, 1);
 
             if (noTimeLeft()) return;
         }
