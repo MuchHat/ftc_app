@@ -567,6 +567,11 @@ public class Team_Hardware_V9 {
         leftDriveBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightDriveBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
+        leftPowerControl = Range.clip(leftPowerControl, -1, 1);
+        rightPowerControl = Range.clip(rightPowerControl, -1, 1);
+        leftPowerControlBack = Range.clip(leftPowerControlBack, -1, 1);
+        rightPowerControlBack = Range.clip(rightPowerControlBack, -1, 1);
+
         leftDrive.setPower(Math.abs(leftPowerControl));
         rightDrive.setPower(Math.abs(rightPowerControl));
         leftDriveBack.setPower(Math.abs(leftPowerControlBack));

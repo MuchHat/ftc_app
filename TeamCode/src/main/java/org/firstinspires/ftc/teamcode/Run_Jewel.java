@@ -6,13 +6,14 @@ import static android.os.SystemClock.sleep;
 
 public class Run_Jewel {
 
+    //********************************* VARIABLES *********************************************//
+
     boolean foundBlue = false;
     boolean foundRed = false;
-
-    //********************************* HW VARIABLES *********************************************//
     Team_Hardware_V9 robot = null;
+    double speedIncrease = 1.0;
 
-    //********************************* CONSTANTS ************************************************//
+    //********************************* END VARIABLE *******************************************//
 
     void init(Team_Hardware_V9 aRobot) {
 
@@ -77,7 +78,7 @@ public class Run_Jewel {
             if (red_ && !foundRed) knockFirst = true;
 
             //GO IN BETWEEN THE JEWELS
-            robot.moveInches(2.5, 0.22, 2);
+            robot.moveInches(2.5, 0.22 * speedIncrease, 2);
             waitMillis(33);
 
             //EXTEND ARM
@@ -86,28 +87,28 @@ public class Run_Jewel {
             //KNOCK AND MOVE AT THE EDGE
             if (knockFirst) {
                 if( red_ ){
-                    robot.moveInches(-4, 0.22, 2);
+                    robot.moveInches(-4, 0.22 * speedIncrease, 2);
                     robot.moveArmPosZero();
-                    robot.moveInches(12, 0.33, 6); // should be in front of Vuforia
+                    robot.moveInches(12, 0.33 * speedIncrease, 6); // should be in front of Vuforia
                     waitMillis(333); // should be in front of Vuforia
                 }
                 if( blue_){
-                    robot.moveInches(-4, 0.22, 2);
+                    robot.moveInches(-4, 0.22 * speedIncrease, 2);
                     robot.moveArmPosZero();
-                    robot.moveInches(10, 0.33, 6); // should be in front of Vuforia
+                    robot.moveInches(10, 0.33 * speedIncrease, 6); // should be in front of Vuforia
                     waitMillis(333); // should be in front of Vuforia
-                    robot.moveInches(-12, 0.33, 6);
+                    robot.moveInches(-12, 0.33 * speedIncrease, 6);
                 }
             }
             if (!knockFirst) {
                 if( red_ ){
-                    robot.moveInches(7.5, 0.22, 1);
+                    robot.moveInches(7.5, 0.22 * speedIncrease, 1);
                     robot.moveArmPosZero(); // should be in front of Vuforia
                 }
                 if (blue_) {
-                    robot.moveInches(6, 0.22, 2);
+                    robot.moveInches(6, 0.22 * speedIncrease, 2);
                     robot.moveArmPosZero(); // should be in front of Vuforia
-                    robot.moveInches(-12, 0.33, 6);
+                    robot.moveInches(-12, 0.33 * speedIncrease, 6);
                 }
             }
         }
@@ -116,8 +117,8 @@ public class Run_Jewel {
 
             robot.moveArmPosZero();
             robot.showTeamColor();
-            if (red_) robot.moveInches(6.5, 0.33, 1);
-            if (blue_) robot.moveInches(-6.5, 0.33, 1);
+            if (red_) robot.moveInches(6.5, 0.33 * speedIncrease, 1);
+            if (blue_) robot.moveInches(-6.5, 0.33 * speedIncrease, 1);
         }
         //TURN OFF LED
         robot.moveArmPosZero();
