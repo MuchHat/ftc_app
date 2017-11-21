@@ -83,6 +83,7 @@ public class Team_Hardware_V9 {
     double baseControl = 0;
     double elbowControl = 0;
     double gameStartHeading = 0;
+    double sonarMaxAdjust = 0.15;
     //********************************* CLAW POS ************************************************//
     double clawClose[] = {0.28, 0.71};
     double clawZero[] = {1.00, 0.00};
@@ -399,7 +400,7 @@ public class Team_Hardware_V9 {
         double direction = crrError > 0 ? 1.0 : -1.0;
         moveTimer.reset();
 
-        if (Math.abs(crrError) > 0.2) { //TODO
+        if (Math.abs(crrError) > sonarMaxAdjust) { //TODO
             // IF ERROR TOO BIG SKIP
             return;
         }
@@ -441,6 +442,7 @@ public class Team_Hardware_V9 {
 
             waitMillis(111);
             for( int attempts = 0; attempts < 11; attempts++ ) {
+
                 if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
                     crrPos = frontSonar.getVoltage();
                 } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
@@ -448,12 +450,14 @@ public class Team_Hardware_V9 {
                 } else {
                     crrPos = rightSonar.getVoltage();
                 }
-                if( crrPos > 0.09 && crrPos < endPos * 2 ){
-                    break;
+                if( Math.abs(endPos - crrPos) < sonarMaxAdjust ){
+                    break; // good reading
                 }
+                waitMillis(11);
             }
-            if( crrPos < 0.09 || crrPos > endPos * 2 ){
-                continue;
+
+            if( Math.abs(endPos - crrPos) > sonarMaxAdjust ){
+                break; // if no good reading give up
             }
             crrError = endPos - crrPos;
         }

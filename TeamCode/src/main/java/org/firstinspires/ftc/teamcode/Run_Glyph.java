@@ -36,10 +36,10 @@ public class Run_Glyph {
     }
 
     void run(double secsLeft) {
-        runSonar(secsLeft);
+        runWithSonar(secsLeft);
     }
 
-    void runSonar(double secsLeft) {
+    void runWithSonar(double secsLeft) {
 
         int columnIndex = 2;
         boolean red_ = !robot.blueTeam;
@@ -122,6 +122,8 @@ public class Run_Glyph {
             double blueShortSonar[] = {0.14, 0.22, 0.27}; // L C R
             double blueLongSonar[] = {0.245, 0.325, 0.425}; // L C R
             double columnSonarPos = 0;
+
+            robot.sonarMaxAdjust = 0.06; // half a column
 
             if (red_ && short_) columnSonarPos = redShortSonar[columnIndex - 1];
             if (red_ && long_) columnSonarPos = redLongSonar[columnIndex - 1];
