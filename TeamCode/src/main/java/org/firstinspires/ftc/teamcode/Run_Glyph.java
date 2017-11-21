@@ -25,11 +25,12 @@ public class Run_Glyph {
     }
 
     boolean noTimeLeft() {
-        /*waitMillis(11);
+        waitMillis(11);
         if ((secsLeftAtStart - timer.seconds()) > 1) {
             return false;
         }
-        robot.stopRobot();*/
+        // robot.stopRobot();
+        // return true;
         return false;
     }
 
@@ -66,28 +67,28 @@ public class Run_Glyph {
         }
         // MOVE OFF THE PLATFORM, MOVE STARTS AT EDGE
         {
-            if (red_ && short_) robot.moveInches(6.7, 0.88, 4);
-            if (red_ && long_) robot.moveInches(11, 0.88, 4);
-            if (blue_ && short_) robot.moveInches(-11, 0.88, 4);
-            if (blue_ && long_) robot.moveInches(-11, 0.88, 4);
+            if (red_ && short_) robot.moveInches(6.7, 0.66, 4);
+            if (red_ && long_) robot.moveInches(6.7, 0.66, 4);
+            if (blue_ && short_) robot.moveInches(-6.7, 0.66, 4);
+            if (blue_ && long_) robot.moveInches(-6.7, 0.66, 4);
 
             if (noTimeLeft()) return;
         }
         // BACK AGAINST THE PLATFORM
         {
-            if (red_) robot.moveInches(-1, 0.22, 1);
-            if (blue_) robot.moveInches(1, 0.22, 1);
+            if (red_) robot.moveInches(-2, 0.11, 2);
+            if (blue_) robot.moveInches(2, 0.11, 2);
             if (noTimeLeft()) return;
         }
         // MOVE IN FRONT OF BOX USING ENCODERS
         {
             if (red_ && long_) robot.moveInches(2, 0.88, 4);
-            if (blue_ && long_) robot.moveInches(-4, 0.88, 4);
+            if (blue_ && long_) robot.moveInches(-2, 0.88, 4);
 
             double redShortEncoder[] = {24, 16.5, 10}; // L C R
             double redLongEncoder[] = {20.5, 14, 6.5}; // L C R
-            double blueShortEncoder[] = {24, 16, 8}; // L C R
-            double blueLongEncoder[] = {24, 16, 8}; // L C R
+            double blueShortEncoder[] = {24, 16.5, 10}; // L C R
+            double blueLongEncoder[] = {6.5, 14, 20.5}; // L C R
             double moveDistance = 8;
 
             if (red_ && short_) moveDistance = redShortEncoder[columnIndex - 1];
@@ -113,9 +114,9 @@ public class Run_Glyph {
         {
             double redShortSonar[] = {0.27, 0.22, 0.14}; // L C R
             double redLongSonar[] = {0.425, 0.325, 0.245}; // L C R
-            double blueShortSonar[] = {0.12, 0.18, 0.24}; // L C R
-            double blueLongSonar[] = {0.36, 0.32, 0.28}; // L C R
-            double columnSonarPos = 0.44;
+            double blueShortSonar[] = {0.14, 0.22, 0.27}; // L C R
+            double blueLongSonar[] = {0.245, 0.325, 0.425}; // L C R
+            double columnSonarPos = 0;
 
             if (red_ && short_) columnSonarPos = redShortSonar[columnIndex - 1];
             if (red_ && long_) columnSonarPos = redLongSonar[columnIndex - 1];
@@ -140,7 +141,7 @@ public class Run_Glyph {
 
         //PUT THE GLYPH IN
         {
-            robot.moveInches(5.5, 0.22, 1);
+            robot.moveInches(5.5, 0.15, 1);
             robot.openClawAuto();
             waitMillis(22);
             if (noTimeLeft()) return;
@@ -148,10 +149,11 @@ public class Run_Glyph {
 
         //BACKOFF
         {
-            robot.moveInches(-4, 1, 1);
+            robot.moveInches(-6, 0.44, 1);
             robot.setClawPosZero();
-            robot.moveInches(2, 1, 1);
-            robot.moveInches(-4, 1, 1);
+            if (noTimeLeft()) return;
+            robot.moveInches(4, 0.44, 1);
+            robot.moveInches(-4, 0.44, 1);
             robot.stopRobot();
         }
 

@@ -52,6 +52,7 @@ public class Run_Jewel {
 
         //GO THRU POSITIONS TO FIND THE JEWEL
         for (int i = 0; i < findPositions; i++) {
+
             double crrBase = armFindJewelB[i];
             double crrElbow = armFindJewelE[i];
 
@@ -85,27 +86,28 @@ public class Run_Jewel {
             //KNOCK AND MOVE AT THE EDGE
             if (knockFirst) {
                 if( red_ ){
-                    robot.moveInches(-4, 0.22, 1);
+                    robot.moveInches(-4, 0.22, 2);
                     robot.moveArmPosZero();
-                    robot.moveInches(12, 0.44, 1); // should be in front of Vuforia
+                    robot.moveInches(12, 0.33, 6); // should be in front of Vuforia
+                    waitMillis(333); // should be in front of Vuforia
                 }
                 if( blue_){
-                    robot.moveInches(-4, 0.44, 1);
+                    robot.moveInches(-4, 0.22, 2);
                     robot.moveArmPosZero();
-                    robot.moveInches(10, 0.44, 1); // should be in front of Vuforia
-                    waitMillis(333);
-                    robot.moveInches((-6) * 2, 0.44, 1);
+                    robot.moveInches(10, 0.33, 6); // should be in front of Vuforia
+                    waitMillis(333); // should be in front of Vuforia
+                    robot.moveInches(-12, 0.33, 6);
                 }
             }
             if (!knockFirst) {
                 if( red_ ){
-                    robot.moveInches(7.5, 0.44, 1);
-                    robot.moveArmPosZero();
+                    robot.moveInches(7.5, 0.22, 1);
+                    robot.moveArmPosZero(); // should be in front of Vuforia
                 }
                 if (blue_) {
-                    robot.moveInches(6, 0.22, 1);
-                    robot.moveArmPosZero();
-                    robot.moveInches(-6 * 2, 0.44, 1);
+                    robot.moveInches(6, 0.22, 2);
+                    robot.moveArmPosZero(); // should be in front of Vuforia
+                    robot.moveInches(-12, 0.33, 6);
                 }
             }
         }
@@ -114,8 +116,8 @@ public class Run_Jewel {
 
             robot.moveArmPosZero();
             robot.showTeamColor();
-            if (red_) robot.moveInches(6.5, 0.66, 1);
-            if (blue_) robot.moveInches(-6.5, 0.66, 1);
+            if (red_) robot.moveInches(6.5, 0.33, 1);
+            if (blue_) robot.moveInches(-6.5, 0.33, 1);
         }
         //TURN OFF LED
         robot.moveArmPosZero();

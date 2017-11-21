@@ -47,15 +47,9 @@ import static android.os.SystemClock.sleep;
 
 public class Team_Hardware_V9 {
 
-    public enum SonarPosition {
-        FRONT,
-        LEFT,
-        RIGHT
-    }
+    public DigitalChannel topSwitch = null;
 
     // ************************** ROBOT HW VARIABLES *********************************************//
-
-    public DigitalChannel topSwitch = null;
     public DigitalChannel bottomSwitch = null;
     public ColorSensor colorSensor = null;
     public HardwareMap hwMap = null;
@@ -68,14 +62,11 @@ public class Team_Hardware_V9 {
     public Servo rightClaw = null;
     public Servo base = null;
     public Servo elbow = null;
-
     public MRIColorBeacon colorBeacon;
     public ImuGyro imuGyro;
-
     //********************************* FIELD ***************************************************//
     boolean blueTeam = true;
     boolean shortField = true;
-
     // ********************************* MOVE STATES **********************************************//
     double leftPowerControl = 0;
     double rightPowerControl = 0;
@@ -92,7 +83,6 @@ public class Team_Hardware_V9 {
     double baseControl = 0;
     double elbowControl = 0;
     double gameStartHeading = 0;
-
     //********************************* CLAW POS ************************************************//
     double clawClose[] = {0.28, 0.71};
     double clawZero[] = {1.00, 0.00};
@@ -100,27 +90,22 @@ public class Team_Hardware_V9 {
     double clawOpenWide[] = {0.69, 0.30};
     double clawCloseAuto[] = {0.28, 0.71};
     double clawOpenAuto[] = {0.53, 0.51};
-
     //********************************* ARM POS *************************************************//
     double armPosZero[] = {1, 0};
-
     // ************************** MAIN LOOP ******************************************************//
     double driveDefaultSpeed = 1.3;
     double turnDefaultSpeed = 1.0;
     double servoDefaultSpeed = 0.003;
-
     DeviceInterfaceModule deviceInterface;                  // Device Object
     AnalogInput frontSonar;                // Device Object
     AnalogInput leftSonar;                // Device Object
     AnalogInput rightSonar;                // Device Object
 
-    // ************************** HW CONSTRUCTOR  ************************************************//
-
     public Team_Hardware_V9() {
 
     }
 
-    // ************************** HW INIT  *******************************************************//
+    // ************************** HW CONSTRUCTOR  ************************************************//
 
     public void init(HardwareMap ahwMap) {
 
@@ -193,12 +178,14 @@ public class Team_Hardware_V9 {
         imuGyro.init(hwMap);
     }
 
-    // ************************** MANUAL DRIVE HELPER FUNCTIONS  *********************************//
+    // ************************** HW INIT  *******************************************************//
 
     void turnTo12() {
         turn2Heading(0);
         turn2Heading(0);
     }
+
+    // ************************** MANUAL DRIVE HELPER FUNCTIONS  *********************************//
 
     void turnTo3() {
         turn2Heading(270);
@@ -473,7 +460,6 @@ public class Team_Hardware_V9 {
         stopRobot();
     }
 
-
     void moveLinear(double distanceMM, double power, double timeOut, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
 
         double distanceLowSpeedMM = 99;
@@ -507,11 +493,11 @@ public class Team_Hardware_V9 {
         stopRobot();
     }
 
-    // ************************** ARM  DRIVE SERVOS HELPER FUNCTIONS  ****************************//
-
     void moveArmPosZero() {
         moveArm(armPosZero[0], armPosZero[1]);
     }
+
+    // ************************** ARM  DRIVE SERVOS HELPER FUNCTIONS  ****************************//
 
     void moveArm(double newBase, double newElbow) {
 
@@ -556,8 +542,6 @@ public class Team_Hardware_V9 {
         elbowControl = newElbow;
         setServos();
     }
-
-    // ************************** HARDWARE SET FUNCTIONS *****************************************//
 
     void setDrivesByDistance(double timeOut) {
 
@@ -648,6 +632,8 @@ public class Team_Hardware_V9 {
         leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
+    // ************************** HARDWARE SET FUNCTIONS *****************************************//
 
     void setDrivesByPower() {
 
@@ -784,6 +770,12 @@ public class Team_Hardware_V9 {
 
     void waitMillis(double millis) {
         sleep((long) millis);
+    }
+
+    public enum SonarPosition {
+        FRONT,
+        LEFT,
+        RIGHT
     }
 
 
