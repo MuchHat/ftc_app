@@ -47,8 +47,12 @@ public class Run_Glyph {
         boolean short_ = robot.shortField;
         boolean long_ = !robot.shortField;
 
-        if (robot == null) {
-            return;
+        // INCREASE SPPED ONLY IF NEEDED, HIGH SPEED MAKES IT LESS ROBUST
+        {
+            if (red_ && short_) speedIncrease = 1.0;
+            if (red_ && long_) speedIncrease = 1.0;
+            if (blue_ && short_) speedIncrease = 1.0;
+            if (blue_ && long_) speedIncrease = 1.0;
         }
         // START TIMER
         {
