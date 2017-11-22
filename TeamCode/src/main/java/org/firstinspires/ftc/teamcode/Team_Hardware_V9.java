@@ -383,27 +383,30 @@ public class Team_Hardware_V9 {
         double crrPower = movePower;
         double crrPos = 0;
 
-        if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
-            crrPos = frontSonar.getVoltage();
-        } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
-            crrPos = leftSonar.getVoltage();
-        } else {
-            crrPos = rightSonar.getVoltage();
+        // perform the first reading, try few times to get a good reading
+        for( int attempts = 0; attempts < 11; attempts++ ) {
+
+            if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
+                crrPos = frontSonar.getVoltage();
+            } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
+                crrPos = leftSonar.getVoltage();
+            } else {
+                crrPos = rightSonar.getVoltage();
+            }
+            if( Math.abs(endPos - crrPos) < sonarMaxAdjust ){
+                break; // good reading
+            }
+            waitMillis(11);
         }
 
-        if (crrPos == 0) {
-            // IF NO SONAR SKIP
+        if (Math.abs(endPos - crrPos) > sonarMaxAdjust) {
+            // if error too big give up
             return;
         }
 
         double crrError = endPos - crrPos;
         double direction = crrError > 0 ? 1.0 : -1.0;
         moveTimer.reset();
-
-        if (Math.abs(crrError) > sonarMaxAdjust) { //TODO
-            // IF ERROR TOO BIG SKIP
-            return;
-        }
 
         while (moveTimer.seconds() < timeOutSec && crrError * direction > 0.01) {
 
