@@ -89,7 +89,9 @@ public class Run_Glyph {
         // MOVE IN FRONT OF BOX USING ENCODERS
         {
             if (red_ && long_) robot.moveInches(2, 0.88 * speedIncrease, 4);
-            if (blue_ && long_) robot.moveInches(-2, 0.88 * speedIncrease, 4);
+            if (blue_ && long_) robot.moveInches(-4, 0.88 * speedIncrease, 4);
+
+            if (blue_ && long_) robot.turnTo6();
 
             double redShortEncoder[] = {24, 16.5, 10}; // L C R
             double redLongEncoder[] = {20.5, 14, 6.5}; // L C R
