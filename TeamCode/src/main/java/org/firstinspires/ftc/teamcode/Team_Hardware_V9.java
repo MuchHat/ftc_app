@@ -97,6 +97,7 @@ public class Team_Hardware_V9 {
     double driveDefaultSpeed = 1.3;
     double turnDefaultSpeed = 1.0;
     double servoDefaultSpeed = 0.003;
+    boolean stopWhenFlat = false;
     DeviceInterfaceModule deviceInterface;                  // Device Object
     AnalogInput frontSonar;                // Device Object
     AnalogInput leftSonar;                // Device Object
@@ -352,7 +353,13 @@ public class Team_Hardware_V9 {
 
     void moveInches(double distanceInches, double movePower, double timeOut) {
 
+        stopWhenFlat = false;
+        moveLinear(distanceInches * 24.5, movePower, timeOut, 1.0, 1.0, 1.0, 1.0);
+    }
 
+    void moveInchesUntilFlat(double distanceInches, double movePower, double timeOut) {
+
+        stopWhenFlat = true;
         moveLinear(distanceInches * 24.5, movePower, timeOut, 1.0, 1.0, 1.0, 1.0);
     }
 
@@ -384,7 +391,7 @@ public class Team_Hardware_V9 {
         double crrPos = 0;
 
         // perform the first reading, try few times to get a good reading
-        for( int attempts = 0; attempts < 11; attempts++ ) {
+        for (int attempts = 0; attempts < 11; attempts++) {
 
             if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
                 crrPos = frontSonar.getVoltage();
@@ -393,7 +400,7 @@ public class Team_Hardware_V9 {
             } else {
                 crrPos = rightSonar.getVoltage();
             }
-        if( Math.abs(endPos - crrPos) < sonarMaxAdjust ){
+            if (Math.abs(endPos - crrPos) < sonarMaxAdjust) {
                 break; // good reading
             }
             waitMillis(11);
@@ -428,14 +435,14 @@ public class Team_Hardware_V9 {
                 setDrivesByPower();
 
             }
-            if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT ){
+            if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
                 leftPowerControl = -crrPower * direction;
                 rightPowerControl = crrPower * direction;
                 leftPowerControlBack = crrPower * direction;
                 rightPowerControlBack = -crrPower * direction;
                 setDrivesByPower();
             }
-            if (sonarPosition == Team_Hardware_V9.SonarPosition.RIGHT ){
+            if (sonarPosition == Team_Hardware_V9.SonarPosition.RIGHT) {
                 leftPowerControl = crrPower * direction;
                 rightPowerControl = -crrPower * direction;
                 leftPowerControlBack = -crrPower * direction;
@@ -444,7 +451,7 @@ public class Team_Hardware_V9 {
             }
 
             waitMillis(111);
-            for( int attempts = 0; attempts < 11; attempts++ ) {
+            for (int attempts = 0; attempts < 11; attempts++) {
 
                 if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
                     crrPos = frontSonar.getVoltage();
@@ -453,18 +460,39 @@ public class Team_Hardware_V9 {
                 } else {
                     crrPos = rightSonar.getVoltage();
                 }
-                if( Math.abs(endPos - crrPos) < sonarMaxAdjust ){
+                if (Math.abs(endPos - crrPos) < sonarMaxAdjust) {
                     break; // good reading
                 }
                 waitMillis(11);
             }
 
-            if( Math.abs(endPos - crrPos) > sonarMaxAdjust ){
+            if (Math.abs(endPos - crrPos) > sonarMaxAdjust) {
                 break; // if no good reading give up
             }
             crrError = endPos - crrPos;
         }
         stopRobot();
+    }
+
+    double pulsesToMm(double distancePulses) {
+
+        //convert from pulses to mm
+        double correction = 4.75;
+        double revolutions = distancePulses / ((7 * 60) * correction);
+
+        double distanceMM = revolutions * ((25.4 * 4) * Math.PI);
+
+        return distanceMM;
+    }
+
+    double mmToPulses(double distanceMM) {
+
+        //convert from mm to pulses
+        double correction = 4.75;
+        double revolutions = distanceMM / ((25.4 * 4) * Math.PI); //a 4 inch wheel
+        double distancePulses = revolutions * (7 * 60) * correction; // 420 tics per revolution
+
+        return distancePulses;
     }
 
     void moveLinear(double distanceMM, double power, double timeOut, double dirFrontLeft, double dirFrontRight, double dirBackLeft, double dirBackRight) {
@@ -479,11 +507,7 @@ public class Team_Hardware_V9 {
             highSpeedPower = Math.abs(power);
         }
 
-        //convert from mm to tics
-        double correction = 4.75;
-        double revolutions = distanceMM / ((25.4 * 4) * Math.PI); //a 4 inch wheel
-        double distancePulses = revolutions * (7 * 60) * correction; // 420 tics per revolution
-
+        double distancePulses = mmToPulses(distanceMM);
         double crrPower = Math.abs(distanceMM) > distanceLowSpeedMM ? highSpeedPower : lowSpeedPower;
 
         leftPowerControl = crrPower;
@@ -550,6 +574,25 @@ public class Team_Hardware_V9 {
         setServos();
     }
 
+    boolean isFlat() {
+
+        boolean xFlat = imuGyro.getInclineX() < 5 || imuGyro.getInclineX() > 355; //TODO
+        boolean yFlat = imuGyro.getInclineY() < 5 || imuGyro.getInclineY() > 355; //TODO
+
+        return xFlat && yFlat;
+    }
+
+    double inchesToTarget() {
+
+
+        double leftToTarget = Math.abs(leftDistanceControl - leftDrive.getCurrentPosition());
+        double rightToTarget = Math.abs(rightDistanceControl - rightDrive.getCurrentPosition());
+        double leftBackToTarget = Math.abs(leftDistanceControlBack - leftDriveBack.getCurrentPosition());
+        double rightBackToTarget = Math.abs(rightDistanceControlBack - rightDriveBack.getCurrentPosition());
+
+        return pulsesToMm((leftToTarget + rightToTarget + leftBackToTarget + rightBackToTarget) / 4 ) / 24.5; //TODO
+    }
+
     void setDrivesByDistance(double timeOut) {
 
         ElapsedTime encodersTimer = new ElapsedTime();
@@ -590,7 +633,7 @@ public class Team_Hardware_V9 {
         }
         encodersTimer.reset();
 
-        double stallDiff = 2;
+        boolean locked = false;
         double leftPrev = leftDrive.getCurrentPosition();
         double rightPrev = rightDrive.getCurrentPosition();
         double leftBackPrev = leftDriveBack.getCurrentPosition();
@@ -599,7 +642,7 @@ public class Team_Hardware_V9 {
         while (encodersTimer.seconds() < timeOutSec) {
 
             boolean stillRunning = true;
-            for( int i=0; i<6; i++ ) {
+            for (int i = 0; i < 33; i++) {
                 waitMillis(11);
                 stillRunning = leftDrive.isBusy() ||
                         rightDrive.isBusy() ||
@@ -608,25 +651,34 @@ public class Team_Hardware_V9 {
                 if (!stillRunning) {
                     break;
                 }
+                //stop sooner if this is run until flat
+                if (isFlat() && inchesToTarget() < 2) {
+                    stillRunning = false;
+                    break;
+                }
             }
             if (!stillRunning) {
                 break;
             }
+            double lMove = Math.abs(leftDrive.getCurrentPosition() - leftPrev);
+            double rMove = Math.abs(rightDrive.getCurrentPosition() - rightPrev);
+            double lbMove = Math.abs(leftDriveBack.getCurrentPosition() - leftBackPrev);
+            double rbMove = Math.abs(rightDriveBack.getCurrentPosition() - rightBackPrev);
 
-            boolean stalled = (Math.abs(leftDrive.getCurrentPosition() - leftPrev) < stallDiff) ||
-                    (Math.abs(rightDrive.getCurrentPosition() - rightPrev) < stallDiff) ||
-                    (Math.abs(leftDriveBack.getCurrentPosition() - leftBackPrev) < stallDiff) ||
-                    (Math.abs(rightDriveBack.getCurrentPosition() - rightBackPrev) < stallDiff);
+            double minMove = Math.min(Math.min(Math.min(lMove, rMove), lbMove), rbMove);
+            double maxMove = Math.max(Math.max(Math.max(lMove, rMove), lbMove), rbMove);
 
             leftPrev = leftDrive.getCurrentPosition();
             rightPrev = rightDrive.getCurrentPosition();
             leftBackPrev = leftDriveBack.getCurrentPosition();
             rightBackPrev = rightDriveBack.getCurrentPosition();
 
-            //if stalled stop and restart
-            // check for stall only when the motors start not during
-            if (stalled &&
-                    ( encodersTimer.seconds() > 0.06 && encodersTimer.seconds() < 0.44) ) {
+            // diff is bigger than 1/3 turn in 1/3 sec
+            locked = Math.abs(maxMove - minMove) > 111;
+
+            //if one wheel is locked stop and restart,check for stall 222ms after start not sooner
+            if (locked && encodersTimer.seconds() > 0.22) {
+
                 leftDrive.setPower(0);
                 rightDrive.setPower(0);
                 leftDriveBack.setPower(0);
@@ -639,6 +691,7 @@ public class Team_Hardware_V9 {
                 leftDriveBack.setPower(Math.abs(leftPowerControlBack));
                 rightDriveBack.setPower(Math.abs(rightPowerControlBack));
             }
+
         }
 
         leftDrive.setPower(0);
