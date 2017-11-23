@@ -510,8 +510,8 @@ public class Team_Hardware_V9 {
 
         double stepSize = 0.006;
         double stepTime = 8;
-        double rampUp = 33;
-        double rampUp2 = 66;
+        double rampUp = 22;
+        double rampUp2 = 44;
 
         double baseStart = baseControl;
         double elbowStart = elbowControl;
@@ -529,9 +529,9 @@ public class Team_Hardware_V9 {
             double crrStepTime = stepTime;
 
             if (i > rampUp2 / 3 && i < stepCount - rampUp2) {
-                i += 7;
+                i += 9;
             } else if (i > rampUp / 5 && i < stepCount - rampUp) {
-                i += 3;
+                i += 5;
             } else {
                 i++;
             }
