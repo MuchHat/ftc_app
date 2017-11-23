@@ -95,9 +95,9 @@ public class Run_Jewel {
                 if( blue_){
                     robot.moveInches(-4, 0.22 * speedIncrease, 2);
                     robot.moveArmPosZero();
-                    robot.moveInches(10, 0.33 * speedIncrease, 6); // should be in front of Vuforia
+                    robot.moveInches(7, 0.22 * speedIncrease, 6); // should be in front of Vuforia
                     waitMillis(333); // should be in front of Vuforia
-                    robot.moveInches(-12, 0.33 * speedIncrease, 6);
+                    robot.moveInches(-12.25, 0.22 * speedIncrease, 6);
                 }
             }
             if (!knockFirst) {
@@ -106,7 +106,7 @@ public class Run_Jewel {
                     robot.moveArmPosZero(); // should be in front of Vuforia
                 }
                 if (blue_) {
-                    robot.moveInches(6, 0.22 * speedIncrease, 2);
+                    robot.moveInches(4, 0.22 * speedIncrease, 2);
                     robot.moveArmPosZero(); // should be in front of Vuforia
                     robot.moveInches(-12, 0.33 * speedIncrease, 6);
                 }

@@ -82,6 +82,7 @@ public class Run_Glyph {
         // BACK AGAINST THE PLATFORM
         {
             if (red_) robot.moveInches(-2, 0.11 * speedIncrease, 2);
+            if (red_ && long_) robot.moveInches(-3, 0.11 * speedIncrease, 2);
             if (blue_) robot.moveInches(2, 0.11 * speedIncrease, 2);
             if (noTimeLeft()) return;
         }
@@ -92,7 +93,7 @@ public class Run_Glyph {
 
             double redShortEncoder[] = {24, 16.5, 10}; // L C R
             double redLongEncoder[] = {20.5, 14, 6.5}; // L C R
-            double blueShortEncoder[] = {24, 16.5, 10}; // L C R
+            double blueShortEncoder[] = {10, 16.5, 24}; // L C R
             double blueLongEncoder[] = {6.5, 14, 20.5}; // L C R
             double moveDistance = 8;
 
@@ -117,13 +118,13 @@ public class Run_Glyph {
         }
         // MOVE IN FRONT OF THE COLUMN USING SONAR
         {
-            double redShortSonar[] = {0.27, 0.22, 0.14}; // L C R
-            double redLongSonar[] = {0.425, 0.325, 0.245}; // L C R
-            double blueShortSonar[] = {0.14, 0.22, 0.27}; // L C R
-            double blueLongSonar[] = {0.245, 0.325, 0.425}; // L C R
+            double redShortSonar[] = {0.75, 0.65, 0.56}; // L C R
+            double redLongSonar[] = {0.43, 0.34, 0.25}; // L C R
+            double blueShortSonar[] = {0.56, 0.65, 0.75}; // L C R
+            double blueLongSonar[] = {0.26, 0.34, 0.43}; // L C R
             double columnSonarPos = 0;
 
-            robot.sonarMaxAdjust = 0.06; // half a column
+            robot.sonarMaxAdjust = 0.10; // half a column
 
             if (red_ && short_) columnSonarPos = redShortSonar[columnIndex - 1];
             if (red_ && long_) columnSonarPos = redLongSonar[columnIndex - 1];

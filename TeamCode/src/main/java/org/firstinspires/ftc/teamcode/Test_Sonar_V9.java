@@ -108,7 +108,7 @@ public class Test_Sonar_V9 extends LinearOpMode {
     void moveBySonar(double endPos, double movePower, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
 
         ElapsedTime moveTimer = new ElapsedTime();
-        double minPower = 0.33; //TODO
+        double minPower = 0.11; //TODO
         double rampDown = 0.08; //TODO
         double crrPower = movePower;
         double crrPos = 0;

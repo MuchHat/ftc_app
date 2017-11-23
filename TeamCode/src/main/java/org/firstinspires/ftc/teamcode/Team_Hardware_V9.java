@@ -85,12 +85,12 @@ public class Team_Hardware_V9 {
     double gameStartHeading = 0;
     double sonarMaxAdjust = 0.15;
     //********************************* CLAW POS ************************************************//
-    double clawClose[] = {0.28, 0.71};
+    double clawClose[] = {0.38, 0.62};
     double clawZero[] = {1.00, 0.00};
-    double clawOpen[] = {0.53, 0.51};
+    double clawOpen[] = {0.54, 0.47};
     double clawOpenWide[] = {0.69, 0.30};
-    double clawCloseAuto[] = {0.28, 0.71};
-    double clawOpenAuto[] = {0.53, 0.51};
+    double clawCloseAuto[] = {0.38, 0.62};
+    double clawOpenAuto[] = {0.54, 0.47};
     //********************************* ARM POS *************************************************//
     double armPosZero[] = {1, 0};
     // ************************** MAIN LOOP ******************************************************//
@@ -194,8 +194,8 @@ public class Team_Hardware_V9 {
     }
 
     void turnTo6() {
-        turn2Heading(180);
-        turn2Heading(180);
+        turn2Heading(179);
+        turn2Heading(181);
     }
 
     void turnTo9() {
@@ -378,7 +378,7 @@ public class Team_Hardware_V9 {
     void moveBySonar(double endPos, double movePower, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
 
         ElapsedTime moveTimer = new ElapsedTime();
-        double minPower = 0.33; //TODO
+        double minPower = 0.11; //TODO
         double rampDown = 0.08; //TODO
         double crrPower = movePower;
         double crrPos = 0;
@@ -393,7 +393,7 @@ public class Team_Hardware_V9 {
             } else {
                 crrPos = rightSonar.getVoltage();
             }
-            if( Math.abs(endPos - crrPos) < sonarMaxAdjust ){
+        if( Math.abs(endPos - crrPos) < sonarMaxAdjust ){
                 break; // good reading
             }
             waitMillis(11);
