@@ -652,7 +652,7 @@ public class Team_Hardware_V9 {
                     break;
                 }
                 //stop sooner if this is run until flat
-                if (isFlat() && inchesToTarget() < 2) {
+                if (stopWhenFlat && isFlat() && inchesToTarget() < 2) {
                     stillRunning = false;
                     break;
                 }
