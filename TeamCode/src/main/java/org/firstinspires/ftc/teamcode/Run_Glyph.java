@@ -49,9 +49,9 @@ public class Run_Glyph {
 
         // INCREASE SPPED ONLY IF NEEDED, HIGH SPEED MAKES IT LESS ROBUST
         {
-            if (red_ && short_) speedIncrease = 1.0;
-            if (red_ && long_) speedIncrease = 1.0;
-            if (blue_ && short_) speedIncrease = 1.2;
+            if (red_ && short_) speedIncrease = 2.0;
+            if (red_ && long_) speedIncrease = 1.5;
+            if (blue_ && short_) speedIncrease = 1.5;
             if (blue_ && long_) speedIncrease = 1.6;
         }
         // START TIMER
@@ -81,8 +81,8 @@ public class Run_Glyph {
         }
         // BACK AGAINST THE PLATFORM
         {
-            if (red_) robot.moveInches(-2, 0.11 * speedIncrease, 2);
-            if (red_ && long_) robot.moveInches(-3, 0.11 * speedIncrease, 2);
+            if (red_ && short_) robot.moveInches(-2, 0.11 * speedIncrease, 2);
+            if (red_ && long_) robot.moveInches(-5, 0.11 * speedIncrease, 2);
             if (blue_) robot.moveInches(2, 0.11 * speedIncrease, 2);
             if (noTimeLeft()) return;
         }
