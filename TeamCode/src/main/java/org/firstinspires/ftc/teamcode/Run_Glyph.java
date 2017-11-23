@@ -30,9 +30,9 @@ public class Run_Glyph {
         if ((secsLeftAtStart - timer.seconds()) > 1) {
             return false;
         }
-        // robot.stopRobot();
-        // return true;
-        return false;
+        robot.stopRobot();
+        return true;
+        //return false;
     }
 
     void run(double secsLeft) {
@@ -51,8 +51,8 @@ public class Run_Glyph {
         {
             if (red_ && short_) speedIncrease = 1.0;
             if (red_ && long_) speedIncrease = 1.0;
-            if (blue_ && short_) speedIncrease = 1.0;
-            if (blue_ && long_) speedIncrease = 1.0;
+            if (blue_ && short_) speedIncrease = 1.2;
+            if (blue_ && long_) speedIncrease = 1.6;
         }
         // START TIMER
         {
@@ -89,7 +89,7 @@ public class Run_Glyph {
         // MOVE IN FRONT OF BOX USING ENCODERS
         {
             if (red_ && long_) robot.moveInches(2, 0.88 * speedIncrease, 4);
-            if (blue_ && long_) robot.moveInches(-4, 0.88 * speedIncrease, 4);
+            if (blue_ && long_) robot.moveInches(-5, 0.88 * speedIncrease, 4);
 
             if (blue_ && long_) robot.turnTo6();
 
