@@ -27,7 +27,7 @@ public class Run_Glyph {
 
     boolean noTimeLeft() {
         waitMillis(11);
-        if ((secsLeftAtStart - timer.seconds()) > 1) {
+        if ((secsLeftAtStart - timer.seconds()) > 0) {
             return false;
         }
         robot.stopRobot();
@@ -49,10 +49,10 @@ public class Run_Glyph {
 
         // INCREASE SPPED ONLY IF NEEDED, HIGH SPEED MAKES IT LESS ROBUST
         {
-            if (red_ && short_) speedIncrease = 2.0;
-            if (red_ && long_) speedIncrease = 1.5;
-            if (blue_ && short_) speedIncrease = 1.5;
-            if (blue_ && long_) speedIncrease = 1.6;
+            if (red_ && short_) speedIncrease = 2.2;
+            if (red_ && long_) speedIncrease = 2.2;
+            if (blue_ && short_) speedIncrease = 1.8;
+            if (blue_ && long_) speedIncrease = 1.8;
         }
         // START TIMER
         {
@@ -72,16 +72,15 @@ public class Run_Glyph {
         }
         // BACK AGAINST THE PLATFORM
         {
-            if (red_ && short_) robot.moveInches(-3, 0.11 * speedIncrease, 2);
-            if (red_ && long_) robot.moveInches(-5, 0.11 * speedIncrease, 2);
-            if (blue_) robot.moveInches(3, 0.11 * speedIncrease, 2);
+            if (red_ && short_) robot.moveInches(-3, 0.11, 2);
+            if (red_ && long_) robot.moveInches(-5, 0.11, 2);
+            if (blue_) robot.moveInches(3, 0.11, 2);
             if (noTimeLeft()) return;
         }
         // MOVE IN FRONT OF BOX USING ENCODERS
         {
             if (red_ && long_) robot.moveInches(2, 0.88 * speedIncrease, 4);
-            if (blue_ && long_) robot.moveInches(-5, 0.88 * speedIncrease, 4);
-
+            if (blue_ && long_) robot.moveInches(-6, 0.88 * speedIncrease, 4);
             if (blue_ && long_) robot.turnTo6();
 
             double redShortEncoder[] = {24, 16.5, 10}; // L C R
@@ -124,10 +123,10 @@ public class Run_Glyph {
             if (blue_ && short_) columnSonarPos = blueShortSonar[columnIndex - 1];
             if (blue_ && long_) columnSonarPos = blueLongSonar[columnIndex - 1];
 
-            if (red_ && short_) robot.moveBySonarRight(columnSonarPos, 0.44 * speedIncrease, 1);
-            if (red_ && long_) robot.moveBySonarRight(columnSonarPos, 0.44 * speedIncrease, 1);
-            if (blue_ && short_) robot.moveBySonarLeft(columnSonarPos, 0.44 * speedIncrease, 1);
-            if (blue_ && long_) robot.moveBySonarLeft(columnSonarPos, 0.44 * speedIncrease, 1);
+            if (red_ && short_) robot.moveBySonarRight(columnSonarPos, 0.44 * speedIncrease, 3);
+            if (red_ && long_) robot.moveBySonarRight(columnSonarPos, 0.44 * speedIncrease, 3);
+            if (blue_ && short_) robot.moveBySonarLeft(columnSonarPos, 0.44 * speedIncrease, 3);
+            if (blue_ && long_) robot.moveBySonarLeft(columnSonarPos, 0.44 * speedIncrease, 3);
 
             if (noTimeLeft()) return;
         }
@@ -139,22 +138,20 @@ public class Run_Glyph {
             if (blue_ && long_) robot.turnTo6();
             if (noTimeLeft()) return;
         }
-
         //PUT THE GLYPH IN
         {
-            robot.moveInches(5.5, 0.15 * speedIncrease, 1);
+            robot.moveInches(5.5, 0.15, 2);
             robot.openClawAuto();
             waitMillis(22);
             if (noTimeLeft()) return;
         }
-
         //BACKOFF
         {
-            robot.moveInches(-6, 0.44 * speedIncrease, 1);
+            robot.moveInches(-6, 0.44 * speedIncrease, 2);
             robot.setClawPosZero();
             if (noTimeLeft()) return;
-            robot.moveInches(4, 0.44 * speedIncrease, 1);
-            robot.moveInches(-4, 0.44 * speedIncrease, 1);
+            robot.moveInches(4, 0.44 * speedIncrease, 2);
+            robot.moveInches(-4, 0.44 * speedIncrease, 2);
             robot.stopRobot();
         }
 

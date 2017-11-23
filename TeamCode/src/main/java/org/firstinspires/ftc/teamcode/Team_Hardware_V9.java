@@ -598,12 +598,17 @@ public class Team_Hardware_V9 {
 
         while (encodersTimer.seconds() < timeOutSec) {
 
-            waitMillis(133);
-
-            boolean stillRunning = leftDrive.isBusy() ||
-                    rightDrive.isBusy() ||
-                    leftDriveBack.isBusy() ||
-                    rightDriveBack.isBusy();
+            boolean stillRunning = true;
+            for( int i=0; i<6; i++ ) {
+                waitMillis(11);
+                stillRunning = leftDrive.isBusy() ||
+                        rightDrive.isBusy() ||
+                        leftDriveBack.isBusy() ||
+                        rightDriveBack.isBusy();
+                if (!stillRunning) {
+                    break;
+                }
+            }
             if (!stillRunning) {
                 break;
             }
@@ -619,13 +624,15 @@ public class Team_Hardware_V9 {
             rightBackPrev = rightDriveBack.getCurrentPosition();
 
             //if stalled stop and restart
-            if (stalled) {
+            // check for stall only when the motors start not during
+            if (stalled &&
+                    ( encodersTimer.seconds() > 0.06 && encodersTimer.seconds() < 0.44) ) {
                 leftDrive.setPower(0);
                 rightDrive.setPower(0);
                 leftDriveBack.setPower(0);
                 rightDriveBack.setPower(0);
 
-                waitMillis(133);
+                waitMillis(66);
 
                 leftDrive.setPower(Math.abs(leftPowerControl));
                 rightDrive.setPower(Math.abs(rightPowerControl));
