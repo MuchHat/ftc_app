@@ -195,8 +195,7 @@ public class Team_Hardware_V9 {
     }
 
     void turnTo6() {
-        turn2Heading(179);
-        turn2Heading(181);
+        turn2Heading(180);
     }
 
     void turnTo9() {
@@ -700,7 +699,7 @@ public class Team_Hardware_V9 {
             rightBackPrev = rightDriveBack.getCurrentPosition();
 
             // diff is bigger than 1/3 turn in 1/3 sec
-            locked = Math.abs(maxMove - minMove) > 111;
+            locked = Math.abs(maxMove - minMove) > 188;
 
             //if one wheel is locked stop and restart,check for stall 222ms after start not sooner
             if (locked && encodersTimer.seconds() > 0.22) {
