@@ -332,7 +332,7 @@ public class Team_Hardware_V9 {
     void moveLift(double distance) {
         double mmMillis = 0.03;
         double stepTime = Math.abs(distance) / mmMillis;
-        double liftDefaultPower = distance > 0 ? 1.0 : -1.0;
+        double liftDefaultPower = distance > 0 ? 0.66 : -0.66;
 
         stepTime = Range.clip(stepTime, 0, 3333);
 
@@ -585,13 +585,18 @@ public class Team_Hardware_V9 {
     double inchesToTarget() {
 
 
-        double leftToTarget = Math.abs(leftDistanceControl - leftDrive.getCurrentPosition());
-        double rightToTarget = Math.abs(rightDistanceControl - rightDrive.getCurrentPosition());
-        double leftBackToTarget = Math.abs(leftDistanceControlBack - leftDriveBack.getCurrentPosition());
-        double rightBackToTarget = Math.abs(rightDistanceControlBack - rightDriveBack.getCurrentPosition());
+        double leftToTarget = Math.abs(targetLeft - leftDrive.getCurrentPosition());
+        double rightToTarget = Math.abs(targetRight - rightDrive.getCurrentPosition());
+        double leftBackToTarget = Math.abs(targetLeftBack - leftDriveBack.getCurrentPosition());
+        double rightBackToTarget = Math.abs(targetRightBack - rightDriveBack.getCurrentPosition());
 
-        return pulsesToMm((leftToTarget + rightToTarget + leftBackToTarget + rightBackToTarget) / 4 ) / 24.5; //TODO
+        return pulsesToMm((leftToTarget + rightToTarget + leftBackToTarget + rightBackToTarget) / 4) / 24.5; //TODO
     }
+
+    int targetLeft = 0;
+    int targetRight = 0;
+    int targetLeftBack = 0;
+    int targetRightBack = 0;
 
     void setDrivesByDistance(double timeOut) {
 
@@ -607,10 +612,15 @@ public class Team_Hardware_V9 {
         leftDriveBack.setDirection(DcMotor.Direction.REVERSE);
         rightDriveBack.setDirection(DcMotor.Direction.FORWARD);
 
-        leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + (int) leftDistanceControl);
-        rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + (int) rightDistanceControl);
-        leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() + (int) leftDistanceControlBack);
-        rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + (int) rightDistanceControlBack);
+        targetLeft = leftDrive.getCurrentPosition() + (int) leftDistanceControl;
+        targetRight = rightDrive.getCurrentPosition() + (int) rightDistanceControl;
+        targetLeftBack = leftDriveBack.getCurrentPosition() + (int) leftDistanceControlBack;
+        targetRightBack = rightDriveBack.getCurrentPosition() + (int) rightDistanceControlBack;
+
+        leftDrive.setTargetPosition(targetLeft);
+        rightDrive.setTargetPosition(targetRight);
+        leftDriveBack.setTargetPosition(targetLeftBack);
+        rightDriveBack.setTargetPosition(targetRightBack);
 
         leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -651,8 +661,24 @@ public class Team_Hardware_V9 {
                 if (!stillRunning) {
                     break;
                 }
-                //stop sooner if this is run until flat
-                if (stopWhenFlat && isFlat() && inchesToTarget() < 2) {
+                // reduce power if this is run until flat
+                if (stopWhenFlat &&
+                        (leftDrive.getPower() > 0.22 ||
+                                leftDrive.getPower() > 0.22 ||
+                                leftDriveBack.getPower() > 0.22 ||
+                                rightDriveBack.getPower() > 0.22) &&
+                        inchesToTarget() < 3) {
+
+                    leftDrive.setPower(0.22);
+                    rightDrive.setPower(0.22);
+                    leftDriveBack.setPower(0.22);
+                    rightDriveBack.setPower(0.22);
+
+                }
+                //stop if this is run until flat
+                if (stopWhenFlat &&
+                        isFlat() &&
+                        inchesToTarget() < 3) {
                     stillRunning = false;
                     break;
                 }

@@ -113,7 +113,7 @@ public class Run_Glyph {
             double redShortSonar[] = {0.75, 0.65, 0.56}; // L C R
             double redLongSonar[] = {0.43, 0.34, 0.25}; // L C R
             double blueShortSonar[] = {0.56, 0.65, 0.75}; // L C R
-            double blueLongSonar[] = {0.26, 0.34, 0.43}; // L C R
+            double blueLongSonar[] = {0.25, 0.34, 0.43}; // L C R
             double columnSonarPos = 0;
 
             robot.sonarMaxAdjust = 0.12; // one column
@@ -123,10 +123,10 @@ public class Run_Glyph {
             if (blue_ && short_) columnSonarPos = blueShortSonar[columnIndex - 1];
             if (blue_ && long_) columnSonarPos = blueLongSonar[columnIndex - 1];
 
-            if (red_ && short_) robot.moveBySonarRight(columnSonarPos, 0.44 * speedIncrease, 3);
-            if (red_ && long_) robot.moveBySonarRight(columnSonarPos, 0.44 * speedIncrease, 3);
-            if (blue_ && short_) robot.moveBySonarLeft(columnSonarPos, 0.44 * speedIncrease, 3);
-            if (blue_ && long_) robot.moveBySonarLeft(columnSonarPos, 0.44 * speedIncrease, 3);
+            if (red_ && short_) robot.moveBySonarRight(columnSonarPos, 0.44, 3);
+            if (red_ && long_) robot.moveBySonarRight(columnSonarPos, 0.44, 3);
+            if (blue_ && short_) robot.moveBySonarLeft(columnSonarPos, 0.44, 3);
+            if (blue_ && long_) robot.moveBySonarLeft(columnSonarPos, 0.44, 3);
 
             if (noTimeLeft()) return;
         }
@@ -140,18 +140,13 @@ public class Run_Glyph {
         }
         //PUT THE GLYPH IN
         {
-            robot.moveInches(5.5, 0.15, 2);
-            robot.openClawAuto();
-            waitMillis(22);
-            if (noTimeLeft()) return;
-        }
-        //BACKOFF
-        {
-            robot.moveInches(-6, 0.44 * speedIncrease, 2);
+            robot.moveLift(-0.5);
+            robot.moveInches(5, 0.15, 2);
             robot.setClawPosZero();
+            robot.moveInches(-4, 0.33, 2);
             if (noTimeLeft()) return;
-            robot.moveInches(4, 0.44 * speedIncrease, 2);
-            robot.moveInches(-4, 0.44 * speedIncrease, 2);
+            robot.moveInches(4, 0.33, 2);
+            robot.moveInches(-4, 0.33, 2);
             robot.stopRobot();
         }
 

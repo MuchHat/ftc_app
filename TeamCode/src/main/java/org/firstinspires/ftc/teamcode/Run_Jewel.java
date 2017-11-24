@@ -89,27 +89,27 @@ public class Run_Jewel {
                 if( red_ ){
                     robot.moveInches(-4, 0.22 * speedIncrease, 2);
                     robot.moveArmPosZero();
-                    robot.moveInches(12+6.7, 0.33 * speedIncrease, 8); // should be in front of Vuforia
+                    robot.moveInchesUntilFlat(12+6.7, 0.33 * speedIncrease, 8); // should be in front of Vuforia
                     waitMillis(333); // should be in front of Vuforia
                 }
                 if( blue_){
                     robot.moveInches(-4, 0.22 * speedIncrease, 2);
                     robot.moveArmPosZero();
                     robot.moveInches(7, 0.22 * speedIncrease, 6); // should be in front of Vuforia
-                    waitMillis(333); // should be in front of Vuforia
-                    robot.moveInches(-12.25-6.7, 0.22 * speedIncrease, 6);
+                    waitMillis(33); // should be in front of Vuforia
+                    robot.moveInchesUntilFlat(-12.25-6.7, 0.22 * speedIncrease, 6);
                 }
             }
             if (!knockFirst) {
                 if( red_ ){
                     robot.moveInches(7.5, 0.22 * speedIncrease, 3);
                     robot.moveArmPosZero(); // should be in front of Vuforia
-                    robot.moveInches(6.7, 0.22 * speedIncrease, 3);
+                    robot.moveInchesUntilFlat(6.7, 0.22 * speedIncrease, 3);
                 }
                 if (blue_) {
                     robot.moveInches(4, 0.22 * speedIncrease, 3);
                     robot.moveArmPosZero(); // should be in front of Vuforia
-                    robot.moveInches(-12-6.7, 0.33 * speedIncrease, 8);
+                    robot.moveInchesUntilFlat(-12-6.7, 0.33 * speedIncrease, 8);
                 }
             }
         }
@@ -118,8 +118,8 @@ public class Run_Jewel {
 
             robot.moveArmPosZero();
             robot.showTeamColor();
-            if (red_) robot.moveInches(6.5+6.7, 0.33 * speedIncrease, 6);
-            if (blue_) robot.moveInches(-6.5-6.7, 0.33 * speedIncrease, 6);
+            if (red_) robot.moveInchesUntilFlat(6.5+6.7, 0.33 * speedIncrease, 6);
+            if (blue_) robot.moveInchesUntilFlat(-6.5-6.7, 0.33 * speedIncrease, 6);
         }
         //TURN OFF LED
         robot.moveArmPosZero();
