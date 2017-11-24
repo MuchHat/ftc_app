@@ -72,9 +72,9 @@ public class Run_Glyph {
         }
         // BACK AGAINST THE PLATFORM
         {
-            if (red_ && short_) robot.moveInches(-3, 0.11, 2);
-            if (red_ && long_) robot.moveInches(-5, 0.11, 2);
-            if (blue_) robot.moveInches(3, 0.11, 2);
+            if (red_ && short_) robot.moveInches(-1, 0.11, 2);
+            if (red_ && long_) robot.moveInches(-1, 0.11, 2);
+            if (blue_) robot.moveInches(1, 0.11, 2);
             if (noTimeLeft()) return;
         }
         // MOVE IN FRONT OF BOX USING ENCODERS
