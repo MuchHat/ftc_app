@@ -552,10 +552,10 @@ public class Team_Hardware_V9 {
 
             double crrStepTime = stepTime;
 
-            if (i > rampUp2 / 3 && i < stepCount - rampUp2) {
-                i += 9;
+            if (i > rampUp2 / 2 && i < stepCount - rampUp2) {
+                i += 13;
             } else if (i > rampUp / 5 && i < stepCount - rampUp) {
-                i += 5;
+                i += 3;
             } else {
                 i++;
             }
