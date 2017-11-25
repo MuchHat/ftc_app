@@ -95,11 +95,6 @@ public class Auto_Red_Long_V9 extends LinearOpMode {
         telemetry.addData("lift", "%.0f%%", robot.liftControl * 100);
         telemetry.addData("left claw", "%.0f%%", robot.leftClawControl * 100);
         telemetry.addData("right claw", "%.0f%%", robot.rightClawControl * 100);
-        //telemetry.addData("Vuforia X: ", ".0f%%", glyphRun.vu.getX());
-        //telemetry.addData("Vuforia Y: ", ".0f%%", glyphRun.vu.getY());
-
-        telemetry.addData("set heading", "%.2fdeg", (double) robot.headingControl);
-        telemetry.addData("start heading", "%.2fdeg", robot.gameStartHeading);
         telemetry.addData("team", team);
         telemetry.addData("field", field);
         //telemetry.addData("total runtime", "%.0fs", totalRuntime.seconds());

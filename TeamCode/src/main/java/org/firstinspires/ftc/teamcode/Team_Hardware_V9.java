@@ -76,13 +76,11 @@ public class Team_Hardware_V9 {
     double rightDistanceControl = 0;
     double leftDistanceControlBack = 0;
     double rightDistanceControlBack = 0;
-    double headingControl = 0;
     double liftControl = 0;
     double leftClawControl = 0;
     double rightClawControl = 0;
     double baseControl = 0;
     double elbowControl = 0;
-    double gameStartHeading = 0;
     double sonarMaxAdjust = 0.15;
     //********************************* CLAW POS ************************************************//
     double clawClose[] = {0.38, 0.62};

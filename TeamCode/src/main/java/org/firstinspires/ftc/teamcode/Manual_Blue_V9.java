@@ -376,8 +376,6 @@ public class Manual_Blue_V9 extends LinearOpMode {
         telemetry.addData("left claw", "%.0f%%", robot.leftClawControl * 100);
         telemetry.addData("right claw", "%.0f%%", robot.rightClawControl * 100);
 
-        telemetry.addData("set heading", "%.2fdeg", (double) robot.headingControl);
-        telemetry.addData("start heading", "%.2fdeg", robot.gameStartHeading);
         telemetry.addData("team", team);
 
         telemetry.update();
