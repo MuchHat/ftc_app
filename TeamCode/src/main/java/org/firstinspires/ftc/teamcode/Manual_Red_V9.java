@@ -52,7 +52,7 @@ public class Manual_Red_V9 extends LinearOpMode {
 
         liftMoving = 0;
         timeLeftLiftMoving = 0;
-        robot.setClawPosZero();
+        robot.openClawZero();
 
         while (opModeIsActive()) {
 
@@ -344,7 +344,7 @@ public class Manual_Red_V9 extends LinearOpMode {
             //********************************* END LOOP *****************************************//
         }
 
-        robot.setClawPosZero();
+        robot.openClawZero();
         waitMillis(3333);
         robot.stopRobot();
         robot.colorBeacon.off();

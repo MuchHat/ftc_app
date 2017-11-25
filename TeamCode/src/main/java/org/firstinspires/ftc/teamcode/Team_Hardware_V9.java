@@ -292,6 +292,24 @@ public class Team_Hardware_V9 {
         colorBeacon.colorNumber(prevBeaconColor);
     }
 
+    void openClawZero() {
+        leftClawControl = clawZero[0];
+        rightClawControl = clawZero[1];
+        setServos();
+    }
+
+    void closeClawLeft() {
+        leftClawControl = clawClose[0];
+        rightClawControl = clawZero[1];
+        setServos();
+    }
+
+    void closeClawRight() {
+        leftClawControl = clawZero[0];
+        rightClawControl = clawClose[1];
+        setServos();
+    }
+
     void openClaw() {
         leftClawControl = clawOpen[0];
         rightClawControl = clawOpen[1];
@@ -387,6 +405,7 @@ public class Team_Hardware_V9 {
         double rampDown = 0.08; //TODO
         double crrPower = movePower;
         double crrPos = 0;
+        int prevBeaconColor = colorBeacon.getColorNumber();
 
         // perform the first reading, try few times to get a good reading
         for (int attempts = 0; attempts < 11; attempts++) {
@@ -419,6 +438,8 @@ public class Team_Hardware_V9 {
             rightDistanceControl = 0;
             leftDistanceControlBack = 0;
             rightDistanceControlBack = 0;
+
+            colorBeacon.orange();
 
             crrPower = movePower;
             if (crrError * direction < rampDown) {
@@ -470,6 +491,7 @@ public class Team_Hardware_V9 {
             crrError = endPos - crrPos;
         }
         stopRobot();
+        colorBeacon.colorNumber(prevBeaconColor);
     }
 
     double pulsesToMm(double distancePulses) {
@@ -755,6 +777,21 @@ public class Team_Hardware_V9 {
                         leftDriveBack.setPower(Math.abs(lbPower));
                         rightDriveBack.setPower(Math.abs(rbPower));
                     }
+                    else{
+                        // rebase the targets if needed
+                        int left2Target = leftDrive.getTargetPosition() - leftDrive.getCurrentPosition();
+                        int right2Target = rightDrive.getTargetPosition() - leftDrive.getCurrentPosition();
+                        int leftBack2Target = leftDriveBack.getTargetPosition() - leftDrive.getCurrentPosition();
+                        int rightBack2Target = rightDriveBack.getTargetPosition() - leftDrive.getCurrentPosition();
+
+                        int average2Target = (left2Target + right2Target + leftBack2Target + rightBack2Target) / 4;
+
+                        leftDrive.setTargetPosition( leftDrive.getCurrentPosition() + average2Target );
+                        rightDrive.setTargetPosition( rightDrive.getCurrentPosition() + average2Target );
+                        leftDriveBack.setTargetPosition( leftDriveBack.getCurrentPosition() + average2Target );
+                        rightDriveBack.setTargetPosition( rightDriveBack.getCurrentPosition() + average2Target );
+                    }
+
                 }
             }
             if (!stillRunning) {
@@ -874,12 +911,6 @@ public class Team_Hardware_V9 {
             rightDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
             rightDriveBack.setPower(Math.abs(rightPowerControlBack) + headingCorrection);
         }
-    }
-
-    void setClawPosZero() {
-        leftClawControl = clawZero[0];
-        rightClawControl = clawZero[1];
-        setServos();
     }
 
     void setServos() {
