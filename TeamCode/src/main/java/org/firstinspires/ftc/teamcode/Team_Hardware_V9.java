@@ -275,8 +275,8 @@ public class Team_Hardware_V9 {
             }
 
             double crrPower = turnPower;
-            if (crrError < 13) crrPower = turnPowerMed;
-            if (crrError < 9) crrPower = turnPowerLow;
+            if (crrError < 44) crrPower = turnPowerMed;
+            if (crrError < 22) crrPower = turnPowerLow;
 
             leftDrive.setPower(Math.abs(crrPower));
             rightDrive.setPower(Math.abs(crrPower));
