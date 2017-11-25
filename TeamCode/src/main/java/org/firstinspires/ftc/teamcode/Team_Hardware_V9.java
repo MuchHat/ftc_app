@@ -619,16 +619,16 @@ public class Team_Hardware_V9 {
     int targetLeftBack = 0;
     int targetRightBack = 0;
 
-    boolean moveLinearTrackGyroHeading = false;
-    double moveLinearStartHeading = -1.0;
+    boolean trackGyroHeading = false;
+    double startGyroHeading = -1.0;
 
     void setDrivesByDistance(double timeOut) {
 
         ElapsedTime encodersTimer = new ElapsedTime();
 
-        if (moveLinearTrackGyroHeading) {
-            if (moveLinearStartHeading < 0) {
-                moveLinearStartHeading = imuGyro.getHeading();
+        if (trackGyroHeading) {
+            if (startGyroHeading < 0) {
+                startGyroHeading = imuGyro.getHeading();
             }
         }
 
@@ -713,26 +713,36 @@ public class Team_Hardware_V9 {
                     break;
                 }
                 // correct heading if needed
-                if (moveLinearTrackGyroHeading) {
+                if (trackGyroHeading) {
 
-                    double driftRight = gyroDrift(moveLinearStartHeading);
+                    double driftRight = gyroDrift(startGyroHeading);
 
                     if (driftRight != 0) {
 
-                        double lPower = leftPowerControl;
-                        double rPower = rightPowerControl;
-                        double lbPower = leftPowerControlBack;
-                        double rbPower = rightPowerControlBack;
+                        double lPower = leftDrive.getPower();
+                        double rPower = rightDrive.getPower();
+                        double lbPower = leftDriveBack.getPower();
+                        double rbPower = rightDriveBack.getPower();
 
                         double direction = rightDistanceControl > 0 ? 1.0 : -1.0;
 
                         //reduce power on one side to compensate
                         if (driftRight * direction > 0) {
-                            lPower *= 0.22 * Math.abs(driftRight);
-                            lbPower *= 0.22 * Math.abs(driftRight);
+                            lPower = rPower * 0.22 * Math.abs(driftRight);
+                            lbPower = rbPower * 0.22 * Math.abs(driftRight);
+
+                            if (lPower < 0.11 || lbPower < 0.11) {
+                                lPower = leftDrive.getPower();
+                                lbPower = leftDriveBack.getPower();
+                            }
                         } else {
-                            rPower *= 0.22 * Math.abs(driftRight);
-                            rbPower *= 0.22 * Math.abs(driftRight);
+                            rPower = lPower * 0.22 * Math.abs(driftRight);
+                            rbPower = lbPower * 0.22 * Math.abs(driftRight);
+
+                            if (rPower < 0.11 || rbPower < 0.11) {
+                                rPower = rightDrive.getPower();
+                                rbPower = rightDriveBack.getPower();
+                            }
                         }
 
                         lPower = Range.clip(lPower, -1, 1);
@@ -794,8 +804,8 @@ public class Team_Hardware_V9 {
         leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        moveLinearTrackGyroHeading = false;
-        moveLinearStartHeading = -1.0;
+        trackGyroHeading = false;
+        startGyroHeading = -1.0;
     }
 
     // ************************** HARDWARE SET FUNCTIONS *****************************************//
