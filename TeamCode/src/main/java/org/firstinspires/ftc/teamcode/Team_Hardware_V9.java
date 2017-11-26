@@ -623,14 +623,14 @@ public class Team_Hardware_V9 {
         }
 
         // if small drift ignore
-        if (Math.abs(targetHeading - crrHeading) < 11) {
+        if (Math.abs(targetHeading - crrHeading) < 7) {
             return 0;
         }
 
         // 1.0 means 90 deg off
         // > 0 means drift to right
         // < 0 means drift to left
-        double drift = (targetHeading - crrHeading) / 90;
+        double drift = (targetHeading - crrHeading) / 90; // 0.07 is min
 
         return drift;
     }
@@ -750,8 +750,8 @@ public class Team_Hardware_V9 {
                         //reduce power on one side to compensate
                         if (driftRight * direction > 0) {
 
-                            lPower = rPower * 0.22 * Math.abs(driftRight);
-                            lbPower = rbPower * 0.22 * Math.abs(driftRight);
+                            lPower = rPower * 1.1 * Math.abs(driftRight); // x0.07 is the minimum for 6 deg drift
+                            lbPower = rbPower * 1.1 * Math.abs(driftRight); // x0.15 reduction for 11 deg drift
 
                             if (lPower < 0.11 || lbPower < 0.11) {
                                 lPower = rPower;
@@ -759,8 +759,8 @@ public class Team_Hardware_V9 {
                             }
                         } else {
 
-                            rPower = lPower * 0.22 * Math.abs(driftRight);
-                            rbPower = lbPower * 0.22 * Math.abs(driftRight);
+                            rPower = lPower * 1.1 * Math.abs(driftRight);
+                            rbPower = lbPower * 1.1 * Math.abs(driftRight);
 
                             if (rPower < 0.11 || rbPower < 0.11) {
                                 rPower = lPower;
