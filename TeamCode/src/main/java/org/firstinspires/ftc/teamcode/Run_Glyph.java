@@ -100,6 +100,7 @@ public class Run_Glyph {
             if (blue_ && short_) robot.moveInches(-moveDistance, 0.44 * speedIncrease, 6);
             if (blue_ && long_) robot.moveSideInches(-moveDistance, 0.44 * speedIncrease, 6);
             showIfTargetSeen();
+
             if (noTimeLeft(1)) return;
         }
         // TURN TOWARDS THE BOX
@@ -108,6 +109,8 @@ public class Run_Glyph {
             if (red_ && long_) robot.turnTo12();
             if (blue_ && short_) robot.turnTo3();
             if (blue_ && long_) robot.turnTo6();
+            showIfTargetSeen();
+
             if (noTimeLeft(1)) return;
         }
         // MOVE IN FRONT OF THE COLUMN USING SONAR
@@ -129,6 +132,7 @@ public class Run_Glyph {
             if (red_ && long_) robot.moveBySonarRight(columnSonarPos, 0.44, 3);
             if (blue_ && short_) robot.moveBySonarLeft(columnSonarPos, 0.44, 3);
             if (blue_ && long_) robot.moveBySonarLeft(columnSonarPos, 0.44, 3);
+            showIfTargetSeen();
 
             if (noTimeLeft(2)) return;
         }
@@ -138,6 +142,8 @@ public class Run_Glyph {
             if (red_ && long_) robot.turnTo12();
             if (blue_ && short_) robot.turnTo3();
             if (blue_ && long_) robot.turnTo6();
+            robot.showTeamColor();
+
             if (noTimeLeft(1)) return;
         }
         //PUT THE GLYPH IN
@@ -145,6 +151,7 @@ public class Run_Glyph {
             robot.moveLift(-0.5);
             robot.moveInches(4, 0.15, 2);
             robot.openClawZero();
+            robot.showTeamColor();
 
             // IF TIME DO WIGGLE
             if( !noTimeLeft(2)){
@@ -155,7 +162,9 @@ public class Run_Glyph {
                 robot.openClawZero();
             }
             robot.moveInches(-3, 0.33, 2);
+            robot.showTeamColor();
             if (noTimeLeft(1)) return;
+
             robot.moveInches(3.5, 0.33, 2);
             robot.moveInches(-4, 0.33, 2);
 
@@ -167,6 +176,8 @@ public class Run_Glyph {
             if (blue_ && short_) robot.turnTo9();
             if (blue_ && long_) robot.turnTo12();
         }
+
+        robot.showTeamColor();
         robot.stopRobot();
     }
 

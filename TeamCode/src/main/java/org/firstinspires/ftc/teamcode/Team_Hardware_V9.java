@@ -649,6 +649,7 @@ public class Team_Hardware_V9 {
     void setDrivesByDistance(double timeOut) {
 
         ElapsedTime encodersTimer = new ElapsedTime();
+        int prevBeaconColor = colorBeacon.getColorNumber();
 
         if (trackGyroHeading) {
             if (startGyroHeading < 0) {
@@ -734,6 +735,7 @@ public class Team_Hardware_V9 {
                         isFlat() &&
                         inchesToTarget() < 3) {
                     stillRunning = false;
+                    colorBeacon.white();
                     break;
                 }
                 // correct heading if needed
@@ -742,6 +744,9 @@ public class Team_Hardware_V9 {
                     double driftRight = gyroDrift(startGyroHeading);
 
                     if (driftRight != 0) {
+
+                        // correcting in progress
+                        colorBeacon.orange();
 
                         double lPower = leftDrive.getPower();
                         double rPower = rightDrive.getPower();
@@ -787,6 +792,8 @@ public class Team_Hardware_V9 {
                         rightDriveBack.setPower(Math.abs(rbPower));
 
                     } else {
+                        // not correcting
+                        colorBeacon.colorNumber(prevBeaconColor);
 
                         // set the power the same on all 4 wheels if not already
                         double lPower = leftDrive.getPower();
@@ -853,6 +860,7 @@ public class Team_Hardware_V9 {
                 rightDrive.setPower(0);
                 leftDriveBack.setPower(0);
                 rightDriveBack.setPower(0);
+                colorBeacon.yellow();
 
                 waitMillis(66);
 
@@ -874,8 +882,11 @@ public class Team_Hardware_V9 {
         leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        trackGyroHeading = false;
-        startGyroHeading = -1.0;
+        if (trackGyroHeading) {
+            trackGyroHeading = false;
+            startGyroHeading = -1.0;
+            colorBeacon.colorNumber(prevBeaconColor);
+        }
     }
 
     // ************************** HARDWARE SET FUNCTIONS *****************************************//
