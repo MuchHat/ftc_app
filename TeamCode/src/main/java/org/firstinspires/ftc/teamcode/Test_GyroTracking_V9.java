@@ -83,7 +83,7 @@ public class Test_GyroTracking_V9 extends LinearOpMode {
                 sleep(100);
             }
 
-            target = Range.clip(target, 0, 30.0);
+            target = Range.clip(target, 0, 40.0);
             power = Range.clip(power, 0.11, 0.88);
 
             if (gamepad1.a) {
