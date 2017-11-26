@@ -15,7 +15,7 @@ public class Run_Glyph {
     ElapsedTime timer = new ElapsedTime();
     Vu vu = new Vu();
     HardwareMap hwMap = null;
-    double speedIncrease = 1.0;
+    double speedIncrease = 1.8;
 
     //********************************* END VARIABLE ********************************************//
 
@@ -156,12 +156,18 @@ public class Run_Glyph {
             }
             robot.moveInches(-3, 0.33, 2);
             if (noTimeLeft(1)) return;
-
             robot.moveInches(3.5, 0.33, 2);
             robot.moveInches(-4, 0.33, 2);
-            robot.stopRobot();
-        }
 
+        }
+        // IF THERE IS TIME TURN AROUND
+        if( !noTimeLeft(2)){
+            if (red_ && short_) robot.turnTo9();
+            if (red_ && long_) robot.turnTo6();
+            if (blue_ && short_) robot.turnTo9();
+            if (blue_ && long_) robot.turnTo12();
+        }
+        robot.stopRobot();
     }
 
      private void waitMillis(double millis) {
