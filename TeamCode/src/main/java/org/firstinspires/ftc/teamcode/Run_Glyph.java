@@ -146,12 +146,12 @@ public class Run_Glyph {
             robot.moveInches(4, 0.15, 2);
             robot.openClawZero();
 
-            // IF TIME LEFT WIGGLE
+            // IF TIME DO WIGGLE
             if( !noTimeLeft(2)){
                 robot.closeClawRight();
-                waitMillis(222);
+                waitMillis(333);
                 robot.closeClawLeft();
-                waitMillis(222);
+                waitMillis(333);
                 robot.openClawZero();
             }
             robot.moveInches(-3, 0.33, 2);

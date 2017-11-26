@@ -83,12 +83,15 @@ public class Team_Hardware_V9 {
     double elbowControl = 0;
     double sonarMaxAdjust = 0.15;
     //********************************* CLAW POS ************************************************//
-    double clawClose[] = {0.38, 0.62};
+
     double clawZero[] = {1.00, 0.00};
     double clawOpen[] = {0.54, 0.47};
-    double clawOpenWide[] = {0.69, 0.30};
-    double clawCloseAuto[] = {0.38, 0.62};
     double clawOpenAuto[] = {0.54, 0.47};
+    double clawOpenWide[] = {0.70, 0.30};
+    double clawCloseLeft[] = {0.33, 0.00};
+    double clawCloseRight[] = {1.00, 0.66};
+    double clawClose[] = {0.38, 0.62};
+    double clawCloseAuto[] = {0.38, 0.62};
     //********************************* ARM POS *************************************************//
     double armPosZero[] = {1, 0};
     // ************************** MAIN LOOP ******************************************************//
@@ -297,14 +300,14 @@ public class Team_Hardware_V9 {
     }
 
     void closeClawLeft() {
-        leftClawControl = clawClose[0];
-        rightClawControl = clawZero[1];
+        leftClawControl = clawCloseLeft[0];
+        rightClawControl = clawCloseLeft[1];
         setServos();
     }
 
     void closeClawRight() {
-        leftClawControl = clawZero[0];
-        rightClawControl = clawClose[1];
+        leftClawControl = clawCloseRight[0];
+        rightClawControl = clawCloseRight[1];
         setServos();
     }
 
@@ -678,10 +681,10 @@ public class Team_Hardware_V9 {
         leftDriveBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightDriveBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftPowerControl = Range.clip(leftPowerControl, -1, 1);
-        rightPowerControl = Range.clip(rightPowerControl, -1, 1);
-        leftPowerControlBack = Range.clip(leftPowerControlBack, -1, 1);
-        rightPowerControlBack = Range.clip(rightPowerControlBack, -1, 1);
+        leftPowerControl = Range.clip(leftPowerControl, 0, 1);
+        rightPowerControl = Range.clip(rightPowerControl, 0, 1);
+        leftPowerControlBack = Range.clip(leftPowerControlBack, 0, 1);
+        rightPowerControlBack = Range.clip(rightPowerControlBack, 0, 1);
 
         leftDrive.setPower(Math.abs(leftPowerControl));
         rightDrive.setPower(Math.abs(rightPowerControl));
@@ -748,30 +751,35 @@ public class Team_Hardware_V9 {
                         double direction = rightDistanceControl > 0 ? 1.0 : -1.0;
 
                         //reduce power on one side to compensate
+                        // 0.88 for 11 deg drift
+                        //0.11 for 90 deg drift
+                        double reduceRatio = 1 - 1.1 * Math.abs(driftRight);
+                        reduceRatio = Range.clip(reduceRatio, 0.11, 1);
+
                         if (driftRight * direction > 0) {
 
-                            lPower = rPower * 1.1 * Math.abs(driftRight); // x0.07 is the minimum for 6 deg drift
-                            lbPower = rbPower * 1.1 * Math.abs(driftRight); // x0.15 reduction for 11 deg drift
+                            lPower = rPower * reduceRatio; // x0.07 is the minimum for 6 deg drift
+                            lbPower = rbPower * reduceRatio; // x0.15 reduction for 11 deg drift
 
-                            if (lPower < 0.11 || lbPower < 0.11) {
+                            if (lPower < 0.06 || lbPower < 0.06) {
                                 lPower = rPower;
                                 lbPower = rbPower;
                             }
                         } else {
 
-                            rPower = lPower * 1.1 * Math.abs(driftRight);
-                            rbPower = lbPower * 1.1 * Math.abs(driftRight);
+                            rPower = lPower * reduceRatio;
+                            rbPower = lbPower * reduceRatio;
 
-                            if (rPower < 0.11 || rbPower < 0.11) {
+                            if (rPower < 0.06 || rbPower < 0.06) {
                                 rPower = lPower;
                                 rbPower = lbPower;
                             }
                         }
 
-                        lPower = Range.clip(lPower, -1, 1);
-                        rPower = Range.clip(rPower, -1, 1);
-                        lbPower = Range.clip(lbPower, -1, 1);
-                        rbPower = Range.clip(rbPower, -1, 1);
+                        lPower = Range.clip(lPower, 0, 1);
+                        rPower = Range.clip(rPower, 0, 1);
+                        lbPower = Range.clip(lbPower, 0, 1);
+                        rbPower = Range.clip(rbPower, 0, 1);
 
                         leftDrive.setPower(Math.abs(lPower));
                         rightDrive.setPower(Math.abs(rPower));
@@ -896,8 +904,6 @@ public class Team_Hardware_V9 {
             liftDrive.setPower(Math.abs(liftControl));
         }
 
-        double headingCorrection = 0;
-
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -906,35 +912,35 @@ public class Team_Hardware_V9 {
 
         if (leftPowerControl >= 0) {
             leftDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            leftDrive.setPower(Math.abs(leftPowerControl) - headingCorrection);
+            leftDrive.setPower(Math.abs(leftPowerControl));
         }
         if (leftPowerControl < 0) {
             leftDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            leftDrive.setPower(Math.abs(leftPowerControl) - headingCorrection);
+            leftDrive.setPower(Math.abs(leftPowerControl));
         }
         if (rightPowerControl >= 0) {
             rightDrive.setDirection(DcMotorSimple.Direction.FORWARD);
-            rightDrive.setPower(Math.abs(rightPowerControl) + headingCorrection);
+            rightDrive.setPower(Math.abs(rightPowerControl));
         }
         if (rightPowerControl < 0) {
             rightDrive.setDirection(DcMotorSimple.Direction.REVERSE);
-            rightDrive.setPower(Math.abs(rightPowerControl) + headingCorrection);
+            rightDrive.setPower(Math.abs(rightPowerControl));
         }
         if (leftPowerControlBack >= 0) {
             leftDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
-            leftDriveBack.setPower(Math.abs(leftPowerControlBack) - headingCorrection);
+            leftDriveBack.setPower(Math.abs(leftPowerControlBack));
         }
         if (leftPowerControlBack < 0) {
             leftDriveBack.setDirection(DcMotorSimple.Direction.FORWARD);
-            leftDriveBack.setPower(Math.abs(leftPowerControlBack) - headingCorrection);
+            leftDriveBack.setPower(Math.abs(leftPowerControlBack));
         }
         if (rightPowerControlBack >= 0) {
             rightDriveBack.setDirection(DcMotorSimple.Direction.FORWARD);
-            rightDriveBack.setPower(Math.abs(rightPowerControlBack) + headingCorrection);
+            rightDriveBack.setPower(Math.abs(rightPowerControlBack));
         }
         if (rightPowerControlBack < 0) {
             rightDriveBack.setDirection(DcMotorSimple.Direction.REVERSE);
-            rightDriveBack.setPower(Math.abs(rightPowerControlBack) + headingCorrection);
+            rightDriveBack.setPower(Math.abs(rightPowerControlBack));
         }
     }
 
