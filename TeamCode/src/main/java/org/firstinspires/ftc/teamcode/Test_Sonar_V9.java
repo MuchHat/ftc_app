@@ -65,8 +65,6 @@ public class Test_Sonar_V9 extends LinearOpMode {
     double target = 0;
 
     Team_Hardware_V9 robot = new Team_Hardware_V9();
-    double crrError = 0;
-    double direction = 0;
 
     @Override
     public void runOpMode() {
@@ -98,78 +96,10 @@ public class Test_Sonar_V9 extends LinearOpMode {
 
 
             if (gamepad1.x)
-                moveBySonar(target, 0.44, 6, Team_Hardware_V9.SonarPosition.LEFT);
+                robot.moveBySonar(target, 0.44, 6, Team_Hardware_V9.SonarPosition.LEFT);
             if (gamepad1.b)
-                moveBySonar(target, 0.44, 6, Team_Hardware_V9.SonarPosition.RIGHT);
+                robot.moveBySonar(target, 0.44, 6, Team_Hardware_V9.SonarPosition.RIGHT);
         }
-
-    }
-
-    void moveBySonar(double endPos, double movePower, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
-
-        ElapsedTime moveTimer = new ElapsedTime();
-        double minPower = 0.11; //TODO
-        double rampDown = 0.08; //TODO
-        double crrPower = movePower;
-        double crrPos = 0;
-
-        if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
-            crrPos = leftSonar.getVoltage();
-        } else {
-            crrPos = rightSonar.getVoltage();
-        }
-
-        crrError = endPos - crrPos;
-        direction = crrError > 0 ? 1.0 : -1.0;
-        moveTimer.reset();
-
-        while (moveTimer.seconds() < timeOutSec && crrError * direction > 0) {
-
-            robot.leftDistanceControl = 0;
-            robot.rightDistanceControl = 0;
-            robot.leftDistanceControlBack = 0;
-            robot.rightDistanceControlBack = 0;
-
-            crrPower = movePower;
-            if (crrError * direction < rampDown) {
-                crrPower = minPower;
-            }
-
-            if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
-                robot.leftPowerControl = -crrPower * direction;
-                robot.rightPowerControl = -crrPower * direction;
-                robot.leftPowerControlBack = -crrPower * direction;
-                robot.rightPowerControlBack = -crrPower * direction;
-                robot.setDrivesByPower();
-
-            } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
-                robot.leftPowerControl = -crrPower * direction;
-                robot.rightPowerControl = crrPower * direction;
-                robot.leftPowerControlBack = crrPower * direction;
-                robot.rightPowerControlBack = -crrPower * direction;
-                robot.setDrivesByPower();
-
-            } else {
-                robot.leftPowerControl = crrPower * direction;
-                robot.rightPowerControl = -crrPower * direction;
-                robot.leftPowerControlBack = -crrPower * direction;
-                robot.rightPowerControlBack = crrPower * direction;
-                robot.setDrivesByPower();
-
-            }
-
-            robot.waitMillis(111);
-            if (sonarPosition == Team_Hardware_V9.SonarPosition.FRONT) {
-                crrPos = frontSonar.getVoltage();
-            } else if (sonarPosition == Team_Hardware_V9.SonarPosition.LEFT) {
-                crrPos = leftSonar.getVoltage();
-            } else {
-                crrPos = rightSonar.getVoltage();
-            }
-            crrError = endPos - crrPos;
-            telemetryUpdate();
-        }
-        robot.stopRobot();
     }
 
     void telemetryUpdate() {
@@ -180,8 +110,6 @@ public class Test_Sonar_V9 extends LinearOpMode {
         telemetry.addData("frontSonar", "%.3f v", (double) frontSonar.getVoltage());
         telemetry.addData("leftSonar", "%.3f v", (double) leftSonar.getVoltage());
         telemetry.addData("rightSonar", "%.3f v", (double) rightSonar.getVoltage());
-        telemetry.addData("crrError", "%.2f v", crrError);
-        telemetry.addData("direction", "%.2f", direction);
         telemetry.addData("target", "%.2f v", target);
         telemetry.update();
     }
