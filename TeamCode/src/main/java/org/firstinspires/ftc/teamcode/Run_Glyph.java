@@ -51,8 +51,8 @@ public class Run_Glyph {
         {
             if (red_ && short_) speedIncrease = 2.2;
             if (red_ && long_) speedIncrease = 2.2;
-            if (blue_ && short_) speedIncrease = 1.8;
-            if (blue_ && long_) speedIncrease = 1.8;
+            if (blue_ && short_) speedIncrease = 2.2;
+            if (blue_ && long_) speedIncrease = 2.2;
         }
         // START TIMER
         {
