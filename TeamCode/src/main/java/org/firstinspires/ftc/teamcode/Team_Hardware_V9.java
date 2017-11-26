@@ -749,20 +749,22 @@ public class Team_Hardware_V9 {
 
                         //reduce power on one side to compensate
                         if (driftRight * direction > 0) {
+
                             lPower = rPower * 0.22 * Math.abs(driftRight);
                             lbPower = rbPower * 0.22 * Math.abs(driftRight);
 
                             if (lPower < 0.11 || lbPower < 0.11) {
-                                lPower = leftDrive.getPower();
-                                lbPower = leftDriveBack.getPower();
+                                lPower = rPower;
+                                lbPower = rbPower;
                             }
                         } else {
+
                             rPower = lPower * 0.22 * Math.abs(driftRight);
                             rbPower = lbPower * 0.22 * Math.abs(driftRight);
 
                             if (rPower < 0.11 || rbPower < 0.11) {
-                                rPower = rightDrive.getPower();
-                                rbPower = rightDriveBack.getPower();
+                                rPower = lPower;
+                                rbPower = lbPower;
                             }
                         }
 
