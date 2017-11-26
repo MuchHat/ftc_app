@@ -777,6 +777,24 @@ public class Team_Hardware_V9 {
                         rightDriveBack.setPower(Math.abs(rbPower));
 
                     } else {
+
+                        // set the power the same on all 4 wheels if not already
+                        double lPower = leftDrive.getPower();
+                        double rPower = rightDrive.getPower();
+                        double lbPower = leftDriveBack.getPower();
+                        double rbPower = rightDriveBack.getPower();
+
+                        double minPower = Math.min(Math.min(Math.min(lPower, rPower), lbPower), rbPower);
+                        double maxPower = Math.max(Math.max(Math.max(lPower, rPower), lbPower), rbPower);
+
+                        if( Math.abs( maxPower-minPower) > 0.06){
+
+                            leftDrive.setPower(Math.abs(maxPower));
+                            rightDrive.setPower(Math.abs(maxPower));
+                            leftDriveBack.setPower(Math.abs(maxPower));
+                            rightDriveBack.setPower(Math.abs(maxPower));
+                        }
+
                         // rebase the targets if needed
                         int left2Target = leftDrive.getTargetPosition() - leftDrive.getCurrentPosition();
                         int right2Target = rightDrive.getTargetPosition() - leftDrive.getCurrentPosition();
