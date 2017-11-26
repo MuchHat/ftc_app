@@ -650,6 +650,7 @@ public class Team_Hardware_V9 {
 
         ElapsedTime encodersTimer = new ElapsedTime();
         int prevBeaconColor = colorBeacon.getColorNumber();
+        double lastCheckIfLocked = 0;
 
         if (trackGyroHeading) {
             if (startGyroHeading < 0) {
@@ -707,7 +708,7 @@ public class Team_Hardware_V9 {
         while (encodersTimer.seconds() < timeOutSec) {
 
             boolean stillRunning = true;
-            for (int i = 0; i < 33; i++) {
+            for (int i = 0; i < 17; i++) {
                 waitMillis(11);
                 stillRunning = leftDrive.isBusy() ||
                         rightDrive.isBusy() ||
@@ -735,6 +736,8 @@ public class Team_Hardware_V9 {
                         isFlat() &&
                         inchesToTarget() < 3) {
                     stillRunning = false;
+
+                    // WHITE MEANS STOPPED ON FLAT
                     colorBeacon.white();
                     break;
                 }
@@ -745,7 +748,7 @@ public class Team_Hardware_V9 {
 
                     if (driftRight != 0) {
 
-                        // correcting in progress
+                        // ORANGE MEANS GYRO CORRECTING
                         colorBeacon.orange();
 
                         double lPower = leftDrive.getPower();
@@ -837,39 +840,45 @@ public class Team_Hardware_V9 {
             if (!stillRunning) {
                 break;
             }
-            double lMove = Math.abs(leftDrive.getCurrentPosition() - leftPrev);
-            double rMove = Math.abs(rightDrive.getCurrentPosition() - rightPrev);
-            double lbMove = Math.abs(leftDriveBack.getCurrentPosition() - leftBackPrev);
-            double rbMove = Math.abs(rightDriveBack.getCurrentPosition() - rightBackPrev);
+            if (encodersTimer.milliseconds() - lastCheckIfLocked > 222) {
 
-            double minMove = Math.min(Math.min(Math.min(lMove, rMove), lbMove), rbMove);
-            double maxMove = Math.max(Math.max(Math.max(lMove, rMove), lbMove), rbMove);
+                lastCheckIfLocked = encodersTimer.milliseconds();
 
-            leftPrev = leftDrive.getCurrentPosition();
-            rightPrev = rightDrive.getCurrentPosition();
-            leftBackPrev = leftDriveBack.getCurrentPosition();
-            rightBackPrev = rightDriveBack.getCurrentPosition();
+                double lMove = Math.abs(leftDrive.getCurrentPosition() - leftPrev);
+                double rMove = Math.abs(rightDrive.getCurrentPosition() - rightPrev);
+                double lbMove = Math.abs(leftDriveBack.getCurrentPosition() - leftBackPrev);
+                double rbMove = Math.abs(rightDriveBack.getCurrentPosition() - rightBackPrev);
 
-            // diff is bigger than 1/3 turn in 1/3 sec
-            locked = Math.abs(maxMove - minMove) > 188;
+                double lDiffPercent = Math.abs(lMove - lbMove) / Math.max(Math.max(lMove, lbMove), 1);
+                double rDiffPercent = Math.abs(rMove - rbMove) / Math.max(Math.max(rMove, rbMove), 1);
 
-            //if one wheel is locked stop and restart,check for stall 222ms after start not sooner
-            if (locked && encodersTimer.seconds() > 0.22) {
+                leftPrev = leftDrive.getCurrentPosition();
+                rightPrev = rightDrive.getCurrentPosition();
+                leftBackPrev = leftDriveBack.getCurrentPosition();
+                rightBackPrev = rightDriveBack.getCurrentPosition();
 
-                leftDrive.setPower(0);
-                rightDrive.setPower(0);
-                leftDriveBack.setPower(0);
-                rightDriveBack.setPower(0);
-                colorBeacon.yellow();
+                // diff is bigger than 33%
+                locked = lDiffPercent > 0.33 || rDiffPercent > 0.33;
 
-                waitMillis(66);
+                //if one wheel is locked stop and restart,check for stall 222ms after start not sooner
+                if (locked && encodersTimer.seconds() > 0.22) {
 
-                leftDrive.setPower(Math.abs(leftPowerControl));
-                rightDrive.setPower(Math.abs(rightPowerControl));
-                leftDriveBack.setPower(Math.abs(leftPowerControlBack));
-                rightDriveBack.setPower(Math.abs(rightPowerControlBack));
+                    leftDrive.setPower(0);
+                    rightDrive.setPower(0);
+                    leftDriveBack.setPower(0);
+                    rightDriveBack.setPower(0);
+
+                    // YELLOW MEANS LOCKED UP
+                    colorBeacon.yellow();
+
+                    waitMillis(66);
+
+                    leftDrive.setPower(Math.abs(leftPowerControl));
+                    rightDrive.setPower(Math.abs(rightPowerControl));
+                    leftDriveBack.setPower(Math.abs(leftPowerControlBack));
+                    rightDriveBack.setPower(Math.abs(rightPowerControlBack));
+                }
             }
-
         }
 
         leftDrive.setPower(0);

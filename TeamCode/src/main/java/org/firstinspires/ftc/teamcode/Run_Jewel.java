@@ -78,7 +78,8 @@ public class Run_Jewel {
             if (red_ && !foundRed) knockFirst = true;
 
             //GO IN BETWEEN THE JEWELS
-            robot.moveInches(2.5, 0.22, 2);
+            if( knockFirst) robot.moveInches(2, 0.22, 2);
+            if( !knockFirst) robot.moveInches(3, 0.22, 2);
             waitMillis(33);
 
             //EXTEND ARM
