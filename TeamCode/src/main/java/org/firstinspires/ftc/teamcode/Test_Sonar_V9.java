@@ -82,11 +82,11 @@ public class Test_Sonar_V9 extends LinearOpMode {
             telemetryUpdate();
 
             if (gamepad1.dpad_left) {
-                target -= 0.01;
+                target -= 0.005;
                 sleep(100);
             }
             if (gamepad1.dpad_right) {
-                target += 0.01;
+                target += 0.005;
                 sleep(100);
             }
             if (gamepad1.dpad_up) target = 0;
