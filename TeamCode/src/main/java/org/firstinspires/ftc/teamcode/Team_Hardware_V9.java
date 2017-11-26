@@ -597,8 +597,8 @@ public class Team_Hardware_V9 {
 
     boolean isFlat() {
 
-        boolean xFlat = imuGyro.getInclineX() < 5 || imuGyro.getInclineX() > 355; //TODO
-        boolean yFlat = imuGyro.getInclineY() < 5 || imuGyro.getInclineY() > 355; //TODO
+        boolean xFlat = imuGyro.getInclineX() < 4 || imuGyro.getInclineX() > 356; //TODO
+        boolean yFlat = imuGyro.getInclineY() < 4 || imuGyro.getInclineY() > 356; //TODO
 
         return xFlat && yFlat;
     }
@@ -817,14 +817,6 @@ public class Team_Hardware_V9 {
                 double minPower = Math.min(Math.min(Math.min(lPower, rPower), lbPower), rbPower);
                 double maxPower = Math.max(Math.max(Math.max(lPower, rPower), lbPower), rbPower);
 
-                if (Math.abs(maxPower - minPower) > 0.06) {
-
-                    leftDrive.setPower(Math.abs(maxPower));
-                    rightDrive.setPower(Math.abs(maxPower));
-                    leftDriveBack.setPower(Math.abs(maxPower));
-                    rightDriveBack.setPower(Math.abs(maxPower));
-                }
-
                 // rebase the targets if needed
                 int left2Target = leftDrive.getTargetPosition() - leftDrive.getCurrentPosition();
                 int right2Target = rightDrive.getTargetPosition() - leftDrive.getCurrentPosition();
@@ -836,12 +828,19 @@ public class Team_Hardware_V9 {
                 int max2Target = Math.max(Math.max(Math.max(left2Target, right2Target), leftBack2Target), rightBack2Target);
 
                 // adjust only if a big difference
-                if (Math.abs(max2Target - min2Target) > 222) {
+                if (Math.abs(max2Target - min2Target) > 666) {
 
                     leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + average2Target);
                     rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + average2Target);
                     leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() + average2Target);
                     rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + average2Target);
+                }
+                if (Math.abs(maxPower - minPower) > 0.08) {
+
+                    leftDrive.setPower(Math.abs(maxPower));
+                    rightDrive.setPower(Math.abs(maxPower));
+                    leftDriveBack.setPower(Math.abs(maxPower));
+                    rightDriveBack.setPower(Math.abs(maxPower));
                 }
             }
             // END GYRO TRACKING

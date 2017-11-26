@@ -99,7 +99,7 @@ public class Run_Jewel {
                     robot.moveInches(7, 0.22 * speedIncrease, 6); // should be in front of Vuforia
                     waitMillis(33); // should be in front of Vuforia
                     if( short_){
-                        robot.trackGyroHeading = true;
+                        robot.trackGyroHeading = false;
                         robot.startGyroHeading = 0;
                     }
                     robot.moveInchesUntilFlat(-12.25-6.7-3, 0.22 * speedIncrease, 6);
@@ -115,7 +115,7 @@ public class Run_Jewel {
                     robot.moveInches(4, 0.22 * speedIncrease, 3);
                     robot.moveArmPosZero(); // should be in front of Vuforia
                     if( short_){
-                        robot.trackGyroHeading = true;
+                        robot.trackGyroHeading = false;
                         robot.startGyroHeading = 0;
                     }
                     robot.moveInchesUntilFlat(-12-6.7-3, 0.33 * speedIncrease, 8);
