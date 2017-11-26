@@ -57,7 +57,7 @@ import java.util.Locale;
  * <p>
  * https://github.com/SwerveRobotics/ftc_app/commit/1ad29f5df1545f17049e88b99cec6390dc357d30
  */
-@TeleOp(name = "Test Bosh Gyro", group = "Test")
+@TeleOp(name = "Test Gyro", group = "Test")
 // Comment this out to add to the opmode list
 public class Test_Bosh_Gyro_V9 extends LinearOpMode {
     //----------------------------------------------------------------------------------------------
