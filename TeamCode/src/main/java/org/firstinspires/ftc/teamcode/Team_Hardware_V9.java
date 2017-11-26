@@ -770,7 +770,7 @@ public class Team_Hardware_V9 {
                 // set to 0.88 for 11 deg drift
                 // set to 0.11 for 90 deg drift
                 double reduceRatio = 1 - 1.1 * Math.abs(driftRight);
-                reduceRatio = Range.clip(reduceRatio, 0.11, 1);
+                reduceRatio = Range.clip(reduceRatio, 0.88, 1);
 
                 if (driftRight * direction > 0) {
 
@@ -865,11 +865,11 @@ public class Team_Hardware_V9 {
 
                 // diff is bigger than 33%
                 // do not check for lock if moving slowly at the end
-                locked = (lDiffPercent > 0.33 || rDiffPercent > 0.33) && (maxMove > 111); // TODO
+                locked = (Math.abs(lMove - lbMove) > 222 || Math.abs(rMove - rbMove) > 222); // TODO
 
                 //if one wheel is locked stop and restart,
                 //check for stall 222ms after start not sooner
-                if (locked && encodersTimer.seconds() > 0.22) {
+                if (locked && encodersTimer.seconds() > 0.11) {
 
                     leftDrive.setPower(0);
                     rightDrive.setPower(0);
@@ -877,7 +877,7 @@ public class Team_Hardware_V9 {
                     rightDriveBack.setPower(0);
 
                     // YELLOW MEANS LOCKED UP
-                    colorBeacon.yellow();
+                    colorBeacon.white();
 
                     waitMillis(66);
 
@@ -885,6 +885,9 @@ public class Team_Hardware_V9 {
                     rightDrive.setPower(Math.abs(rightPowerControl));
                     leftDriveBack.setPower(Math.abs(leftPowerControlBack));
                     rightDriveBack.setPower(Math.abs(rightPowerControlBack));
+                }
+                if(!locked) {
+                    colorBeacon.colorNumber(prevBeaconColor);
                 }
             }
             //END CHECK IF LOCKED

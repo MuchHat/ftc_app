@@ -85,7 +85,7 @@ public class MRIColorBeacon {
     }
 
     public void orange() {
-        rgb(122,88,0);
+        rgb(122,66,11);
     }
 
     public void rgb(int red, int green, int blue) {

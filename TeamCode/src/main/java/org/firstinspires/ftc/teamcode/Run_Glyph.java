@@ -115,7 +115,7 @@ public class Run_Glyph {
         }
         // MOVE IN FRONT OF THE COLUMN USING SONAR
         {
-            double redShortSonar[] = {0.75, 0.65, 0.56}; // L C R
+            double redShortSonar[] = {0.74, 0.64, 0.55}; // L C R
             double redLongSonar[] = {0.43, 0.34, 0.25}; // L C R
             double blueShortSonar[] = {0.56, 0.65, 0.75}; // L C R
             double blueLongSonar[] = {0.25, 0.34, 0.43}; // L C R
