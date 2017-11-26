@@ -622,6 +622,7 @@ public class Team_Hardware_V9 {
             crrHeading -= 360;
         }
 
+        // if small drift ignore
         if (Math.abs(targetHeading - crrHeading) < 11) {
             return 0;
         }
@@ -774,8 +775,8 @@ public class Team_Hardware_V9 {
                         rightDrive.setPower(Math.abs(rPower));
                         leftDriveBack.setPower(Math.abs(lbPower));
                         rightDriveBack.setPower(Math.abs(rbPower));
-                    }
-                    else{
+
+                    } else {
                         // rebase the targets if needed
                         int left2Target = leftDrive.getTargetPosition() - leftDrive.getCurrentPosition();
                         int right2Target = rightDrive.getTargetPosition() - leftDrive.getCurrentPosition();
@@ -783,11 +784,17 @@ public class Team_Hardware_V9 {
                         int rightBack2Target = rightDriveBack.getTargetPosition() - leftDrive.getCurrentPosition();
 
                         int average2Target = (left2Target + right2Target + leftBack2Target + rightBack2Target) / 4;
+                        int min2Target = Math.min(Math.min(Math.min(left2Target, right2Target), leftBack2Target), rightBack2Target);
+                        int max2Target = Math.max(Math.max(Math.max(left2Target, right2Target), leftBack2Target), rightBack2Target);
 
-                        leftDrive.setTargetPosition( leftDrive.getCurrentPosition() + average2Target );
-                        rightDrive.setTargetPosition( rightDrive.getCurrentPosition() + average2Target );
-                        leftDriveBack.setTargetPosition( leftDriveBack.getCurrentPosition() + average2Target );
-                        rightDriveBack.setTargetPosition( rightDriveBack.getCurrentPosition() + average2Target );
+                        // adjust only if a big difference
+                        if (Math.abs(max2Target - min2Target) > 222){
+
+                            leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + average2Target);
+                            rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + average2Target);
+                            leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() + average2Target);
+                            rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + average2Target);
+                        }
                     }
 
                 }
