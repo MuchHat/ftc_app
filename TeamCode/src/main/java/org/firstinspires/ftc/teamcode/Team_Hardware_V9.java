@@ -734,7 +734,7 @@ public class Team_Hardware_V9 {
                     break;
                 }
                 // correct heading if needed
-                if (trackGyroHeading) {
+                if (trackGyroHeading && stillRunning) {
 
                     double driftRight = gyroDrift(startGyroHeading);
 
@@ -789,7 +789,7 @@ public class Team_Hardware_V9 {
                         double minPower = Math.min(Math.min(Math.min(lPower, rPower), lbPower), rbPower);
                         double maxPower = Math.max(Math.max(Math.max(lPower, rPower), lbPower), rbPower);
 
-                        if( Math.abs( maxPower-minPower) > 0.06){
+                        if (Math.abs(maxPower - minPower) > 0.06) {
 
                             leftDrive.setPower(Math.abs(maxPower));
                             rightDrive.setPower(Math.abs(maxPower));
@@ -808,7 +808,7 @@ public class Team_Hardware_V9 {
                         int max2Target = Math.max(Math.max(Math.max(left2Target, right2Target), leftBack2Target), rightBack2Target);
 
                         // adjust only if a big difference
-                        if (Math.abs(max2Target - min2Target) > 222){
+                        if (Math.abs(max2Target - min2Target) > 222) {
 
                             leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + average2Target);
                             rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + average2Target);
