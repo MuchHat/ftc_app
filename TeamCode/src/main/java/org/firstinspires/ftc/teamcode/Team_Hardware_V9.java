@@ -845,7 +845,7 @@ public class Team_Hardware_V9 {
                     rightDriveBack.setPower(Math.abs(maxPower));
                 }
 
-                ************** TO ADD LATER; ADJUST TARGETS IF WHEELS SLIPPED ************************/
+                ************** END TO ADD LATER; ADJUST TARGETS IF WHEELS SLIPPED ********************/
 
             }
             // END GYRO TRACKING
