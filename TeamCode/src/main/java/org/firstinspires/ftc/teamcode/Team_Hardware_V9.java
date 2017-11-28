@@ -757,7 +757,7 @@ public class Team_Hardware_V9 {
             if (trackGyroHeading && driftRight != 0) {
 
                 // ORANGE MEANS GYRO CORRECTING
-                colorBeacon.orange();
+                colorBeacon.pink();
 
                 double lPower = leftDrive.getPower();
                 double rPower = rightDrive.getPower();
@@ -807,6 +807,8 @@ public class Team_Hardware_V9 {
                 // not correcting
                 colorBeacon.colorNumber(prevBeaconColor);
 
+                /************************ TO ADD LATER; ADJUST TARGETS IF WHEELS SLIPPED **************
+
                 // set the power the same on all 4 wheels if not already
                 // needed if correction was done
                 double lPower = leftDrive.getPower();
@@ -842,6 +844,9 @@ public class Team_Hardware_V9 {
                     leftDriveBack.setPower(Math.abs(maxPower));
                     rightDriveBack.setPower(Math.abs(maxPower));
                 }
+
+                ************** TO ADD LATER; ADJUST TARGETS IF WHEELS SLIPPED ************************/
+
             }
             // END GYRO TRACKING
             // CHECK IF WHEELS LOCKED
@@ -869,7 +874,7 @@ public class Team_Hardware_V9 {
 
                 //if one wheel is locked stop and restart,
                 //check for stall 222ms after start not sooner
-                if (locked && encodersTimer.seconds() > 0.11) {
+                if (locked && encodersTimer.seconds() > 0.22) {
 
                     leftDrive.setPower(0);
                     rightDrive.setPower(0);
@@ -1023,7 +1028,7 @@ public class Team_Hardware_V9 {
 
         for (int i = 0; i < count; i++) {
             colorBeacon.off();
-            waitMillis(333);
+            waitMillis(111);
             colorBeacon.colorNumber(color);
         }
     }
@@ -1033,13 +1038,6 @@ public class Team_Hardware_V9 {
             colorBeacon.blue();
         else
             colorBeacon.red();
-    }
-
-    void showTeamColorLight() {
-        if (blueTeam)
-            colorBeacon.lightBlue();
-        else
-            colorBeacon.lightRed();
     }
 
     void waitMillis(double millis) {
