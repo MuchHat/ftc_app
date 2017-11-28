@@ -40,9 +40,7 @@ public class MRIColorBeacon {
         hwMap = ahwMap;
 
         colorB = hwMap.i2cDevice.get(cfgName);
-
         colorBreader = new I2cDeviceSynchImpl(colorB, I2cAddr.create8bit(i2cAddr8), false);
-
         colorBreader.engage();
     }
 
@@ -85,7 +83,7 @@ public class MRIColorBeacon {
     }
 
     public void orange() {
-        rgb(122,66,11);
+        rgb(166,88,0);
     }
 
     public void rgb(int red, int green, int blue) {

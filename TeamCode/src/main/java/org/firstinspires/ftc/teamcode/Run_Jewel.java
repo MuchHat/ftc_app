@@ -80,7 +80,7 @@ public class Run_Jewel {
             //GO IN BETWEEN THE JEWELS
             if( knockFirst) robot.moveInches(2, 0.22, 2);
             if( !knockFirst) robot.moveInches(3, 0.22, 2);
-            waitMillis(33);
+            waitMillis(11);
 
             //EXTEND ARM
             robot.moveArm(armKnockB, armKnockE);
@@ -88,20 +88,16 @@ public class Run_Jewel {
             //KNOCK AND MOVE AT THE EDGE
             if (knockFirst) {
                 if( red_ ){
-                    robot.moveInches(-4, 0.22 * speedIncrease, 2);
+                    robot.moveInches(-3, 0.22 * speedIncrease, 2);
                     robot.moveArmPosZero();
-                    robot.moveInchesUntilFlat(12+6.7, 0.33 * speedIncrease, 8); // should be in front of Vuforia
+                    robot.moveInchesUntilFlat(12+5.7, 0.33 * speedIncrease, 8); // should be in front of Vuforia
                     waitMillis(333); // should be in front of Vuforia
                 }
                 if( blue_){
-                    robot.moveInches(-4, 0.22 * speedIncrease, 2);
+                    robot.moveInches(-3, 0.22 * speedIncrease, 2);
                     robot.moveArmPosZero();
-                    robot.moveInches(6, 0.22 * speedIncrease, 6); // should be in front of Vuforia
+                    robot.moveInches(4.5, 0.22 * speedIncrease, 6); // should be in front of Vuforia
                     waitMillis(33); // should be in front of Vuforia
-                    if( short_){
-                        robot.trackGyroHeading = false;
-                        robot.startGyroHeading = 0;
-                    }
                     robot.moveInchesUntilFlat(-12.25-6.7-3, 0.22 * speedIncrease, 6);
                 }
             }
@@ -112,13 +108,9 @@ public class Run_Jewel {
                     robot.moveInchesUntilFlat(6.7, 0.22 * speedIncrease, 3);
                 }
                 if (blue_) {
-                    robot.moveInches(4, 0.22 * speedIncrease, 3);
+                    robot.moveInches(3, 0.22 * speedIncrease, 3);
                     robot.moveArmPosZero(); // should be in front of Vuforia
-                    if( short_){
-                        robot.trackGyroHeading = false;
-                        robot.startGyroHeading = 0;
-                    }
-                    robot.moveInchesUntilFlat(-12-6.7-3, 0.33 * speedIncrease, 8);
+                    robot.moveInchesUntilFlat(-12-5.7-3, 0.33 * speedIncrease, 8);
                 }
             }
         }
@@ -130,14 +122,14 @@ public class Run_Jewel {
             if (red_) robot.moveInchesUntilFlat(6.5+6.7, 0.33 * speedIncrease, 6);
             if (blue_) robot.moveInchesUntilFlat(-6.5-6.7, 0.33 * speedIncrease, 6);
         }
+
         //TURN OFF LED
-        robot.moveArmPosZero();
         robot.colorSensor.enableLed(false);
         robot.showTeamColor();
-        waitMillis(11);
 
-        //FIX HEADING
-        //robot.turnTo12();
+        // ROBOT SHOULD BE ON FLAT BACK AGAINST PLATFORM
+        // FIX HEADING ONLY IF OFF BY 11 DEG TO SAVE TIME
+        robot. correctHeadingTo12();
     }
 
     boolean foundJewel() {

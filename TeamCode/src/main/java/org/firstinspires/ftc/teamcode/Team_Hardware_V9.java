@@ -103,12 +103,20 @@ public class Team_Hardware_V9 {
     AnalogInput frontSonar;                // Device Object
     AnalogInput leftSonar;                // Device Object
     AnalogInput rightSonar;                // Device Object
+    int targetLeft = 0;
+
+    // ************************** HW CONSTRUCTOR  ************************************************//
+    int targetRight = 0;
+
+    // ************************** AUTO DRIVE HELPER FUNCTIONS  *********************************//
+    int targetLeftBack = 0;
+    int targetRightBack = 0;
+    boolean trackGyroHeading = false;
+    double startGyroHeading = -1.0;
 
     public Team_Hardware_V9() {
 
     }
-
-    // ************************** HW CONSTRUCTOR  ************************************************//
 
     public void init(HardwareMap ahwMap) {
 
@@ -181,17 +189,18 @@ public class Team_Hardware_V9 {
         imuGyro.init(hwMap);
     }
 
-    // ************************** HW INIT  *******************************************************//
+    void correctHeadingTo12() {
+        // correct only if heading is off > 11 deg
+        if (Math.abs(gyroDrift(0)) > 11) {
+            turn2Heading(0);
+        }
+    }
 
     void turnTo12() {
         turn2Heading(0);
-        turn2Heading(0);
     }
 
-    // ************************** MANUAL DRIVE HELPER FUNCTIONS  *********************************//
-
     void turnTo3() {
-        turn2Heading(270);
         turn2Heading(270);
     }
 
@@ -200,7 +209,6 @@ public class Team_Hardware_V9 {
     }
 
     void turnTo9() {
-        turn2Heading(90);
         turn2Heading(90);
     }
 
@@ -395,6 +403,8 @@ public class Team_Hardware_V9 {
         moveBySonar(endPos, power, timeOutSec, SonarPosition.LEFT);
     }
 
+    // ************************** ARM  DRIVE SERVOS HELPER FUNCTIONS  ****************************//
+
     void moveBySonarRight(double endPos, double power, double timeOutSec) {
         moveBySonar(endPos, power, timeOutSec, SonarPosition.RIGHT);
     }
@@ -549,8 +559,6 @@ public class Team_Hardware_V9 {
         moveArm(armPosZero[0], armPosZero[1]);
     }
 
-    // ************************** ARM  DRIVE SERVOS HELPER FUNCTIONS  ****************************//
-
     void moveArm(double newBase, double newElbow) {
 
         double stepSize = 0.006;
@@ -637,14 +645,6 @@ public class Team_Hardware_V9 {
 
         return drift;
     }
-
-    int targetLeft = 0;
-    int targetRight = 0;
-    int targetLeftBack = 0;
-    int targetRightBack = 0;
-
-    boolean trackGyroHeading = false;
-    double startGyroHeading = -1.0;
 
     void setDrivesByDistance(double timeOut) {
 
@@ -886,7 +886,7 @@ public class Team_Hardware_V9 {
                     leftDriveBack.setPower(Math.abs(leftPowerControlBack));
                     rightDriveBack.setPower(Math.abs(rightPowerControlBack));
                 }
-                if(!locked) {
+                if (!locked) {
                     colorBeacon.colorNumber(prevBeaconColor);
                 }
             }
@@ -909,7 +909,7 @@ public class Team_Hardware_V9 {
             startGyroHeading = -1.0;
             colorBeacon.colorNumber(prevBeaconColor);
         }
-        if( stopOnFlat ){
+        if (stopOnFlat) {
             stopOnFlat = false;
             colorBeacon.colorNumber(prevBeaconColor);
         }
