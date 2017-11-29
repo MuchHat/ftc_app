@@ -98,10 +98,10 @@ public class Run_Glyph {
             if (blue_ && short_) moveDistance = blueShortEncoder[columnIndex - 1];
             if (blue_ && long_) moveDistance = blueLongEncoder[columnIndex - 1];
 
-            if (red_ && short_) robot.moveInches(moveDistance, 0.44 * speedIncrease, 6);
-            if (red_ && long_) robot.moveSideInches(moveDistance, 0.44 * speedIncrease, 6);
-            if (blue_ && short_) robot.moveInches(-moveDistance, 0.44 * speedIncrease, 6);
-            if (blue_ && long_) robot.moveSideInches(-moveDistance, 0.44 * speedIncrease, 6);
+            if (red_ && short_) robot.moveInches(moveDistance, 0.44 * speedIncrease, 8);
+            if (red_ && long_) robot.moveSideInches(moveDistance, 0.44 * speedIncrease, 8);
+            if (blue_ && short_) robot.moveInches(-moveDistance, 0.44 * speedIncrease, 8);
+            if (blue_ && long_) robot.moveSideInches(-moveDistance, 0.44 * speedIncrease, 8);
             showIfTargetSeen();
 
             if (noTimeLeft(1)) return;
@@ -152,7 +152,7 @@ public class Run_Glyph {
         //PUT THE GLYPH IN
         {
             robot.moveLift(-1);
-            robot.moveInches(4, 0.15, 2);
+            robot.moveInches(4, 0.15, 3);
             robot.openClawZero();
             robot.showTeamColor();
 
@@ -164,12 +164,12 @@ public class Run_Glyph {
                 waitMillis(333);
                 robot.openClawZero();
             }
-            robot.moveInches(-3, 0.33, 2);
+            robot.moveInches(-3, 0.33, 3);
             robot.showTeamColor();
             if (noTimeLeft(1)) return;
 
-            robot.moveInches(3.5, 0.33, 2);
-            robot.moveInches(-4, 0.33, 2);
+            robot.moveInches(3.5, 0.33, 3);
+            robot.moveInches(-4, 0.33, 3);
 
         }
         // IF THERE IS TIME TURN AROUND

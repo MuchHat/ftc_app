@@ -119,8 +119,8 @@ public class Run_Jewel {
 
             robot.moveArmPosZero();
             robot.showTeamColor();
-            if (red_) robot.moveInchesStopOnFlat(6.5+6.7, 0.33 * speedIncrease, 6);
-            if (blue_) robot.moveInchesStopOnFlat(-6.5-6.7, 0.33 * speedIncrease, 6);
+            if (red_) robot.moveInchesStopOnFlat(6.5+6.7, 0.33 * speedIncrease, 8);
+            if (blue_) robot.moveInchesStopOnFlat(-6.5-6.7, 0.33 * speedIncrease, 8);
         }
 
         //TURN OFF LED

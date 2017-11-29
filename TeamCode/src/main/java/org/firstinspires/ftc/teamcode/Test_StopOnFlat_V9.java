@@ -48,7 +48,7 @@ import com.qualcomm.robotcore.util.Range;
 //@Disabled   // comment out or remove this line to enable this opmode
 public class Test_StopOnFlat_V9 extends LinearOpMode {
 
-    double target = 0;
+    double target = 8;
     double power = 0.44;
 
     Team_Hardware_V9 robot = new Team_Hardware_V9();
@@ -88,17 +88,19 @@ public class Test_StopOnFlat_V9 extends LinearOpMode {
 
             if (gamepad1.a) {
                 robot.moveLinearStopOnFlatEnabled = true;
-                robot.moveInches(-target, power, 6);
+                robot.moveLinearStopOnFlatRampDownInches = 4;
+                robot.moveInches(-target, power, 33);
             }
             if (gamepad1.y) {
                 robot.moveLinearStopOnFlatEnabled = true;
-                robot.moveInches(target, power, 6);
+                robot.moveLinearStopOnFlatRampDownInches = 4;
+                robot.moveInches(target, power, 33);
             }
             if (gamepad1.b) {
-                robot.moveSideInches(target, power, 6);
+                robot.moveSideInches(target, power, 33);
             }
             if (gamepad1.y) {
-                robot.moveSideInches(-target, power, 6);
+                robot.moveSideInches(-target, power, 33);
             }
         }
     }
@@ -106,6 +108,8 @@ public class Test_StopOnFlat_V9 extends LinearOpMode {
     void telemetryUpdate() {
         telemetry.addData("target", "%.2f inches", target);
         telemetry.addData("power", "%.2f power", power);
+        telemetry.addData("ramp down", "%.2f inches", robot.moveLinearStopOnFlatRampDownInches);
+        telemetry.addData("inches to target", "%.2f inches", robot.inchesToTarget());
         telemetry.update();
     }
 }

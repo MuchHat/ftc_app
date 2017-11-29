@@ -99,6 +99,7 @@ public class Team_Hardware_V9 {
     double turnDefaultSpeed = 1.0;
     double servoDefaultSpeed = 0.003;
     boolean moveLinearStopOnFlatEnabled = false;
+    double moveLinearStopOnFlatRampDownInches = 3;
     DeviceInterfaceModule deviceInterface;                  // Device Object
     AnalogInput frontSonar;                // Device Object
     AnalogInput leftSonar;                // Device Object
@@ -764,7 +765,7 @@ public class Team_Hardware_V9 {
                             leftDrive.getPower() > 0.22 ||
                             leftDriveBack.getPower() > 0.22 ||
                             rightDriveBack.getPower() > 0.22) &&
-                    inchesToTarget() < 3) {
+                    inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
 
                 leftDrive.setPower(0.22);
                 rightDrive.setPower(0.22);
@@ -776,7 +777,7 @@ public class Team_Hardware_V9 {
             // STOP ON FLAT
             if (moveLinearStopOnFlatEnabled &&
                     isFlat() &&
-                    inchesToTarget() < 3) {
+                    inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
 
                 // WHITE MEANS STOPPED ON FLAT
                 colorBeacon.white();
