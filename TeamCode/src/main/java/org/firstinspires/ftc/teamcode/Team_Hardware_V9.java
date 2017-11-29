@@ -185,6 +185,8 @@ public class Team_Hardware_V9 {
         elbowControl = armPosZero[1];
         setDrivesByPower();
         setServos();
+        moveLift( -1 );
+        moveLift( 0.88 );
 
         imuGyro.init(hwMap);
     }
@@ -379,17 +381,24 @@ public class Team_Hardware_V9 {
                 rightClawControl == clawOpen[1]);
     }
 
-    void moveLift(double distance) {
-        double mmMillis = 0.03;
-        double stepTime = Math.abs(distance) / mmMillis;
-        double liftDefaultPower = distance > 0 ? 0.66 : -0.66;
+    void moveLift(double glyphCount) {
 
-        stepTime = Range.clip(stepTime, 0, 3333);
+        // moves the height of a glyph in 111 millis
 
-        for (double i = 0; i < stepTime; i++) { //do a loop such it can stop at the switch
-            liftControl = liftDefaultPower;
+        double millisToMove = Math.abs( glyphCount * 111 );
+        double liftPower = glyphCount > 0 ? 0.88 : -0.88;
+
+        millisToMove = Range.clip(millisToMove, 0, 333);
+        double m = 0;
+
+        while( m < millisToMove ) { //do a loop such it can stop at the switch
+            liftControl = liftPower;
             setDrivesByPower();
-            waitMillis(33);
+            if( liftControl == 0){
+                break;
+            }
+            waitMillis(6);
+            m += 6;
         }
 
         liftControl = 0;

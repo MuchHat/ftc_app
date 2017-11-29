@@ -151,7 +151,7 @@ public class Run_Glyph {
         }
         //PUT THE GLYPH IN
         {
-            robot.moveLift(-0.5);
+            robot.moveLift(-1);
             robot.moveInches(4, 0.15, 2);
             robot.openClawZero();
             robot.showTeamColor();
