@@ -382,7 +382,7 @@ public class Team_Hardware_V9 {
         moveLinear(distanceInches * 24.5, movePower, timeOut, 1.0, 1.0, 1.0, 1.0);
     }
 
-    void moveInchesUntilFlat(double distanceInches, double movePower, double timeOut) {
+    void moveInchesStopOnFlat(double distanceInches, double movePower, double timeOut) {
 
         moveLinearStopOnFlatEnabled = true;
         moveLinear(distanceInches * 24.5, movePower, timeOut, 1.0, 1.0, 1.0, 1.0);
