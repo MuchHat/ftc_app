@@ -189,12 +189,37 @@ public class Team_Hardware_V9 {
         imuGyro.init(hwMap);
     }
 
-    void correctHeadingTo12() {
+    void adjustTurnTo12() {
         // correct only if heading is off > 11 deg
+
         if (Math.abs(gyroDrift(0)) > 11) {
             turn2Heading(0);
         }
     }
+    void adjustTurnTo6() {
+        // correct only if heading is off > 11 deg
+
+        if (Math.abs(gyroDrift(180)) > 11) {
+            turn2Heading(180);
+        }
+    }
+
+    void adjustTurnTo3() {
+        // correct only if heading is off > 11 deg
+
+        if (Math.abs(gyroDrift(270)) > 11) {
+            turn2Heading(270);
+        }
+    }
+
+    void adjustTurnTo9() {
+        // correct only if heading is off > 11 deg
+
+        if (Math.abs(gyroDrift(90)) > 11) {
+            turn2Heading(90);
+        }
+    }
+
 
     void turnTo12() {
         turn2Heading(0);
@@ -261,7 +286,7 @@ public class Team_Hardware_V9 {
 
         ElapsedTime turnTime = new ElapsedTime();
         turnTime.reset();
-        double timeOut = 30;
+        double timeOut = 8;
         double crrError = 0;
 
         while (true) {
@@ -276,7 +301,7 @@ public class Team_Hardware_V9 {
             }
             crrError = (endHeading - crrHeading) * direction;
 
-            boolean doContinue = (crrError > 0) &&
+            boolean doContinue = (crrError > 1) &&
                     (turnTime.seconds() < timeOut);
             if (!doContinue) {
                 break;

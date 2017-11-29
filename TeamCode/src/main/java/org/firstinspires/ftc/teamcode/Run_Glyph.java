@@ -79,8 +79,11 @@ public class Run_Glyph {
         }*/
         // MOVE IN FRONT OF BOX USING ENCODERS
         {
-            if (red_ && long_) robot.moveInches(2, 0.88 * speedIncrease, 4);
-            if (blue_ && long_) robot.moveInches(-6, 0.88 * speedIncrease, 4);
+            // robot.moveLinearGyroTrackingEnabled = true;
+            robot.moveLinearGyroHeadingToTrack = 0;
+
+            if (red_ && long_) robot.moveInches(2, 0.22 * speedIncrease, 4);
+            if (blue_ && long_) robot.moveInches(-2, 0.22 * speedIncrease, 4);
             if (blue_ && long_) robot.turnTo6();
             showIfTargetSeen();
 
@@ -106,9 +109,9 @@ public class Run_Glyph {
         // TURN TOWARDS THE BOX
         {
             if (red_ && short_) robot.turnTo3();
-            if (red_ && long_) robot.turnTo12();
+            if (red_ && long_) robot.adjustTurnTo12();
             if (blue_ && short_) robot.turnTo3();
-            if (blue_ && long_) robot.turnTo6();
+            if (blue_ && long_) robot.adjustTurnTo6();
             showIfTargetSeen();
 
             if (noTimeLeft(1)) return;
