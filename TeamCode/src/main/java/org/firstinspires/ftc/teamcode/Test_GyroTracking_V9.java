@@ -87,19 +87,23 @@ public class Test_GyroTracking_V9 extends LinearOpMode {
             power = Range.clip(power, 0.11, 0.88);
 
             if (gamepad1.a) {
-                robot.trackGyroHeading = true;
+                robot.moveLinearGyroTrackingEnabled = true;
+                robot.moveLinearGyroHeadingToTrack = 0;
                 robot.moveInches(-target, power, 6);
             }
             if (gamepad1.y) {
-                robot.trackGyroHeading = true;
+                robot.moveLinearGyroTrackingEnabled = true;
+                robot.moveLinearGyroHeadingToTrack = 0;
                 robot.moveInches(target, power, 6);
             }
             if (gamepad1.b) {
-                robot.trackGyroHeading = true;
+                robot.moveLinearGyroTrackingEnabled = true;
+                robot.moveLinearGyroHeadingToTrack = 0;
                 robot.moveSideInches(target, power, 6);
             }
             if (gamepad1.y) {
-                robot.trackGyroHeading = true;
+                robot.moveLinearGyroTrackingEnabled = true;
+                robot.moveLinearGyroHeadingToTrack = 0;
                 robot.moveSideInches(-target, power, 6);
             }
         }

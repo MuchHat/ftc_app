@@ -98,7 +98,7 @@ public class Team_Hardware_V9 {
     double driveDefaultSpeed = 1.3;
     double turnDefaultSpeed = 1.0;
     double servoDefaultSpeed = 0.003;
-    boolean stopOnFlat = false;
+    boolean moveLinearStopOnFlatEnabled = false;
     DeviceInterfaceModule deviceInterface;                  // Device Object
     AnalogInput frontSonar;                // Device Object
     AnalogInput leftSonar;                // Device Object
@@ -111,8 +111,8 @@ public class Team_Hardware_V9 {
     // ************************** AUTO DRIVE HELPER FUNCTIONS  *********************************//
     int targetLeftBack = 0;
     int targetRightBack = 0;
-    boolean trackGyroHeading = false;
-    double startGyroHeading = -1.0;
+    boolean moveLinearGyroTrackingEnabled = false;
+    double moveLinearGyroHeadingToTrack = -1.0;
 
     public Team_Hardware_V9() {
 
@@ -378,13 +378,13 @@ public class Team_Hardware_V9 {
 
     void moveInches(double distanceInches, double movePower, double timeOut) {
 
-        stopOnFlat = false;
+        moveLinearStopOnFlatEnabled = false;
         moveLinear(distanceInches * 24.5, movePower, timeOut, 1.0, 1.0, 1.0, 1.0);
     }
 
     void moveInchesUntilFlat(double distanceInches, double movePower, double timeOut) {
 
-        stopOnFlat = true;
+        moveLinearStopOnFlatEnabled = true;
         moveLinear(distanceInches * 24.5, movePower, timeOut, 1.0, 1.0, 1.0, 1.0);
     }
 
@@ -652,9 +652,9 @@ public class Team_Hardware_V9 {
         int prevBeaconColor = colorBeacon.getColorNumber();
         double lastCheckIfLocked = 0;
 
-        if (trackGyroHeading) {
-            if (startGyroHeading < 0) {
-                startGyroHeading = imuGyro.getHeading();
+        if (moveLinearGyroTrackingEnabled) {
+            if (moveLinearGyroHeadingToTrack < 0) {
+                moveLinearGyroHeadingToTrack = imuGyro.getHeading();
             }
         }
 
@@ -725,7 +725,7 @@ public class Team_Hardware_V9 {
             }
             // END WAIT LOOP AND CHECK IF MOTORS STOPPED
             // SLOW DOWN FOR STOP ON FLAT
-            if (stopOnFlat &&
+            if (moveLinearStopOnFlatEnabled &&
                     (leftDrive.getPower() > 0.22 ||
                             leftDrive.getPower() > 0.22 ||
                             leftDriveBack.getPower() > 0.22 ||
@@ -740,7 +740,7 @@ public class Team_Hardware_V9 {
             }
             // END SLOW DOWN
             // STOP ON FLAT
-            if (stopOnFlat &&
+            if (moveLinearStopOnFlatEnabled &&
                     isFlat() &&
                     inchesToTarget() < 3) {
 
@@ -751,10 +751,10 @@ public class Team_Hardware_V9 {
             // END STOP ON FLAT
             // GYRO TRACKING IF ENABLED
             double driftRight = 0;
-            if (trackGyroHeading) {
-                driftRight = gyroDrift(startGyroHeading);
+            if (moveLinearGyroTrackingEnabled) {
+                driftRight = gyroDrift(moveLinearGyroHeadingToTrack);
             }
-            if (trackGyroHeading && driftRight != 0) {
+            if (moveLinearGyroTrackingEnabled && driftRight != 0) {
 
                 // ORANGE MEANS GYRO CORRECTING
                 colorBeacon.pink();
@@ -803,7 +803,7 @@ public class Team_Hardware_V9 {
                 rightDriveBack.setPower(Math.abs(rbPower));
 
             }
-            if (trackGyroHeading && driftRight == 0) {
+            if (moveLinearGyroTrackingEnabled && driftRight == 0) {
                 // not correcting
                 colorBeacon.colorNumber(prevBeaconColor);
 
@@ -909,13 +909,13 @@ public class Team_Hardware_V9 {
         leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        if (trackGyroHeading) {
-            trackGyroHeading = false;
-            startGyroHeading = -1.0;
+        if (moveLinearGyroTrackingEnabled) {
+            moveLinearGyroTrackingEnabled = false;
+            moveLinearGyroHeadingToTrack = -1.0;
             colorBeacon.colorNumber(prevBeaconColor);
         }
-        if (stopOnFlat) {
-            stopOnFlat = false;
+        if (moveLinearStopOnFlatEnabled) {
+            moveLinearStopOnFlatEnabled = false;
             colorBeacon.colorNumber(prevBeaconColor);
         }
     }
