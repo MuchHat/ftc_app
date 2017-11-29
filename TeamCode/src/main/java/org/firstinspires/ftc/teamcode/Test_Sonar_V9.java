@@ -103,10 +103,7 @@ public class Test_Sonar_V9 extends LinearOpMode {
     }
 
     void telemetryUpdate() {
-        //telemetry.addData("rangeSensor ultrasonic", rangeSensor.rawUltrasonic());
-        //telemetry.addData("rangeSensor optical", rangeSensor.rawOptical());
-        //telemetry.addData("rangeSensor cm optical", "%.2f cm", rangeSensor.cmOptical());
-        //telemetry.addData("rangeSensor cm", "%.2f cm", rangeSensor.getDistance(DistanceUnit.CM));
+
         telemetry.addData("frontSonar", "%.3f v", (double) frontSonar.getVoltage());
         telemetry.addData("leftSonar", "%.3f v", (double) leftSonar.getVoltage());
         telemetry.addData("rightSonar", "%.3f v", (double) rightSonar.getVoltage());

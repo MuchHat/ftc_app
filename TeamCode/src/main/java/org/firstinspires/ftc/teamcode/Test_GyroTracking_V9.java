@@ -48,7 +48,7 @@ import com.qualcomm.robotcore.util.Range;
 //@Disabled   // comment out or remove this line to enable this opmode
 public class Test_GyroTracking_V9 extends LinearOpMode {
 
-    double target = 0;
+    double target = 8;
     double power = 0.44;
 
     Team_Hardware_V9 robot = new Team_Hardware_V9();
@@ -89,22 +89,22 @@ public class Test_GyroTracking_V9 extends LinearOpMode {
             if (gamepad1.a) {
                 robot.moveLinearGyroTrackingEnabled = true;
                 robot.moveLinearGyroHeadingToTrack = 0;
-                robot.moveInches(-target, power, 6);
+                robot.moveInches(-target, power, 33);
             }
             if (gamepad1.y) {
                 robot.moveLinearGyroTrackingEnabled = true;
                 robot.moveLinearGyroHeadingToTrack = 0;
-                robot.moveInches(target, power, 6);
+                robot.moveInches(target, power, 33);
             }
             if (gamepad1.b) {
                 robot.moveLinearGyroTrackingEnabled = true;
                 robot.moveLinearGyroHeadingToTrack = 0;
-                robot.moveSideInches(target, power, 6);
+                robot.moveSideInches(target, power, 33);
             }
             if (gamepad1.y) {
                 robot.moveLinearGyroTrackingEnabled = true;
                 robot.moveLinearGyroHeadingToTrack = 0;
-                robot.moveSideInches(-target, power, 6);
+                robot.moveSideInches(-target, power, 33);
             }
         }
     }
