@@ -186,8 +186,8 @@ public class Team_Hardware_V9 {
         elbowControl = armPosZero[1];
         setDrivesByPower();
         setServos();
-        moveLift( -1 );
-        moveLift( 0.88 );
+        moveLift(-1);
+        moveLift(0.88);
 
         imuGyro.init(hwMap);
     }
@@ -199,6 +199,7 @@ public class Team_Hardware_V9 {
             turn2Heading(0);
         }
     }
+
     void adjustTurnTo6() {
         // correct only if heading is off > 11 deg
 
@@ -386,16 +387,16 @@ public class Team_Hardware_V9 {
 
         // moves the height of a glyph in 111 millis
 
-        double millisToMove = Math.abs( glyphCount * 111 );
+        double millisToMove = Math.abs(glyphCount * 111);
         double liftPower = glyphCount > 0 ? 0.88 : -0.88;
 
         millisToMove = Range.clip(millisToMove, 0, 333);
         double m = 0;
 
-        while( m < millisToMove ) { //do a loop such it can stop at the switch
+        while (m < millisToMove) { //do a loop such it can stop at the switch
             liftControl = liftPower;
             setDrivesByPower();
-            if( liftControl == 0){
+            if (liftControl == 0) {
                 break;
             }
             waitMillis(6);
@@ -745,7 +746,7 @@ public class Team_Hardware_V9 {
         while (encodersTimer.seconds() < timeOutSec) {
 
             // WAIT LOOP AND CHECK IF MOTORS STOPPED
-            boolean stillRunning = false;
+            boolean stillRunning = true;
             for (int i = 0; i < 6; i++) {
                 waitMillis(11);
                 stillRunning = leftDrive.isBusy() ||
@@ -773,9 +774,8 @@ public class Team_Hardware_V9 {
                 leftDriveBack.setPower(0.22);
                 rightDriveBack.setPower(0.22);
 
-                // WHITE FLASH MEANS STOPPED ON FLAT
+                // WHITE FLASH MEANS SLOW DOWN FOR RAMP DOWN
                 colorBeacon.white();
-                beaconBlink(1);
             }
             // END SLOW DOWN
             // STOP ON FLAT
@@ -783,8 +783,10 @@ public class Team_Hardware_V9 {
                     isFlat() &&
                     inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
 
-                // WHITE MEANS STOPPED ON FLAT
+                // WHITE BLINK MEANS STOPPED ON FLAT
                 colorBeacon.white();
+                beaconBlink(1);
+                stillRunning = false;
                 break;
             }
             // END STOP ON FLAT
@@ -793,7 +795,7 @@ public class Team_Hardware_V9 {
             if (moveLinearGyroTrackingEnabled) {
                 driftRight = gyroDrift(moveLinearGyroHeadingToTrack);
             }
-            if (moveLinearGyroTrackingEnabled && driftRight != 0) {
+            if (moveLinearGyroTrackingEnabled && driftRight != 0 && stillRunning) {
 
                 // PINK MEANS GYRO CORRECTING
                 colorBeacon.pink();
@@ -842,49 +844,49 @@ public class Team_Hardware_V9 {
                 rightDriveBack.setPower(Math.abs(rbPower));
 
             }
-            if (moveLinearGyroTrackingEnabled && driftRight == 0) {
+            if (moveLinearGyroTrackingEnabled && driftRight == 0 && stillRunning) {
                 // not correcting
                 colorBeacon.colorNumber(prevBeaconColor);
 
                 /************************ TO ADD LATER; ADJUST TARGETS IF WHEELS SLIPPED **************
 
-                // set the power the same on all 4 wheels if not already
-                // needed if correction was done
-                double lPower = leftDrive.getPower();
-                double rPower = rightDrive.getPower();
-                double lbPower = leftDriveBack.getPower();
-                double rbPower = rightDriveBack.getPower();
+                 // set the power the same on all 4 wheels if not already
+                 // needed if correction was done
+                 double lPower = leftDrive.getPower();
+                 double rPower = rightDrive.getPower();
+                 double lbPower = leftDriveBack.getPower();
+                 double rbPower = rightDriveBack.getPower();
 
-                double minPower = Math.min(Math.min(Math.min(lPower, rPower), lbPower), rbPower);
-                double maxPower = Math.max(Math.max(Math.max(lPower, rPower), lbPower), rbPower);
+                 double minPower = Math.min(Math.min(Math.min(lPower, rPower), lbPower), rbPower);
+                 double maxPower = Math.max(Math.max(Math.max(lPower, rPower), lbPower), rbPower);
 
-                // rebase the targets if needed
-                int left2Target = leftDrive.getTargetPosition() - leftDrive.getCurrentPosition();
-                int right2Target = rightDrive.getTargetPosition() - leftDrive.getCurrentPosition();
-                int leftBack2Target = leftDriveBack.getTargetPosition() - leftDrive.getCurrentPosition();
-                int rightBack2Target = rightDriveBack.getTargetPosition() - leftDrive.getCurrentPosition();
+                 // rebase the targets if needed
+                 int left2Target = leftDrive.getTargetPosition() - leftDrive.getCurrentPosition();
+                 int right2Target = rightDrive.getTargetPosition() - leftDrive.getCurrentPosition();
+                 int leftBack2Target = leftDriveBack.getTargetPosition() - leftDrive.getCurrentPosition();
+                 int rightBack2Target = rightDriveBack.getTargetPosition() - leftDrive.getCurrentPosition();
 
-                int average2Target = (left2Target + right2Target + leftBack2Target + rightBack2Target) / 4;
-                int min2Target = Math.min(Math.min(Math.min(left2Target, right2Target), leftBack2Target), rightBack2Target);
-                int max2Target = Math.max(Math.max(Math.max(left2Target, right2Target), leftBack2Target), rightBack2Target);
+                 int average2Target = (left2Target + right2Target + leftBack2Target + rightBack2Target) / 4;
+                 int min2Target = Math.min(Math.min(Math.min(left2Target, right2Target), leftBack2Target), rightBack2Target);
+                 int max2Target = Math.max(Math.max(Math.max(left2Target, right2Target), leftBack2Target), rightBack2Target);
 
-                // adjust only if a big difference
-                if (Math.abs(max2Target - min2Target) > 666) {
+                 // adjust only if a big difference
+                 if (Math.abs(max2Target - min2Target) > 666) {
 
-                    leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + average2Target);
-                    rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + average2Target);
-                    leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() + average2Target);
-                    rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + average2Target);
-                }
-                if (Math.abs(maxPower - minPower) > 0.08) {
+                 leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + average2Target);
+                 rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + average2Target);
+                 leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() + average2Target);
+                 rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + average2Target);
+                 }
+                 if (Math.abs(maxPower - minPower) > 0.08) {
 
-                    leftDrive.setPower(Math.abs(maxPower));
-                    rightDrive.setPower(Math.abs(maxPower));
-                    leftDriveBack.setPower(Math.abs(maxPower));
-                    rightDriveBack.setPower(Math.abs(maxPower));
-                }
+                 leftDrive.setPower(Math.abs(maxPower));
+                 rightDrive.setPower(Math.abs(maxPower));
+                 leftDriveBack.setPower(Math.abs(maxPower));
+                 rightDriveBack.setPower(Math.abs(maxPower));
+                 }
 
-                ************** END TO ADD LATER; ADJUST TARGETS IF WHEELS SLIPPED ********************/
+                 ************** END TO ADD LATER; ADJUST TARGETS IF WHEELS SLIPPED ********************/
 
             }
             // END GYRO TRACKING
@@ -921,9 +923,8 @@ public class Team_Hardware_V9 {
                     rightDriveBack.setPower(0);
 
                     // YELLOW MEANS LOCKED UP
-                    colorBeacon.white();
-
-                    waitMillis(66);
+                    colorBeacon.yellow();
+                    beaconBlink(3); // takes care of wait too
 
                     leftDrive.setPower(Math.abs(leftPowerControl));
                     rightDrive.setPower(Math.abs(rightPowerControl));
