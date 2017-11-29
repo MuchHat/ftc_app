@@ -485,6 +485,7 @@ public class Team_Hardware_V9 {
             leftDistanceControlBack = 0;
             rightDistanceControlBack = 0;
 
+            // ORANGE MEANS MOVING BY SONAR
             colorBeacon.orange();
 
             crrPower = movePower;
@@ -772,6 +773,9 @@ public class Team_Hardware_V9 {
                 leftDriveBack.setPower(0.22);
                 rightDriveBack.setPower(0.22);
 
+                // WHITE FLASH MEANS STOPPED ON FLAT
+                colorBeacon.white();
+                beaconBlink(1);
             }
             // END SLOW DOWN
             // STOP ON FLAT
@@ -791,7 +795,7 @@ public class Team_Hardware_V9 {
             }
             if (moveLinearGyroTrackingEnabled && driftRight != 0) {
 
-                // ORANGE MEANS GYRO CORRECTING
+                // PINK MEANS GYRO CORRECTING
                 colorBeacon.pink();
 
                 double lPower = leftDrive.getPower();
@@ -1063,7 +1067,7 @@ public class Team_Hardware_V9 {
 
         for (int i = 0; i < count; i++) {
             colorBeacon.off();
-            waitMillis(111);
+            waitMillis(33);
             colorBeacon.colorNumber(color);
         }
     }

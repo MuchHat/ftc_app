@@ -92,7 +92,7 @@ public class Test_Sonar_V9 extends LinearOpMode {
             if (gamepad1.dpad_up) target = 0;
             if (gamepad1.dpad_down) target = 0;
 
-            target = Range.clip(target, 0, 5.00);
+            target = Range.clip(target, 0, 16.00);
 
             robot.sonarMaxAdjust = 1.2;
             if (gamepad1.x)
