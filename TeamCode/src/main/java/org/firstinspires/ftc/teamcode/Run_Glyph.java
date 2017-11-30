@@ -173,7 +173,7 @@ public class Run_Glyph {
             robot.showTeamColor();
 
             // IF TIME DO WIGGLE
-            if (!noTimeLeft(2)) {
+            if (timeLeft(2)) {
                 robot.closeClawRight();
                 waitMillis(333);
                 robot.closeClawLeft();
