@@ -74,8 +74,8 @@ public class Run_Glyph {
             showIfTargetSeen();
             if (noTimeLeft(1)) return;
         }
-        // ROBOT SHOULD BE ON FLAT BACK AGAINST PLATFORM
-        // IF THE HEADING IS OFF FIX THE HEADING AND BACK AAGAIN AGAINST THE PLATFORM
+        // ROBOT SHOULD BE OFF THE PLATOFRM WITH THE BACK AGAINST PLATFORM
+        // IF THE HEADING IS OFF FIX THE HEADING AND BACK OFF AGAIN AGAINST THE PLATFORM
         if (Math.abs(robot.gyroDrift(0)) > 0.12) {
 
             int prevColor = robot.colorBeacon.getColorNumber();
@@ -86,9 +86,8 @@ public class Run_Glyph {
             // moving a bit to the left just in case
             robot.moveSideInches(-1,0.22,1);
 
-            // now back against the platform to reset the position
-            if (red_ && short_) robot.moveInches(-1, 0.11, 2);
-            if (red_ && long_) robot.moveInches(-1, 0.11, 2);
+            // now back off against the platform to reset the position
+            if (red_) robot.moveInches(-1, 0.11, 2);
             if (blue_) robot.moveInches(1, 0.11, 2);
             robot.colorBeacon.colorNumber(prevColor);
 
