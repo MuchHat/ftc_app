@@ -85,12 +85,13 @@ public class Run_Glyph {
             // if heading is off most likely is now too close to the glyph box
             // moving a bit to the left just in case
             robot.moveSideInches(-1,0.22,1);
-            robot.colorBeacon.colorNumber(prevColor);
 
             // now back against the platform to reset the position
             if (red_ && short_) robot.moveInches(-1, 0.11, 2);
             if (red_ && long_) robot.moveInches(-1, 0.11, 2);
             if (blue_) robot.moveInches(1, 0.11, 2);
+            robot.colorBeacon.colorNumber(prevColor);
+
             if (noTimeLeft(1)) return;
         }
         // MOVE IN FRONT OF BOX USING ENCODERS
