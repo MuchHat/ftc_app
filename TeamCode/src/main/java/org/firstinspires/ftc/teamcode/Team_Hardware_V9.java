@@ -924,7 +924,7 @@ public class Team_Hardware_V9 {
 
                     // YELLOW MEANS LOCKED UP
                     colorBeacon.yellow();
-                    beaconBlink(3); // takes care of wait too
+                    beaconBlink(4); // takes care of wait too
 
                     leftDrive.setPower(Math.abs(leftPowerControl));
                     rightDrive.setPower(Math.abs(rightPowerControl));
