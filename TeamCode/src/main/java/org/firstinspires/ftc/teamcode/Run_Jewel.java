@@ -128,8 +128,6 @@ public class Run_Jewel {
         robot.showTeamColor();
 
         // ROBOT SHOULD BE ON FLAT BACK AGAINST PLATFORM
-        // FIX HEADING ONLY IF OFF BY 11 DEG TO SAVE TIME
-        robot. adjustTurnTo12();
     }
 
     boolean foundJewel() {

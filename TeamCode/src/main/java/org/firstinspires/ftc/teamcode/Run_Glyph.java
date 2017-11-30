@@ -19,20 +19,24 @@ public class Run_Glyph {
 
     //********************************* END VARIABLE ********************************************//
 
-      void init(Team_Hardware_V9 aRobot, HardwareMap aHwMap) {
+    void init(Team_Hardware_V9 aRobot, HardwareMap aHwMap) {
         hwMap = aHwMap;
         robot = aRobot;
         vu.init(hwMap);
     }
 
-    boolean noTimeLeft( double secBuffer ) {
-        waitMillis(11);
+    boolean noTimeLeft(double secBuffer) {
+        waitMillis(6);
         if ((secsLeftAtStart - timer.seconds()) > secBuffer) {
             return false;
         }
         robot.stopRobot();
         return true;
-        //return false;
+    }
+
+    boolean timeLeft(double secBuffer) {
+
+        return !noTimeLeft(secBuffer);
     }
 
     void run(double secsLeft) {
@@ -70,13 +74,25 @@ public class Run_Glyph {
             showIfTargetSeen();
             if (noTimeLeft(1)) return;
         }
-        // BACK AGAINST THE PLATFORM
-        /*{
+        // ROBOT SHOULD BE ON FLAT BACK AGAINST PLATFORM
+        // IF THE HEADING IS OFF FIX THE HEADING AND BACK AAGAIN AGAINST THE PLATFORM
+        if (Math.abs(robot.gyroDrift(0)) > 0.12) {
+
+            int prevColor = robot.colorBeacon.getColorNumber();
+            robot.colorBeacon.pink();
+            robot.adjustTurnTo12();
+
+            // if heading is off most likely is now too close to the glyph box
+            // moving a bit to the left just in case
+            robot.moveSideInches(-1,0.22,1);
+            robot.colorBeacon.colorNumber(prevColor);
+
+            // now back against the platform to reset the position
             if (red_ && short_) robot.moveInches(-1, 0.11, 2);
             if (red_ && long_) robot.moveInches(-1, 0.11, 2);
             if (blue_) robot.moveInches(1, 0.11, 2);
             if (noTimeLeft(1)) return;
-        }*/
+        }
         // MOVE IN FRONT OF BOX USING ENCODERS
         {
             // robot.moveLinearGyroTrackingEnabled = true;
@@ -157,7 +173,7 @@ public class Run_Glyph {
             robot.showTeamColor();
 
             // IF TIME DO WIGGLE
-            if( !noTimeLeft(2)){
+            if (!noTimeLeft(2)) {
                 robot.closeClawRight();
                 waitMillis(333);
                 robot.closeClawLeft();
@@ -173,7 +189,7 @@ public class Run_Glyph {
 
         }
         // IF THERE IS TIME TURN AROUND
-        if( !noTimeLeft(2)){
+        if (!noTimeLeft(2)) {
             if (red_ && short_) robot.turnTo9();
             if (red_ && long_) robot.turnTo6();
             if (blue_ && short_) robot.turnTo9();
@@ -184,7 +200,7 @@ public class Run_Glyph {
         robot.stopRobot();
     }
 
-     private void waitMillis(double millis) {
+    private void waitMillis(double millis) {
 
         sleep((long) millis);
     }
