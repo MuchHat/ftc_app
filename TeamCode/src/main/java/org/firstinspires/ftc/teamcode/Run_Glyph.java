@@ -95,7 +95,7 @@ public class Run_Glyph {
         }
         // MOVE IN FRONT OF BOX USING ENCODERS
         {
-            // robot.moveLinearGyroTrackingEnabled = true;
+            robot.moveLinearGyroTrackingEnabled = true;
             robot.moveLinearGyroHeadingToTrack = 0;
 
             if (red_ && long_) robot.moveInches(2, 0.22 * speedIncrease, 4);
@@ -113,6 +113,9 @@ public class Run_Glyph {
             if (red_ && long_) moveDistance = redLongEncoder[columnIndex - 1];
             if (blue_ && short_) moveDistance = blueShortEncoder[columnIndex - 1];
             if (blue_ && long_) moveDistance = blueLongEncoder[columnIndex - 1];
+
+            robot.moveLinearGyroTrackingEnabled = true;
+            robot.moveLinearGyroHeadingToTrack = 0;
 
             if (red_ && short_) robot.moveInches(moveDistance, 0.44 * speedIncrease, 8);
             if (red_ && long_) robot.moveSideInches(moveDistance, 0.44 * speedIncrease, 8);
