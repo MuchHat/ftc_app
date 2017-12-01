@@ -87,14 +87,12 @@ public class Test_StopOnFlat_V9 extends LinearOpMode {
             power = Range.clip(power, 0.11, 0.88);
 
             if (gamepad1.a) {
-                robot.moveLinearStopOnFlatEnabled = true;
-                robot.moveLinearStopOnFlatRampDownInches = 4;
-                robot.moveInches(-target, power, 33);
+                robot.moveLinearStopOnFlatRampDownInches = 6;
+                robot.moveInchesStopOnFlat(-target, power, 33);
             }
             if (gamepad1.y) {
-                robot.moveLinearStopOnFlatEnabled = true;
-                robot.moveLinearStopOnFlatRampDownInches = 4;
-                robot.moveInches(target, power, 33);
+                robot.moveLinearStopOnFlatRampDownInches = 6;
+                robot.moveInchesStopOnFlat(target, power, 33);
             }
             if (gamepad1.b) {
                 robot.moveSideInches(target, power, 33);

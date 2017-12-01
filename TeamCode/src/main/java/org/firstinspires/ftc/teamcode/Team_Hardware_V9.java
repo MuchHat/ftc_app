@@ -99,7 +99,7 @@ public class Team_Hardware_V9 {
     double turnDefaultSpeed = 1.0;
     double servoDefaultSpeed = 0.003;
     boolean moveLinearStopOnFlatEnabled = false;
-    double moveLinearStopOnFlatRampDownInches = 3;
+    double moveLinearStopOnFlatRampDownInches = 5;
     DeviceInterfaceModule deviceInterface;                  // Device Object
     AnalogInput frontSonar;                // Device Object
     AnalogInput leftSonar;                // Device Object
@@ -186,8 +186,10 @@ public class Team_Hardware_V9 {
         elbowControl = armPosZero[1];
         setDrivesByPower();
         setServos();
-        moveLift(-1);
-        moveLift(0.88);
+        waitMillis(555);
+        moveLift(-2);
+        waitMillis(555);
+        moveLift(2);
 
         imuGyro.init(hwMap);
     }
@@ -652,13 +654,13 @@ public class Team_Hardware_V9 {
 
     double inchesToTarget() {
 
-
         double leftToTarget = Math.abs(targetLeft - leftDrive.getCurrentPosition());
         double rightToTarget = Math.abs(targetRight - rightDrive.getCurrentPosition());
         double leftBackToTarget = Math.abs(targetLeftBack - leftDriveBack.getCurrentPosition());
         double rightBackToTarget = Math.abs(targetRightBack - rightDriveBack.getCurrentPosition());
 
         return pulsesToMm((leftToTarget + rightToTarget + leftBackToTarget + rightBackToTarget) / 4) / 24.5; //TODO
+
     }
 
     double gyroDrift(double targetHeading) {
@@ -812,8 +814,8 @@ public class Team_Hardware_V9 {
                 // reduce power on one side to compensate
                 // set to 0.88 for 11 deg drift
                 // set to 0.11 for 90 deg drift
-                double reduceRatio = 1 - 1.1 * Math.abs(driftRight);
-                reduceRatio = Range.clip(reduceRatio, 0.88, 1);
+                double reduceRatio = 1 - 2 * Math.abs(driftRight);
+                reduceRatio = Range.clip(reduceRatio, 0.66, 1);
 
                 if (driftRight * direction > 0) {
 
@@ -926,7 +928,7 @@ public class Team_Hardware_V9 {
 
                     // YELLOW MEANS LOCKED UP
                     colorBeacon.yellow();
-                    beaconBlink(4); // takes care of wait too
+                    beaconBlink(2); // takes care of wait too
 
                     leftDrive.setPower(Math.abs(leftPowerControl));
                     rightDrive.setPower(Math.abs(rightPowerControl));

@@ -105,11 +105,13 @@ public class Run_Jewel {
                 if(red_){
                     robot.moveInches(6.5, 0.22 * speedIncrease, 3);
                     robot.moveArmPosZero(); // should be in front of Vuforia
-                    robot.moveInchesStopOnFlat(6.7, 0.22 * speedIncrease, 3);
+                    robot.moveLinearStopOnFlatRampDownInches = 4;
+                    robot.moveInchesStopOnFlat(6.7, 0.33 * speedIncrease, 3);
                 }
                 if (blue_) {
                     robot.moveInches(3, 0.22 * speedIncrease, 3);
                     robot.moveArmPosZero(); // should be in front of Vuforia
+                    robot.moveLinearStopOnFlatRampDownInches = 4;
                     robot.moveInchesStopOnFlat(-12-5.7-3, 0.33 * speedIncrease, 8);
                 }
             }
@@ -119,6 +121,7 @@ public class Run_Jewel {
 
             robot.moveArmPosZero();
             robot.showTeamColor();
+            robot.moveLinearStopOnFlatRampDownInches = 6;
             if (red_) robot.moveInchesStopOnFlat(6.5+6.7, 0.33 * speedIncrease, 8);
             if (blue_) robot.moveInchesStopOnFlat(-6.5-6.7, 0.33 * speedIncrease, 8);
         }
