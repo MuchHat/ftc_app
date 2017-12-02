@@ -98,13 +98,13 @@ public class Run_Glyph {
             robot.moveLinearGyroTrackingEnabled = true;
             robot.moveLinearGyroHeadingToTrack = 0;
 
-            if (red_ && long_) robot.moveInches(2, 0.22 * speedIncrease, 4);
+            if (red_ && long_) robot.moveInches(1.5, 0.22 * speedIncrease, 4);
             if (blue_ && long_) robot.moveInches(-2, 0.22 * speedIncrease, 4);
             if (blue_ && long_) robot.turnTo6();
             showIfTargetSeen();
 
-            double redShortEncoder[] = {24, 16.5, 10}; // L C R
-            double redLongEncoder[] = {20.5, 14, 6.5}; // L C R
+            double redShortEncoder[] = {22, 16.5, 10}; // L C R
+            double redLongEncoder[] = {21.5, 14, 6.5}; // L C R
             double blueShortEncoder[] = {10, 16.5, 24}; // L C R
             double blueLongEncoder[] = {6.5, 14, 20.5}; // L C R
             double moveDistance = 8;
