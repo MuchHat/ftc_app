@@ -391,7 +391,7 @@ public class Team_Hardware_V9 {
 
         // moves the height of a glyph in 111 millis
 
-        double millisToMove = Math.abs(glyphCount * 111);
+        double millisToMove = Math.abs(glyphCount * 166);
         double liftPower = glyphCount > 0 ? 0.88 : -0.88;
 
         millisToMove = Range.clip(millisToMove, 0, 333);
@@ -545,6 +545,8 @@ public class Team_Hardware_V9 {
         stopRobot();
         colorBeacon.colorNumber(prevBeaconColor);
     }
+
+    // ************************** HARDWARE SET FUNCTIONS *****************************************//
 
     double pulsesToMm(double distancePulses) {
 
@@ -760,6 +762,10 @@ public class Team_Hardware_V9 {
                 if (!stillRunning) {
                     break;
                 }
+                stillRunning = inchesToTarget() > 0.06;
+                if (!stillRunning) {
+                    break;
+                }
             }
             if (!stillRunning) {
                 break;
@@ -963,8 +969,6 @@ public class Team_Hardware_V9 {
             colorBeacon.colorNumber(prevBeaconColor);
         }
     }
-
-    // ************************** HARDWARE SET FUNCTIONS *****************************************//
 
     void setDrivesByPower() {
 
