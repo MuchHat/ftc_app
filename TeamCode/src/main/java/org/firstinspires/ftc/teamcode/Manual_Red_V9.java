@@ -344,8 +344,6 @@ public class Manual_Red_V9 extends LinearOpMode {
             //********************************* END LOOP *****************************************//
         }
 
-        robot.openClawZero();
-        waitMillis(3333);
         robot.stopRobot();
         robot.colorBeacon.off();
     }
