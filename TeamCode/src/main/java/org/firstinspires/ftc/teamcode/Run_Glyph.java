@@ -76,7 +76,7 @@ public class Run_Glyph {
         }
         // ROBOT SHOULD BE OFF THE PLATOFRM WITH THE BACK AGAINST PLATFORM
         // IF THE HEADING IS OFF FIX THE HEADING AND BACK OFF AGAIN AGAINST THE PLATFORM
-        if (Math.abs(robot.gyroDrift(0)) > 0.12) {
+        if (Math.abs(robot.gyroDrift(0)) > 0.08) {
 
             int prevColor = robot.colorBeacon.getColorNumber();
             robot.colorBeacon.pink();
@@ -84,7 +84,7 @@ public class Run_Glyph {
 
             // if heading is off most likely is now too close to the glyph box
             // moving a bit to the left just in case
-            robot.moveSideInches(-1,0.22,1);
+            robot.moveSideInches(1,0.44,1);
 
             // now back off against the platform to reset the position
             if (red_) robot.moveInches(-1, 0.22, 2);

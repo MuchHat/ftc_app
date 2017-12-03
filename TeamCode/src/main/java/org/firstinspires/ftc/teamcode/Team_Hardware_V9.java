@@ -199,7 +199,7 @@ public class Team_Hardware_V9 {
         // gyroDrift returns 0 to 1 for 0 to 90 degs
         // 11 deg is 0.12
 
-        if (Math.abs(gyroDrift(0)) > 0.12) {
+        if (Math.abs(gyroDrift(0)) > 0.09) {
             turn2Heading(0);
         }
     }
@@ -207,7 +207,7 @@ public class Team_Hardware_V9 {
     void adjustTurnTo6() {
         // correct only if heading is off > 11 deg
 
-        if (Math.abs(gyroDrift(180)) > 0.12) {
+        if (Math.abs(gyroDrift(180)) > 0.09) {
             turn2Heading(180);
         }
     }
@@ -215,7 +215,7 @@ public class Team_Hardware_V9 {
     void adjustTurnTo3() {
         // correct only if heading is off > 11 deg
 
-        if (Math.abs(gyroDrift(270)) > 0.12) {
+        if (Math.abs(gyroDrift(270)) > 0.09) {
             turn2Heading(270);
         }
     }
@@ -223,7 +223,7 @@ public class Team_Hardware_V9 {
     void adjustTurnTo9() {
         // correct only if heading is off > 11 deg
 
-        if (Math.abs(gyroDrift(90)) > 0.12) {
+        if (Math.abs(gyroDrift(90)) > 0.09) {
             turn2Heading(90);
         }
     }
@@ -452,8 +452,8 @@ public class Team_Hardware_V9 {
     void moveBySonar(double endPos, double movePower, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
 
         ElapsedTime moveTimer = new ElapsedTime();
-        double minPower = 0.11; //TODO
-        double rampDown = 0.08; //TODO
+        double minPower = 0.12; //TODO
+        double rampDown = 0.04; //TODO
         double crrPower = movePower;
         double crrPos = 0;
         int prevBeaconColor = colorBeacon.getColorNumber();
