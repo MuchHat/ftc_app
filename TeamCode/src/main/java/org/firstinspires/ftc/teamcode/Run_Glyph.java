@@ -150,10 +150,10 @@ public class Run_Glyph {
             if (blue_ && short_) columnSonarPos = blueShortSonar[columnIndex - 1];
             if (blue_ && long_) columnSonarPos = blueLongSonar[columnIndex - 1];
 
-            if (red_ && short_) robot.moveBySonarRight(columnSonarPos, 0.44, 3);
-            if (red_ && long_) robot.moveBySonarRight(columnSonarPos, 0.44, 3);
-            if (blue_ && short_) robot.moveBySonarLeft(columnSonarPos, 0.44, 3);
-            if (blue_ && long_) robot.moveBySonarLeft(columnSonarPos, 0.44, 3);
+            if (red_ && short_) robot.moveBySonarRight(columnSonarPos, 0.33, 3);
+            if (red_ && long_) robot.moveBySonarRight(columnSonarPos, 0.33, 3);
+            if (blue_ && short_) robot.moveBySonarLeft(columnSonarPos, 0.33, 3);
+            if (blue_ && long_) robot.moveBySonarLeft(columnSonarPos, 0.33, 3);
             showIfTargetSeen();
 
             if (noTimeLeft(2)) return;
