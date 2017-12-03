@@ -78,8 +78,8 @@ public class Run_Jewel {
             if (red_ && !foundRed) knockFirst = true;
 
             //GO IN BETWEEN THE JEWELS
-            if( knockFirst) robot.moveInches(2, 0.22, 2);
-            if( !knockFirst) robot.moveInches(3, 0.22, 2);
+            if( knockFirst) robot.moveInches(2, 0.33, 2);
+            if( !knockFirst) robot.moveInches(3, 0.33, 2);
             waitMillis(11);
 
             //EXTEND ARM
@@ -88,22 +88,22 @@ public class Run_Jewel {
             //KNOCK AND MOVE AT THE EDGE
             if (knockFirst) {
                 if( red_ ){
-                    robot.moveInches(-3, 0.22 * speedIncrease, 2);
+                    robot.moveInches(-3, 0.33 * speedIncrease, 2);
                     robot.moveArmPosZero();
                     robot.moveInchesStopOnFlat(12+5.7, 0.33 * speedIncrease, 8); // should be in front of Vuforia
                     waitMillis(333); // should be in front of Vuforia
                 }
                 if( blue_){
-                    robot.moveInches(-3, 0.22 * speedIncrease, 2);
+                    robot.moveInches(-3, 0.33 * speedIncrease, 2);
                     robot.moveArmPosZero();
-                    robot.moveInches(4.5, 0.22 * speedIncrease, 6); // should be in front of Vuforia
+                    robot.moveInches(4.5, 0.33 * speedIncrease, 6); // should be in front of Vuforia
                     waitMillis(33); // should be in front of Vuforia
-                    robot.moveInchesStopOnFlat(-12.25-6.7-3, 0.22 * speedIncrease, 6);
+                    robot.moveInchesStopOnFlat(-12.25-6.7-3, 0.33 * speedIncrease, 6);
                 }
             }
             if (!knockFirst) {
                 if(red_){
-                    robot.moveInches(6.5, 0.22 * speedIncrease, 3);
+                    robot.moveInches(6.5, 0.33 * speedIncrease, 3);
                     robot.moveArmPosZero(); // should be in front of Vuforia
                     robot.moveLinearStopOnFlatRampDownInches = 4;
                     robot.moveInchesStopOnFlat(6.7, 0.33 * speedIncrease, 3);

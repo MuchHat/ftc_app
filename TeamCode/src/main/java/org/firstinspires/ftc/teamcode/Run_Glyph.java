@@ -87,8 +87,8 @@ public class Run_Glyph {
             robot.moveSideInches(-1,0.22,1);
 
             // now back off against the platform to reset the position
-            if (red_) robot.moveInches(-1, 0.11, 2);
-            if (blue_) robot.moveInches(1, 0.11, 2);
+            if (red_) robot.moveInches(-1, 0.22, 2);
+            if (blue_) robot.moveInches(1, 0.22, 2);
             robot.colorBeacon.colorNumber(prevColor);
 
             if (noTimeLeft(1)) return;
@@ -99,7 +99,7 @@ public class Run_Glyph {
             robot.moveLinearGyroHeadingToTrack = 0;
 
             if (red_ && long_) robot.moveInches(1.5, 0.22 * speedIncrease, 4);
-            if (blue_ && long_) robot.moveInches(-2, 0.22 * speedIncrease, 4);
+            if (blue_ && long_) robot.moveInches(-1.5, 0.22 * speedIncrease, 4);
             if (blue_ && long_) robot.turnTo6();
             showIfTargetSeen();
 
@@ -166,7 +166,7 @@ public class Run_Glyph {
             if (blue_ && long_) robot.turnTo6();
             robot.showTeamColor();
 
-            if (noTimeLeft(1)) return;
+            if (noTimeLeft(2)) return;
         }
         //PUT THE GLYPH IN
         {
@@ -192,13 +192,12 @@ public class Run_Glyph {
 
         }
         // IF THERE IS TIME TURN AROUND
-        if (!noTimeLeft(2)) {
+        if (!noTimeLeft(3)) {
             if (red_ && short_) robot.turnTo9();
-            if (red_ && long_) robot.turnTo6();
             if (blue_ && short_) robot.turnTo9();
             if (blue_ && long_) robot.turnTo12();
+            if (red_ && long_) robot.turnTo6();
         }
-
         robot.showTeamColor();
         robot.stopRobot();
     }
