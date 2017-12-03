@@ -67,7 +67,7 @@ public class Run_Jewel {
                 break;
             }
         }
-        // KNOCK THE JEWEL IF COLOR FOUND
+        // KNOCK THE JEWEL IF A COLOR FOUND
         if (foundBlue || foundRed) {
 
             boolean knockFirst = true; //knock the ball in front or the other one
