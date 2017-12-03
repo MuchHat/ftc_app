@@ -99,7 +99,7 @@ public class Run_Glyph {
             robot.moveLinearGyroHeadingToTrack = 0;
 
             if (red_ && long_) robot.moveInches(1.5, 0.22 * speedIncrease, 4);
-            if (blue_ && long_) robot.moveInches(-1.5, 0.22 * speedIncrease, 4);
+            if (blue_ && long_) robot.moveInches(-2.5, 0.22 * speedIncrease, 4);
             if (blue_ && long_) robot.turnTo6();
             showIfTargetSeen();
 
