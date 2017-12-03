@@ -30,6 +30,7 @@ public class Run_Glyph {
         if ((secsLeftAtStart - timer.seconds()) > secBuffer) {
             return false;
         }
+        robot.openClawWide();
         robot.stopRobot();
         return true;
     }
@@ -87,8 +88,8 @@ public class Run_Glyph {
             robot.moveSideInches(1,0.44,1);
 
             // now back off against the platform to reset the position
-            if (red_) robot.moveInches(-1, 0.22, 2);
-            if (blue_) robot.moveInches(1, 0.22, 2);
+            if (red_) robot.moveInches(-1, 0.33, 2);
+            if (blue_) robot.moveInches(1, 0.33, 2);
             robot.colorBeacon.colorNumber(prevColor);
 
             if (noTimeLeft(1)) return;
