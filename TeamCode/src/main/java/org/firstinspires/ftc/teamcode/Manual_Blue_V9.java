@@ -44,7 +44,7 @@ public class Manual_Blue_V9 extends LinearOpMode {
         waitMillis(66);
         robot.moveLift(2);
 
-        telemetry.addData("DRIVER", ">>>  PRESS START >>>");
+        telemetry.addData("DRIVER", ">>>  PRESS (START) >>>");
         telemetry.update();
 
         waitForStart();

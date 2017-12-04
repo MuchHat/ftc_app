@@ -38,7 +38,7 @@ public class Auto_Red_Long_V9 extends LinearOpMode {
         jewelRun.init(robot);
         glyphRun.init(robot, hardwareMap);
 
-        telemetry.addData("DRIVER", ">>>  ADJUST LIFT PRESS A >>>");
+        telemetry.addData("DRIVER", ">>>  ADJUST LIFT >>> PRESS (A) >>>");
         telemetry.update();
 
         while( !gamepad1.a ){
@@ -46,7 +46,7 @@ public class Auto_Red_Long_V9 extends LinearOpMode {
             waitMillis(11);
         }
 
-        telemetry.addData("DRIVER", ">>> PRESS START (TEST) >>>");
+        telemetry.addData("DRIVER", ">>> PRESS (START) >>>");
         telemetry.update();
 
         waitForStart();
