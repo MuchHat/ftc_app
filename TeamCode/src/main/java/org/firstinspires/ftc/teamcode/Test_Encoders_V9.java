@@ -54,10 +54,14 @@ import static android.os.SystemClock.sleep;
 //@Disabled   // comment out or remove this line to enable this opmode
 public class Test_Encoders_V9 extends LinearOpMode {
 
-    double target = 0;
-    double power = 0.44;
+    double target = 11;
+    double power = 0.66;
     double crrPower = 0;
     double crrDrift = 0;
+    double crrIsFlat = 0;
+    double crrReduceRatio = 1;
+    double crrLockedLeft = 0;
+    double crrLockedRight = 0;
 
     Team_Hardware_V9 robot = new Team_Hardware_V9();
 
@@ -80,7 +84,7 @@ public class Test_Encoders_V9 extends LinearOpMode {
                 sleep(100);
             }
             if (gamepad1.dpad_up) target = 0;
-            if (gamepad1.dpad_down) target = 0;
+            if (gamepad1.dpad_down) power = 0;
 
             if (gamepad1.right_bumper) {
                 power += 0.11;
@@ -91,17 +95,17 @@ public class Test_Encoders_V9 extends LinearOpMode {
                 sleep(100);
             }
 
-            target = Range.clip(target, 0, 30.0);
-            power = Range.clip(power, 0.11, 0.88);
+            target = Range.clip(target, 0, 40.0);
+            power = Range.clip(power, 0, 1);
 
             if (gamepad1.a)
-                robot.moveInches(-target, power, 6);
+                robot.moveInches(-target, power, 11);
             if (gamepad1.y)
-                robot.moveInches(target, power, 6);
+                robot.moveInches(target, power, 11);
             if (gamepad1.b)
-                robot.moveSideInches(target, power, 6);
+                robot.moveSideInches(target, power, 11);
             if (gamepad1.y)
-                robot.moveSideInches(-target, power, 6);
+                robot.moveSideInches(-target, power, 11);
         }
     }
 
@@ -282,7 +286,9 @@ public class Test_Encoders_V9 extends LinearOpMode {
                 telemetryUpdate();
                 break;
             }
+            crrIsFlat = isFlat() ? 1.0 : 0.0;
             telemetryUpdate();
+
             // END WAIT LOOP AND CHECK IF MOTORS STOPPED
             // SLOW DOWN FOR STOP ON FLAT
             if (robot.moveLinearStopOnFlatEnabled &&
@@ -316,6 +322,7 @@ public class Test_Encoders_V9 extends LinearOpMode {
             // END STOP ON FLAT
             // GYRO TRACKING IF ENABLED
             double driftRight = 0;
+            crrReduceRatio = 1;
             if (robot.moveLinearGyroTrackingEnabled) {
                 driftRight = gyroDrift(robot.moveLinearGyroHeadingToTrack);
                 crrDrift = driftRight;
@@ -337,6 +344,7 @@ public class Test_Encoders_V9 extends LinearOpMode {
                 // set to 0.11 for 90 deg drift
                 double reduceRatio = 1 - 2 * Math.abs(driftRight);
                 reduceRatio = Range.clip(reduceRatio, 0.66, 1);
+                crrReduceRatio = reduceRatio;
 
                 if (driftRight * direction > 0) {
 
@@ -438,6 +446,8 @@ public class Test_Encoders_V9 extends LinearOpMode {
                 // diff is bigger than 33%
                 // do not check for lock if moving slowly at the end
                 locked = (Math.abs(lMove - lbMove) > 222 || Math.abs(rMove - rbMove) > 222); // TODO
+                crrLockedLeft = Math.abs(lMove - lbMove);
+                crrLockedRight = Math.abs(rMove - rbMove);
                 telemetryUpdate();
 
                 //if one wheel is locked stop and restart,
@@ -599,7 +609,10 @@ public class Test_Encoders_V9 extends LinearOpMode {
         telemetry.addData("inchesToTarget", "%.2f power", robot.inchesToTarget());
         telemetry.addData("crrPower", "%.2f ", crrPower);
         telemetry.addData("crrDrift", "%.2f ", crrDrift);
-        telemetry.addData("is flat", "%.2f", (double) (robot.isFlat() ? 1.0 : 0.0));
+        telemetry.addData("is flat", "%.2f", crrIsFlat);
+        telemetry.addData("reduce ratio", "%.2f", crrReduceRatio);
+        telemetry.addData("locked left", "%.2f", crrLockedLeft);
+        telemetry.addData("locked right", "%.2f", crrLockedRight);
         telemetry.update();
     }
 }
