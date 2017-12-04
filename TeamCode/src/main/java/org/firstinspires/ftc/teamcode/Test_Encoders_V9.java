@@ -606,13 +606,13 @@ public class Test_Encoders_V9 extends LinearOpMode {
     void telemetryUpdate() {
         telemetry.addData("target", "%.2f inches", target);
         telemetry.addData("power", "%.2f power", power);
-        telemetry.addData("inchesToTarget", "%.2f power", robot.inchesToTarget());
-        telemetry.addData("crrPower", "%.2f ", crrPower);
-        telemetry.addData("crrDrift", "%.2f ", crrDrift);
-        telemetry.addData("is flat", "%.2f", crrIsFlat);
-        telemetry.addData("reduce ratio", "%.2f", crrReduceRatio);
-        telemetry.addData("locked left", "%.2f", crrLockedLeft);
-        telemetry.addData("locked right", "%.2f", crrLockedRight);
+        telemetry.addData("inchesToTarget", "%.2f inches", robot.inchesToTarget());
+        telemetry.addData("crrPower", "%.2f power", crrPower);
+        telemetry.addData("crrDrift", "%.2f drift", crrDrift);
+        telemetry.addData("is flat", "%.2f flat", crrIsFlat);
+        telemetry.addData("reduce ratio", "%.2f ratio", crrReduceRatio);
+        telemetry.addData("locked left", "%.2f pulses", crrLockedLeft);
+        telemetry.addData("locked right", "%.2f pulses", crrLockedRight);
         telemetry.update();
     }
 }
