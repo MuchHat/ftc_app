@@ -19,17 +19,10 @@ public class Run_Jewel {
 
         robot = aRobot;
         robot.colorSensor.enableLed(true);
-
-        robot.openClawZero();
-        robot.moveArmPosZero();
-        waitMillis(66);
     }
 
     void run() {
 
-        robot.closeClawAuto();
-        waitMillis(2000);
-        robot.moveLift(2);
         boolean red_ = !robot.blueTeam;
         boolean blue_ = robot.blueTeam;
         boolean short_ = robot.shortField;

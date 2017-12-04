@@ -42,12 +42,24 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
         jewelRun.init(robot);
         glyphRun.init(robot, hardwareMap);
 
-        telemetry.addData("DRIVER", ">>> PRESS START >>>");
+        telemetry.addData("DRIVER", ">>>  ADJUST LIFT PRESS A >>>");
+        telemetry.update();
+
+        while( !gamepad1.a ){
+            liftLoopAuto();
+            waitMillis(11);
+        }
+
+        telemetry.addData("DRIVER", ">>> PRESS START (TEST) >>>");
         telemetry.update();
 
         waitForStart();
+
         totalRuntime.reset();
         robot.imuGyro.start();
+
+        robot.closeClawAuto();
+        waitMillis(666);
 
         while (opModeIsActive()) {
 
@@ -57,13 +69,25 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
 
             glyphRun.run(30 - totalRuntime.seconds());
 
-            robot.beaconBlink(3);
-            robot.colorBeacon.off();
-
             robot.stopRobot();
+            robot.beaconBlink(2);
+            robot.colorBeacon.off();
             stop();
-
         }
+    }
+
+    void liftLoopAuto(){
+
+        robot. liftControl = 0;
+
+        if (Math.abs(gamepad2.right_stick_y) > 0.06) {
+            robot.liftControl = -gamepad2.right_stick_y;
+        }
+
+        if (Math.abs(gamepad1.right_stick_y) > 0.06) {
+            robot.liftControl = -gamepad1.right_stick_y;
+        }
+        robot.setDrivesByPower();
     }
 
     private void waitMillis(double millis) {

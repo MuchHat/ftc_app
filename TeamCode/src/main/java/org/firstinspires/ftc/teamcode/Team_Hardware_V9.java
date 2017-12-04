@@ -180,18 +180,12 @@ public class  Team_Hardware_V9 {
         rightPowerControl = 0;
         leftPowerControlBack = 0;
         rightPowerControlBack = 0;
-        leftClawControl = clawCloseAuto[0];
-        rightClawControl = clawCloseAuto[1];
+        leftClawControl = clawZero[0];
+        rightClawControl = clawZero[1];
         baseControl = armPosZero[0];
         elbowControl = armPosZero[1];
         setDrivesByPower();
         setServos();
-        waitMillis(555);
-        moveLift(-2);
-        /*waitMillis(555);
-        moveLift(2);*/
-
-
         imuGyro.init(hwMap);
     }
 
@@ -1098,7 +1092,6 @@ public class  Team_Hardware_V9 {
         LEFT,
         RIGHT
     }
-
 
 // ************************** ROBOT HW CLASS END  ********************************************//
 }

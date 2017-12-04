@@ -44,6 +44,10 @@ public class Manual_Red_V9 extends LinearOpMode {
         robot.blueTeam = false;
         robot.showTeamColor();
 
+        robot.moveLift(-2);
+        waitMillis(66);
+        robot.moveLift(2);
+
         telemetry.addData("DRIVER", ">>>  PRESS START >>>");
         telemetry.update();
 
@@ -346,6 +350,7 @@ public class Manual_Red_V9 extends LinearOpMode {
 
         robot.stopRobot();
         robot.colorBeacon.off();
+        stop();
     }
 
     private void waitMillis(double millis) {

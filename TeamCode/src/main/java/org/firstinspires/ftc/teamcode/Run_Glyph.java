@@ -30,6 +30,7 @@ public class Run_Glyph {
         if ((secsLeftAtStart - timer.seconds()) > secBuffer) {
             return false;
         }
+        robot.moveLift(-3);
         robot.openClawWide();
         robot.stopRobot();
         return true;
@@ -171,7 +172,7 @@ public class Run_Glyph {
         }
         //PUT THE GLYPH IN
         {
-            robot.moveLift(-1);
+            robot.moveLift(-3);
             robot.moveInches(4, 0.15, 3);
             robot.openClawZero();
             robot.showTeamColor();
