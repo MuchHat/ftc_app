@@ -45,7 +45,7 @@ import static android.os.SystemClock.sleep;
 // ************************** ROBOT HW CLASS *****************************************************//
 
 
-public class Team_Hardware_V9 {
+public class  Team_Hardware_V9 {
 
     public DigitalChannel topSwitch = null;
 
@@ -188,8 +188,9 @@ public class Team_Hardware_V9 {
         setServos();
         waitMillis(555);
         moveLift(-2);
-        waitMillis(555);
-        moveLift(2);
+        /*waitMillis(555);
+        moveLift(2);*/
+
 
         imuGyro.init(hwMap);
     }
