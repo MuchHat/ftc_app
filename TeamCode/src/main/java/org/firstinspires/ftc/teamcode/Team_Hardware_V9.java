@@ -936,7 +936,7 @@ public class  Team_Hardware_V9 {
 
                 // diff is bigger than 33%
                 // do not check for lock if moving slowly at the end
-                locked = (Math.abs(lMove - lbMove) > 444 || Math.abs(rMove - rbMove) > 444); // TODO
+                locked = (Math.abs(lMove - lbMove) > 444 || Math.abs(rMove - rbMove) > 444);
 
                 //if one wheel is locked stop and restart,
                 //check for stall 222ms after start not sooner
