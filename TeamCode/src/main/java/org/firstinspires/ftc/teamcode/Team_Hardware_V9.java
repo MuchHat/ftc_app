@@ -643,8 +643,8 @@ public class  Team_Hardware_V9 {
 
     boolean isFlat() {
 
-        boolean xFlat = imuGyro.getInclineX() < 4 || imuGyro.getInclineX() > 356; //TODO
-        boolean yFlat = imuGyro.getInclineY() < 4 || imuGyro.getInclineY() > 356; //TODO
+        boolean xFlat = (imuGyro.getInclineX() <= 5) || (imuGyro.getInclineX() >= 355);
+        boolean yFlat = (imuGyro.getInclineY() <= 3) || (imuGyro.getInclineY() >= 353);
 
         return xFlat && yFlat;
     }
@@ -750,6 +750,7 @@ public class  Team_Hardware_V9 {
             boolean stillRunning = true;
             for (int i = 0; i < 6; i++) {
                 waitMillis(11);
+
                 stillRunning = leftDrive.isBusy() ||
                         rightDrive.isBusy() ||
                         leftDriveBack.isBusy() ||
@@ -757,27 +758,41 @@ public class  Team_Hardware_V9 {
                 if (!stillRunning) {
                     break;
                 }
-                stillRunning = inchesToTarget() > 0.06;
+                stillRunning = inchesToTarget() > 0.15;
                 if (!stillRunning) {
                     break;
                 }
             }
             if (!stillRunning) {
+
+                leftDrive.setPower(0);
+                rightDrive.setPower(0);
+                leftDriveBack.setPower(0);
+                rightDriveBack.setPower(0);
+
+                leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
                 break;
             }
+
             // END WAIT LOOP AND CHECK IF MOTORS STOPPED
             // SLOW DOWN FOR STOP ON FLAT
             if (moveLinearStopOnFlatEnabled &&
-                    (leftDrive.getPower() > 0.22 ||
-                            leftDrive.getPower() > 0.22 ||
-                            leftDriveBack.getPower() > 0.22 ||
-                            rightDriveBack.getPower() > 0.22) &&
+                    (leftDrive.getPower() > 0.11 ||
+                            leftDrive.getPower() > 0.11 ||
+                            leftDriveBack.getPower() > 0.11 ||
+                            rightDriveBack.getPower() > 0.11) &&
                     inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
 
-                leftDrive.setPower(0.22);
-                rightDrive.setPower(0.22);
-                leftDriveBack.setPower(0.22);
-                rightDriveBack.setPower(0.22);
+                double rampDownRatio = 0.88; // reduces by half in 1/2 sec
+
+                leftDrive.setPower(leftDrive.getPower() * rampDownRatio);
+                rightDrive.setPower(rightDrive.getPower() * rampDownRatio);
+                leftDriveBack.setPower(leftDriveBack.getPower() * rampDownRatio);
+                rightDriveBack.setPower(rightDriveBack.getPower() * rampDownRatio);
 
                 // WHITE FLASH MEANS SLOW DOWN FOR RAMP DOWN
                 colorBeacon.white();
@@ -790,13 +805,25 @@ public class  Team_Hardware_V9 {
 
                 // WHITE BLINK MEANS STOPPED ON FLAT
                 colorBeacon.white();
-                beaconBlink(1);
+
+                leftDrive.setPower(0);
+                rightDrive.setPower(0);
+                leftDriveBack.setPower(0);
+                rightDriveBack.setPower(0);
+
+                leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
                 stillRunning = false;
+
                 break;
             }
             // END STOP ON FLAT
             // GYRO TRACKING IF ENABLED
             double driftRight = 0;
+
             if (moveLinearGyroTrackingEnabled) {
                 driftRight = gyroDrift(moveLinearGyroHeadingToTrack);
             }
@@ -805,98 +832,91 @@ public class  Team_Hardware_V9 {
                 // PINK MEANS GYRO CORRECTING
                 colorBeacon.pink();
 
-                double lPower = leftDrive.getPower();
-                double rPower = rightDrive.getPower();
-                double lbPower = leftDriveBack.getPower();
-                double rbPower = rightDriveBack.getPower();
+                double lPower = (leftDrive.getPower() + leftDriveBack.getPower()) / 2;
+                double rPower = (rightDriveBack.getPower() + rightDriveBack.getPower()) / 2;
 
                 double direction = rightDistanceControl > 0 ? 1.0 : -1.0;
 
                 // reduce power on one side to compensate
                 // set to 0.88 for 11 deg drift
                 // set to 0.11 for 90 deg drift
-                double reduceRatio = 1 - 2 * Math.abs(driftRight);
-                reduceRatio = Range.clip(reduceRatio, 0.66, 1);
+                double reduceRatio = 1 - 8 * Math.abs(driftRight); //CHANGE
+                reduceRatio = Range.clip(reduceRatio, 0.44, 0.77);
 
                 if (driftRight * direction > 0) {
-
                     lPower = rPower * reduceRatio; // x0.07 is the minimum for 6 deg drift
-                    lbPower = rbPower * reduceRatio; // x0.15 reduction for 11 deg drift
-
-                    if (lPower < 0.06 || lbPower < 0.06) {
-                        lPower = rPower;
-                        lbPower = rbPower;
-                    }
                 } else {
-
                     rPower = lPower * reduceRatio;
-                    rbPower = lbPower * reduceRatio;
-
-                    if (rPower < 0.06 || rbPower < 0.06) {
-                        rPower = lPower;
-                        rbPower = lbPower;
-                    }
                 }
 
-                lPower = Range.clip(lPower, 0, 1);
-                rPower = Range.clip(rPower, 0, 1);
-                lbPower = Range.clip(lbPower, 0, 1);
-                rbPower = Range.clip(rbPower, 0, 1);
+                lPower = Range.clip(lPower, 0.08, 1);
+                rPower = Range.clip(rPower, 0.08, 1);
 
                 leftDrive.setPower(Math.abs(lPower));
                 rightDrive.setPower(Math.abs(rPower));
-                leftDriveBack.setPower(Math.abs(lbPower));
-                rightDriveBack.setPower(Math.abs(rbPower));
+                leftDriveBack.setPower(Math.abs(lPower));
+                rightDriveBack.setPower(Math.abs(rPower));
 
-            }
-            if (moveLinearGyroTrackingEnabled && driftRight == 0 && stillRunning) {
-                // not correcting
+            } else if (moveLinearGyroTrackingEnabled && driftRight == 0 && stillRunning) {
+
+                // DONE ADJUSTING
                 colorBeacon.colorNumber(prevBeaconColor);
 
-                /************************ TO ADD LATER; ADJUST TARGETS IF WHEELS SLIPPED **************
+                double maxPower = Math.max(
+                        Math.max(leftDrive.getPower(),leftDriveBack.getPower()),
+                        Math.max(rightDriveBack.getPower(),rightDriveBack.getPower()));
+                double minPower = Math.min(
+                        Math.min(leftDrive.getPower(),leftDriveBack.getPower()),
+                        Math.min(rightDriveBack.getPower(),rightDriveBack.getPower()));
 
-                 // set the power the same on all 4 wheels if not already
-                 // needed if correction was done
-                 double lPower = leftDrive.getPower();
-                 double rPower = rightDrive.getPower();
-                 double lbPower = leftDriveBack.getPower();
-                 double rbPower = rightDriveBack.getPower();
+                maxPower = Range.clip(maxPower, 0, 1);
+                minPower = Range.clip(minPower, 0, 1);
 
-                 double minPower = Math.min(Math.min(Math.min(lPower, rPower), lbPower), rbPower);
-                 double maxPower = Math.max(Math.max(Math.max(lPower, rPower), lbPower), rbPower);
+                if (maxPower - minPower > 0.03 || maxPower < 0.08 ) {
 
-                 // rebase the targets if needed
-                 int left2Target = leftDrive.getTargetPosition() - leftDrive.getCurrentPosition();
-                 int right2Target = rightDrive.getTargetPosition() - leftDrive.getCurrentPosition();
-                 int leftBack2Target = leftDriveBack.getTargetPosition() - leftDrive.getCurrentPosition();
-                 int rightBack2Target = rightDriveBack.getTargetPosition() - leftDrive.getCurrentPosition();
+                    maxPower = Range.clip(maxPower, 0.08, 1);
 
-                 int average2Target = (left2Target + right2Target + leftBack2Target + rightBack2Target) / 4;
-                 int min2Target = Math.min(Math.min(Math.min(left2Target, right2Target), leftBack2Target), rightBack2Target);
-                 int max2Target = Math.max(Math.max(Math.max(left2Target, right2Target), leftBack2Target), rightBack2Target);
+                    leftDrive.setPower(Math.abs(maxPower));
+                    rightDrive.setPower(Math.abs(maxPower));
+                    leftDriveBack.setPower(Math.abs(maxPower));
+                    rightDriveBack.setPower(Math.abs(maxPower));
+                }
+            }
+            if (moveLinearGyroTrackingEnabled && stillRunning) {
 
-                 // adjust only if a big difference
-                 if (Math.abs(max2Target - min2Target) > 666) {
+                // ADJUST TARGETS TOO
+                double leftPulsesToDestination =
+                        (Math.abs(leftDrive.getTargetPosition() - leftDrive.getCurrentPosition()) +
+                                Math.abs(leftDriveBack.getTargetPosition() - leftDriveBack.getCurrentPosition())) / 2;
+                double rightPulsesToDestination =
+                        (Math.abs(rightDrive.getTargetPosition() - rightDrive.getCurrentPosition()) +
+                                Math.abs(rightDriveBack.getTargetPosition() - rightDriveBack.getCurrentPosition())) / 2;
 
-                 leftDrive.setTargetPosition(leftDrive.getCurrentPosition() + average2Target);
-                 rightDrive.setTargetPosition(rightDrive.getCurrentPosition() + average2Target);
-                 leftDriveBack.setTargetPosition(leftDriveBack.getCurrentPosition() + average2Target);
-                 rightDriveBack.setTargetPosition(rightDriveBack.getCurrentPosition() + average2Target);
-                 }
-                 if (Math.abs(maxPower - minPower) > 0.08) {
+                if (Math.abs(leftPulsesToDestination - rightPulsesToDestination) > 11) {
+                    if (leftPulsesToDestination > rightPulsesToDestination) {
 
-                 leftDrive.setPower(Math.abs(maxPower));
-                 rightDrive.setPower(Math.abs(maxPower));
-                 leftDriveBack.setPower(Math.abs(maxPower));
-                 rightDriveBack.setPower(Math.abs(maxPower));
-                 }
+                        double newLeftTarget = leftDrive.getCurrentPosition() +
+                                rightPulsesToDestination / leftPulsesToDestination * (leftDrive.getTargetPosition() - leftDrive.getCurrentPosition());
+                        leftDrive.setTargetPosition((int) newLeftTarget);
 
-                 ************** END TO ADD LATER; ADJUST TARGETS IF WHEELS SLIPPED ********************/
+                        double newLeftBackTarget = leftDriveBack.getCurrentPosition() +
+                                rightPulsesToDestination / leftPulsesToDestination * (leftDriveBack.getTargetPosition() - leftDriveBack.getCurrentPosition());
+                        leftDriveBack.setTargetPosition((int) newLeftBackTarget);
 
+                    } else {
+                        double newRightTarget = rightDrive.getCurrentPosition() +
+                                leftPulsesToDestination / rightPulsesToDestination * (rightDrive.getTargetPosition() - rightDrive.getCurrentPosition());
+                        rightDrive.setTargetPosition((int) newRightTarget);
+
+                        double newRightBackTarget = rightDriveBack.getCurrentPosition() +
+                                leftPulsesToDestination / rightPulsesToDestination * (rightDriveBack.getTargetPosition() - rightDriveBack.getCurrentPosition());
+                        rightDriveBack.setTargetPosition((int) newRightBackTarget);
+                    }
+                }
             }
             // END GYRO TRACKING
             // CHECK IF WHEELS LOCKED
-            if (encodersTimer.milliseconds() - lastCheckIfLocked > 222) {
+            if ((encodersTimer.milliseconds() - lastCheckIfLocked > 222) && stillRunning) {
 
                 lastCheckIfLocked = encodersTimer.milliseconds();
 
@@ -916,7 +936,7 @@ public class  Team_Hardware_V9 {
 
                 // diff is bigger than 33%
                 // do not check for lock if moving slowly at the end
-                locked = (Math.abs(lMove - lbMove) > 222 || Math.abs(rMove - rbMove) > 222); // TODO
+                locked = (Math.abs(lMove - lbMove) > 444 || Math.abs(rMove - rbMove) > 444); // TODO
 
                 //if one wheel is locked stop and restart,
                 //check for stall 222ms after start not sooner
