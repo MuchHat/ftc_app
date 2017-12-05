@@ -104,8 +104,6 @@ public class Test_Bosh_Gyro_V9 extends LinearOpMode {
         telemetry.addData("heading", "%.2f", (double) imu.getHeading());
         telemetry.addData("incline X", "%.2f", (double) imu.getInclineX());
         telemetry.addData("incline Y", "%.2f", (double) imu.getInclineY());
-        telemetry.addData("linear X", "%.2f", (double) imu.getX());
-        telemetry.addData("linear Y", "%.2f", (double) imu.getY());
         telemetry.update();
     }
 }

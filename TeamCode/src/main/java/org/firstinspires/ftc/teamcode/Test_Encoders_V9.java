@@ -58,7 +58,6 @@ public class Test_Encoders_V9 extends LinearOpMode {
     double power = 0.66;
     double crrPower = 0;
     double crrDrift = 0;
-    double crrIsFlat = 0;
     double crrReduceRatio = 1;
     double crrLockedLeft = 0;
     double crrLockedRight = 0;
@@ -69,6 +68,14 @@ public class Test_Encoders_V9 extends LinearOpMode {
     public void runOpMode() {
 
         robot.init(hardwareMap);
+
+        target = 11;
+        power = 0.66;
+        crrPower = 0;
+        crrDrift = 0;
+        crrReduceRatio = 1;
+        crrLockedLeft = 0;
+        crrLockedRight = 0;
 
         waitForStart();
 
@@ -98,14 +105,17 @@ public class Test_Encoders_V9 extends LinearOpMode {
             target = Range.clip(target, 0, 40.0);
             power = Range.clip(power, 0, 1);
 
+            robot.moveLinearGyroTrackingEnabled = true;
+            robot.moveLinearGyroHeadingToTrack = 0;
+
             if (gamepad1.a)
-                robot.moveInches(-target, power, 11);
+                moveInches(-target, power, 11);
             if (gamepad1.y)
-                robot.moveInches(target, power, 11);
+                moveInches(target, power, 11);
+            if (gamepad1.x)
+                moveInchesStopOnFlat(-target, power, 11);
             if (gamepad1.b)
-                robot.moveSideInches(target, power, 11);
-            if (gamepad1.y)
-                robot.moveSideInches(-target, power, 11);
+                moveInchesStopOnFlat(target, power, 11);
         }
     }
 
@@ -161,8 +171,8 @@ public class Test_Encoders_V9 extends LinearOpMode {
 
     boolean isFlat() {
 
-        boolean xFlat = robot.imuGyro.getInclineX() < 4 || robot.imuGyro.getInclineX() > 356; //TODO
-        boolean yFlat = robot.imuGyro.getInclineY() < 4 || robot.imuGyro.getInclineY() > 356; //TODO
+        boolean xFlat = (robot.imuGyro.getInclineX() <= 5) || (robot.imuGyro.getInclineX() >= 355); //CHANGE
+        boolean yFlat = (robot.imuGyro.getInclineY() <= 3) || (robot.imuGyro.getInclineY() >= 353);
 
         return xFlat && yFlat;
     }
@@ -200,6 +210,18 @@ public class Test_Encoders_V9 extends LinearOpMode {
         double drift = (targetHeading - crrHeading) / 90; // 0.07 is min
 
         return drift;
+    }
+
+    void moveInches(double distanceInches, double movePower, double timeOut) {
+
+        robot.moveLinearStopOnFlatEnabled = false;
+        moveLinear(distanceInches * 24.5, movePower, timeOut, 1.0, 1.0, 1.0, 1.0);
+    }
+
+    void moveInchesStopOnFlat(double distanceInches, double movePower, double timeOut) {
+
+        robot.moveLinearStopOnFlatEnabled = true;
+        moveLinear(distanceInches * 24.5, movePower, timeOut, 1.0, 1.0, 1.0, 1.0);
     }
 
     void setDrivesByDistance(double timeOut) {
@@ -268,40 +290,39 @@ public class Test_Encoders_V9 extends LinearOpMode {
             boolean stillRunning = true;
             for (int i = 0; i < 6; i++) {
                 waitMillis(11);
+                telemetryUpdate();
                 stillRunning = robot.leftDrive.isBusy() ||
                         robot.rightDrive.isBusy() ||
                         robot.leftDriveBack.isBusy() ||
                         robot.rightDriveBack.isBusy();
                 if (!stillRunning) {
-                    telemetryUpdate();
                     break;
                 }
-                stillRunning = inchesToTarget() > 0.06;
+                stillRunning = inchesToTarget() > 0.05;
                 if (!stillRunning) {
-                    telemetryUpdate();
                     break;
                 }
             }
             if (!stillRunning) {
-                telemetryUpdate();
                 break;
             }
-            crrIsFlat = isFlat() ? 1.0 : 0.0;
             telemetryUpdate();
 
             // END WAIT LOOP AND CHECK IF MOTORS STOPPED
             // SLOW DOWN FOR STOP ON FLAT
             if (robot.moveLinearStopOnFlatEnabled &&
-                    (robot.leftDrive.getPower() > 0.22 ||
-                            robot.leftDrive.getPower() > 0.22 ||
-                            robot.leftDriveBack.getPower() > 0.22 ||
-                            robot.rightDriveBack.getPower() > 0.22) &&
+                    (robot.leftDrive.getPower() > 0.11 ||
+                            robot.leftDrive.getPower() > 0.11 ||
+                            robot.leftDriveBack.getPower() > 0.11 ||
+                            robot.rightDriveBack.getPower() > 0.11) &&
                     inchesToTarget() < robot.moveLinearStopOnFlatRampDownInches) {
 
-                robot.leftDrive.setPower(0.22);
-                robot.rightDrive.setPower(0.22);
-                robot.leftDriveBack.setPower(0.22);
-                robot.rightDriveBack.setPower(0.22);
+                double rampDownRatio = 0.88; // reduces by half in 1/2 sec
+
+                robot.leftDrive.setPower(robot.leftDrive.getPower() * rampDownRatio);
+                robot.rightDrive.setPower(robot.rightDrive.getPower() * rampDownRatio);
+                robot.leftDriveBack.setPower(robot.leftDriveBack.getPower() * rampDownRatio);
+                robot.rightDriveBack.setPower(robot.rightDriveBack.getPower() * rampDownRatio);
 
                 // WHITE FLASH MEANS SLOW DOWN FOR RAMP DOWN
                 robot.colorBeacon.white();
@@ -313,8 +334,18 @@ public class Test_Encoders_V9 extends LinearOpMode {
                     inchesToTarget() < robot.moveLinearStopOnFlatRampDownInches) {
 
                 // WHITE BLINK MEANS STOPPED ON FLAT
-                robot.colorBeacon.white();
-                beaconBlink(1);
+                robot.colorBeacon.purple();
+
+                robot.leftDrive.setPower(0);
+                robot.rightDrive.setPower(0);
+                robot.leftDriveBack.setPower(0);
+                robot.rightDriveBack.setPower(0);
+
+                robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                robot.rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
                 stillRunning = false;
                 telemetryUpdate();
                 break;
@@ -332,100 +363,96 @@ public class Test_Encoders_V9 extends LinearOpMode {
                 // PINK MEANS GYRO CORRECTING
                 robot.colorBeacon.pink();
 
-                double lPower = robot.leftDrive.getPower();
-                double rPower = robot.rightDrive.getPower();
-                double lbPower = robot.leftDriveBack.getPower();
-                double rbPower = robot.rightDriveBack.getPower();
+                double lPower = (robot.leftDrive.getPower() + robot.leftDriveBack.getPower()) / 2;
+                double rPower = (robot.rightDriveBack.getPower() + robot.rightDriveBack.getPower()) / 2;
 
                 double direction = robot.rightDistanceControl > 0 ? 1.0 : -1.0;
 
                 // reduce power on one side to compensate
                 // set to 0.88 for 11 deg drift
                 // set to 0.11 for 90 deg drift
-                double reduceRatio = 1 - 2 * Math.abs(driftRight);
-                reduceRatio = Range.clip(reduceRatio, 0.66, 1);
+                double reduceRatio = 1 - 8 * Math.abs(driftRight); //CHANGE
+                reduceRatio = Range.clip(reduceRatio, 0.44, 0.77);
                 crrReduceRatio = reduceRatio;
 
                 if (driftRight * direction > 0) {
 
                     lPower = rPower * reduceRatio; // x0.07 is the minimum for 6 deg drift
-                    lbPower = rbPower * reduceRatio; // x0.15 reduction for 11 deg drift
 
-                    if (lPower < 0.06 || lbPower < 0.06) {
-                        lPower = rPower;
-                        lbPower = rbPower;
-                    }
                 } else {
 
                     rPower = lPower * reduceRatio;
-                    rbPower = lbPower * reduceRatio;
 
-                    if (rPower < 0.06 || rbPower < 0.06) {
-                        rPower = lPower;
-                        rbPower = lbPower;
-                    }
                 }
-                telemetryUpdate();
 
-                lPower = Range.clip(lPower, 0, 1);
-                rPower = Range.clip(rPower, 0, 1);
-                lbPower = Range.clip(lbPower, 0, 1);
-                rbPower = Range.clip(rbPower, 0, 1);
+                lPower = Range.clip(lPower, 0.08, 1);
+                rPower = Range.clip(rPower, 0.08, 1);
 
                 robot.leftDrive.setPower(Math.abs(lPower));
                 robot.rightDrive.setPower(Math.abs(rPower));
-                robot.leftDriveBack.setPower(Math.abs(lbPower));
-                robot.rightDriveBack.setPower(Math.abs(rbPower));
+                robot.leftDriveBack.setPower(Math.abs(lPower));
+                robot.rightDriveBack.setPower(Math.abs(rPower));
 
-            }
-            if (robot.moveLinearGyroTrackingEnabled && driftRight == 0 && stillRunning) {
-                // not correcting
+            } else if (robot.moveLinearGyroTrackingEnabled && driftRight == 0 && stillRunning) {
+
+                // DONE ADJUSTING
                 robot.colorBeacon.colorNumber(prevBeaconColor);
 
-                /************************ TO ADD LATER; ADJUST TARGETS IF WHEELS SLIPPED **************
+                double maxPower = Math.max(
+                        Math.max(robot.leftDrive.getPower(),robot.leftDriveBack.getPower()),
+                        Math.max(robot.rightDriveBack.getPower(),robot.rightDriveBack.getPower()));
+                double minPower = Math.min(
+                        Math.min(robot.leftDrive.getPower(),robot.leftDriveBack.getPower()),
+                        Math.min(robot.rightDriveBack.getPower(),robot.rightDriveBack.getPower()));
 
-                 // set the power the same on all 4 wheels if not already
-                 // needed if correction was done
-                 double lPower = robot.leftDrive.getPower();
-                 double rPower = robot.rightDrive.getPower();
-                 double lbPower = robot.leftDriveBack.getPower();
-                 double rbPower = robot.rightDriveBack.getPower();
+                maxPower = Range.clip(maxPower, 0, 1);
+                minPower = Range.clip(minPower, 0, 1);
 
-                 double minPower = Math.min(Math.min(Math.min(lPower, rPower), lbPower), rbPower);
-                 double maxPower = Math.max(Math.max(Math.max(lPower, rPower), lbPower), rbPower);
+                if (maxPower - minPower > 0.03 || maxPower < 0.08 ) {
 
-                 // rebase the targets if needed
-                 int left2Target = robot.leftDrive.getTargetPosition() - robot.leftDrive.getCurrentPosition();
-                 int right2Target = robot.rightDrive.getTargetPosition() - robot.leftDrive.getCurrentPosition();
-                 int leftBack2Target = robot.leftDriveBack.getTargetPosition() - robot.leftDrive.getCurrentPosition();
-                 int rightBack2Target = robot.rightDriveBack.getTargetPosition() - robot.leftDrive.getCurrentPosition();
+                    maxPower = Range.clip(maxPower, 0.08, 1);
 
-                 int average2Target = (left2Target + right2Target + leftBack2Target + rightBack2Target) / 4;
-                 int min2Target = Math.min(Math.min(Math.min(left2Target, right2Target), leftBack2Target), rightBack2Target);
-                 int max2Target = Math.max(Math.max(Math.max(left2Target, right2Target), leftBack2Target), rightBack2Target);
+                    robot.leftDrive.setPower(Math.abs(maxPower));
+                    robot.rightDrive.setPower(Math.abs(maxPower));
+                    robot.leftDriveBack.setPower(Math.abs(maxPower));
+                    robot.rightDriveBack.setPower(Math.abs(maxPower));
+                }
+            }
+            if (robot.moveLinearGyroTrackingEnabled && stillRunning) {
 
-                 // adjust only if a big difference
-                 if (Math.abs(max2Target - min2Target) > 666) {
+                // ADJUST TARGETS TOO
+                double leftPulsesToDestination =
+                        (Math.abs(robot.leftDrive.getTargetPosition() - robot.leftDrive.getCurrentPosition()) +
+                                Math.abs(robot.leftDriveBack.getTargetPosition() - robot.leftDriveBack.getCurrentPosition())) / 2;
+                double rightPulsesToDestination =
+                        (Math.abs(robot.rightDrive.getTargetPosition() - robot.rightDrive.getCurrentPosition()) +
+                                Math.abs(robot.rightDriveBack.getTargetPosition() - robot.rightDriveBack.getCurrentPosition())) / 2;
 
-                 robot.leftDrive.setTargetPosition(robot.leftDrive.getCurrentPosition() + average2Target);
-                 robot.rightDrive.setTargetPosition(robot.rightDrive.getCurrentPosition() + average2Target);
-                 robot.leftDriveBack.setTargetPosition(robot.leftDriveBack.getCurrentPosition() + average2Target);
-                 robot.rightDriveBack.setTargetPosition(robot.rightDriveBack.getCurrentPosition() + average2Target);
-                 }
-                 if (Math.abs(maxPower - minPower) > 0.08) {
+                if (Math.abs(leftPulsesToDestination - rightPulsesToDestination) > 11) {
+                    if (leftPulsesToDestination > rightPulsesToDestination) {
 
-                 robot.leftDrive.setPower(Math.abs(maxPower));
-                 robot.rightDrive.setPower(Math.abs(maxPower));
-                 robot.leftDriveBack.setPower(Math.abs(maxPower));
-                 robot.rightDriveBack.setPower(Math.abs(maxPower));
-                 }
+                        double newLeftTarget = robot.leftDrive.getCurrentPosition() +
+                                rightPulsesToDestination / leftPulsesToDestination * (robot.leftDrive.getTargetPosition() - robot.leftDrive.getCurrentPosition());
+                        robot.leftDrive.setTargetPosition((int) newLeftTarget);
 
-                 ************** END TO ADD LATER; ADJUST TARGETS IF WHEELS SLIPPED ********************/
+                        double newLeftBackTarget = robot.leftDriveBack.getCurrentPosition() +
+                                rightPulsesToDestination / leftPulsesToDestination * (robot.leftDriveBack.getTargetPosition() - robot.leftDriveBack.getCurrentPosition());
+                        robot.leftDriveBack.setTargetPosition((int) newLeftBackTarget);
 
+                    } else {
+                        double newRightTarget = robot.rightDrive.getCurrentPosition() +
+                                leftPulsesToDestination / rightPulsesToDestination * (robot.rightDrive.getTargetPosition() - robot.rightDrive.getCurrentPosition());
+                        robot.rightDrive.setTargetPosition((int) newRightTarget);
+
+                        double newRightBackTarget = robot.rightDriveBack.getCurrentPosition() +
+                                leftPulsesToDestination / rightPulsesToDestination * (robot.rightDriveBack.getTargetPosition() - robot.rightDriveBack.getCurrentPosition());
+                        robot.rightDriveBack.setTargetPosition((int) newRightBackTarget);
+                    }
+                }
             }
             // END GYRO TRACKING
             // CHECK IF WHEELS LOCKED
-            if (encodersTimer.milliseconds() - lastCheckIfLocked > 222) {
+            if ((encodersTimer.milliseconds() - lastCheckIfLocked > 222) && stillRunning) {
 
                 lastCheckIfLocked = encodersTimer.milliseconds();
 
@@ -445,7 +472,7 @@ public class Test_Encoders_V9 extends LinearOpMode {
 
                 // diff is bigger than 33%
                 // do not check for lock if moving slowly at the end
-                locked = (Math.abs(lMove - lbMove) > 222 || Math.abs(rMove - rbMove) > 222); // TODO
+                locked = (Math.abs(lMove - lbMove) > 444 || Math.abs(rMove - rbMove) > 444); // TODO
                 crrLockedLeft = Math.abs(lMove - lbMove);
                 crrLockedRight = Math.abs(rMove - rbMove);
                 telemetryUpdate();
@@ -609,10 +636,13 @@ public class Test_Encoders_V9 extends LinearOpMode {
         telemetry.addData("inchesToTarget", "%.2f inches", robot.inchesToTarget());
         telemetry.addData("crrPower", "%.2f power", crrPower);
         telemetry.addData("crrDrift", "%.2f drift", crrDrift);
-        telemetry.addData("is flat", "%.2f flat", crrIsFlat);
+        telemetry.addData("is flat", "%.2f flat", isFlat() ? 1.0 : 0.0);
         telemetry.addData("reduce ratio", "%.2f ratio", crrReduceRatio);
         telemetry.addData("locked left", "%.2f pulses", crrLockedLeft);
         telemetry.addData("locked right", "%.2f pulses", crrLockedRight);
+        telemetry.addData("locked diff", "%.2f pulses", (double) (crrLockedRight - crrLockedLeft));
+        telemetry.addData("incline X", "%.2f", (double) robot.imuGyro.getInclineX());
+        telemetry.addData("incline Y", "%.2f", (double) robot.imuGyro.getInclineY());
         telemetry.update();
     }
 }

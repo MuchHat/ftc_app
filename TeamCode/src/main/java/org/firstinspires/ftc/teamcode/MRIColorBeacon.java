@@ -76,7 +76,7 @@ public class MRIColorBeacon {
         colorBreader.write8(4, 7);
     }
 
-    public void pink() { rgb(255,105,180); }
+    public void pink() { rgb(255,105,110); }
 
     public void orange() {
         rgb(166,88,0);

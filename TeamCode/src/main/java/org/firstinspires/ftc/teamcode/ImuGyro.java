@@ -68,21 +68,12 @@ public class ImuGyro {
         return (AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.firstAngle) + 360)%360;
     }
 
-    double getX(){
-
-        position = imu.getPosition();
-        return position.x;
-    }
     double getInclineX(){
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return (AngleUnit.DEGREES.fromUnit(angles.angleUnit, angles.secondAngle) + 360)%360;
     }
-    double getY(){
 
-        position = imu.getPosition();
-        return position.y;
-    }
     double getInclineY(){
 
         angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
