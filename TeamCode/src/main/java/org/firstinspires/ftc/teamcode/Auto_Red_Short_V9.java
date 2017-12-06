@@ -45,7 +45,7 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
         telemetry.addData("DRIVER", ">>>  ADJUST LIFT >>> PRESS (A) >>>");
         telemetry.update();
 
-        while( !gamepad1.a ){
+        while (!gamepad1.a) {
             liftLoopAuto();
             waitMillis(11);
         }
@@ -76,9 +76,9 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
         }
     }
 
-    void liftLoopAuto(){
+    void liftLoopAuto() {
 
-        robot. liftControl = 0;
+        robot.liftControl = 0;
 
         if (Math.abs(gamepad2.right_stick_y) > 0.06) {
             robot.liftControl = -gamepad2.right_stick_y;

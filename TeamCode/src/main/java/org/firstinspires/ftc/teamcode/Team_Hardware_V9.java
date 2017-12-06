@@ -45,7 +45,7 @@ import static android.os.SystemClock.sleep;
 // ************************** ROBOT HW CLASS *****************************************************//
 
 
-public class  Team_Hardware_V9 {
+public class Team_Hardware_V9 {
 
     public DigitalChannel topSwitch = null;
 
@@ -845,13 +845,13 @@ public class  Team_Hardware_V9 {
 
                 if (driftRight * direction > 0) {
                     rPower = lPower / reduceRatio; // x0.07 is the minimum for 6 deg drift
-                    if( rPower > 1 ){
+                    if (rPower > 1) {
                         rPower = 1;
                         lPower = reduceRatio;
                     }
                 } else {
                     lPower = rPower / reduceRatio;
-                    if( lPower > 1 ){
+                    if (lPower > 1) {
                         lPower = 1;
                         rPower = reduceRatio;
                     }
@@ -871,16 +871,16 @@ public class  Team_Hardware_V9 {
                 colorBeacon.colorNumber(prevBeaconColor);
 
                 double maxPower = Math.max(
-                        Math.max(leftDrive.getPower(),leftDriveBack.getPower()),
-                        Math.max(rightDrive.getPower(),rightDriveBack.getPower()));
+                        Math.max(leftDrive.getPower(), leftDriveBack.getPower()),
+                        Math.max(rightDrive.getPower(), rightDriveBack.getPower()));
                 double minPower = Math.min(
-                        Math.min(leftDrive.getPower(),leftDriveBack.getPower()),
-                        Math.min(rightDrive.getPower(),rightDriveBack.getPower()));
+                        Math.min(leftDrive.getPower(), leftDriveBack.getPower()),
+                        Math.min(rightDrive.getPower(), rightDriveBack.getPower()));
 
                 maxPower = Range.clip(maxPower, 0, 1);
                 minPower = Range.clip(minPower, 0, 1);
 
-                if (maxPower - minPower > 0.03 || maxPower < 0.08 ) {
+                if (maxPower - minPower > 0.03 || maxPower < 0.08) {
 
                     maxPower = Range.clip(maxPower, 0.08, 1);
 
