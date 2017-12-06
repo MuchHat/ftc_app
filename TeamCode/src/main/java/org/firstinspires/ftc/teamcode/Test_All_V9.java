@@ -111,9 +111,6 @@ public class Test_All_V9 extends LinearOpMode {
             telemetry.addData("switch top", "%.2f", robot.topSwitch.getState() ? 1.0 : 0.0);
             telemetry.addData("switch bottom", "%.2f", robot.bottomSwitch.getState() ? 1.0 : 0.0);
 
-            //telemetry.addData("sonar front", "%.2f", (double)robot.frontSonar.readRawVoltage());
-            //telemetry.addData("sonar left", "%.2f", (double)robot.leftSonar.readRawVoltage());
-            //telemetry.addData("sonar right", "%.2f", (double)robot.rightSonar.readRawVoltage());
 
             telemetry.addData("crr heading", "%.2fdeg", (double) robot.imuGyro.getHeading());
 
@@ -165,19 +162,19 @@ public class Test_All_V9 extends LinearOpMode {
             }
             // control: A
             if (gamepad1.a) {
-                turn2Heading(180);
+                robot.turn2Heading(180);
             }
             // control: B
             if (gamepad1.b) {
-                turn2Heading(270);
+                robot.turn2Heading(270);
             }
             // control: X
             if (gamepad1.x) {
-                turn2Heading(90);
+                robot.turn2Heading(90);
             }
             // control: Y
             if (gamepad1.y) {
-                turn2Heading(0);
+                robot.turn2Heading(0);
             }
             if (robot.colorSensor.blue() > 0 && robot.colorSensor.blue() > robot.colorSensor.red()) {
                 robot.colorBeacon.blue();
@@ -187,111 +184,6 @@ public class Test_All_V9 extends LinearOpMode {
             }
         }
     }
-
-    void turn2Heading(double endHeading) {
-
-        double turnPower = 0.22;
-        double turnPowerMed = 0.15;
-        double turnPowerLow = 0.08;
-
-        double startHeading = robot.imuGyro.getHeading();
-
-        double diffAbs = Math.abs(endHeading - startHeading);
-        double diffAbs360 = 360 - diffAbs;
-
-        double direction = endHeading > startHeading ? 1.0 : -1.0;
-
-        if(diffAbs360 < diffAbs ){
-            direction *= -1;
-        }
-
-        if (startHeading >= 180 && direction > 0 && endHeading < 180) {
-            endHeading += 360;
-        }
-        if (startHeading <= 180 && direction < 0 && endHeading > 180) {
-            endHeading -= 360;
-        }
-
-        robot.leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        if (direction > 0) {
-            robot.leftDrive.setDirection(DcMotor.Direction.FORWARD);
-            robot.leftDriveBack.setDirection(DcMotor.Direction.FORWARD);
-            robot.rightDrive.setDirection(DcMotor.Direction.FORWARD);
-            robot.rightDriveBack.setDirection(DcMotor.Direction.FORWARD);
-        } else {
-            robot.leftDrive.setDirection(DcMotor.Direction.REVERSE);
-            robot.rightDrive.setDirection(DcMotor.Direction.REVERSE);
-            robot.leftDriveBack.setDirection(DcMotor.Direction.REVERSE);
-            robot.rightDriveBack.setDirection(DcMotor.Direction.REVERSE);
-        }
-
-        robot.leftDrive.setPower(0);
-        robot.rightDrive.setPower(0);
-        robot.leftDriveBack.setPower(0);
-        robot.rightDriveBack.setPower(0);
-
-        ElapsedTime turnTime = new ElapsedTime();
-        turnTime.reset();
-        double timeOut = 30;
-        double crrError = 0;
-
-        telemetry.addData("startHeading", "%.2f", startHeading);
-        telemetry.addData("endHeading", "%.2f", endHeading);
-        telemetry.addData("crrError", "%.2f", crrError);
-        telemetry.addData("time", "%.2f", (double)turnTime.seconds() );
-        telemetry.update();
-
-        sleep( 1111 );
-
-        while (true) {
-
-            double crrHeading = robot.imuGyro.getHeading();
-
-            if (startHeading >= 180 && direction > 0 && crrHeading < 180) {
-                crrHeading += 360;
-            }
-            if (startHeading <= 180 && direction < 0 && crrHeading > 180) {
-                crrHeading -= 360;
-            }
-            crrError = (endHeading - crrHeading) * direction;
-
-            boolean doContinue = (crrError > 0) &&
-                    (turnTime.seconds() < timeOut);
-            if (!doContinue) {
-                break;
-            }
-
-            double crrPower = turnPower;
-            if (crrError < 19) crrPower = turnPowerMed;
-            if (crrError < 11) crrPower = turnPowerLow;
-
-            robot.leftDrive.setPower(Math.abs(crrPower));
-            robot.rightDrive.setPower(Math.abs(crrPower));
-            robot.leftDriveBack.setPower(Math.abs(crrPower));
-            robot.rightDriveBack.setPower(Math.abs(crrPower));
-
-            telemetry.addData("startHeading", "%.2f", startHeading);
-            telemetry.addData("endHeading", "%.2f", endHeading);
-            telemetry.addData("crrHeading", "%.2f", crrHeading);
-            telemetry.addData("crrError", "%.2f", crrError);
-            telemetry.addData("time", "%.2f", (double)turnTime.seconds() );
-            telemetry.update();
-
-            sleep(111);
-        }
-        robot.leftDrive.setPower(0);
-        robot.rightDrive.setPower(0);
-        robot.leftDriveBack.setPower(0);
-        robot.rightDriveBack.setPower(0);
-
-        sleep( 3333 );
-
-    }
-
     // ************************** END OP *********************************************************//
 }
 

@@ -242,9 +242,9 @@ public class  Team_Hardware_V9 {
 
     void turn2Heading(double endHeading) {
 
-        double turnPower = 0.66;
-        double turnPowerMed = 0.33;
-        double turnPowerLow = 0.11;
+        double turnPower = 1;
+        double turnPowerMed = 0.22;
+        double turnPowerLow = 0.08;
         int prevBeaconColor = colorBeacon.getColorNumber();
 
         colorBeacon.teal();
@@ -319,7 +319,7 @@ public class  Team_Hardware_V9 {
             leftDriveBack.setPower(Math.abs(crrPower));
             rightDriveBack.setPower(Math.abs(crrPower));
 
-            sleep(111);
+            sleep(8);
         }
         leftDrive.setPower(0);
         rightDrive.setPower(0);
@@ -844,9 +844,17 @@ public class  Team_Hardware_V9 {
                 reduceRatio = Range.clip(reduceRatio, 0.44, 0.77);
 
                 if (driftRight * direction > 0) {
-                    lPower = rPower * reduceRatio; // x0.07 is the minimum for 6 deg drift
+                    rPower = lPower / reduceRatio; // x0.07 is the minimum for 6 deg drift
+                    if( rPower > 1 ){
+                        rPower = 1;
+                        lPower = reduceRatio;
+                    }
                 } else {
-                    rPower = lPower * reduceRatio;
+                    lPower = rPower / reduceRatio;
+                    if( lPower > 1 ){
+                        lPower = 1;
+                        rPower = reduceRatio;
+                    }
                 }
 
                 lPower = Range.clip(lPower, 0.08, 1);
