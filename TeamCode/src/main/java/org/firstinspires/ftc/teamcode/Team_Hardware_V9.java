@@ -115,8 +115,15 @@ public class Team_Hardware_V9 {
     boolean moveLinearGyroTrackingEnabled = false;
     double moveLinearGyroHeadingToTrack = -1.0;
 
+    Vu vu = null;
+
     public Team_Hardware_V9() {
 
+    }
+
+    public void initVu() {
+        vu = new Vu();
+        vu.init(hwMap);
     }
 
     public void init(HardwareMap ahwMap) {

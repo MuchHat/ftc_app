@@ -13,16 +13,14 @@ public class Run_Glyph {
     Team_Hardware_V9 robot = null;
     double secsLeftAtStart = 30;
     ElapsedTime timer = new ElapsedTime();
-    Vu vu = new Vu();
     HardwareMap hwMap = null;
     double speedIncrease = 1.8;
 
     //********************************* END VARIABLE ********************************************//
 
-    void init(Team_Hardware_V9 aRobot, HardwareMap aHwMap) {
-        hwMap = aHwMap;
+    void init(Team_Hardware_V9 aRobot) {
+
         robot = aRobot;
-        vu.init(hwMap);
     }
 
     boolean noTimeLeft(double secBuffer) {
@@ -68,8 +66,8 @@ public class Run_Glyph {
         }
         // DETERMINE WHAT COLUMN
         {
-            if (vu.targetSeen()) {
-                columnIndex = vu.lastTargetSeenNo;
+            if (robot.vu.targetSeen()) {
+                columnIndex = robot.vu.lastTargetSeenNo;
             } else {
                 columnIndex = 2; //go middle if no vuforia
             }
@@ -209,13 +207,24 @@ public class Run_Glyph {
         robot.stopRobot();
     }
 
+    void waitVu(double millis){
+
+        for( int i = 0; i < millis/10; i++){
+            if( robot.vu.targetSeen()){
+                robot.colorBeacon.green();
+                return;
+            }
+            waitMillis(11);
+        }
+    }
+
     private void waitMillis(double millis) {
 
         sleep((long) millis);
     }
 
     void showIfTargetSeen() {
-        if (vu.targetSeen()) {
+        if (robot.vu.targetSeen()) {
             robot.colorBeacon.green();
         } else {
             robot.showTeamColor();

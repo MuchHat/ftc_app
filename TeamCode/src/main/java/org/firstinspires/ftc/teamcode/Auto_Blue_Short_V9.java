@@ -30,13 +30,14 @@ public class Auto_Blue_Short_V9 extends LinearOpMode {
         telemetry.update();
 
         robot.init(hardwareMap);
+        robot.initVu();
 
         robot.blueTeam = true;
         robot.shortField = true;
         robot.showTeamColor();
 
         jewelRun.init(robot);
-        glyphRun.init(robot, hardwareMap);
+        glyphRun.init(robot);
 
         telemetry.addData("DRIVER", ">>>  ADJUST LIFT  >>> PRESS (A) >>>");
         telemetry.update();
