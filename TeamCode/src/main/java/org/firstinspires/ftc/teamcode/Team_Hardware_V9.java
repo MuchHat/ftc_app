@@ -604,12 +604,43 @@ public class Team_Hardware_V9 {
         moveArm(armPosZero[0], armPosZero[1]);
     }
 
+    boolean stopOnJewelFound = false;
+    boolean foundRed = false;
+    boolean foundBlue = false;
+
+    boolean foundJewel() {
+        foundRed = false;
+        foundBlue = false;
+
+        if (colorSensor.red() > colorSensor.blue()) {
+            foundRed = true;
+            foundBlue = false;
+            colorBeacon.red();
+            return true;
+        }
+        if (colorSensor.blue() > colorSensor.red()) {
+            foundBlue = true;
+            foundRed = false;
+            colorBeacon.blue();
+            return true;
+        }
+        return false;
+    }
+
+    void moveArmStopOnJewelFound(double newBase, double newElbow) {
+
+        stopOnJewelFound = true;
+        moveArm(newBase, newElbow);
+        stopOnJewelFound = false;
+    }
+
     void moveArm(double newBase, double newElbow) {
 
         double stepSize = 0.006;
         double stepTime = 8;
         double rampLow = 22;
         double rampMed = 44;
+        boolean found = false;
 
         double baseStart = baseControl;
         double elbowStart = elbowControl;
@@ -650,11 +681,21 @@ public class Team_Hardware_V9 {
             setServos();
 
             waitMillis(crrStepTime * stepSkip);
+
+            if (stopOnJewelFound) {
+                colorSensor.enableLed(true);
+                if (foundJewel()) {
+                    found = true;
+                    break;
+                }
+            }
         }
 
-        baseControl = newBase;
-        elbowControl = newElbow;
-        setServos();
+        if (!stopOnJewelFound || !found) {
+            baseControl = newBase;
+            elbowControl = newElbow;
+            setServos();
+        }
     }
 
     boolean isFlat() {

@@ -8,8 +8,6 @@ public class Run_Jewel {
 
     //********************************* VARIABLES *********************************************//
 
-    boolean foundBlue = false;
-    boolean foundRed = false;
     Team_Hardware_V9 robot = null;
     double speedIncrease = 1.5;
 
@@ -55,7 +53,7 @@ public class Run_Jewel {
             }
             if (a == 2) {
                 // move front
-                robot.moveInches(0.3, 0.11, 1);
+                robot.moveInches(0.6, 0.11, 1);
             }
 
             boolean found = false;
@@ -65,10 +63,10 @@ public class Run_Jewel {
                 double crrElbow = armFindJewelE[i];
 
                 robot.colorBeacon.purple();
-                robot.moveArm(crrBase, crrElbow);
-                waitMillis(111);
+                robot.moveArmStopOnJewelFound(crrBase, crrElbow);
+                waitMillis(33);
 
-                if (foundJewel()) {
+                if (robot.foundRed || robot.foundBlue) {
                     found = true;
                     break;
                 }
@@ -79,14 +77,14 @@ public class Run_Jewel {
             }
         }
         // KNOCK THE JEWEL IF A COLOR FOUND
-        if (foundBlue || foundRed) {
+        if (robot.foundRed || robot.foundBlue) {
 
             boolean knockFirst = true; //knock the ball in front or the other one
 
-            if (blue_ && foundBlue) knockFirst = false;
-            if (blue_ && !foundBlue) knockFirst = true;
-            if (red_ && foundRed) knockFirst = false;
-            if (red_ && !foundRed) knockFirst = true;
+            if (blue_ && robot.foundBlue) knockFirst = false;
+            if (blue_ && !robot.foundBlue) knockFirst = true;
+            if (red_ && robot.foundRed) knockFirst = false;
+            if (red_ && !robot.foundRed) knockFirst = true;
 
             //GO IN BETWEEN THE JEWELS
             if (knockFirst) robot.moveInches(2, 0.19, 2);
@@ -142,7 +140,7 @@ public class Run_Jewel {
             }
         }
         // IF COLOR NOT FOUND JUST MOVE TO EDGE
-        if (!foundBlue && !foundRed) {
+        if (!robot.foundBlue && !robot.foundRed) {
 
             if (red_) {
                 robot.moveInches(6.5 + 3, 0.33 * speedIncrease, 3);
@@ -169,22 +167,6 @@ public class Run_Jewel {
         robot.showTeamColor();
 
         // ROBOT SHOULD BE ON FLAT BACK AGAINST PLATFORM
-    }
-
-    boolean foundJewel() {
-        if (robot.colorSensor.red() > robot.colorSensor.blue()) {
-            foundRed = true;
-            foundBlue = false;
-            robot.colorBeacon.red();
-            return true;
-        }
-        if (robot.colorSensor.blue() > robot.colorSensor.red()) {
-            foundBlue = true;
-            foundRed = false;
-            robot.colorBeacon.blue();
-            return true;
-        }
-        return false;
     }
 
     void waitVu(double millis) {

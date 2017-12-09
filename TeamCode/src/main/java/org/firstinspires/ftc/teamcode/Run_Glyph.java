@@ -171,33 +171,27 @@ public class Run_Glyph {
         //PUT THE GLYPH IN
         {
             robot.moveLift(-6);
+            robot.openClaw();
+            waitMillis(222);
+            robot.closeClaw();
+            waitMillis(111);
+            robot.openClawWide();
             robot.moveInches(3, 0.33, 3);
-            robot.openClawZero();
-            robot.showTeamColor();
 
-            // IF TIME DO WIGGLE
+            // IF TIME TUCK IN
             if (timeLeft(2)) {
-                robot.moveInches(-2, 0.33, 3);
-                robot.closeClawRight();
-                waitMillis(333);
-                robot.closeClawLeft();
-                waitMillis(333);
-                robot.openClawZero();
-                robot.moveInches(4, 1, 3);
-                robot.moveInches(-2, 1, 3);
-            } else {
-                robot.moveInches(22, 0.66, 3);
-                robot.moveInches(-4, 1, 3);
-                robot.showTeamColor();
+                robot.openClaw();
+                robot.moveInches(-2, 0.66, 3);
+                robot.moveSideInches(-1, 0.66, 3);
+                robot.moveSideInches(2, 0.66, 3);
+                robot.moveSideInches(-1, 0.66, 3);
+                robot.moveInches(2, 0.66, 3);
             }
-            if (noTimeLeft(1)) return;
-
-            robot.moveInches(3.5, 0.33, 3);
-            robot.moveInches(-4, 0.33, 3);
-
+            robot.openClawZero();
+            robot.moveInches(-4, 0.66, 3);
         }
         // IF THERE IS TIME TURN AROUND
-        if (!noTimeLeft(3)) {
+        if (!noTimeLeft(2)) {
             if (red_ && short_) robot.turnTo9();
             if (blue_ && short_) robot.turnTo9();
             if (blue_ && long_) robot.turnTo12();
