@@ -186,8 +186,8 @@ public class Run_Glyph {
                 robot.moveSideInches(2, 0.66, 3);
                 robot.moveSideInches(-1, 0.66, 3);
                 robot.moveInches(2, 0.66, 3);
+                robot.openClawWide();
             }
-            robot.openClawZero();
             robot.moveInches(-4, 0.66, 3);
         }
         // IF THERE IS TIME TURN AROUND
