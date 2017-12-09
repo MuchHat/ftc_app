@@ -608,8 +608,8 @@ public class Team_Hardware_V9 {
 
         double stepSize = 0.006;
         double stepTime = 8;
-        double rampUp = 22;
-        double rampUp2 = 44;
+        double rampLow = 22;
+        double rampMed = 44;
 
         double baseStart = baseControl;
         double elbowStart = elbowControl;
@@ -622,25 +622,34 @@ public class Team_Hardware_V9 {
         double baseStepSize = (newBase - baseStart) / stepCount;
 
         int i = 0;
+        if (stepCount < rampMed) rampMed = stepCount;
+        if (stepCount < rampLow) rampLow = stepCount;
+
         while (i < (int) stepCount) {
 
             double crrStepTime = stepTime;
+            double stepSkip = 1;
 
-            if (i > rampUp2 / 2 && i < stepCount - rampUp2) {
-                i += 13;
-            } else if (i > rampUp / 5 && i < stepCount - rampUp) {
-                i += 3;
+            if (i < stepCount - rampLow) {
+                stepSkip = 1;
+            } else if (i < stepCount - rampMed) {
+                stepSkip = 7;
+                stepSkip = Range.clip(stepSkip, 1, stepCount - rampLow - i);
             } else {
-                i++;
+                stepSkip = 11;
+                stepSkip = Range.clip(stepSkip, 1, stepCount - rampMed - i);
             }
-            double baseCrr = baseStart + i * baseStepSize;
-            double elbowCrr = elbowStart + i * elbowStepSize;
+
+            double baseCrr = baseStart + stepSkip * baseStepSize;
+            double elbowCrr = elbowStart + stepSkip * elbowStepSize;
+
+            i += stepSkip;
 
             baseControl = baseCrr;
             elbowControl = elbowCrr;
             setServos();
 
-            waitMillis(crrStepTime);
+            waitMillis(crrStepTime * stepSkip);
         }
 
         baseControl = newBase;
