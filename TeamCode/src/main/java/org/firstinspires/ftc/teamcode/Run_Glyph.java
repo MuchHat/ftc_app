@@ -86,7 +86,7 @@ public class Run_Glyph {
 
             // if heading is off most likely is now too close to the glyph box
             // moving a bit to the left just in case
-            robot.moveSideInches(1,0.44,1);
+            robot.moveSideInches(1, 0.44, 1);
 
             // now back off against the platform to reset the position
             if (red_) robot.moveInches(-1, 0.33, 2);
@@ -105,9 +105,9 @@ public class Run_Glyph {
             if (blue_ && long_) robot.turnTo6();
             showIfTargetSeen();
 
-            double redShortEncoder[] = {22, 16.5, 10}; // L C R
-            double redLongEncoder[] = {21.5, 14, 6.5}; // L C R
-            double blueShortEncoder[] = {10, 16.5, 24}; // L C R
+            double redShortEncoder[] = {20, 14.5, 8}; // L C R
+            double redLongEncoder[] = {20.5, 14, 6.5}; // L C R
+            double blueShortEncoder[] = {8, 14.5, 20}; // L C R
             double blueLongEncoder[] = {6.5, 14, 20.5}; // L C R
             double moveDistance = 8;
 
@@ -172,21 +172,26 @@ public class Run_Glyph {
         }
         //PUT THE GLYPH IN
         {
-            robot.moveLift(-3);
-            robot.moveInches(4, 0.15, 3);
+            robot.moveLift(-6);
+            robot.moveInches(3, 0.33, 3);
             robot.openClawZero();
             robot.showTeamColor();
 
             // IF TIME DO WIGGLE
             if (timeLeft(2)) {
+                robot.moveInches(-2, 0.33, 3);
                 robot.closeClawRight();
                 waitMillis(333);
                 robot.closeClawLeft();
                 waitMillis(333);
                 robot.openClawZero();
+                robot.moveInches(4, 1, 3);
+                robot.moveInches(-2, 1, 3);
+            } else {
+                robot.moveInches(22, 0.66, 3);
+                robot.moveInches(-4, 1, 3);
+                robot.showTeamColor();
             }
-            robot.moveInches(-3, 0.33, 3);
-            robot.showTeamColor();
             if (noTimeLeft(1)) return;
 
             robot.moveInches(3.5, 0.33, 3);
