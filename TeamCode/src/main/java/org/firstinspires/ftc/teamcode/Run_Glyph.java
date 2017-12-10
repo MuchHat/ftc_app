@@ -165,8 +165,7 @@ public class Run_Glyph {
         {
             robot.moveLift(-8);
             if (long_) robot.moveInches(2, 0.44, 2);
-            robot.openClaw();
-            waitMillis(222);
+            robot.openClawWide();
             robot.moveInches(-2, 0.44, 2);
             if (long_) {
                 if (red_) robot.moveInches(5, 0.22, 3);
@@ -177,7 +176,6 @@ public class Run_Glyph {
 
             // IF TIME TUCK IN
             if (timeLeft(2)) {
-                robot.openClawWide();
                 robot.moveInches(-1.5, 0.66, 3);
                 robot.moveSideInches(-3, 0.66, 3);
                 robot.moveSideInches(6, 0.66, 3);
