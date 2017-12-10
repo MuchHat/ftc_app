@@ -97,14 +97,15 @@ public class Run_Jewel {
             //KNOCK AND MOVE AT THE EDGE
             if (knockFirst) {
                 if (red_) {
-                    robot.moveInches(-3, 0.33 * speedIncrease, 2);
+                    robot.moveInches(-3, 0.44, 2);
                     robot.moveArm(armExtendedB, armExtendedE);
+                    robot.moveInches(6.7, 0.66, 8); // should be in front of Vuforia
+                    robot.moveArmPosZero();
+                    waitVu(1111); // should be in front of Vuforia
                     robot.moveLinearStopOnFlatRampDownInches = 6;
                     robot.moveLinearGyroTrackingEnabled = true;
                     robot.moveLinearGyroHeadingToTrack = 0;
-                    robot.moveInchesStopOnFlat(12 + 5.7, 0.33 * speedIncrease, 8); // should be in front of Vuforia
-                    robot.moveArmPosZero();
-                    waitVu(1111); // should be in front of Vuforia
+                    robot.moveInchesStopOnFlat(12, 0.55, 8); // should be in front of Vuforia
                 }
                 if (blue_) {
                     robot.moveInches(-3, 0.33 * speedIncrease, 2);
@@ -115,7 +116,7 @@ public class Run_Jewel {
                     robot.moveLinearStopOnFlatRampDownInches = 6;
                     robot.moveLinearGyroTrackingEnabled = true;
                     robot.moveLinearGyroHeadingToTrack = 0;
-                    robot.moveInchesStopOnFlat(-12.25 - 6.7 - 4, 0.33 * speedIncrease, 6);
+                    robot.moveInchesStopOnFlat(-12.25 - 6.7 - 5, 0.33 * speedIncrease, 6);
                 }
             }
             if (!knockFirst) {
@@ -135,7 +136,7 @@ public class Run_Jewel {
                     robot.moveLinearStopOnFlatRampDownInches = 6;
                     robot.moveLinearGyroTrackingEnabled = true;
                     robot.moveLinearGyroHeadingToTrack = 0;
-                    robot.moveInchesStopOnFlat(-12 - 5.7 - 3, 0.33 * speedIncrease, 8);
+                    robot.moveInchesStopOnFlat(-12 - 5.7 - 5, 0.33 * speedIncrease, 8);
                 }
             }
         }
@@ -164,14 +165,13 @@ public class Run_Jewel {
 
         //TURN OFF LED
         robot.colorSensor.enableLed(false);
-        robot.showTeamColor();
 
         // ROBOT SHOULD BE ON FLAT BACK AGAINST PLATFORM
     }
 
     void waitVu(double millis) {
 
-        for (int i = 0; i < millis / 10; i++) {
+        for (int i = 0; i < (int)(millis / 6); i++) {
             if (robot.vu.targetSeen()) {
                 robot.colorBeacon.green();
                 return;

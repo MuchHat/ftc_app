@@ -201,7 +201,7 @@ public class Team_Hardware_V9 {
         // gyroDrift returns 0 to 1 for 0 to 90 degs
         // 11 deg is 0.12
 
-        if (Math.abs(gyroDrift(0)) > 0.09) {
+        if (Math.abs(gyroDrift(0)) > 0.04) {
             turn2Heading(0);
         }
     }
@@ -209,7 +209,7 @@ public class Team_Hardware_V9 {
     void adjustTurnTo6() {
         // correct only if heading is off > 11 deg
 
-        if (Math.abs(gyroDrift(180)) > 0.09) {
+        if (Math.abs(gyroDrift(180)) > 0.04) {
             turn2Heading(180);
         }
     }
@@ -217,7 +217,7 @@ public class Team_Hardware_V9 {
     void adjustTurnTo3() {
         // correct only if heading is off > 11 deg
 
-        if (Math.abs(gyroDrift(270)) > 0.09) {
+        if (Math.abs(gyroDrift(270)) > 0.04) {
             turn2Heading(270);
         }
     }
@@ -225,7 +225,7 @@ public class Team_Hardware_V9 {
     void adjustTurnTo9() {
         // correct only if heading is off > 11 deg
 
-        if (Math.abs(gyroDrift(90)) > 0.09) {
+        if (Math.abs(gyroDrift(90)) > 0.04) {
             turn2Heading(90);
         }
     }
@@ -637,9 +637,8 @@ public class Team_Hardware_V9 {
     void moveArm(double newBase, double newElbow) {
 
         double stepSize = 0.006;
-        double stepTime = 8;
         double rampLow = 22;
-        double rampMed = 44;
+        double rampMed = 66;
         boolean found = false;
 
         double baseStart = baseControl;
@@ -653,34 +652,33 @@ public class Team_Hardware_V9 {
         double baseStepSize = (newBase - baseStart) / stepCount;
 
         int i = 0;
-        if (stepCount < rampMed) rampMed = stepCount;
-        if (stepCount < rampLow) rampLow = stepCount;
 
         while (i < (int) stepCount) {
 
-            double crrStepTime = stepTime;
-            double stepSkip = 1;
+            double stepSkip = 2;
 
-            if (i < stepCount - rampLow) {
-                stepSkip = 1;
-            } else if (i < stepCount - rampMed) {
-                stepSkip = 7;
-                stepSkip = Range.clip(stepSkip, 1, stepCount - rampLow - i);
+            if ((double)i > stepCount - rampLow) {
+                stepSkip = 2;
+            } else if ((double)i > stepCount - rampMed) {
+                stepSkip = 6;
+                double stepMax = Range.clip((stepCount - rampLow) - i,1,111);
+                stepSkip = Range.clip(stepSkip, 1, stepMax);
             } else {
-                stepSkip = 11;
-                stepSkip = Range.clip(stepSkip, 1, stepCount - rampMed - i);
+                stepSkip = 111;
+                double stepMax = Range.clip((stepCount - rampLow) - i,1,111);
+                stepSkip = Range.clip(stepSkip, 1, stepMax);
             }
 
-            double baseCrr = baseStart + stepSkip * baseStepSize;
-            double elbowCrr = elbowStart + stepSkip * elbowStepSize;
-
             i += stepSkip;
+
+            double baseCrr = baseStart + i * baseStepSize;
+            double elbowCrr = elbowStart + i * elbowStepSize;
 
             baseControl = baseCrr;
             elbowControl = elbowCrr;
             setServos();
 
-            waitMillis(crrStepTime * stepSkip);
+            waitMillis(4 + stepSkip/2);
 
             if (stopOnJewelFound) {
                 colorSensor.enableLed(true);
@@ -1169,6 +1167,7 @@ public class Team_Hardware_V9 {
     }
 
     void waitMillis(double millis) {
+        millis = Range.clip(millis,1, 999);
         sleep((long) millis);
     }
 

@@ -75,38 +75,27 @@ public class Run_Glyph {
             if (noTimeLeft(1)) return;
         }
         // ROBOT SHOULD BE OFF THE PLATOFRM WITH THE BACK AGAINST PLATFORM
-        // IF THE HEADING IS OFF FIX THE HEADING AND BACK OFF AGAIN AGAINST THE PLATFORM
-        if (Math.abs(robot.gyroDrift(0)) > 0.08) {
-
-            int prevColor = robot.colorBeacon.getColorNumber();
-            robot.colorBeacon.pink();
-            robot.adjustTurnTo12();
-
-            // if heading is off most likely is now too close to the glyph box
-            // moving a bit to the left just in case
-            robot.moveSideInches(1, 0.44, 1);
-
-            // now back off against the platform to reset the position
-            if (red_) robot.moveInches(-1, 0.33, 2);
-            if (blue_) robot.moveInches(1, 0.33, 2);
-            robot.colorBeacon.colorNumber(prevColor);
-
-            if (noTimeLeft(1)) return;
+        {
+            if (!(blue_ && long_)) {
+                robot.adjustTurnTo12();
+            }
+            if (blue_ && short_) robot.moveSideInches(3, 0.22, 3);
         }
         // MOVE IN FRONT OF BOX USING ENCODERS
         {
             robot.moveLinearGyroTrackingEnabled = true;
             robot.moveLinearGyroHeadingToTrack = 0;
 
-            if (red_ && long_) robot.moveInches(1.5, 0.22 * speedIncrease, 4);
-            if (blue_ && long_) robot.moveInches(-2.5, 0.22 * speedIncrease, 4);
+            if (red_ && long_) robot.moveInches(-2, 0.66, 4);
+            if (blue_ && long_) robot.moveInches(-3, 0.66, 4);
             if (blue_ && long_) robot.turnTo6();
+            else robot.adjustTurnTo12();
             showIfTargetSeen();
 
-            double redShortEncoder[] = {20, 14.5, 8}; // L C R
-            double redLongEncoder[] = {20.5, 14, 6.5}; // L C R
+            double redShortEncoder[] = {19, 13.5, 7}; // L C R
+            double redLongEncoder[] = {5.5, 5.5 + 12, 5.5 + 12 + 8}; // L C R
             double blueShortEncoder[] = {8, 14.5, 20}; // L C R
-            double blueLongEncoder[] = {6.5, 14, 20.5}; // L C R
+            double blueLongEncoder[] = {19.5, 10.5 + 12, 10.5 + 12 + 8}; // L C R
             double moveDistance = 8;
 
             if (red_ && short_) moveDistance = redShortEncoder[columnIndex - 1];
@@ -138,7 +127,7 @@ public class Run_Glyph {
         // MOVE IN FRONT OF THE COLUMN USING SONAR
         {
             double redShortSonar[] = {0.74, 0.64, 0.55}; // L C R
-            double redLongSonar[] = {0.43, 0.34, 0.25}; // L C R
+            double redLongSonar[] = {0.25, 0.34, 0.44}; // L C R
             double blueShortSonar[] = {0.55, 0.64, 0.74}; // L C R
             double blueLongSonar[] = {0.25, 0.34, 0.43}; // L C R
             double columnSonarPos = 0;
@@ -164,7 +153,6 @@ public class Run_Glyph {
             if (red_ && long_) robot.turnTo12();
             if (blue_ && short_) robot.turnTo3();
             if (blue_ && long_) robot.turnTo6();
-            robot.showTeamColor();
 
             if (noTimeLeft(2)) return;
         }
@@ -176,35 +164,36 @@ public class Run_Glyph {
             robot.closeClaw();
             waitMillis(111);
             robot.openClawWide();
-            robot.moveInches(3, 0.33, 3);
+            if (long_) robot.moveInches(3, 0.33, 3);
+            else robot.moveInches(5, 0.33, 3);
 
             // IF TIME TUCK IN
             if (timeLeft(2)) {
                 robot.openClaw();
-                robot.moveInches(-2, 0.66, 3);
-                robot.moveSideInches(-1, 0.66, 3);
-                robot.moveSideInches(2, 0.66, 3);
-                robot.moveSideInches(-1, 0.66, 3);
-                robot.moveInches(2, 0.66, 3);
+                robot.moveInches(-1.5, 0.66, 3);
+                robot.moveSideInches(-2, 0.66, 3);
+                robot.moveSideInches(4, 0.66, 3);
+                robot.moveSideInches(-2.5, 0.66, 3);
+                robot.moveInches(3, 0.66, 3);
                 robot.openClawWide();
             }
             robot.moveInches(-4, 0.66, 3);
         }
         // IF THERE IS TIME TURN AROUND
         if (!noTimeLeft(2)) {
+            robot.moveLift(2);
             if (red_ && short_) robot.turnTo9();
             if (blue_ && short_) robot.turnTo9();
             if (blue_ && long_) robot.turnTo12();
             if (red_ && long_) robot.turnTo6();
         }
-        robot.showTeamColor();
         robot.stopRobot();
     }
 
-    void waitVu(double millis){
+    void waitVu(double millis) {
 
-        for( int i = 0; i < millis/10; i++){
-            if( robot.vu.targetSeen()){
+        for (int i = 0; i < (int) (millis / 10); i++) {
+            if (robot.vu.targetSeen()) {
                 robot.colorBeacon.green();
                 return;
             }
