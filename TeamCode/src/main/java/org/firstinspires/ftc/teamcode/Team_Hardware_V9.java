@@ -87,6 +87,7 @@ public class Team_Hardware_V9 {
     double clawZero[] = {1.00, 0.00};
     double clawOpen[] = {0.33, 0.64};
     double clawOpenAuto[] = {0.33, 0.64};
+    double clawOpenNarrow[] = {0.30, 0.54};
     double clawOpenWide[] = {0.46, 0.49};
     double clawCloseLeft[] = {0.22, 0.00};
     double clawCloseRight[] = {1.00, 0.85};
@@ -363,6 +364,11 @@ public class Team_Hardware_V9 {
     void openClawWide() {
         leftClawControl = clawOpenWide[0];
         rightClawControl = clawOpenWide[1];
+        setServos();
+    }
+    void openClawNarrow() {
+        leftClawControl = clawOpenNarrow[0];
+        rightClawControl = clawOpenNarrow[1];
         setServos();
     }
 

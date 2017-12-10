@@ -313,20 +313,25 @@ public class Manual_Red_V9 extends LinearOpMode {
                 robot.setDrivesByPower();
             }
 
-            // ********************************  control: CLAW OPEN  ****************************//
-            if (Math.abs(gamepad1.right_trigger) > 0.03) {
+            // ********************************  control: CLAW OPEN  ***************************//
+            if (Math.abs(gamepad1.left_trigger) > 0.05 &&
+                    Math.abs(gamepad1.left_trigger) < 0.5) {
 
-                robot.leftClawControl -= gamepad1.right_trigger * robot.servoDefaultSpeed * crrLoopTime;
-                robot.rightClawControl += gamepad1.right_trigger * robot.servoDefaultSpeed * crrLoopTime;
-                robot.setServos();
+                robot.openClawNarrow();
+            }
+            if (Math.abs(gamepad1.left_trigger) >= 0.5 &&
+                    Math.abs(gamepad1.left_trigger) < 0.95) {
+
+                robot.openClaw();
+            }
+            if (Math.abs(gamepad1.left_trigger) >= 0.95) {
+
+                robot.openClawWide();
             }
 
-            // ********************************  control: CLAW CLOSE  ***************************//
-            if (Math.abs(gamepad1.left_trigger) > 0.03) {
-
-                robot.leftClawControl += gamepad1.left_trigger * robot.servoDefaultSpeed * crrLoopTime;
-                robot.rightClawControl -= gamepad1.left_trigger * robot.servoDefaultSpeed * crrLoopTime;
-                robot.setServos();
+            // ********************************  control: CLAW CLOSE  ****************************//
+            if (Math.abs(gamepad1.right_trigger) > 0.05) {
+                robot.closeClaw();
             }
 
             // ********************************  control: CLAW PREDEF OPEN  **********************//
