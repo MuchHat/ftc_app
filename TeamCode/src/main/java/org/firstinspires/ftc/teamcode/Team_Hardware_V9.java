@@ -657,15 +657,15 @@ public class Team_Hardware_V9 {
 
             double stepSkip = 2;
 
-            if ((double)i > stepCount - rampLow) {
+            if ((double) i > stepCount - rampLow) {
                 stepSkip = 2;
-            } else if ((double)i > stepCount - rampMed) {
+            } else if ((double) i > stepCount - rampMed) {
                 stepSkip = 6;
-                double stepMax = Range.clip((stepCount - rampLow) - i,1,111);
+                double stepMax = Range.clip((stepCount - rampLow) - i, 1, 111);
                 stepSkip = Range.clip(stepSkip, 1, stepMax);
             } else {
                 stepSkip = 111;
-                double stepMax = Range.clip((stepCount - rampLow) - i,1,111);
+                double stepMax = Range.clip((stepCount - rampLow) - i, 1, 111);
                 stepSkip = Range.clip(stepSkip, 1, stepMax);
             }
 
@@ -678,7 +678,7 @@ public class Team_Hardware_V9 {
             elbowControl = elbowCrr;
             setServos();
 
-            waitMillis(4 + stepSkip/2);
+            waitMillis(4 + stepSkip / 2);
 
             if (stopOnJewelFound) {
                 colorSensor.enableLed(true);
@@ -835,14 +835,21 @@ public class Team_Hardware_V9 {
 
             // END WAIT LOOP AND CHECK IF MOTORS STOPPED
             // SLOW DOWN FOR STOP ON FLAT
+
+            double minPowerCrr = Math.min(
+                    leftDrive.getPower(),
+                    Math.min(rightDrive.getPower(),
+                            Math.min(leftDriveBack.getPower(), rightDriveBack.getPower())));
+
             if (moveLinearStopOnFlatEnabled &&
-                    (leftDrive.getPower() > 0.22 &&
-                            leftDrive.getPower() > 0.22 &&
-                            leftDriveBack.getPower() > 0.22 &&
-                            rightDriveBack.getPower() > 0.22) &&
+                    minPowerCrr > 0.22 &&
                     inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
 
-                double rampDownRatio = 0.66; // reduces by half in 1/2 sec
+                double rampDownRatio = 0.66; // reduces by 0.66 every 66 ms
+
+                if (minPowerCrr * rampDownRatio < 0.22) {
+                    rampDownRatio = 0.22 / minPowerCrr;
+                }
 
                 leftDrive.setPower(leftDrive.getPower() * rampDownRatio);
                 rightDrive.setPower(rightDrive.getPower() * rampDownRatio);
@@ -1167,7 +1174,7 @@ public class Team_Hardware_V9 {
     }
 
     void waitMillis(double millis) {
-        millis = Range.clip(millis,1, 999);
+        millis = Range.clip(millis, 1, 999);
         sleep((long) millis);
     }
 
