@@ -366,6 +366,7 @@ public class Team_Hardware_V9 {
         rightClawControl = clawOpenWide[1];
         setServos();
     }
+
     void openClawNarrow() {
         leftClawControl = clawOpenNarrow[0];
         rightClawControl = clawOpenNarrow[1];
