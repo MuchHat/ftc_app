@@ -116,7 +116,7 @@ public class Run_Jewel {
                     robot.moveLinearStopOnFlatRampDownInches = 8;
                     robot.moveLinearGyroTrackingEnabled = true;
                     robot.moveLinearGyroHeadingToTrack = 0;
-                    robot.moveInchesStopOnFlat(-12.25 - 6.7 - 5, 0.55, 8);
+                    robot.moveInchesStopOnFlat(-12.25 - 6.7 - 3, 0.55, 8);
                 }
             }
             if (!knockFirst) {

@@ -87,16 +87,18 @@ public class Run_Glyph {
             robot.moveLinearGyroHeadingToTrack = 0;
 
             if (red_ && long_) robot.moveInches(-2, 0.66, 4);
-            if (blue_ && long_) robot.moveInches(-3, 0.66, 4);
 
-            if (blue_ && long_) robot.turnTo6();
-            else robot.adjustTurnTo12();
+
+            if (blue_ && long_) {
+                robot.moveInches(-2, 1, 2);
+                robot.turnTo6();
+            } else robot.adjustTurnTo12();
             showIfTargetSeen();
 
             double redShortEncoder[] = {19, 13.5, 7}; // L C R
-            double redLongEncoder[] = {5.5, 5.5 + 12, 5.5 + 12 + 8}; // L C R
+            double redLongEncoder[] = {5.5 + 12 + 8, 5.5 + 11, 5.5}; // L C R
             double blueShortEncoder[] = {8, 14.5, 20}; // L C R
-            double blueLongEncoder[] = {19.5, 10.5 + 12, 10.5 + 12 + 8}; // L C R
+            double blueLongEncoder[] = {13.5, 10.5 + 11, 10.5 + 11 + 6.5}; // L C R
             double moveDistance = 8;
 
             if (red_ && short_) moveDistance = redShortEncoder[columnIndex - 1];
@@ -130,7 +132,7 @@ public class Run_Glyph {
         // MOVE IN FRONT OF THE COLUMN USING SONAR
         {
             double redShortSonar[] = {0.74, 0.64, 0.55}; // L C R
-            double redLongSonar[] = {0.25, 0.34, 0.44}; // L C R
+            double redLongSonar[] = {0.44, 0.34, 0.25}; // L C R
             double blueShortSonar[] = {0.55, 0.64, 0.74}; // L C R
             double blueLongSonar[] = {0.25, 0.34, 0.43}; // L C R
             double columnSonarPos = 0;
@@ -161,15 +163,17 @@ public class Run_Glyph {
         }
         //PUT THE GLYPH IN
         {
-            robot.moveLift(-6);
+            robot.moveLift(-8);
+            if (long_) robot.moveInches(2, 0.44, 2);
             robot.openClaw();
-            robot.moveInches( -2, 0.44, 1 );
-            robot.closeClaw();
-            waitMillis(111);
-            robot.openClawZero();
             waitMillis(222);
-            if (long_) robot.moveInches(5, 0.22, 3);
-            else robot.moveInches(6, 0.22, 3);
+            robot.moveInches(-2, 0.44, 2);
+            if (long_) {
+                if (red_) robot.moveInches(5, 0.22, 3);
+                else robot.moveInches(6, 0.22, 3);
+            } else {
+                robot.moveInches(6, 0.22, 3);
+            }
 
             // IF TIME TUCK IN
             if (timeLeft(2)) {
