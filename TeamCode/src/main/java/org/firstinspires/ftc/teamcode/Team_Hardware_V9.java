@@ -433,6 +433,7 @@ public class Team_Hardware_V9 {
     void moveSideInches(double distanceInches, double movePower, double timeOut) {
 
         double moveSidePower = 0.44;
+        moveLinearGyroTrackingEnabled = false;
         if (moveSidePower > 0) moveSidePower = movePower;
         moveLinear(distanceInches * 24.5, moveSidePower, timeOut, 1.0, -1.0, -1.0, 1.0);
     }
@@ -597,6 +598,8 @@ public class Team_Hardware_V9 {
         rightDistanceControlBack = distancePulses * dirBackRight;
 
         setDrivesByDistance(timeOut);
+
+        moveLinearGyroTrackingEnabled = false;
         stopRobot();
     }
 
@@ -653,12 +656,12 @@ public class Team_Hardware_V9 {
 
         int i = 0;
 
-        while (i < (int) stepCount) {
+        while (i < (int) stepCount - 3) {
 
-            double stepSkip = 2;
+            double stepSkip = 3;
 
             if ((double) i > stepCount - rampLow) {
-                stepSkip = 2;
+                stepSkip = 3;
             } else if ((double) i > stepCount - rampMed) {
                 stepSkip = 6;
                 double stepMax = Range.clip((stepCount - rampLow) - i, 1, 111);
@@ -678,7 +681,7 @@ public class Team_Hardware_V9 {
             elbowControl = elbowCrr;
             setServos();
 
-            waitMillis(4 + stepSkip / 2);
+            waitMillis(4 + stepSkip / 3);
 
             if (stopOnJewelFound) {
                 colorSensor.enableLed(true);
@@ -727,7 +730,7 @@ public class Team_Hardware_V9 {
         }
 
         // if small drift ignore
-        if (Math.abs(targetHeading - crrHeading) < 7) {
+        if (Math.abs(targetHeading - crrHeading) < 5) {
             return 0;
         }
 
@@ -833,6 +836,13 @@ public class Team_Hardware_V9 {
                 break;
             }
 
+            if (moveLinearStopOnFlatEnabled) {
+                if (inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
+                    if (isFlat()) colorBeacon.orange();
+                    else colorBeacon.white();
+                }
+            }
+
             // END WAIT LOOP AND CHECK IF MOTORS STOPPED
             // SLOW DOWN FOR STOP ON FLAT
 
@@ -856,8 +866,6 @@ public class Team_Hardware_V9 {
                 leftDriveBack.setPower(leftDriveBack.getPower() * rampDownRatio);
                 rightDriveBack.setPower(rightDriveBack.getPower() * rampDownRatio);
 
-                // WHITE MEANS SLOW DOWN FOR RAMP DOWN
-                colorBeacon.white();
             }
             // END SLOW DOWN
             // STOP ON FLAT
@@ -865,7 +873,7 @@ public class Team_Hardware_V9 {
                     isFlat() &&
                     inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
 
-                // WHITE BLINK MEANS STOPPED ON FLAT
+                // WHITE MEANS SLOW DOWN FOR RAMP DOWN
                 colorBeacon.white();
 
                 leftDrive.setPower(0);
@@ -879,6 +887,7 @@ public class Team_Hardware_V9 {
                 rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
                 stillRunning = false;
+                waitMillis(22);
 
                 break;
             }
@@ -902,8 +911,8 @@ public class Team_Hardware_V9 {
                 // reduce power on one side to compensate
                 // set to 0.88 for 11 deg drift
                 // set to 0.11 for 90 deg drift
-                double reduceRatio = 1 - 8 * Math.abs(driftRight); //CHANGE
-                reduceRatio = Range.clip(reduceRatio, 0.44, 0.77);
+                double reduceRatio = 1 - 6 * Math.abs(driftRight);
+                reduceRatio = Range.clip(reduceRatio, 0.33, 0.88);
 
                 if (driftRight * direction > 0) {
                     rPower = lPower / reduceRatio; // x0.07 is the minimum for 6 deg drift
@@ -1019,7 +1028,7 @@ public class Team_Hardware_V9 {
 
                     // YELLOW MEANS LOCKED UP
                     colorBeacon.yellow();
-                    beaconBlink(2); // takes care of wait too
+                    beaconBlink(1); // takes care of wait too
 
                     leftDrive.setPower(Math.abs(leftPowerControl));
                     rightDrive.setPower(Math.abs(rightPowerControl));

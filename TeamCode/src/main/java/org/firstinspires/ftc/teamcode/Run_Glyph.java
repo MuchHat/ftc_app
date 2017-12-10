@@ -29,7 +29,7 @@ public class Run_Glyph {
             return false;
         }
         robot.moveLift(-3);
-        robot.openClawWide();
+        robot.openClawZero();
         robot.stopRobot();
         return true;
     }
@@ -88,6 +88,7 @@ public class Run_Glyph {
 
             if (red_ && long_) robot.moveInches(-2, 0.66, 4);
             if (blue_ && long_) robot.moveInches(-3, 0.66, 4);
+
             if (blue_ && long_) robot.turnTo6();
             else robot.adjustTurnTo12();
             showIfTargetSeen();
@@ -103,13 +104,15 @@ public class Run_Glyph {
             if (blue_ && short_) moveDistance = blueShortEncoder[columnIndex - 1];
             if (blue_ && long_) moveDistance = blueLongEncoder[columnIndex - 1];
 
-            robot.moveLinearGyroTrackingEnabled = true;
-            robot.moveLinearGyroHeadingToTrack = 0;
+            if (short_) {
+                robot.moveLinearGyroTrackingEnabled = true;
+                robot.moveLinearGyroHeadingToTrack = 0;
+            }
 
-            if (red_ && short_) robot.moveInches(moveDistance, 0.44 * speedIncrease, 8);
-            if (red_ && long_) robot.moveSideInches(moveDistance, 0.44 * speedIncrease, 8);
-            if (blue_ && short_) robot.moveInches(-moveDistance, 0.44 * speedIncrease, 8);
-            if (blue_ && long_) robot.moveSideInches(-moveDistance, 0.44 * speedIncrease, 8);
+            if (red_ && short_) robot.moveInches(moveDistance, 0.44 * speedIncrease, 11);
+            if (red_ && long_) robot.moveSideInches(moveDistance, 0.44 * speedIncrease, 11);
+            if (blue_ && short_) robot.moveInches(-moveDistance, 0.44 * speedIncrease, 11);
+            if (blue_ && long_) robot.moveSideInches(-moveDistance, 0.44 * speedIncrease, 11);
             showIfTargetSeen();
 
             if (noTimeLeft(1)) return;
@@ -163,19 +166,19 @@ public class Run_Glyph {
             waitMillis(222);
             robot.closeClaw();
             waitMillis(111);
-            robot.openClawWide();
+            robot.openClawZero();
             if (long_) robot.moveInches(3, 0.33, 3);
             else robot.moveInches(5, 0.33, 3);
 
             // IF TIME TUCK IN
             if (timeLeft(2)) {
-                robot.openClaw();
-                robot.moveInches(-1.5, 0.66, 3);
-                robot.moveSideInches(-2, 0.66, 3);
-                robot.moveSideInches(4, 0.66, 3);
-                robot.moveSideInches(-2.5, 0.66, 3);
-                robot.moveInches(3, 0.66, 3);
                 robot.openClawWide();
+                robot.moveInches(-1.5, 0.66, 3);
+                robot.moveSideInches(-3, 0.66, 3);
+                robot.moveSideInches(6, 0.66, 3);
+                robot.moveSideInches(-4, 0.66, 3);
+                robot.moveInches(3, 0.66, 3);
+                robot.openClawZero();
             }
             robot.moveInches(-4, 0.66, 3);
         }
