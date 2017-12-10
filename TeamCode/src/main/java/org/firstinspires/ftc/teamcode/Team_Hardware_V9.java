@@ -836,20 +836,20 @@ public class Team_Hardware_V9 {
             // END WAIT LOOP AND CHECK IF MOTORS STOPPED
             // SLOW DOWN FOR STOP ON FLAT
             if (moveLinearStopOnFlatEnabled &&
-                    (leftDrive.getPower() > 0.11 ||
-                            leftDrive.getPower() > 0.11 ||
-                            leftDriveBack.getPower() > 0.11 ||
-                            rightDriveBack.getPower() > 0.11) &&
+                    (leftDrive.getPower() > 0.22 &&
+                            leftDrive.getPower() > 0.22 &&
+                            leftDriveBack.getPower() > 0.22 &&
+                            rightDriveBack.getPower() > 0.22) &&
                     inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
 
-                double rampDownRatio = 0.88; // reduces by half in 1/2 sec
+                double rampDownRatio = 0.66; // reduces by half in 1/2 sec
 
                 leftDrive.setPower(leftDrive.getPower() * rampDownRatio);
                 rightDrive.setPower(rightDrive.getPower() * rampDownRatio);
                 leftDriveBack.setPower(leftDriveBack.getPower() * rampDownRatio);
                 rightDriveBack.setPower(rightDriveBack.getPower() * rampDownRatio);
 
-                // WHITE FLASH MEANS SLOW DOWN FOR RAMP DOWN
+                // WHITE MEANS SLOW DOWN FOR RAMP DOWN
                 colorBeacon.white();
             }
             // END SLOW DOWN
