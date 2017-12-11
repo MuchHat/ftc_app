@@ -49,11 +49,11 @@ public class Run_Jewel {
 
             if (a == 1) {
                 // move back
-                robot.moveInches(-0.3, 0.11, 1);
+                robot.moveInches(-0.6, 0.11, 1);
             }
             if (a == 2) {
                 // move front
-                robot.moveInches(0.6, 0.11, 1);
+                robot.moveInches(1.2, 0.11, 1);
             }
 
             boolean found = false;

@@ -315,20 +315,19 @@ public class Manual_Red_V9 extends LinearOpMode {
 
             // ********************************  control: CLAW OPEN  ***************************//
             if (Math.abs(gamepad1.left_trigger) > 0.05 &&
-                    Math.abs(gamepad1.left_trigger) < 0.5) {
+                    Math.abs(gamepad1.left_trigger) < 0.66) {
 
                 robot.openClawNarrow();
             }
-            if (Math.abs(gamepad1.left_trigger) >= 0.5 &&
+            if (Math.abs(gamepad1.left_trigger) >= 0.66 &&
                     Math.abs(gamepad1.left_trigger) < 0.95) {
-
-                robot.openClaw();
-            }
-            if (Math.abs(gamepad1.left_trigger) >= 0.95) {
 
                 robot.openClawWide();
             }
+            if (Math.abs(gamepad1.left_trigger) >= 0.95) {
 
+                robot.openClawZero();
+            }
             // ********************************  control: CLAW CLOSE  ****************************//
             if (Math.abs(gamepad1.right_trigger) > 0.05) {
                 robot.closeClaw();
