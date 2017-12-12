@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 
 public class MRIColorBeacon {
 
+    public boolean blueTeam = true;
     HardwareMap hwMap = null;
     boolean modeWheelsLocked = false;
     boolean modeGyroCorrection = false;
@@ -95,40 +96,34 @@ public class MRIColorBeacon {
         rgb(88, 44, 0);
     }
 
-    void displayStatus() {
-        if (modeWheelsLocked) {
-
-
-        } else if (modeGyroCorrection) {
-
-
-        } else if (modeGyroTurn) {
-
-
-        } else if (modeSonarCorrection) {
-
-
-        } else if (modeStoppedOnFlat) {
-
-
-        } else if (modeSlowForStopOnFlat) {
-
-
-        } else if (modeVuforiaFound) {
-
-
-        } else if (modeJewellSearch) {
-
-
-        } else if (modeAuto) {
-
-
-        } else if (modeManual) {
-
-
-        }
+    void teamColor() {
+        if (blueTeam) blue();
+        else red();
     }
 
+    void displayStatus() {
+        if (modeWheelsLocked) {
+            yellow();
+        } else if (modeGyroCorrection) {
+            lightOrange();
+        } else if (modeGyroTurn) {
+            teal();
+        } else if (modeSonarCorrection) {
+            orange();
+        } else if (modeStoppedOnFlat) {
+            white();
+        } else if (modeSlowForStopOnFlat) {
+            white();
+        } else if (modeVuforiaFound) {
+            green();
+        } else if (modeJewellSearch) {
+            purple();
+        } else if (modeAuto) {
+            teamColor();
+        } else if (modeManual) {
+            teamColor();
+        }
+    }
 
     public void rgb(int red, int green, int blue) {
         colorBreader.write8(4, 8); //Custom Color Mode
