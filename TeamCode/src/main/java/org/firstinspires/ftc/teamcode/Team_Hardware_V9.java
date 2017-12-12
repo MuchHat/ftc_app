@@ -901,7 +901,7 @@ public class Team_Hardware_V9 {
                     rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
                     stillRunning = false;
-                    waitMillis(22);
+                    waitMillis(11);
                     break;
 
                 }
@@ -913,7 +913,9 @@ public class Team_Hardware_V9 {
             if (moveLinearGyroTrackingEnabled) {
                 driftRight = gyroDrift(moveLinearGyroHeadingToTrack);
             }
-            if (moveLinearGyroTrackingEnabled && driftRight != 0 && stillRunning) {
+            if (moveLinearGyroTrackingEnabled &&
+                    driftRight != 0 &&
+                    stillRunning) {
 
                 // PINK MEANS GYRO CORRECTING
                 colorBeacon.modeGyroCorrection = true;
@@ -952,7 +954,9 @@ public class Team_Hardware_V9 {
                 leftDriveBack.setPower(Math.abs(lPower));
                 rightDriveBack.setPower(Math.abs(rPower));
 
-            } else if (moveLinearGyroTrackingEnabled && driftRight == 0 && stillRunning) {
+            } else if (moveLinearGyroTrackingEnabled &&
+                    driftRight == 0 &&
+                    stillRunning) {
 
                 // DONE ADJUSTING
                 colorBeacon.modeGyroCorrection = false;
@@ -978,7 +982,8 @@ public class Team_Hardware_V9 {
                     rightDriveBack.setPower(Math.abs(maxPower));
                 }
             }
-            if (moveLinearGyroTrackingEnabled && stillRunning) {
+            if (moveLinearGyroTrackingEnabled &&
+                    stillRunning) {
 
                 // ADJUST TARGETS TOO
                 double leftPulsesToDestination =
@@ -1012,7 +1017,8 @@ public class Team_Hardware_V9 {
             }
             // END GYRO TRACKING
             // CHECK IF WHEELS LOCKED
-            if ((encodersTimer.milliseconds() - lastCheckIfLocked > 222) && stillRunning) {
+            if ((encodersTimer.milliseconds() - lastCheckIfLocked > 222) &&
+                    stillRunning) {
 
                 lastCheckIfLocked = encodersTimer.milliseconds();
 
