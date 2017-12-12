@@ -41,7 +41,8 @@ public class Run_Jewel {
         double armExtendedE = 0.65;
 
         //START ARM IN EXTENDED POSITION
-        robot.colorBeacon.purple();
+        robot.colorBeacon.modeJewellSearch = true;
+        robot.colorBeacon.displayStatus();
         robot.moveArm(armExtendedB, armExtendedE);
 
         //GO THRU POSITIONS TO FIND THE JEWEL
@@ -62,7 +63,6 @@ public class Run_Jewel {
                 double crrBase = armFindJewelB[i];
                 double crrElbow = armFindJewelE[i];
 
-                robot.colorBeacon.purple();
                 robot.moveArmStopOnJewelFound(crrBase, crrElbow);
                 waitMillis(33);
 
@@ -143,6 +143,11 @@ public class Run_Jewel {
         // IF COLOR NOT FOUND JUST MOVE TO EDGE
         if (!robot.foundBlue && !robot.foundRed) {
 
+            robot.colorBeacon.modeJewellSearch = true;
+            robot.colorBeacon.modeFoundBlue = false;
+            robot.colorBeacon.modeFoundRed = false;
+            robot.colorBeacon.displayStatus();
+
             if (red_) {
                 robot.moveInches(6.5 + 3, 0.33 * speedIncrease, 3);
                 robot.moveArmPosZero(); // should be in front of Vuforia
@@ -165,6 +170,8 @@ public class Run_Jewel {
 
         //TURN OFF LED
         robot.colorSensor.enableLed(false);
+        robot.colorBeacon.modeJewellSearch = false;
+        robot.colorBeacon.displayStatus();
 
         // ROBOT SHOULD BE ON FLAT BACK AGAINST PLATFORM
     }
@@ -173,7 +180,8 @@ public class Run_Jewel {
 
         for (int i = 0; i < (int)(millis / 6); i++) {
             if (robot.vu.targetSeen()) {
-                robot.colorBeacon.green();
+                robot.colorBeacon.modeVuforiaFound = true;
+                robot.colorBeacon.displayStatus();
                 return;
             }
             waitMillis(11);

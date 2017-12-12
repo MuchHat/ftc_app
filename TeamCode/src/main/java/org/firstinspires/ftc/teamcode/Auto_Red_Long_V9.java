@@ -34,7 +34,8 @@ public class Auto_Red_Long_V9 extends LinearOpMode {
 
         robot.blueTeam = false;
         robot.shortField = false;
-        robot.showTeamColor();
+        robot.colorBeacon.blueTeam = false;
+        robot.colorBeacon.displayStatus();
 
         jewelRun.init(robot);
         glyphRun.init(robot);
@@ -62,7 +63,7 @@ public class Auto_Red_Long_V9 extends LinearOpMode {
 
             jewelRun.run();
 
-            robot.showTeamColor();
+            robot.colorBeacon.displayStatus();
 
             glyphRun.run(30 - totalRuntime.seconds());
 

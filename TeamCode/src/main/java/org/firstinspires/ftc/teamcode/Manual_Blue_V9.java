@@ -38,7 +38,8 @@ public class Manual_Blue_V9 extends LinearOpMode {
 
         controlRuntime.reset();
         robot.blueTeam = true;
-        robot.showTeamColor();
+        robot.colorBeacon.blueTeam = true;
+        robot.colorBeacon.displayStatus();
 
         robot.moveLift(-2);
         waitMillis(66);

@@ -21,6 +21,7 @@ public class MRIColorBeacon {
 
     public boolean blueTeam = true;
     HardwareMap hwMap = null;
+
     boolean modeWheelsLocked = false;
     boolean modeGyroCorrection = false;
     boolean modeGyroTurn = false;
@@ -31,6 +32,9 @@ public class MRIColorBeacon {
     boolean modeJewellSearch = false;
     boolean modeAuto = false;
     boolean modeManual = false;
+    boolean modeFoundRed = false;
+    boolean modeFoundBlue = false;
+
     private byte[] colorBcache;
     private I2cDevice colorB;
     private I2cDeviceSynch colorBreader;
@@ -56,47 +60,45 @@ public class MRIColorBeacon {
         colorBreader.write8(4, 0);
     }
 
-    public void red() {
+    private void red() {
         colorBreader.write8(4, 1);
     }
 
-    public void green() {
+    private void green() {
         colorBreader.write8(4, 2);
     }
 
-    public void yellow() {
+    private void yellow() {
         colorBreader.write8(4, 3);
     }
 
-    public void blue() {
+    private void blue() {
         colorBreader.write8(4, 4);
     }
 
-    public void purple() {
+    private void purple() {
         colorBreader.write8(4, 5);
     }
 
-    public void teal() {
+    private void teal() {
         colorBreader.write8(4, 6);
     }
 
-    public void white() {
+    private void white() {
         colorBreader.write8(4, 7);
     }
 
-    public void pink() {
-        rgb(255, 105, 110);
-    }
+    private void pink() { rgb(255, 105, 110); }
 
-    public void orange() {
+    private void orange() {
         rgb(166, 88, 0);
     }
 
-    public void lightOrange() {
+    private void lightOrange() {
         rgb(88, 44, 0);
     }
 
-    void teamColor() {
+    private void teamColor() {
         if (blueTeam) blue();
         else red();
     }
@@ -109,13 +111,17 @@ public class MRIColorBeacon {
         } else if (modeGyroTurn) {
             teal();
         } else if (modeSonarCorrection) {
-            orange();
+            pink();
         } else if (modeStoppedOnFlat) {
             white();
         } else if (modeSlowForStopOnFlat) {
             white();
         } else if (modeVuforiaFound) {
             green();
+        } else if (modeFoundBlue) {
+            blue();
+        } else if (modeFoundRed) {
+            red();
         } else if (modeJewellSearch) {
             purple();
         } else if (modeAuto) {
@@ -123,6 +129,7 @@ public class MRIColorBeacon {
         } else if (modeManual) {
             teamColor();
         }
+        teamColor();
     }
 
     public void rgb(int red, int green, int blue) {

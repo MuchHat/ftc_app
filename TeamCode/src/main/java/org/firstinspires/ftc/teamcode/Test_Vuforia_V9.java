@@ -66,7 +66,8 @@ public class Test_Vuforia_V9 extends LinearOpMode {
     public void runOpMode() {
 
         robot.init(hardwareMap);
-        robot.colorBeacon.yellow();
+        robot.colorBeacon.modeJewellSearch = true;
+        robot.colorBeacon.displayStatus();
 
         telemetry.log().add("calibrating gyro, do not move");
         telemetry.update();
@@ -108,7 +109,8 @@ public class Test_Vuforia_V9 extends LinearOpMode {
                  * loop until this condition occurs, then move on to act accordingly depending
                  * on which VuMark was visible. */
                 telemetry.addData("vuMark", "%s visible", vuMark);
-                robot.colorBeacon.green();
+                robot.colorBeacon.modeVuforiaFound = true;
+                robot.colorBeacon.displayStatus();
 
                 /* For fun, we also exhibit the navigational pose */
                 OpenGLMatrix pose = ((VuforiaTrackableDefaultListener) relicTemplate.getListener()).getPose();
@@ -139,7 +141,8 @@ public class Test_Vuforia_V9 extends LinearOpMode {
                 }
             } else {
                 telemetry.addData("vuMark", "not visible");
-                robot.colorBeacon.yellow();
+                robot.colorBeacon.modeVuforiaFound = false;
+                robot.colorBeacon.displayStatus();
             }
             telemetry.update();
         }

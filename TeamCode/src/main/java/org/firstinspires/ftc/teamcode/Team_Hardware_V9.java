@@ -195,6 +195,9 @@ public class Team_Hardware_V9 {
         setDrivesByPower();
         setServos();
         imuGyro.init(hwMap);
+
+        colorBeacon.blueTeam = blueTeam;
+        colorBeacon.displayStatus();
     }
 
     void adjustTurnTo12() {
@@ -253,9 +256,10 @@ public class Team_Hardware_V9 {
         double turnPower = 1;
         double turnPowerMed = 0.22;
         double turnPowerLow = 0.08;
-        int prevBeaconColor = colorBeacon.getColorNumber();
 
-        colorBeacon.teal();
+        colorBeacon.modeGyroTurn = true;
+        colorBeacon.displayStatus();
+
         double startHeading = imuGyro.getHeading();
 
         double diffAbs = Math.abs(endHeading - startHeading);
@@ -334,7 +338,8 @@ public class Team_Hardware_V9 {
         leftDriveBack.setPower(0);
         rightDriveBack.setPower(0);
 
-        colorBeacon.colorNumber(prevBeaconColor);
+        colorBeacon.modeGyroTurn = false;
+        colorBeacon.displayStatus();
     }
 
     void openClawZero() {
@@ -462,11 +467,10 @@ public class Team_Hardware_V9 {
     void moveBySonar(double endPos, double movePower, double timeOutSec, Team_Hardware_V9.SonarPosition sonarPosition) {
 
         ElapsedTime moveTimer = new ElapsedTime();
-        double minPower = 0.11; //TODO
-        double rampDown = 0.08; //TODO
+        double minPower = 0.11;
+        double rampDown = 0.08;
         double crrPower = movePower;
         double crrPos = 0;
-        int prevBeaconColor = colorBeacon.getColorNumber();
 
         // perform the first reading, try few times to get a good reading
         for (int attempts = 0; attempts < 11; attempts++) {
@@ -501,7 +505,8 @@ public class Team_Hardware_V9 {
             rightDistanceControlBack = 0;
 
             // ORANGE MEANS MOVING BY SONAR
-            colorBeacon.orange();
+            colorBeacon.modeSonarCorrection = true;
+            colorBeacon.displayStatus();
 
             crrPower = movePower;
             if (crrError * direction < rampDown) {
@@ -553,7 +558,8 @@ public class Team_Hardware_V9 {
             crrError = endPos - crrPos;
         }
         stopRobot();
-        colorBeacon.colorNumber(prevBeaconColor);
+        colorBeacon.modeSonarCorrection = false;
+        colorBeacon.displayStatus();
     }
 
     // ************************** HARDWARE SET FUNCTIONS *****************************************//
@@ -625,13 +631,15 @@ public class Team_Hardware_V9 {
         if (colorSensor.red() > colorSensor.blue()) {
             foundRed = true;
             foundBlue = false;
-            colorBeacon.red();
+            colorBeacon.modeFoundRed = true;
+            colorBeacon.displayStatus();
             return true;
         }
         if (colorSensor.blue() > colorSensor.red()) {
             foundBlue = true;
             foundRed = false;
-            colorBeacon.blue();
+            colorBeacon.modeFoundBlue = true;
+            colorBeacon.displayStatus();
             return true;
         }
         return false;
@@ -752,7 +760,6 @@ public class Team_Hardware_V9 {
     void setDrivesByDistance(double timeOut) {
 
         ElapsedTime encodersTimer = new ElapsedTime();
-        int prevBeaconColor = colorBeacon.getColorNumber();
         double lastCheckIfLocked = 0;
 
         if (moveLinearGyroTrackingEnabled) {
@@ -845,8 +852,14 @@ public class Team_Hardware_V9 {
 
             if (moveLinearStopOnFlatEnabled) {
                 if (inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
-                    if (isFlat()) colorBeacon.orange();
-                    else colorBeacon.white();
+                    if (isFlat()){
+                        colorBeacon.modeStoppedOnFlat = true;
+                        colorBeacon.displayStatus();
+                    }
+                }
+                else if(inchesToTarget() < moveLinearStopOnFlatRampDownInches + 4){
+                    colorBeacon.modeSlowForStopOnFlat = true;
+                    colorBeacon.displayStatus();
                 }
             }
 
@@ -860,7 +873,7 @@ public class Team_Hardware_V9 {
 
             if (moveLinearStopOnFlatEnabled &&
                     minPowerCrr > 0.22 &&
-                    inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
+                    inchesToTarget() < moveLinearStopOnFlatRampDownInches + 4) {
 
                 double rampDownRatio = 0.66; // reduces by 0.66 every 66 ms
 
@@ -881,7 +894,8 @@ public class Team_Hardware_V9 {
                     inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
 
                 // WHITE MEANS SLOW DOWN FOR RAMP DOWN
-                colorBeacon.white();
+                colorBeacon.modeStoppedOnFlat = true;
+                colorBeacon.displayStatus();
 
                 leftDrive.setPower(0);
                 rightDrive.setPower(0);
@@ -908,7 +922,8 @@ public class Team_Hardware_V9 {
             if (moveLinearGyroTrackingEnabled && driftRight != 0 && stillRunning) {
 
                 // PINK MEANS GYRO CORRECTING
-                colorBeacon.pink();
+                colorBeacon.modeGyroCorrection = true;
+                colorBeacon.displayStatus();
 
                 double lPower = (leftDrive.getPower() + leftDriveBack.getPower()) / 2;
                 double rPower = (rightDriveBack.getPower() + rightDriveBack.getPower()) / 2;
@@ -946,7 +961,8 @@ public class Team_Hardware_V9 {
             } else if (moveLinearGyroTrackingEnabled && driftRight == 0 && stillRunning) {
 
                 // DONE ADJUSTING
-                colorBeacon.colorNumber(prevBeaconColor);
+                colorBeacon.modeGyroCorrection = false;
+                colorBeacon.displayStatus();
 
                 double maxPower = Math.max(
                         Math.max(leftDrive.getPower(), leftDriveBack.getPower()),
@@ -1034,7 +1050,8 @@ public class Team_Hardware_V9 {
                     rightDriveBack.setPower(0);
 
                     // YELLOW MEANS LOCKED UP
-                    colorBeacon.yellow();
+                    colorBeacon.modeWheelsLocked = true;
+                    colorBeacon.displayStatus();
                     beaconBlink(1); // takes care of wait too
 
                     leftDrive.setPower(Math.abs(leftPowerControl));
@@ -1043,7 +1060,8 @@ public class Team_Hardware_V9 {
                     rightDriveBack.setPower(Math.abs(rightPowerControlBack));
                 }
                 if (!locked) {
-                    colorBeacon.colorNumber(prevBeaconColor);
+                    colorBeacon.modeWheelsLocked = false;
+                    colorBeacon.displayStatus();
                 }
             }
             //END CHECK IF LOCKED
@@ -1063,11 +1081,14 @@ public class Team_Hardware_V9 {
         if (moveLinearGyroTrackingEnabled) {
             moveLinearGyroTrackingEnabled = false;
             moveLinearGyroHeadingToTrack = -1.0;
-            colorBeacon.colorNumber(prevBeaconColor);
+            colorBeacon.modeGyroCorrection = false;
+            colorBeacon.displayStatus();
         }
         if (moveLinearStopOnFlatEnabled) {
             moveLinearStopOnFlatEnabled = false;
-            colorBeacon.colorNumber(prevBeaconColor);
+            colorBeacon.modeStoppedOnFlat = false;
+            colorBeacon.modeSlowForStopOnFlat = false;
+            colorBeacon.displayStatus();
         }
     }
 
@@ -1180,13 +1201,6 @@ public class Team_Hardware_V9 {
             waitMillis(33);
             colorBeacon.colorNumber(color);
         }
-    }
-
-    void showTeamColor() {
-        if (blueTeam)
-            colorBeacon.blue();
-        else
-            colorBeacon.red();
     }
 
     void waitMillis(double millis) {

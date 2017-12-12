@@ -52,7 +52,9 @@ public class Test_Vu_V9 extends LinearOpMode {
     public void runOpMode() {
 
         robot.init(hardwareMap);
-        robot.colorBeacon.yellow();
+        robot.colorBeacon.modeVuforiaFound = false;
+        robot.colorBeacon.modeJewellSearch = true;
+        robot.colorBeacon.displayStatus();
 
         telemetry.log().add("calibrating gyro, do not move");
         telemetry.update();
@@ -83,10 +85,10 @@ public class Test_Vu_V9 extends LinearOpMode {
             telemetry.addData("vuMark", "target {%.2f %.2f}", vu.getX(), vu.getY());
 
             if (vu.targetSeen()) {
-                if( vu.targetVisible() ) robot.colorBeacon.green();
-                else robot.colorBeacon.teal();
+                robot.colorBeacon.modeVuforiaFound = vu.targetVisible();
             } else {
-                robot.colorBeacon.yellow();
+                robot.colorBeacon.modeVuforiaFound = true;
+                robot.colorBeacon.displayStatus();
             }
             telemetry.update();
         }

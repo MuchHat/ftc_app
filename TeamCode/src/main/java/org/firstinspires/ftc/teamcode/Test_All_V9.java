@@ -177,10 +177,14 @@ public class Test_All_V9 extends LinearOpMode {
                 robot.turn2Heading(0);
             }
             if (robot.colorSensor.blue() > 0 && robot.colorSensor.blue() > robot.colorSensor.red()) {
-                robot.colorBeacon.blue();
+                robot.colorBeacon.modeFoundBlue = true;
+                robot.colorBeacon.modeFoundRed = false;
+                robot.colorBeacon.displayStatus();
             }
             if (robot.colorSensor.red() > 0 && robot.colorSensor.red() > robot.colorSensor.blue()) {
-                robot.colorBeacon.red();
+                robot.colorBeacon.modeFoundBlue = false;
+                robot.colorBeacon.modeFoundRed = true;
+                robot.colorBeacon.displayStatus();
             }
         }
     }

@@ -51,6 +51,8 @@ public class Run_Glyph {
         boolean short_ = robot.shortField;
         boolean long_ = !robot.shortField;
 
+        robot.colorBeacon.displayStatus();
+
         // INCREASE SPEED ONLY IF NEEDED, HIGH SPEED MAKES IT LESS ROBUST
         {
             if (red_ && short_) speedIncrease = 2.2;
@@ -194,13 +196,15 @@ public class Run_Glyph {
             if (red_ && long_) robot.turnTo6();
         }
         robot.stopRobot();
+        robot.colorBeacon.displayStatus();
     }
 
     void waitVu(double millis) {
 
         for (int i = 0; i < (int) (millis / 10); i++) {
             if (robot.vu.targetSeen()) {
-                robot.colorBeacon.green();
+                robot.colorBeacon.modeVuforiaFound = true;
+                robot.colorBeacon.displayStatus();
                 return;
             }
             waitMillis(11);
@@ -214,9 +218,11 @@ public class Run_Glyph {
 
     void showIfTargetSeen() {
         if (robot.vu.targetSeen()) {
-            robot.colorBeacon.green();
+            robot.colorBeacon.modeVuforiaFound = true;
+            robot.colorBeacon.displayStatus();
         } else {
-            robot.showTeamColor();
+            robot.colorBeacon.modeVuforiaFound = false;
+            robot.colorBeacon.displayStatus();
         }
     }
 }
