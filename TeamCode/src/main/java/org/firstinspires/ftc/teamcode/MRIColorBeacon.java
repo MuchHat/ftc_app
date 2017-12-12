@@ -11,21 +11,28 @@ Support is available by emailing support@modernroboticsinc.com
 
 package org.firstinspires.ftc.teamcode;
 
-        import com.qualcomm.robotcore.hardware.HardwareMap;
-        import com.qualcomm.robotcore.hardware.I2cAddr;
-        import com.qualcomm.robotcore.hardware.I2cDevice;
-        import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
-        import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.I2cAddr;
+import com.qualcomm.robotcore.hardware.I2cDevice;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
+import com.qualcomm.robotcore.hardware.I2cDeviceSynchImpl;
 
 public class MRIColorBeacon {
 
+    HardwareMap hwMap = null;
+    boolean modeWheelsLocked = false;
+    boolean modeGyroCorrection = false;
+    boolean modeGyroTurn = false;
+    boolean modeSonarCorrection = false;
+    boolean modeStoppedOnFlat = false;
+    boolean modeSlowForStopOnFlat = false;
+    boolean modeVuforiaFound = false;
+    boolean modeJewellSearch = false;
+    boolean modeAuto = false;
+    boolean modeManual = false;
     private byte[] colorBcache;
-
     private I2cDevice colorB;
     private I2cDeviceSynch colorBreader;
-
-    HardwareMap hwMap = null;
-
 
     public MRIColorBeacon() {
 
@@ -76,15 +83,52 @@ public class MRIColorBeacon {
         colorBreader.write8(4, 7);
     }
 
-    public void pink() { rgb(255,105,110); }
+    public void pink() {
+        rgb(255, 105, 110);
+    }
 
     public void orange() {
-        rgb(166,88,0);
+        rgb(166, 88, 0);
     }
 
     public void lightOrange() {
-        rgb(88,44,0);
+        rgb(88, 44, 0);
     }
+
+    void displayStatus() {
+        if (modeWheelsLocked) {
+
+
+        } else if (modeGyroCorrection) {
+
+
+        } else if (modeGyroTurn) {
+
+
+        } else if (modeSonarCorrection) {
+
+
+        } else if (modeStoppedOnFlat) {
+
+
+        } else if (modeSlowForStopOnFlat) {
+
+
+        } else if (modeVuforiaFound) {
+
+
+        } else if (modeJewellSearch) {
+
+
+        } else if (modeAuto) {
+
+
+        } else if (modeManual) {
+
+
+        }
+    }
+
 
     public void rgb(int red, int green, int blue) {
         colorBreader.write8(4, 8); //Custom Color Mode
@@ -93,7 +137,7 @@ public class MRIColorBeacon {
         colorBreader.write8(7, blue);
     }
 
-    public int getColorNumber(){
+    public int getColorNumber() {
         colorBcache = colorBreader.read(0x04, 4);
 
         return colorBcache[0];
