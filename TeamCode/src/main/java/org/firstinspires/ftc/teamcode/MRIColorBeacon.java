@@ -85,7 +85,6 @@ public class MRIColorBeacon {
     }
 
     private void lightTeal() {
-
         rgb(0, 66, 66);
     }
 
