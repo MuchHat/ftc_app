@@ -81,21 +81,24 @@ public class MRIColorBeacon {
     }
 
     private void teal() {
-        colorBreader.write8(4, 6);
+        rgb(0, 222, 222);
+    }
+
+    private void lightTeal() {
+
+        rgb(0, 66, 66);
     }
 
     private void white() {
-        colorBreader.write8(4, 7);
+        rgb(222, 222, 222);
     }
 
-    private void pink() { rgb(255, 105, 110); }
-
-    private void orange() {
-        rgb(166, 88, 0);
+    private void gray() {
+        rgb(66, 66, 66);
     }
 
-    private void lightOrange() {
-        rgb(88, 44, 0);
+    private void pink() {
+        rgb(222, 188, 222);
     }
 
     private void teamColor() {
@@ -107,13 +110,13 @@ public class MRIColorBeacon {
         if (modeWheelsLocked) {
             yellow();
         } else if (modeGyroCorrection) {
-            lightOrange();
+            lightTeal();
         } else if (modeGyroTurn) {
             teal();
         } else if (modeSonarCorrection) {
             pink();
         } else if (modeStoppedOnFlat) {
-            white();
+            gray();
         } else if (modeSlowForStopOnFlat) {
             white();
         } else if (modeVuforiaFound) {
