@@ -497,7 +497,8 @@ public class Team_Hardware_V9 {
         double direction = crrError > 0 ? 1.0 : -1.0;
         moveTimer.reset();
 
-        while (moveTimer.seconds() < timeOutSec && crrError * direction > 0.01) {
+        while (moveTimer.seconds() < timeOutSec &&
+                crrError * direction > 0.01) {
 
             leftDistanceControl = 0;
             rightDistanceControl = 0;
@@ -849,68 +850,61 @@ public class Team_Hardware_V9 {
 
                 break;
             }
-
-            if (moveLinearStopOnFlatEnabled) {
-                if (inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
-                    if (isFlat()){
-                        colorBeacon.modeStoppedOnFlat = true;
-                        colorBeacon.displayStatus();
-                    }
-                }
-                else if(inchesToTarget() < moveLinearStopOnFlatRampDownInches + 4){
-                    colorBeacon.modeSlowForStopOnFlat = true;
-                    colorBeacon.displayStatus();
-                }
-            }
-
             // END WAIT LOOP AND CHECK IF MOTORS STOPPED
             // SLOW DOWN FOR STOP ON FLAT
-
             double minPowerCrr = Math.min(
                     leftDrive.getPower(),
                     Math.min(rightDrive.getPower(),
                             Math.min(leftDriveBack.getPower(), rightDriveBack.getPower())));
 
             if (moveLinearStopOnFlatEnabled &&
-                    minPowerCrr > 0.22 &&
                     inchesToTarget() < moveLinearStopOnFlatRampDownInches + 4) {
 
-                double rampDownRatio = 0.66; // reduces by 0.66 every 66 ms
+                colorBeacon.modeSlowForStopOnFlat = true;
+                colorBeacon.displayStatus();
 
-                if (minPowerCrr * rampDownRatio < 0.22) {
-                    rampDownRatio = 0.22 / minPowerCrr;
+                // do not reduce if already low power
+                if (minPowerCrr > 0.22) {
+
+                    double rampDownRatio = 0.66; // reduces by 0.66 every 66 ms
+
+                    if (minPowerCrr * rampDownRatio < 0.22) {
+                        rampDownRatio = 0.22 / minPowerCrr;
+                    }
+
+                    leftDrive.setPower(leftDrive.getPower() * rampDownRatio);
+                    rightDrive.setPower(rightDrive.getPower() * rampDownRatio);
+                    leftDriveBack.setPower(leftDriveBack.getPower() * rampDownRatio);
+                    rightDriveBack.setPower(rightDriveBack.getPower() * rampDownRatio);
+
                 }
-
-                leftDrive.setPower(leftDrive.getPower() * rampDownRatio);
-                rightDrive.setPower(rightDrive.getPower() * rampDownRatio);
-                leftDriveBack.setPower(leftDriveBack.getPower() * rampDownRatio);
-                rightDriveBack.setPower(rightDriveBack.getPower() * rampDownRatio);
-
             }
             // END SLOW DOWN
             // STOP ON FLAT
             if (moveLinearStopOnFlatEnabled &&
-                    isFlat() &&
                     inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
 
-                // WHITE MEANS SLOW DOWN FOR RAMP DOWN
-                colorBeacon.modeStoppedOnFlat = true;
-                colorBeacon.displayStatus();
+                beaconBlink(1);
 
-                leftDrive.setPower(0);
-                rightDrive.setPower(0);
-                leftDriveBack.setPower(0);
-                rightDriveBack.setPower(0);
+                if (isFlat()) {
+                    colorBeacon.modeStoppedOnFlat = true;
+                    colorBeacon.displayStatus();
 
-                leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    leftDrive.setPower(0);
+                    rightDrive.setPower(0);
+                    leftDriveBack.setPower(0);
+                    rightDriveBack.setPower(0);
 
-                stillRunning = false;
-                waitMillis(22);
+                    leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    leftDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    rightDriveBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-                break;
+                    stillRunning = false;
+                    waitMillis(22);
+                    break;
+
+                }
             }
             // END STOP ON FLAT
             // GYRO TRACKING IF ENABLED
@@ -1027,10 +1021,6 @@ public class Team_Hardware_V9 {
                 double lbMove = Math.abs(leftDriveBack.getCurrentPosition() - leftBackPrev);
                 double rbMove = Math.abs(rightDriveBack.getCurrentPosition() - rightBackPrev);
 
-                double lDiffPercent = Math.abs(lMove - lbMove) / Math.max(Math.max(lMove, lbMove), 1);
-                double rDiffPercent = Math.abs(rMove - rbMove) / Math.max(Math.max(rMove, rbMove), 1);
-                double maxMove = Math.max(Math.max(Math.max(lMove, rMove), lbMove), rbMove);
-
                 leftPrev = leftDrive.getCurrentPosition();
                 rightPrev = rightDrive.getCurrentPosition();
                 leftBackPrev = leftDriveBack.getCurrentPosition();
@@ -1052,7 +1042,6 @@ public class Team_Hardware_V9 {
                     // YELLOW MEANS LOCKED UP
                     colorBeacon.modeWheelsLocked = true;
                     colorBeacon.displayStatus();
-                    beaconBlink(1); // takes care of wait too
 
                     leftDrive.setPower(Math.abs(leftPowerControl));
                     rightDrive.setPower(Math.abs(rightPowerControl));
@@ -1082,14 +1071,14 @@ public class Team_Hardware_V9 {
             moveLinearGyroTrackingEnabled = false;
             moveLinearGyroHeadingToTrack = -1.0;
             colorBeacon.modeGyroCorrection = false;
-            colorBeacon.displayStatus();
         }
         if (moveLinearStopOnFlatEnabled) {
             moveLinearStopOnFlatEnabled = false;
             colorBeacon.modeStoppedOnFlat = false;
             colorBeacon.modeSlowForStopOnFlat = false;
-            colorBeacon.displayStatus();
         }
+        colorBeacon.modeWheelsLocked = false;
+        colorBeacon.displayStatus();
     }
 
     void setDrivesByPower() {
@@ -1198,7 +1187,7 @@ public class Team_Hardware_V9 {
 
         for (int i = 0; i < count; i++) {
             colorBeacon.off();
-            waitMillis(33);
+            waitMillis(22);
             colorBeacon.colorNumber(color);
         }
     }
