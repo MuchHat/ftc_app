@@ -15,14 +15,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 // @Disabled
 public class Manual_Red_V9 extends LinearOpMode {
 
-    //********************************* HW VARIABLES *********************************************//
-    private Team_Hardware_V9 robot = new Team_Hardware_V9();
-
-    //********************************* MOVE STATES **********************************************//
-    private ElapsedTime totalRuntime = null;
-
     double liftMoving = 0;
     double timeLeftLiftMoving = 0;
+    //********************************* HW VARIABLES *********************************************//
+    private Team_Hardware_V9 robot = new Team_Hardware_V9();
+    //********************************* MOVE STATES **********************************************//
+    private ElapsedTime totalRuntime = null;
 
     // ************************** MAIN LOOP ******************************************************//
 
@@ -315,14 +313,13 @@ public class Manual_Red_V9 extends LinearOpMode {
             }
 
             // ********************************  control: CLAW OPEN  ***************************//
-            if (Math.abs(gamepad1.left_trigger) > 0.05 &&
-                    Math.abs(gamepad1.left_trigger) < 0.88) {
-
+            if (Math.abs(gamepad1.left_trigger) > 0.05) {
                 robot.openClawNarrow();
             }
-            if (Math.abs(gamepad1.left_trigger) >= 0.88) {
 
-                robot.openClawZero();
+            // ********************************  control: CLAW CLOSE  ****************************//
+            if (Math.abs(gamepad1.right_trigger) > 0.05) {
+                robot.closeClaw();
             }
 
             // ********************************  control: CLAW PREDEF OPEN  **********************//

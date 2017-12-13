@@ -84,15 +84,15 @@ public class Team_Hardware_V9 {
     double sonarMaxAdjust = 0.15;
     //********************************* CLAW POS ************************************************//
 
-    double clawZero[] = {1.00, 0.00};
-    double clawOpen[] = {0.33, 0.64};
-    double clawOpenAuto[] = {0.33, 0.64};
-    double clawOpenNarrow[] = {0.28, 0.74};
-    double clawOpenWide[] = {0.46, 0.49};
-    double clawCloseLeft[] = {0.22, 0.00};
-    double clawCloseRight[] = {1.00, 0.85};
-    double clawClose[] = {0.22, 0.85};
-    double clawCloseAuto[] = {0.22, 0.85};
+    double clawZero[] = {1.00, 0.10};
+    double clawOpen[] = {0.33, 0.75};
+    double clawOpenAuto[] = {0.33, 0.75};
+    double clawOpenNarrow[] = {0.28, 0.79};
+    double clawOpenWide[] = {0.52, 0.58};
+    double clawCloseLeft[] = {0.22, 0.10};
+    double clawCloseRight[] = {1.00, 0.83};
+    double clawClose[] = {0.22, 0.83};
+    double clawCloseAuto[] = {0.22, 0.83};
     //********************************* ARM POS *************************************************//
     double armPosZero[] = {1, 0};
     // ************************** MAIN LOOP ******************************************************//
@@ -884,7 +884,8 @@ public class Team_Hardware_V9 {
             if (moveLinearStopOnFlatEnabled &&
                     inchesToTarget() < moveLinearStopOnFlatRampDownInches) {
 
-                beaconBlink(1);
+                //
+                // beaconBlink(1);
 
                 if (isFlat()) {
                     colorBeacon.modeStoppedOnFlat = true;

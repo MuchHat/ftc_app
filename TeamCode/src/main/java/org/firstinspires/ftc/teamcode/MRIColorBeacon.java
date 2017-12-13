@@ -131,7 +131,6 @@ public class MRIColorBeacon {
         } else if (modeManual) {
             teamColor();
         }
-        teamColor();
     }
 
     public void rgb(int red, int green, int blue) {

@@ -311,14 +311,9 @@ public class Manual_Blue_V9 extends LinearOpMode {
             }
 
             // ********************************  control: CLAW OPEN  ***************************//
-            if (Math.abs(gamepad1.left_trigger) > 0.05 &&
-                    Math.abs(gamepad1.left_trigger) < 0.88) {
+            if (Math.abs(gamepad1.left_trigger) > 0.05 ) {
 
                 robot.openClawNarrow();
-            }
-            if (Math.abs(gamepad1.left_trigger) >= 0.88) {
-
-                robot.openClawZero();
             }
 
             // ********************************  control: CLAW CLOSE  ****************************//
