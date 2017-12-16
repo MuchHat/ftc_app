@@ -45,10 +45,10 @@ public class Auto_Red_Short_V9 extends LinearOpMode {
         glyphRun.init(robot);
 
 
-        telemetry.addData("DRIVER", ">>>  ADJUST LIFT >>> PRESS (A) >>>");
+        telemetry.addData("DRIVER", ">>>  ADJUST LIFT >>> PRESS (X) >>>");
         telemetry.update();
 
-        while (!gamepad1.a) {
+        while (!gamepad1.x) {
             liftLoopAuto();
             waitMillis(11);
         }
