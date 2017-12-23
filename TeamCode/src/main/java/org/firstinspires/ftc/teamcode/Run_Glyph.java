@@ -92,9 +92,12 @@ public class Run_Glyph {
 
 
             if (blue_ && long_) {
-                robot.moveInches(-2, 1, 2);
+                robot.moveInches(-4, 1, 2);
+                robot.turnTo9();
                 robot.turnTo6();
-            } else robot.adjustTurnTo12();
+            } else {
+                robot.adjustTurnTo12();
+            }
             showIfTargetSeen();
 
             double redShortEncoder[] = {19, 13.5, 7}; // L C R
@@ -123,9 +126,9 @@ public class Run_Glyph {
         }
         // TURN TOWARDS THE BOX
         {
-            if (red_ && short_) robot.turnTo3();
+            if (red_ && short_) robot.adjustTurnTo3();
             if (red_ && long_) robot.adjustTurnTo12();
-            if (blue_ && short_) robot.turnTo3();
+            if (blue_ && short_) robot.adjustTurnTo3();
             if (blue_ && long_) robot.adjustTurnTo6();
             showIfTargetSeen();
 
